@@ -109,7 +109,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChangesPendingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataChangesPending");
     // Create the instance
-    return new BACnetConstructedDataChangesPendingBuilder(
+    return new BACnetConstructedDataChangesPendingBuilderImpl(
         changesPending, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChangesPendingBuilder
+  public static class BACnetConstructedDataChangesPendingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean changesPending;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChangesPendingBuilder(
+    public BACnetConstructedDataChangesPendingBuilderImpl(
         BACnetApplicationTagBoolean changesPending,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changesPending = changesPending;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

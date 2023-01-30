@@ -80,8 +80,8 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     return lengthInBits;
   }
 
-  public static BACnetEventParameterNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterNone");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,15 +99,14 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
 
     readBuffer.closeContext("BACnetEventParameterNone");
     // Create the instance
-    return new BACnetEventParameterNoneBuilder(none);
+    return new BACnetEventParameterNoneBuilderImpl(none);
   }
 
-  public static class BACnetEventParameterNoneBuilder
+  public static class BACnetEventParameterNoneBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetEventParameterNoneBuilder(BACnetContextTagNull none) {
-
+    public BACnetEventParameterNoneBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

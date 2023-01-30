@@ -81,7 +81,7 @@ public class BACnetPropertyStatesLiftGroupMode extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftGroupModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftGroupMode");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesLiftGroupMode extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesLiftGroupMode");
     // Create the instance
-    return new BACnetPropertyStatesLiftGroupModeBuilder(liftGroupMode);
+    return new BACnetPropertyStatesLiftGroupModeBuilderImpl(liftGroupMode);
   }
 
-  public static class BACnetPropertyStatesLiftGroupModeBuilder
+  public static class BACnetPropertyStatesLiftGroupModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftGroupModeTagged liftGroupMode;
 
-    public BACnetPropertyStatesLiftGroupModeBuilder(BACnetLiftGroupModeTagged liftGroupMode) {
-
+    public BACnetPropertyStatesLiftGroupModeBuilderImpl(BACnetLiftGroupModeTagged liftGroupMode) {
       this.liftGroupMode = liftGroupMode;
     }
 

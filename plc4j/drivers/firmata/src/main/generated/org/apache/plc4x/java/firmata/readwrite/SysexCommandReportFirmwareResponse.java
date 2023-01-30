@@ -118,7 +118,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
     return lengthInBits;
   }
 
-  public static SysexCommandReportFirmwareResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandReportFirmwareResponse");
     PositionAware positionAware = readBuffer;
@@ -144,18 +144,17 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
 
     readBuffer.closeContext("SysexCommandReportFirmwareResponse");
     // Create the instance
-    return new SysexCommandReportFirmwareResponseBuilder(majorVersion, minorVersion, fileName);
+    return new SysexCommandReportFirmwareResponseBuilderImpl(majorVersion, minorVersion, fileName);
   }
 
-  public static class SysexCommandReportFirmwareResponseBuilder
+  public static class SysexCommandReportFirmwareResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
     private final short majorVersion;
     private final short minorVersion;
     private final byte[] fileName;
 
-    public SysexCommandReportFirmwareResponseBuilder(
+    public SysexCommandReportFirmwareResponseBuilderImpl(
         short majorVersion, short minorVersion, byte[] fileName) {
-
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
       this.fileName = fileName;

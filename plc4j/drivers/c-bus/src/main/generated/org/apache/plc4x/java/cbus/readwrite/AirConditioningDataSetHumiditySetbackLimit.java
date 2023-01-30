@@ -123,7 +123,7 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHumiditySetbackLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHumiditySetbackLimit");
     PositionAware positionAware = readBuffer;
@@ -150,23 +150,22 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
 
     readBuffer.closeContext("AirConditioningDataSetHumiditySetbackLimit");
     // Create the instance
-    return new AirConditioningDataSetHumiditySetbackLimitBuilder(
+    return new AirConditioningDataSetHumiditySetbackLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHumiditySetbackLimitBuilder
+  public static class AirConditioningDataSetHumiditySetbackLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACHumidity limit;
     private final HVACHumidityModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHumiditySetbackLimitBuilder(
+    public AirConditioningDataSetHumiditySetbackLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidity limit,
         HVACHumidityModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

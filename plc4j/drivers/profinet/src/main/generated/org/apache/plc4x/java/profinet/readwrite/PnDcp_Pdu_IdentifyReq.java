@@ -48,9 +48,6 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
   protected final long xid;
   protected final int responseDelay;
   protected final List<PnDcp_Block> blocks;
-  // Reserved Fields
-  private Short reservedField0;
-  private Byte reservedField1;
 
   public PnDcp_Pdu_IdentifyReq(
       int frameIdValue, long xid, int responseDelay, List<PnDcp_Block> blocks) {
@@ -94,19 +91,13 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     writeConstField("serviceId", SERVICEID, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Const Field (notSupported)
     writeConstField("notSupported", NOTSUPPORTED, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Const Field (response)
     writeConstField("response", RESPONSE, writeBoolean(writeBuffer));
@@ -172,7 +163,7 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_IdentifyReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_IdentifyReq");
     PositionAware positionAware = readBuffer;
@@ -209,35 +200,23 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_IdentifyReq");
     // Create the instance
-    return new PnDcp_Pdu_IdentifyReqBuilder(
-        xid, responseDelay, blocks, reservedField0, reservedField1);
+    return new PnDcp_Pdu_IdentifyReqBuilderImpl(xid, responseDelay, blocks);
   }
 
-  public static class PnDcp_Pdu_IdentifyReqBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_IdentifyReqBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final long xid;
     private final int responseDelay;
     private final List<PnDcp_Block> blocks;
-    private final Short reservedField0;
-    private final Byte reservedField1;
 
-    public PnDcp_Pdu_IdentifyReqBuilder(
-        long xid,
-        int responseDelay,
-        List<PnDcp_Block> blocks,
-        Short reservedField0,
-        Byte reservedField1) {
+    public PnDcp_Pdu_IdentifyReqBuilderImpl(long xid, int responseDelay, List<PnDcp_Block> blocks) {
       this.xid = xid;
       this.responseDelay = responseDelay;
       this.blocks = blocks;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public PnDcp_Pdu_IdentifyReq build(int frameIdValue) {
       PnDcp_Pdu_IdentifyReq pnDcp_Pdu_IdentifyReq =
           new PnDcp_Pdu_IdentifyReq(frameIdValue, xid, responseDelay, blocks);
-      pnDcp_Pdu_IdentifyReq.reservedField0 = reservedField0;
-      pnDcp_Pdu_IdentifyReq.reservedField1 = reservedField1;
       return pnDcp_Pdu_IdentifyReq;
     }
   }

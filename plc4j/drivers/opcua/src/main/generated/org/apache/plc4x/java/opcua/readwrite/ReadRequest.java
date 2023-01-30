@@ -149,8 +149,8 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -184,11 +184,11 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ReadRequest");
     // Create the instance
-    return new ReadRequestBuilder(
+    return new ReadRequestBuilderImpl(
         requestHeader, maxAge, timestampsToReturn, noOfNodesToRead, nodesToRead);
   }
 
-  public static class ReadRequestBuilder
+  public static class ReadRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final double maxAge;
@@ -196,13 +196,12 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     private final int noOfNodesToRead;
     private final List<ExtensionObjectDefinition> nodesToRead;
 
-    public ReadRequestBuilder(
+    public ReadRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         double maxAge,
         TimestampsToReturn timestampsToReturn,
         int noOfNodesToRead,
         List<ExtensionObjectDefinition> nodesToRead) {
-
       this.requestHeader = requestHeader;
       this.maxAge = maxAge;
       this.timestampsToReturn = timestampsToReturn;

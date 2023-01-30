@@ -105,7 +105,7 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
     return lengthInBits;
   }
 
-  public static ReplyOrConfirmationConfirmationBuilder staticParseBuilder(
+  public static ReplyOrConfirmationBuilder staticParseReplyOrConfirmationBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ReplyOrConfirmationConfirmation");
@@ -129,23 +129,22 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
 
     readBuffer.closeContext("ReplyOrConfirmationConfirmation");
     // Create the instance
-    return new ReplyOrConfirmationConfirmationBuilder(
+    return new ReplyOrConfirmationConfirmationBuilderImpl(
         confirmation, embeddedReply, cBusOptions, requestContext);
   }
 
-  public static class ReplyOrConfirmationConfirmationBuilder
+  public static class ReplyOrConfirmationConfirmationBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final Confirmation confirmation;
     private final ReplyOrConfirmation embeddedReply;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ReplyOrConfirmationConfirmationBuilder(
+    public ReplyOrConfirmationConfirmationBuilderImpl(
         Confirmation confirmation,
         ReplyOrConfirmation embeddedReply,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.confirmation = confirmation;
       this.embeddedReply = embeddedReply;
       this.cBusOptions = cBusOptions;

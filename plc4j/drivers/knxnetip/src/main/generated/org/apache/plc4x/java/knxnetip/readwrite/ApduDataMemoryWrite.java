@@ -42,12 +42,8 @@ public class ApduDataMemoryWrite extends ApduData implements Message {
     return (byte) 0xA;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataMemoryWrite(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataMemoryWrite() {
+    super();
   }
 
   @Override
@@ -72,8 +68,8 @@ public class ApduDataMemoryWrite extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataMemoryWriteBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataMemoryWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,21 +77,15 @@ public class ApduDataMemoryWrite extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataMemoryWrite");
     // Create the instance
-    return new ApduDataMemoryWriteBuilder(dataLength);
+    return new ApduDataMemoryWriteBuilderImpl();
   }
 
-  public static class ApduDataMemoryWriteBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataMemoryWriteBuilderImpl implements ApduData.ApduDataBuilder {
 
-    public ApduDataMemoryWriteBuilder(Short dataLength) {
+    public ApduDataMemoryWriteBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataMemoryWrite build(Short dataLength) {
-
-      ApduDataMemoryWrite apduDataMemoryWrite = new ApduDataMemoryWrite(dataLength);
-
+    public ApduDataMemoryWrite build() {
+      ApduDataMemoryWrite apduDataMemoryWrite = new ApduDataMemoryWrite();
       return apduDataMemoryWrite;
     }
   }

@@ -49,8 +49,6 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
   protected final boolean releaseContinuationPoints;
   protected final int noOfNodesToRead;
   protected final List<ExtensionObjectDefinition> nodesToRead;
-  // Reserved Fields
-  private Short reservedField0;
 
   public HistoryReadRequest(
       ExtensionObjectDefinition requestHeader,
@@ -117,10 +115,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
             writeUnsignedLong(writeBuffer, 32)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (releaseContinuationPoints)
     writeSimpleField(
@@ -175,7 +170,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static HistoryReadRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadRequest");
     PositionAware positionAware = readBuffer;
@@ -220,17 +215,16 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("HistoryReadRequest");
     // Create the instance
-    return new HistoryReadRequestBuilder(
+    return new HistoryReadRequestBuilderImpl(
         requestHeader,
         historyReadDetails,
         timestampsToReturn,
         releaseContinuationPoints,
         noOfNodesToRead,
-        nodesToRead,
-        reservedField0);
+        nodesToRead);
   }
 
-  public static class HistoryReadRequestBuilder
+  public static class HistoryReadRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObject historyReadDetails;
@@ -238,23 +232,20 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     private final boolean releaseContinuationPoints;
     private final int noOfNodesToRead;
     private final List<ExtensionObjectDefinition> nodesToRead;
-    private final Short reservedField0;
 
-    public HistoryReadRequestBuilder(
+    public HistoryReadRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObject historyReadDetails,
         TimestampsToReturn timestampsToReturn,
         boolean releaseContinuationPoints,
         int noOfNodesToRead,
-        List<ExtensionObjectDefinition> nodesToRead,
-        Short reservedField0) {
+        List<ExtensionObjectDefinition> nodesToRead) {
       this.requestHeader = requestHeader;
       this.historyReadDetails = historyReadDetails;
       this.timestampsToReturn = timestampsToReturn;
       this.releaseContinuationPoints = releaseContinuationPoints;
       this.noOfNodesToRead = noOfNodesToRead;
       this.nodesToRead = nodesToRead;
-      this.reservedField0 = reservedField0;
     }
 
     public HistoryReadRequest build() {
@@ -266,7 +257,6 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
               releaseContinuationPoints,
               noOfNodesToRead,
               nodesToRead);
-      historyReadRequest.reservedField0 = reservedField0;
       return historyReadRequest;
     }
   }

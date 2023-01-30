@@ -145,11 +145,11 @@ func (m *_CALDataWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataWriteParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataWrite, error) {
-	return CALDataWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext, commandTypeContainer)
+func CALDataWriteParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
+	return CALDataWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataWrite, error) {
+func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataWrite"); pullErr != nil {

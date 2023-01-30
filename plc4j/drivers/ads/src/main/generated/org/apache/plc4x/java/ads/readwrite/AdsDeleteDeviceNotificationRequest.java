@@ -93,7 +93,7 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
     return lengthInBits;
   }
 
-  public static AdsDeleteDeviceNotificationRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsDeleteDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
@@ -105,15 +105,14 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
 
     readBuffer.closeContext("AdsDeleteDeviceNotificationRequest");
     // Create the instance
-    return new AdsDeleteDeviceNotificationRequestBuilder(notificationHandle);
+    return new AdsDeleteDeviceNotificationRequestBuilderImpl(notificationHandle);
   }
 
-  public static class AdsDeleteDeviceNotificationRequestBuilder
+  public static class AdsDeleteDeviceNotificationRequestBuilderImpl
       implements AmsPacket.AmsPacketBuilder {
     private final long notificationHandle;
 
-    public AdsDeleteDeviceNotificationRequestBuilder(long notificationHandle) {
-
+    public AdsDeleteDeviceNotificationRequestBuilderImpl(long notificationHandle) {
       this.notificationHandle = notificationHandle;
     }
 

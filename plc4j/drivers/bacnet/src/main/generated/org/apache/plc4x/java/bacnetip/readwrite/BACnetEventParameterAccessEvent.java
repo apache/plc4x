@@ -125,8 +125,8 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     return lengthInBits;
   }
 
-  public static BACnetEventParameterAccessEventBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterAccessEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -164,23 +164,22 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
 
     readBuffer.closeContext("BACnetEventParameterAccessEvent");
     // Create the instance
-    return new BACnetEventParameterAccessEventBuilder(
+    return new BACnetEventParameterAccessEventBuilderImpl(
         openingTag, listOfAccessEvents, accessEventTimeReference, closingTag);
   }
 
-  public static class BACnetEventParameterAccessEventBuilder
+  public static class BACnetEventParameterAccessEventBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents;
     private final BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterAccessEventBuilder(
+    public BACnetEventParameterAccessEventBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents,
         BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfAccessEvents = listOfAccessEvents;
       this.accessEventTimeReference = accessEventTimeReference;

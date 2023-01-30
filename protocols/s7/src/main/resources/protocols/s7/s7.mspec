@@ -1,4 +1,4 @@
-/*
+'/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -223,7 +223,7 @@
 [discriminatedType S7Payload (uint 8 messageType, S7Parameter parameter)
     [typeSwitch parameter.parameterType, messageType
         ['0x04','0x03' S7PayloadReadVarResponse
-            [array S7VarPayloadDataItem items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
+            [array S7VarPayloadDataItem /*('true')*/ items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest
             [array S7VarPayloadDataItem items count 'COUNT(CAST(parameter, "S7ParameterWriteVarRequest").items)']
@@ -238,12 +238,15 @@
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
-[type S7VarPayloadDataItem
+//@param hasNext In the serialization process, if you have multiple write
+//               requests the last element does not require padding.
+[type S7VarPayloadDataItem/*(bit hasNext)*/
     [simple   DataTransportErrorCode returnCode]
     [simple   DataTransportSize      transportSize]
     [implicit uint 16                dataLength 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
     [array    byte                   data       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
-    [padding  uint 8                 pad        '0x00' 'COUNT(data) % 2']
+    [padding  uint 8                 pad        '0x00' '(COUNT(data) % 2)']
+    //[padding  uint 8                 pad        '0x00' '(PADCOUNT(data, hasNext) % 2)']
 ]
 
 [type S7VarPayloadStatusItem

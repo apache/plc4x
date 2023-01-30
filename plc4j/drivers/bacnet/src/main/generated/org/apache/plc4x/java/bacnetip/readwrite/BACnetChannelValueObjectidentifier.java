@@ -84,8 +84,8 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
     return lengthInBits;
   }
 
-  public static BACnetChannelValueObjectidentifierBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -102,16 +102,15 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
 
     readBuffer.closeContext("BACnetChannelValueObjectidentifier");
     // Create the instance
-    return new BACnetChannelValueObjectidentifierBuilder(objectidentifierValue);
+    return new BACnetChannelValueObjectidentifierBuilderImpl(objectidentifierValue);
   }
 
-  public static class BACnetChannelValueObjectidentifierBuilder
+  public static class BACnetChannelValueObjectidentifierBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
 
-    public BACnetChannelValueObjectidentifierBuilder(
+    public BACnetChannelValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

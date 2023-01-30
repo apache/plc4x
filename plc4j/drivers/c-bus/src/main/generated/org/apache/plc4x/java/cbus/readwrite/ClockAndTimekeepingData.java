@@ -152,14 +152,18 @@ public abstract class ClockAndTimekeepingData implements Message {
     ClockAndTimekeepingDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE)
         && EvaluationHelper.equals(argument, (byte) 0x01)) {
-      builder = ClockAndTimekeepingDataUpdateTime.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataUpdateTime.staticParseClockAndTimekeepingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
             commandType, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE)
         && EvaluationHelper.equals(argument, (byte) 0x02)) {
-      builder = ClockAndTimekeepingDataUpdateDate.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataUpdateDate.staticParseClockAndTimekeepingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, ClockAndTimekeepingCommandType.REQUEST_REFRESH)
         && EvaluationHelper.equals(argument, (byte) 0x03)) {
-      builder = ClockAndTimekeepingDataRequestRefresh.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataRequestRefresh.staticParseClockAndTimekeepingDataBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -180,7 +184,7 @@ public abstract class ClockAndTimekeepingData implements Message {
     return _clockAndTimekeepingData;
   }
 
-  public static interface ClockAndTimekeepingDataBuilder {
+  public interface ClockAndTimekeepingDataBuilder {
     ClockAndTimekeepingData build(
         ClockAndTimekeepingCommandTypeContainer commandTypeContainer, byte argument);
   }

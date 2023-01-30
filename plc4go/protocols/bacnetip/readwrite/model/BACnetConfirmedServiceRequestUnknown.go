@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetUnknownBytes() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
-func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestUnknown {
+func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestUnknown {
 	_result := &_BACnetConfirmedServiceRequestUnknown{
 		UnknownBytes:                   unknownBytes,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,11 +130,11 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestUnknownParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
-	return BACnetConfirmedServiceRequestUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestUnknownParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
+	return BACnetConfirmedServiceRequestUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestUnknownParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
+func BACnetConfirmedServiceRequestUnknownParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestUnknown"); pullErr != nil {

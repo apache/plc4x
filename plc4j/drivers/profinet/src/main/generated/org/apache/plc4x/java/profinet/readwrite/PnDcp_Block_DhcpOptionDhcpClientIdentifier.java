@@ -72,8 +72,8 @@ public class PnDcp_Block_DhcpOptionDhcpClientIdentifier extends PnDcp_Block impl
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionDhcpClientIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_DhcpOptionDhcpClientIdentifier extends PnDcp_Block impl
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionDhcpClientIdentifier");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder();
+    return new PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder
+  public static class PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder() {}
+    public PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionDhcpClientIdentifier build() {
       PnDcp_Block_DhcpOptionDhcpClientIdentifier pnDcp_Block_DhcpOptionDhcpClientIdentifier =

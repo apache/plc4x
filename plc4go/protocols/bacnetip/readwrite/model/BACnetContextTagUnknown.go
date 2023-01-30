@@ -88,7 +88,7 @@ func (m *_BACnetContextTagUnknown) GetUnknownData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
-func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, tagNumberArgument uint8, actualLength uint32) *_BACnetContextTagUnknown {
+func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
 	_result := &_BACnetContextTagUnknown{
 		UnknownData:       unknownData,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -131,11 +131,11 @@ func (m *_BACnetContextTagUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagUnknownParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
-	return BACnetContextTagUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, actualLength)
+func BACnetContextTagUnknownParse(theBytes []byte, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
+	return BACnetContextTagUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
+func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {

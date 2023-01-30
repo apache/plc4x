@@ -84,7 +84,7 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSetCategoryBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetCategory");
     PositionAware positionAware = readBuffer;
@@ -95,15 +95,14 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataSetCategory");
     // Create the instance
-    return new MediaTransportControlDataSetCategoryBuilder(categoryNumber);
+    return new MediaTransportControlDataSetCategoryBuilderImpl(categoryNumber);
   }
 
-  public static class MediaTransportControlDataSetCategoryBuilder
+  public static class MediaTransportControlDataSetCategoryBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final short categoryNumber;
 
-    public MediaTransportControlDataSetCategoryBuilder(short categoryNumber) {
-
+    public MediaTransportControlDataSetCategoryBuilderImpl(short categoryNumber) {
       this.categoryNumber = categoryNumber;
     }
 

@@ -80,8 +80,8 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryFailureBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -95,15 +95,14 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryFailure");
     // Create the instance
-    return new BACnetLogDataLogDataEntryFailureBuilder(failure);
+    return new BACnetLogDataLogDataEntryFailureBuilderImpl(failure);
   }
 
-  public static class BACnetLogDataLogDataEntryFailureBuilder
+  public static class BACnetLogDataLogDataEntryFailureBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final ErrorEnclosed failure;
 
-    public BACnetLogDataLogDataEntryFailureBuilder(ErrorEnclosed failure) {
-
+    public BACnetLogDataLogDataEntryFailureBuilderImpl(ErrorEnclosed failure) {
       this.failure = failure;
     }
 

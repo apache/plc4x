@@ -101,8 +101,8 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static RelativePathBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RelativePath");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -120,16 +120,15 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("RelativePath");
     // Create the instance
-    return new RelativePathBuilder(noOfElements, elements);
+    return new RelativePathBuilderImpl(noOfElements, elements);
   }
 
-  public static class RelativePathBuilder
+  public static class RelativePathBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfElements;
     private final List<ExtensionObjectDefinition> elements;
 
-    public RelativePathBuilder(int noOfElements, List<ExtensionObjectDefinition> elements) {
-
+    public RelativePathBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
       this.noOfElements = noOfElements;
       this.elements = elements;
     }

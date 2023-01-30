@@ -94,7 +94,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagUnsignedIntegerBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagUnsignedInteger");
     PositionAware positionAware = readBuffer;
@@ -114,15 +114,14 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
 
     readBuffer.closeContext("BACnetApplicationTagUnsignedInteger");
     // Create the instance
-    return new BACnetApplicationTagUnsignedIntegerBuilder(payload);
+    return new BACnetApplicationTagUnsignedIntegerBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagUnsignedIntegerBuilder
+  public static class BACnetApplicationTagUnsignedIntegerBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadUnsignedInteger payload;
 
-    public BACnetApplicationTagUnsignedIntegerBuilder(BACnetTagPayloadUnsignedInteger payload) {
-
+    public BACnetApplicationTagUnsignedIntegerBuilderImpl(BACnetTagPayloadUnsignedInteger payload) {
       this.payload = payload;
     }
 

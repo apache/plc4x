@@ -113,7 +113,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTransactionNotificationClassBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,21 +139,20 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataTransactionNotificationClass");
     // Create the instance
-    return new BACnetConstructedDataTransactionNotificationClassBuilder(
+    return new BACnetConstructedDataTransactionNotificationClassBuilderImpl(
         transactionNotificationClass, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTransactionNotificationClassBuilder
+  public static class BACnetConstructedDataTransactionNotificationClassBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger transactionNotificationClass;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTransactionNotificationClassBuilder(
+    public BACnetConstructedDataTransactionNotificationClassBuilderImpl(
         BACnetApplicationTagUnsignedInteger transactionNotificationClass,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.transactionNotificationClass = transactionNotificationClass;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

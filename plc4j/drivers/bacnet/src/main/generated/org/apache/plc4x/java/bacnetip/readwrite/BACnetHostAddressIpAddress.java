@@ -81,7 +81,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     return lengthInBits;
   }
 
-  public static BACnetHostAddressIpAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetHostAddressBuilder staticParseBACnetHostAddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressIpAddress");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,14 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
 
     readBuffer.closeContext("BACnetHostAddressIpAddress");
     // Create the instance
-    return new BACnetHostAddressIpAddressBuilder(ipAddress);
+    return new BACnetHostAddressIpAddressBuilderImpl(ipAddress);
   }
 
-  public static class BACnetHostAddressIpAddressBuilder
+  public static class BACnetHostAddressIpAddressBuilderImpl
       implements BACnetHostAddress.BACnetHostAddressBuilder {
     private final BACnetContextTagOctetString ipAddress;
 
-    public BACnetHostAddressIpAddressBuilder(BACnetContextTagOctetString ipAddress) {
-
+    public BACnetHostAddressIpAddressBuilderImpl(BACnetContextTagOctetString ipAddress) {
       this.ipAddress = ipAddress;
     }
 

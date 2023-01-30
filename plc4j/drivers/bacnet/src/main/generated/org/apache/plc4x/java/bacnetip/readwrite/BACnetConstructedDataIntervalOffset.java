@@ -109,7 +109,7 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntervalOffsetBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataIntervalOffset");
     // Create the instance
-    return new BACnetConstructedDataIntervalOffsetBuilder(
+    return new BACnetConstructedDataIntervalOffsetBuilderImpl(
         intervalOffset, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntervalOffsetBuilder
+  public static class BACnetConstructedDataIntervalOffsetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger intervalOffset;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntervalOffsetBuilder(
+    public BACnetConstructedDataIntervalOffsetBuilderImpl(
         BACnetApplicationTagUnsignedInteger intervalOffset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.intervalOffset = intervalOffset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

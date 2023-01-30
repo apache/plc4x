@@ -83,7 +83,7 @@ public class SALDataEnableControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataEnableControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataEnableControl");
     PositionAware positionAware = readBuffer;
@@ -98,14 +98,13 @@ public class SALDataEnableControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataEnableControl");
     // Create the instance
-    return new SALDataEnableControlBuilder(enableControlData);
+    return new SALDataEnableControlBuilderImpl(enableControlData);
   }
 
-  public static class SALDataEnableControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataEnableControlBuilderImpl implements SALData.SALDataBuilder {
     private final EnableControlData enableControlData;
 
-    public SALDataEnableControlBuilder(EnableControlData enableControlData) {
-
+    public SALDataEnableControlBuilderImpl(EnableControlData enableControlData) {
       this.enableControlData = enableControlData;
     }
 

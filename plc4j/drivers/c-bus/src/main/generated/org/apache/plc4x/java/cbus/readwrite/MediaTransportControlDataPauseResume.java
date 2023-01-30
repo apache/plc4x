@@ -104,7 +104,7 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataPauseResumeBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataPauseResume");
     PositionAware positionAware = readBuffer;
@@ -117,15 +117,14 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataPauseResume");
     // Create the instance
-    return new MediaTransportControlDataPauseResumeBuilder(operation);
+    return new MediaTransportControlDataPauseResumeBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataPauseResumeBuilder
+  public static class MediaTransportControlDataPauseResumeBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataPauseResumeBuilder(byte operation) {
-
+    public MediaTransportControlDataPauseResumeBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

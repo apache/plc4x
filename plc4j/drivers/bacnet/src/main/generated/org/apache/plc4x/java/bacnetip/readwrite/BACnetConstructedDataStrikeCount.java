@@ -109,7 +109,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStrikeCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataStrikeCount");
     // Create the instance
-    return new BACnetConstructedDataStrikeCountBuilder(strikeCount, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStrikeCountBuilderImpl(
+        strikeCount, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStrikeCountBuilder
+  public static class BACnetConstructedDataStrikeCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger strikeCount;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStrikeCountBuilder(
+    public BACnetConstructedDataStrikeCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger strikeCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.strikeCount = strikeCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

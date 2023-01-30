@@ -111,7 +111,7 @@ public class BACnetConstructedDataOccupancyUpperLimit extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyUpperLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataOccupancyUpperLimit extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyUpperLimit");
     // Create the instance
-    return new BACnetConstructedDataOccupancyUpperLimitBuilder(
+    return new BACnetConstructedDataOccupancyUpperLimitBuilderImpl(
         occupancyUpperLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyUpperLimitBuilder
+  public static class BACnetConstructedDataOccupancyUpperLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger occupancyUpperLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyUpperLimitBuilder(
+    public BACnetConstructedDataOccupancyUpperLimitBuilderImpl(
         BACnetApplicationTagUnsignedInteger occupancyUpperLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyUpperLimit = occupancyUpperLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

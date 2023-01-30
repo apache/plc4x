@@ -109,7 +109,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSettingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataSetting");
     // Create the instance
-    return new BACnetConstructedDataSettingBuilder(setting, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSettingBuilderImpl(setting, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSettingBuilder
+  public static class BACnetConstructedDataSettingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger setting;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSettingBuilder(
+    public BACnetConstructedDataSettingBuilderImpl(
         BACnetApplicationTagUnsignedInteger setting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setting = setting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

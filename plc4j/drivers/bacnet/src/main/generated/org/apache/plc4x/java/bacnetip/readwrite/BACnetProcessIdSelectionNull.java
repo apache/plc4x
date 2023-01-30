@@ -81,8 +81,8 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
     return lengthInBits;
   }
 
-  public static BACnetProcessIdSelectionNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetProcessIdSelectionBuilder staticParseBACnetProcessIdSelectionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetProcessIdSelectionNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +97,14 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
 
     readBuffer.closeContext("BACnetProcessIdSelectionNull");
     // Create the instance
-    return new BACnetProcessIdSelectionNullBuilder(nullValue);
+    return new BACnetProcessIdSelectionNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetProcessIdSelectionNullBuilder
+  public static class BACnetProcessIdSelectionNullBuilderImpl
       implements BACnetProcessIdSelection.BACnetProcessIdSelectionBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetProcessIdSelectionNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetProcessIdSelectionNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

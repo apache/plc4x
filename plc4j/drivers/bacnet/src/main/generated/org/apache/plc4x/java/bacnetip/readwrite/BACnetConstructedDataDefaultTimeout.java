@@ -109,7 +109,7 @@ public class BACnetConstructedDataDefaultTimeout extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataDefaultTimeout extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataDefaultTimeout");
     // Create the instance
-    return new BACnetConstructedDataDefaultTimeoutBuilder(
+    return new BACnetConstructedDataDefaultTimeoutBuilderImpl(
         defaultTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultTimeoutBuilder
+  public static class BACnetConstructedDataDefaultTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger defaultTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultTimeoutBuilder(
+    public BACnetConstructedDataDefaultTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger defaultTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultTimeout = defaultTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

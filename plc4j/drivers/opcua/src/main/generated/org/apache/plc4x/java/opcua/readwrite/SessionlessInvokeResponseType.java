@@ -148,7 +148,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     return lengthInBits;
   }
 
-  public static SessionlessInvokeResponseTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionlessInvokeResponseType");
     PositionAware positionAware = readBuffer;
@@ -175,11 +175,11 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
 
     readBuffer.closeContext("SessionlessInvokeResponseType");
     // Create the instance
-    return new SessionlessInvokeResponseTypeBuilder(
+    return new SessionlessInvokeResponseTypeBuilderImpl(
         noOfNamespaceUris, namespaceUris, noOfServerUris, serverUris, serviceId);
   }
 
-  public static class SessionlessInvokeResponseTypeBuilder
+  public static class SessionlessInvokeResponseTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfNamespaceUris;
     private final List<PascalString> namespaceUris;
@@ -187,13 +187,12 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     private final List<PascalString> serverUris;
     private final long serviceId;
 
-    public SessionlessInvokeResponseTypeBuilder(
+    public SessionlessInvokeResponseTypeBuilderImpl(
         int noOfNamespaceUris,
         List<PascalString> namespaceUris,
         int noOfServerUris,
         List<PascalString> serverUris,
         long serviceId) {
-
       this.noOfNamespaceUris = noOfNamespaceUris;
       this.namespaceUris = namespaceUris;
       this.noOfServerUris = noOfServerUris;

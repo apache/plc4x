@@ -81,7 +81,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     return lengthInBits;
   }
 
-  public static BACnetClientCOVObjectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetClientCOVBuilder staticParseBACnetClientCOVBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetClientCOVObject");
     PositionAware positionAware = readBuffer;
@@ -97,15 +97,14 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
 
     readBuffer.closeContext("BACnetClientCOVObject");
     // Create the instance
-    return new BACnetClientCOVObjectBuilder(realIncrement);
+    return new BACnetClientCOVObjectBuilderImpl(realIncrement);
   }
 
-  public static class BACnetClientCOVObjectBuilder
+  public static class BACnetClientCOVObjectBuilderImpl
       implements BACnetClientCOV.BACnetClientCOVBuilder {
     private final BACnetApplicationTagReal realIncrement;
 
-    public BACnetClientCOVObjectBuilder(BACnetApplicationTagReal realIncrement) {
-
+    public BACnetClientCOVObjectBuilderImpl(BACnetApplicationTagReal realIncrement) {
       this.realIncrement = realIncrement;
     }
 

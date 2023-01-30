@@ -134,11 +134,11 @@ func (m *_CALDataIdentifyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataIdentifyReplyParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
-	return CALDataIdentifyReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext, commandTypeContainer)
+func CALDataIdentifyReplyParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
+	return CALDataIdentifyReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
+func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataIdentifyReply"); pullErr != nil {

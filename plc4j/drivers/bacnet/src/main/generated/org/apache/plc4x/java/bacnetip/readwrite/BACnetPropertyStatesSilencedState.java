@@ -81,7 +81,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesSilencedStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesSilencedState");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesSilencedState");
     // Create the instance
-    return new BACnetPropertyStatesSilencedStateBuilder(silencedState);
+    return new BACnetPropertyStatesSilencedStateBuilderImpl(silencedState);
   }
 
-  public static class BACnetPropertyStatesSilencedStateBuilder
+  public static class BACnetPropertyStatesSilencedStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetSilencedStateTagged silencedState;
 
-    public BACnetPropertyStatesSilencedStateBuilder(BACnetSilencedStateTagged silencedState) {
-
+    public BACnetPropertyStatesSilencedStateBuilderImpl(BACnetSilencedStateTagged silencedState) {
       this.silencedState = silencedState;
     }
 

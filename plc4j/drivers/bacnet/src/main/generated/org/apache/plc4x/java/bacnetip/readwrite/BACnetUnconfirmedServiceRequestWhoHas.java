@@ -127,8 +127,9 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHas");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -168,23 +169,22 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHas");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoHasBuilder(
+    return new BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
         deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, object, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoHasBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoHasBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit;
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit;
     private final BACnetUnconfirmedServiceRequestWhoHasObject object;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestWhoHasBuilder(
+    public BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
         BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit,
         BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
         BACnetUnconfirmedServiceRequestWhoHasObject object,
         Integer serviceRequestLength) {
-
       this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;
       this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;
       this.object = object;

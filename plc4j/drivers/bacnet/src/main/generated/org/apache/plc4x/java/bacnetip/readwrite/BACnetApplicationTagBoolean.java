@@ -90,7 +90,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagBooleanBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagBoolean");
     PositionAware positionAware = readBuffer;
@@ -109,15 +109,14 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
 
     readBuffer.closeContext("BACnetApplicationTagBoolean");
     // Create the instance
-    return new BACnetApplicationTagBooleanBuilder(payload);
+    return new BACnetApplicationTagBooleanBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagBooleanBuilder
+  public static class BACnetApplicationTagBooleanBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadBoolean payload;
 
-    public BACnetApplicationTagBooleanBuilder(BACnetTagPayloadBoolean payload) {
-
+    public BACnetApplicationTagBooleanBuilderImpl(BACnetTagPayloadBoolean payload) {
       this.payload = payload;
     }
 

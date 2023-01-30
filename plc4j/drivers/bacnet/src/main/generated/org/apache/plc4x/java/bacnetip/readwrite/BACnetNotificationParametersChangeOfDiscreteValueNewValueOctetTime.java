@@ -90,8 +90,9 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,19 +107,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl(
         timeValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagTime timeValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl(
         BACnetApplicationTagTime timeValue, Short tagNumber) {
-
       this.timeValue = timeValue;
       this.tagNumber = tagNumber;
     }

@@ -109,7 +109,7 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProtocolLevelBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataProtocolLevel");
     // Create the instance
-    return new BACnetConstructedDataProtocolLevelBuilder(
+    return new BACnetConstructedDataProtocolLevelBuilderImpl(
         protocolLevel, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProtocolLevelBuilder
+  public static class BACnetConstructedDataProtocolLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProtocolLevelTagged protocolLevel;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProtocolLevelBuilder(
+    public BACnetConstructedDataProtocolLevelBuilderImpl(
         BACnetProtocolLevelTagged protocolLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolLevel = protocolLevel;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

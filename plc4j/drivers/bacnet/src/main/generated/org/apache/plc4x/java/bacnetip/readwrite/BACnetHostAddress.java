@@ -113,11 +113,11 @@ public abstract class BACnetHostAddress implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetHostAddressBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetHostAddressNull.staticParseBuilder(readBuffer);
+      builder = BACnetHostAddressNull.staticParseBACnetHostAddressBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetHostAddressIpAddress.staticParseBuilder(readBuffer);
+      builder = BACnetHostAddressIpAddress.staticParseBACnetHostAddressBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetHostAddressName.staticParseBuilder(readBuffer);
+      builder = BACnetHostAddressName.staticParseBACnetHostAddressBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +134,7 @@ public abstract class BACnetHostAddress implements Message {
     return _bACnetHostAddress;
   }
 
-  public static interface BACnetHostAddressBuilder {
+  public interface BACnetHostAddressBuilder {
     BACnetHostAddress build(BACnetTagHeader peekedTagHeader);
   }
 

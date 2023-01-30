@@ -45,8 +45,6 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
   // Properties.
   protected final ExtensionObjectDefinition requestHeader;
   protected final boolean deleteSubscriptions;
-  // Reserved Fields
-  private Short reservedField0;
 
   public CloseSessionRequest(ExtensionObjectDefinition requestHeader, boolean deleteSubscriptions) {
     super();
@@ -73,10 +71,7 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (deleteSubscriptions)
     writeSimpleField("deleteSubscriptions", deleteSubscriptions, writeBoolean(writeBuffer));
@@ -106,7 +101,7 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static CloseSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CloseSessionRequest");
     PositionAware positionAware = readBuffer;
@@ -127,28 +122,23 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("CloseSessionRequest");
     // Create the instance
-    return new CloseSessionRequestBuilder(requestHeader, deleteSubscriptions, reservedField0);
+    return new CloseSessionRequestBuilderImpl(requestHeader, deleteSubscriptions);
   }
 
-  public static class CloseSessionRequestBuilder
+  public static class CloseSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean deleteSubscriptions;
-    private final Short reservedField0;
 
-    public CloseSessionRequestBuilder(
-        ExtensionObjectDefinition requestHeader,
-        boolean deleteSubscriptions,
-        Short reservedField0) {
+    public CloseSessionRequestBuilderImpl(
+        ExtensionObjectDefinition requestHeader, boolean deleteSubscriptions) {
       this.requestHeader = requestHeader;
       this.deleteSubscriptions = deleteSubscriptions;
-      this.reservedField0 = reservedField0;
     }
 
     public CloseSessionRequest build() {
       CloseSessionRequest closeSessionRequest =
           new CloseSessionRequest(requestHeader, deleteSubscriptions);
-      closeSessionRequest.reservedField0 = reservedField0;
       return closeSessionRequest;
     }
   }

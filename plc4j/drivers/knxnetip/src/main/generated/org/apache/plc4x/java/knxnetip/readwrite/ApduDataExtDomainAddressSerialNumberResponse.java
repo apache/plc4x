@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
     return (short) 0x2D;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberResponse() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberResponse");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberResponse");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberResponseBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberResponseBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberResponseBuilder
+  public static class ApduDataExtDomainAddressSerialNumberResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberResponseBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberResponse build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberResponse build() {
       ApduDataExtDomainAddressSerialNumberResponse apduDataExtDomainAddressSerialNumberResponse =
-          new ApduDataExtDomainAddressSerialNumberResponse(length);
+          new ApduDataExtDomainAddressSerialNumberResponse();
       return apduDataExtDomainAddressSerialNumberResponse;
     }
   }

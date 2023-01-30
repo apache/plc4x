@@ -135,7 +135,7 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPDNSServerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -172,23 +172,22 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataIPDNSServer");
     // Create the instance
-    return new BACnetConstructedDataIPDNSServerBuilder(
+    return new BACnetConstructedDataIPDNSServerBuilderImpl(
         numberOfDataElements, ipDnsServer, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPDNSServerBuilder
+  public static class BACnetConstructedDataIPDNSServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagOctetString> ipDnsServer;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDNSServerBuilder(
+    public BACnetConstructedDataIPDNSServerBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagOctetString> ipDnsServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.ipDnsServer = ipDnsServer;
       this.tagNumber = tagNumber;

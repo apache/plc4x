@@ -67,8 +67,8 @@ public class MediaTransportControlDataPlay extends MediaTransportControlData imp
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataPlayBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataPlay");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class MediaTransportControlDataPlay extends MediaTransportControlData imp
 
     readBuffer.closeContext("MediaTransportControlDataPlay");
     // Create the instance
-    return new MediaTransportControlDataPlayBuilder();
+    return new MediaTransportControlDataPlayBuilderImpl();
   }
 
-  public static class MediaTransportControlDataPlayBuilder
+  public static class MediaTransportControlDataPlayBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
 
-    public MediaTransportControlDataPlayBuilder() {}
+    public MediaTransportControlDataPlayBuilderImpl() {}
 
     public MediaTransportControlDataPlay build(
         MediaTransportControlCommandTypeContainer commandTypeContainer, byte mediaLinkGroup) {

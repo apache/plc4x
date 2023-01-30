@@ -80,7 +80,7 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
     return lengthInBits;
   }
 
-  public static BACnetValueSourceNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceNone");
     PositionAware positionAware = readBuffer;
@@ -99,15 +99,14 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
 
     readBuffer.closeContext("BACnetValueSourceNone");
     // Create the instance
-    return new BACnetValueSourceNoneBuilder(none);
+    return new BACnetValueSourceNoneBuilderImpl(none);
   }
 
-  public static class BACnetValueSourceNoneBuilder
+  public static class BACnetValueSourceNoneBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetValueSourceNoneBuilder(BACnetContextTagNull none) {
-
+    public BACnetValueSourceNoneBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

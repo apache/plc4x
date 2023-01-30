@@ -73,8 +73,7 @@ public class VariantDataValue extends Variant implements Message {
     writeBuffer.pushContext("VariantDataValue");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -109,7 +108,7 @@ public class VariantDataValue extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantDataValueBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantDataValue");
     PositionAware positionAware = readBuffer;
@@ -127,15 +126,14 @@ public class VariantDataValue extends Variant implements Message {
 
     readBuffer.closeContext("VariantDataValue");
     // Create the instance
-    return new VariantDataValueBuilder(arrayLength, value);
+    return new VariantDataValueBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantDataValueBuilder implements Variant.VariantBuilder {
+  public static class VariantDataValueBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<DataValue> value;
 
-    public VariantDataValueBuilder(Integer arrayLength, List<DataValue> value) {
-
+    public VariantDataValueBuilderImpl(Integer arrayLength, List<DataValue> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

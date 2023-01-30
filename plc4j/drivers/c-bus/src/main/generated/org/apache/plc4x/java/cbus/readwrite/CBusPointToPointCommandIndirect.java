@@ -114,7 +114,7 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     return lengthInBits;
   }
 
-  public static CBusPointToPointCommandIndirectBuilder staticParseBuilder(
+  public static CBusPointToPointCommandBuilder staticParseCBusPointToPointCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointCommandIndirect");
     PositionAware positionAware = readBuffer;
@@ -139,23 +139,22 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
 
     readBuffer.closeContext("CBusPointToPointCommandIndirect");
     // Create the instance
-    return new CBusPointToPointCommandIndirectBuilder(
+    return new CBusPointToPointCommandIndirectBuilderImpl(
         bridgeAddress, networkRoute, unitAddress, cBusOptions);
   }
 
-  public static class CBusPointToPointCommandIndirectBuilder
+  public static class CBusPointToPointCommandIndirectBuilderImpl
       implements CBusPointToPointCommand.CBusPointToPointCommandBuilder {
     private final BridgeAddress bridgeAddress;
     private final NetworkRoute networkRoute;
     private final UnitAddress unitAddress;
     private final CBusOptions cBusOptions;
 
-    public CBusPointToPointCommandIndirectBuilder(
+    public CBusPointToPointCommandIndirectBuilderImpl(
         BridgeAddress bridgeAddress,
         NetworkRoute networkRoute,
         UnitAddress unitAddress,
         CBusOptions cBusOptions) {
-
       this.bridgeAddress = bridgeAddress;
       this.networkRoute = networkRoute;
       this.unitAddress = unitAddress;

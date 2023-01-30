@@ -83,7 +83,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAuthenticationStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAuthenticationStatus");
     PositionAware positionAware = readBuffer;
@@ -103,16 +103,15 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesAuthenticationStatus");
     // Create the instance
-    return new BACnetPropertyStatesAuthenticationStatusBuilder(authenticationStatus);
+    return new BACnetPropertyStatesAuthenticationStatusBuilderImpl(authenticationStatus);
   }
 
-  public static class BACnetPropertyStatesAuthenticationStatusBuilder
+  public static class BACnetPropertyStatesAuthenticationStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAuthenticationStatusTagged authenticationStatus;
 
-    public BACnetPropertyStatesAuthenticationStatusBuilder(
+    public BACnetPropertyStatesAuthenticationStatusBuilderImpl(
         BACnetAuthenticationStatusTagged authenticationStatus) {
-
       this.authenticationStatus = authenticationStatus;
     }
 

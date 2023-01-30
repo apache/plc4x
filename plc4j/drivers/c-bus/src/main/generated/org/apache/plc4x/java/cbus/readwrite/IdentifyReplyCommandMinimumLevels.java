@@ -89,7 +89,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandMinimumLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMinimumLevels");
     PositionAware positionAware = readBuffer;
@@ -100,16 +100,15 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
 
     readBuffer.closeContext("IdentifyReplyCommandMinimumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMinimumLevelsBuilder(minimumLevels, numBytes);
+    return new IdentifyReplyCommandMinimumLevelsBuilderImpl(minimumLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandMinimumLevelsBuilder
+  public static class IdentifyReplyCommandMinimumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] minimumLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandMinimumLevelsBuilder(byte[] minimumLevels, Short numBytes) {
-
+    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Short numBytes) {
       this.minimumLevels = minimumLevels;
       this.numBytes = numBytes;
     }

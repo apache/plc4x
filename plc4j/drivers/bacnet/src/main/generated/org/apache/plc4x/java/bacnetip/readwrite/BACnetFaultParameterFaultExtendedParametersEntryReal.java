@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReal
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryRealBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,17 +99,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReal
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryReal");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryRealBuilder(realValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryRealBuilderImpl(realValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryRealBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagReal realValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryRealBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryRealBuilderImpl(
         BACnetApplicationTagReal realValue) {
-
       this.realValue = realValue;
     }
 

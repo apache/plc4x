@@ -69,7 +69,7 @@ public class AnonymousIdentityToken extends UserIdentityTokenDefinition implemen
     return lengthInBits;
   }
 
-  public static AnonymousIdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AnonymousIdentityToken");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class AnonymousIdentityToken extends UserIdentityTokenDefinition implemen
 
     readBuffer.closeContext("AnonymousIdentityToken");
     // Create the instance
-    return new AnonymousIdentityTokenBuilder();
+    return new AnonymousIdentityTokenBuilderImpl();
   }
 
-  public static class AnonymousIdentityTokenBuilder
+  public static class AnonymousIdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
 
-    public AnonymousIdentityTokenBuilder() {}
+    public AnonymousIdentityTokenBuilderImpl() {}
 
     public AnonymousIdentityToken build() {
       AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken();

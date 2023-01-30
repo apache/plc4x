@@ -118,58 +118,76 @@ public abstract class IdentifyReplyCommand implements Message {
     IdentifyReplyCommandBuilder builder = null;
     if (EvaluationHelper.equals(attribute, Attribute.Manufacturer)) {
       builder =
-          IdentifyReplyCommandManufacturer.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandManufacturer.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.Type)) {
-      builder = IdentifyReplyCommandType.staticParseBuilder(readBuffer, attribute, numBytes);
+      builder =
+          IdentifyReplyCommandType.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.FirmwareVersion)) {
       builder =
-          IdentifyReplyCommandFirmwareVersion.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandFirmwareVersion.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.Summary)) {
-      builder = IdentifyReplyCommandSummary.staticParseBuilder(readBuffer, attribute, numBytes);
+      builder =
+          IdentifyReplyCommandSummary.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.ExtendedDiagnosticSummary)) {
       builder =
-          IdentifyReplyCommandExtendedDiagnosticSummary.staticParseBuilder(
+          IdentifyReplyCommandExtendedDiagnosticSummary.staticParseIdentifyReplyCommandBuilder(
               readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.NetworkTerminalLevels)) {
       builder =
-          IdentifyReplyCommandNetworkTerminalLevels.staticParseBuilder(
+          IdentifyReplyCommandNetworkTerminalLevels.staticParseIdentifyReplyCommandBuilder(
               readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.TerminalLevel)) {
       builder =
-          IdentifyReplyCommandTerminalLevels.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandTerminalLevels.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.NetworkVoltage)) {
       builder =
-          IdentifyReplyCommandNetworkVoltage.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandNetworkVoltage.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.GAVValuesCurrent)) {
       builder =
-          IdentifyReplyCommandGAVValuesCurrent.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandGAVValuesCurrent.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.GAVValuesStored)) {
       builder =
-          IdentifyReplyCommandGAVValuesStored.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandGAVValuesStored.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.GAVPhysicalAddresses)) {
       builder =
-          IdentifyReplyCommandGAVPhysicalAddresses.staticParseBuilder(
+          IdentifyReplyCommandGAVPhysicalAddresses.staticParseIdentifyReplyCommandBuilder(
               readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.LogicalAssignment)) {
       builder =
-          IdentifyReplyCommandLogicalAssignment.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandLogicalAssignment.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.Delays)) {
-      builder = IdentifyReplyCommandDelays.staticParseBuilder(readBuffer, attribute, numBytes);
+      builder =
+          IdentifyReplyCommandDelays.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.MinimumLevels)) {
       builder =
-          IdentifyReplyCommandMinimumLevels.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandMinimumLevels.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.MaximumLevels)) {
       builder =
-          IdentifyReplyCommandMaximumLevels.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandMaximumLevels.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.CurrentSenseLevels)) {
       builder =
-          IdentifyReplyCommandCurrentSenseLevels.staticParseBuilder(
+          IdentifyReplyCommandCurrentSenseLevels.staticParseIdentifyReplyCommandBuilder(
               readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.OutputUnitSummary)) {
       builder =
-          IdentifyReplyCommandOutputUnitSummary.staticParseBuilder(readBuffer, attribute, numBytes);
+          IdentifyReplyCommandOutputUnitSummary.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     } else if (EvaluationHelper.equals(attribute, Attribute.DSIStatus)) {
-      builder = IdentifyReplyCommandDSIStatus.staticParseBuilder(readBuffer, attribute, numBytes);
+      builder =
+          IdentifyReplyCommandDSIStatus.staticParseIdentifyReplyCommandBuilder(
+              readBuffer, attribute, numBytes);
     }
     if (builder == null) {
       throw new ParseException(
@@ -187,7 +205,7 @@ public abstract class IdentifyReplyCommand implements Message {
     return _identifyReplyCommand;
   }
 
-  public static interface IdentifyReplyCommandBuilder {
+  public interface IdentifyReplyCommandBuilder {
     IdentifyReplyCommand build(Short numBytes);
   }
 

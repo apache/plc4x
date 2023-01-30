@@ -113,23 +113,39 @@ public abstract class BACnetLogDataLogDataEntry implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetLogDataLogDataEntryBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetLogDataLogDataEntryBooleanValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryBooleanValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetLogDataLogDataEntryRealValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryRealValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetLogDataLogDataEntryEnumeratedValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryEnumeratedValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetLogDataLogDataEntryUnsignedValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryUnsignedValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder = BACnetLogDataLogDataEntryIntegerValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryIntegerValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
-      builder = BACnetLogDataLogDataEntryBitStringValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryBitStringValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
-      builder = BACnetLogDataLogDataEntryNullValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryNullValue.staticParseBACnetLogDataLogDataEntryBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
-      builder = BACnetLogDataLogDataEntryFailure.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryFailure.staticParseBACnetLogDataLogDataEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
-      builder = BACnetLogDataLogDataEntryAnyValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLogDataLogDataEntryAnyValue.staticParseBACnetLogDataLogDataEntryBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -146,7 +162,7 @@ public abstract class BACnetLogDataLogDataEntry implements Message {
     return _bACnetLogDataLogDataEntry;
   }
 
-  public static interface BACnetLogDataLogDataEntryBuilder {
+  public interface BACnetLogDataLogDataEntryBuilder {
     BACnetLogDataLogDataEntry build(BACnetTagHeader peekedTagHeader);
   }
 

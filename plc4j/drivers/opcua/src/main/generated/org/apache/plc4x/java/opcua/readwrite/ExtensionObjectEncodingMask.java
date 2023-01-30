@@ -41,8 +41,6 @@ public class ExtensionObjectEncodingMask implements Message {
   protected final boolean typeIdSpecified;
   protected final boolean xmlbody;
   protected final boolean binaryBody;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public ExtensionObjectEncodingMask(boolean typeIdSpecified, boolean xmlbody, boolean binaryBody) {
     super();
@@ -69,10 +67,7 @@ public class ExtensionObjectEncodingMask implements Message {
     writeBuffer.pushContext("ExtensionObjectEncodingMask");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 5));
 
     // Simple Field (typeIdSpecified)
     writeSimpleField("typeIdSpecified", typeIdSpecified, writeBoolean(writeBuffer));
@@ -137,7 +132,6 @@ public class ExtensionObjectEncodingMask implements Message {
     ExtensionObjectEncodingMask _extensionObjectEncodingMask;
     _extensionObjectEncodingMask =
         new ExtensionObjectEncodingMask(typeIdSpecified, xmlbody, binaryBody);
-    _extensionObjectEncodingMask.reservedField0 = reservedField0;
     return _extensionObjectEncodingMask;
   }
 

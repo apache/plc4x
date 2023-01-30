@@ -105,7 +105,7 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
     return lengthInBits;
   }
 
-  public static ConnectionStateResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionStateResponse");
     PositionAware positionAware = readBuffer;
@@ -127,16 +127,15 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
 
     readBuffer.closeContext("ConnectionStateResponse");
     // Create the instance
-    return new ConnectionStateResponseBuilder(communicationChannelId, status);
+    return new ConnectionStateResponseBuilderImpl(communicationChannelId, status);
   }
 
-  public static class ConnectionStateResponseBuilder
+  public static class ConnectionStateResponseBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final Status status;
 
-    public ConnectionStateResponseBuilder(short communicationChannelId, Status status) {
-
+    public ConnectionStateResponseBuilderImpl(short communicationChannelId, Status status) {
       this.communicationChannelId = communicationChannelId;
       this.status = status;
     }

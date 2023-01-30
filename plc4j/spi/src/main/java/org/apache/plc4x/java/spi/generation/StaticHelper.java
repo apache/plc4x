@@ -121,5 +121,9 @@ public class StaticHelper {
     public static int CEIL(double value) {
         return (int) Math.ceil(value);
     }
+    
+    public static int PADCOUNT(Object obj, boolean hasNext) {
+        return hasNext ? COUNT(obj) : 0;
+    }    
 
 }

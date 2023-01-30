@@ -109,7 +109,7 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static EventNotificationListBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EventNotificationList");
     PositionAware positionAware = readBuffer;
@@ -130,16 +130,16 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("EventNotificationList");
     // Create the instance
-    return new EventNotificationListBuilder(noOfEvents, events);
+    return new EventNotificationListBuilderImpl(noOfEvents, events);
   }
 
-  public static class EventNotificationListBuilder
+  public static class EventNotificationListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfEvents;
     private final List<ExtensionObjectDefinition> events;
 
-    public EventNotificationListBuilder(int noOfEvents, List<ExtensionObjectDefinition> events) {
-
+    public EventNotificationListBuilderImpl(
+        int noOfEvents, List<ExtensionObjectDefinition> events) {
       this.noOfEvents = noOfEvents;
       this.events = events;
     }

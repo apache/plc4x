@@ -117,7 +117,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static UnregisterNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnregisterNodesRequest");
     PositionAware positionAware = readBuffer;
@@ -142,21 +142,20 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("UnregisterNodesRequest");
     // Create the instance
-    return new UnregisterNodesRequestBuilder(
+    return new UnregisterNodesRequestBuilderImpl(
         requestHeader, noOfNodesToUnregister, nodesToUnregister);
   }
 
-  public static class UnregisterNodesRequestBuilder
+  public static class UnregisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToUnregister;
     private final List<NodeId> nodesToUnregister;
 
-    public UnregisterNodesRequestBuilder(
+    public UnregisterNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToUnregister,
         List<NodeId> nodesToUnregister) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToUnregister = noOfNodesToUnregister;
       this.nodesToUnregister = nodesToUnregister;

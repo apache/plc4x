@@ -113,7 +113,7 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static DeleteSubscriptionsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteSubscriptionsRequest");
     PositionAware positionAware = readBuffer;
@@ -135,21 +135,20 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("DeleteSubscriptionsRequest");
     // Create the instance
-    return new DeleteSubscriptionsRequestBuilder(
+    return new DeleteSubscriptionsRequestBuilderImpl(
         requestHeader, noOfSubscriptionIds, subscriptionIds);
   }
 
-  public static class DeleteSubscriptionsRequestBuilder
+  public static class DeleteSubscriptionsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfSubscriptionIds;
     private final List<Long> subscriptionIds;
 
-    public DeleteSubscriptionsRequestBuilder(
+    public DeleteSubscriptionsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionIds,
         List<Long> subscriptionIds) {
-
       this.requestHeader = requestHeader;
       this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;

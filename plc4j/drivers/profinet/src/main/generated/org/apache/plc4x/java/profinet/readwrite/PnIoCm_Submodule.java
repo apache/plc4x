@@ -47,8 +47,6 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean reduceOutputModuleDataLength;
   protected final boolean reduceInputModuleDataLength;
   protected final boolean sharedInput;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public PnIoCm_Submodule(
       int slotNumber,
@@ -106,10 +104,7 @@ public abstract class PnIoCm_Submodule implements Message {
         "submoduleIdentNumber", submoduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x000,
-        writeUnsignedInt(writeBuffer, 10));
+    writeReservedField("reserved", (int) 0x000, writeUnsignedInt(writeBuffer, 10));
 
     // Simple Field (discardIoxs)
     writeSimpleField("discardIoxs", discardIoxs, writeBoolean(writeBuffer));
@@ -219,9 +214,9 @@ public abstract class PnIoCm_Submodule implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_SubmoduleBuilder builder = null;
     if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_InputAndOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_InputAndOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -242,11 +237,10 @@ public abstract class PnIoCm_Submodule implements Message {
             reduceOutputModuleDataLength,
             reduceInputModuleDataLength,
             sharedInput);
-    _pnIoCm_Submodule.reservedField0 = reservedField0;
     return _pnIoCm_Submodule;
   }
 
-  public static interface PnIoCm_SubmoduleBuilder {
+  public interface PnIoCm_SubmoduleBuilder {
     PnIoCm_Submodule build(
         int slotNumber,
         long submoduleIdentNumber,

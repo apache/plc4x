@@ -148,8 +148,8 @@ public class BrowseResponse extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static BrowseResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -183,11 +183,11 @@ public class BrowseResponse extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("BrowseResponse");
     // Create the instance
-    return new BrowseResponseBuilder(
+    return new BrowseResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class BrowseResponseBuilder
+  public static class BrowseResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +195,12 @@ public class BrowseResponse extends ExtensionObjectDefinition implements Message
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public BrowseResponseBuilder(
+    public BrowseResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

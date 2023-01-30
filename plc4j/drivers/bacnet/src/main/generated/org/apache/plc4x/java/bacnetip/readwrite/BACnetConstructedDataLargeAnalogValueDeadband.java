@@ -110,7 +110,7 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueDeadbandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,21 +133,20 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueDeadband");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueDeadbandBuilder(
+    return new BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl(
         deadband, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+  public static class BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble deadband;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueDeadbandBuilder(
+    public BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl(
         BACnetApplicationTagDouble deadband,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deadband = deadband;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

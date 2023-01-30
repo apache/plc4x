@@ -132,8 +132,8 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static EndpointTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -163,23 +163,22 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("EndpointType");
     // Create the instance
-    return new EndpointTypeBuilder(
+    return new EndpointTypeBuilderImpl(
         endpointUrl, securityMode, securityPolicyUri, transportProfileUri);
   }
 
-  public static class EndpointTypeBuilder
+  public static class EndpointTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString endpointUrl;
     private final MessageSecurityMode securityMode;
     private final PascalString securityPolicyUri;
     private final PascalString transportProfileUri;
 
-    public EndpointTypeBuilder(
+    public EndpointTypeBuilderImpl(
         PascalString endpointUrl,
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
         PascalString transportProfileUri) {
-
       this.endpointUrl = endpointUrl;
       this.securityMode = securityMode;
       this.securityPolicyUri = securityPolicyUri;

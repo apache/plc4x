@@ -110,7 +110,7 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastAccessPointBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastAccessPoint");
     // Create the instance
-    return new BACnetConstructedDataLastAccessPointBuilder(
+    return new BACnetConstructedDataLastAccessPointBuilderImpl(
         lastAccessPoint, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastAccessPointBuilder
+  public static class BACnetConstructedDataLastAccessPointBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference lastAccessPoint;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastAccessPointBuilder(
+    public BACnetConstructedDataLastAccessPointBuilderImpl(
         BACnetDeviceObjectReference lastAccessPoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastAccessPoint = lastAccessPoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

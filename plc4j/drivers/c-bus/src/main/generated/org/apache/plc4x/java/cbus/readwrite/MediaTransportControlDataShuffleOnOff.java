@@ -104,7 +104,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataShuffleOnOffBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataShuffleOnOff");
     PositionAware positionAware = readBuffer;
@@ -117,15 +117,14 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
 
     readBuffer.closeContext("MediaTransportControlDataShuffleOnOff");
     // Create the instance
-    return new MediaTransportControlDataShuffleOnOffBuilder(state);
+    return new MediaTransportControlDataShuffleOnOffBuilderImpl(state);
   }
 
-  public static class MediaTransportControlDataShuffleOnOffBuilder
+  public static class MediaTransportControlDataShuffleOnOffBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte state;
 
-    public MediaTransportControlDataShuffleOnOffBuilder(byte state) {
-
+    public MediaTransportControlDataShuffleOnOffBuilderImpl(byte state) {
       this.state = state;
     }
 

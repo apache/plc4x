@@ -109,7 +109,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAckRequiredBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAckRequired");
     // Create the instance
-    return new BACnetConstructedDataAckRequiredBuilder(ackRequired, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAckRequiredBuilderImpl(
+        ackRequired, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAckRequiredBuilder
+  public static class BACnetConstructedDataAckRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged ackRequired;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAckRequiredBuilder(
+    public BACnetConstructedDataAckRequiredBuilderImpl(
         BACnetEventTransitionBitsTagged ackRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ackRequired = ackRequired;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

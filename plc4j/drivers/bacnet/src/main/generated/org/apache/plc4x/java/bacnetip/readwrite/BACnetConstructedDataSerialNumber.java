@@ -109,7 +109,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSerialNumberBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataSerialNumber");
     // Create the instance
-    return new BACnetConstructedDataSerialNumberBuilder(
+    return new BACnetConstructedDataSerialNumberBuilderImpl(
         serialNumber, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSerialNumberBuilder
+  public static class BACnetConstructedDataSerialNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString serialNumber;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSerialNumberBuilder(
+    public BACnetConstructedDataSerialNumberBuilderImpl(
         BACnetApplicationTagCharacterString serialNumber,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.serialNumber = serialNumber;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

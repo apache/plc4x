@@ -103,13 +103,19 @@ public abstract class UserIdentityTokenDefinition implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     UserIdentityTokenDefinitionBuilder builder = null;
     if (EvaluationHelper.equals(identifier, (String) "anonymous")) {
-      builder = AnonymousIdentityToken.staticParseBuilder(readBuffer, identifier);
+      builder =
+          AnonymousIdentityToken.staticParseUserIdentityTokenDefinitionBuilder(
+              readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "username")) {
-      builder = UserNameIdentityToken.staticParseBuilder(readBuffer, identifier);
+      builder =
+          UserNameIdentityToken.staticParseUserIdentityTokenDefinitionBuilder(
+              readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "certificate")) {
-      builder = X509IdentityToken.staticParseBuilder(readBuffer, identifier);
+      builder =
+          X509IdentityToken.staticParseUserIdentityTokenDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "identity")) {
-      builder = IssuedIdentityToken.staticParseBuilder(readBuffer, identifier);
+      builder =
+          IssuedIdentityToken.staticParseUserIdentityTokenDefinitionBuilder(readBuffer, identifier);
     }
     if (builder == null) {
       throw new ParseException(
@@ -126,7 +132,7 @@ public abstract class UserIdentityTokenDefinition implements Message {
     return _userIdentityTokenDefinition;
   }
 
-  public static interface UserIdentityTokenDefinitionBuilder {
+  public interface UserIdentityTokenDefinitionBuilder {
     UserIdentityTokenDefinition build();
   }
 

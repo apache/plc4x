@@ -93,8 +93,8 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdTwoByteBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static NodeIdTypeDefinitionBuilder staticParseNodeIdTypeDefinitionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdTwoByte");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -105,15 +105,14 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
 
     readBuffer.closeContext("NodeIdTwoByte");
     // Create the instance
-    return new NodeIdTwoByteBuilder(id);
+    return new NodeIdTwoByteBuilderImpl(id);
   }
 
-  public static class NodeIdTwoByteBuilder
+  public static class NodeIdTwoByteBuilderImpl
       implements NodeIdTypeDefinition.NodeIdTypeDefinitionBuilder {
     private final short id;
 
-    public NodeIdTwoByteBuilder(short id) {
-
+    public NodeIdTwoByteBuilderImpl(short id) {
       this.id = id;
     }
 

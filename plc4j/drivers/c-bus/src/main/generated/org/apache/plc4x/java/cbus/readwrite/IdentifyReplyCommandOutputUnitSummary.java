@@ -137,7 +137,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandOutputUnitSummaryBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandOutputUnitSummary");
     PositionAware positionAware = readBuffer;
@@ -161,7 +161,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
 
     readBuffer.closeContext("IdentifyReplyCommandOutputUnitSummary");
     // Create the instance
-    return new IdentifyReplyCommandOutputUnitSummaryBuilder(
+    return new IdentifyReplyCommandOutputUnitSummaryBuilderImpl(
         unitFlags,
         gavStoreEnabledByte1,
         gavStoreEnabledByte2,
@@ -169,7 +169,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
         numBytes);
   }
 
-  public static class IdentifyReplyCommandOutputUnitSummaryBuilder
+  public static class IdentifyReplyCommandOutputUnitSummaryBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final IdentifyReplyCommandUnitSummary unitFlags;
     private final Byte gavStoreEnabledByte1;
@@ -177,13 +177,12 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     private final short timeFromLastRecoverOfMainsInSeconds;
     private final Short numBytes;
 
-    public IdentifyReplyCommandOutputUnitSummaryBuilder(
+    public IdentifyReplyCommandOutputUnitSummaryBuilderImpl(
         IdentifyReplyCommandUnitSummary unitFlags,
         Byte gavStoreEnabledByte1,
         Byte gavStoreEnabledByte2,
         short timeFromLastRecoverOfMainsInSeconds,
         Short numBytes) {
-
       this.unitFlags = unitFlags;
       this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
       this.gavStoreEnabledByte2 = gavStoreEnabledByte2;

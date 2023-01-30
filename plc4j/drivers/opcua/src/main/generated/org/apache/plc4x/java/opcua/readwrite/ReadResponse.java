@@ -148,8 +148,8 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ReadResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,11 +181,11 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ReadResponse");
     // Create the instance
-    return new ReadResponseBuilder(
+    return new ReadResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class ReadResponseBuilder
+  public static class ReadResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,13 +193,12 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public ReadResponseBuilder(
+    public ReadResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<DataValue> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

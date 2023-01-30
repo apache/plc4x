@@ -109,7 +109,7 @@ public class BACnetConstructedDataBACnetIPUDPPort extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPUDPPortBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataBACnetIPUDPPort extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPUDPPort");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPUDPPortBuilder(
+    return new BACnetConstructedDataBACnetIPUDPPortBuilderImpl(
         ipUdpPort, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPUDPPortBuilder
+  public static class BACnetConstructedDataBACnetIPUDPPortBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipUdpPort;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPUDPPortBuilder(
+    public BACnetConstructedDataBACnetIPUDPPortBuilderImpl(
         BACnetApplicationTagUnsignedInteger ipUdpPort,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipUdpPort = ipUdpPort;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

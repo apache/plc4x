@@ -49,18 +49,14 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
   protected final int index;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short length;
-
   public ApduDataExtPropertyValueWrite(
-      short objectIndex, short propertyId, byte count, int index, byte[] data, Short length) {
-    super(length);
+      short objectIndex, short propertyId, byte count, int index, byte[] data) {
+    super();
     this.objectIndex = objectIndex;
     this.propertyId = propertyId;
     this.count = count;
     this.index = index;
     this.data = data;
-    this.length = length;
   }
 
   public short getObjectIndex() {
@@ -137,7 +133,7 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyValueWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyValueWrite");
     PositionAware positionAware = readBuffer;
@@ -156,34 +152,30 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
 
     readBuffer.closeContext("ApduDataExtPropertyValueWrite");
     // Create the instance
-    return new ApduDataExtPropertyValueWriteBuilder(
-        objectIndex, propertyId, count, index, data, length);
+    return new ApduDataExtPropertyValueWriteBuilderImpl(
+        objectIndex, propertyId, count, index, data);
   }
 
-  public static class ApduDataExtPropertyValueWriteBuilder
+  public static class ApduDataExtPropertyValueWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
     private final byte count;
     private final int index;
     private final byte[] data;
-    private final Short length;
 
-    public ApduDataExtPropertyValueWriteBuilder(
-        short objectIndex, short propertyId, byte count, int index, byte[] data, Short length) {
-
+    public ApduDataExtPropertyValueWriteBuilderImpl(
+        short objectIndex, short propertyId, byte count, int index, byte[] data) {
       this.objectIndex = objectIndex;
       this.propertyId = propertyId;
       this.count = count;
       this.index = index;
       this.data = data;
-      this.length = length;
     }
 
-    public ApduDataExtPropertyValueWrite build(Short length) {
-
+    public ApduDataExtPropertyValueWrite build() {
       ApduDataExtPropertyValueWrite apduDataExtPropertyValueWrite =
-          new ApduDataExtPropertyValueWrite(objectIndex, propertyId, count, index, data, length);
+          new ApduDataExtPropertyValueWrite(objectIndex, propertyId, count, index, data);
       return apduDataExtPropertyValueWrite;
     }
   }

@@ -173,8 +173,8 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaHelloRequestBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaHelloRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -201,11 +201,11 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaHelloRequest");
     // Create the instance
-    return new OpcuaHelloRequestBuilder(
+    return new OpcuaHelloRequestBuilderImpl(
         chunk, version, receiveBufferSize, sendBufferSize, maxMessageSize, maxChunkCount, endpoint);
   }
 
-  public static class OpcuaHelloRequestBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaHelloRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int version;
     private final int receiveBufferSize;
@@ -214,7 +214,7 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
     private final int maxChunkCount;
     private final PascalString endpoint;
 
-    public OpcuaHelloRequestBuilder(
+    public OpcuaHelloRequestBuilderImpl(
         String chunk,
         int version,
         int receiveBufferSize,
@@ -222,7 +222,6 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
         int maxMessageSize,
         int maxChunkCount,
         PascalString endpoint) {
-
       this.chunk = chunk;
       this.version = version;
       this.receiveBufferSize = receiveBufferSize;

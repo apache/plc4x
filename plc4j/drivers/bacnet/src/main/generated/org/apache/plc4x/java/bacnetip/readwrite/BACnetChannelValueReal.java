@@ -81,8 +81,8 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
     return lengthInBits;
   }
 
-  public static BACnetChannelValueRealBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +97,14 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
 
     readBuffer.closeContext("BACnetChannelValueReal");
     // Create the instance
-    return new BACnetChannelValueRealBuilder(realValue);
+    return new BACnetChannelValueRealBuilderImpl(realValue);
   }
 
-  public static class BACnetChannelValueRealBuilder
+  public static class BACnetChannelValueRealBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagReal realValue;
 
-    public BACnetChannelValueRealBuilder(BACnetApplicationTagReal realValue) {
-
+    public BACnetChannelValueRealBuilderImpl(BACnetApplicationTagReal realValue) {
       this.realValue = realValue;
     }
 

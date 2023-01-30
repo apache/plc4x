@@ -113,7 +113,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyLowerLimitEnforced");
     // Create the instance
-    return new BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder(
+    return new BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl(
         occupancyLowerLimitEnforced, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+  public static class BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean occupancyLowerLimitEnforced;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder(
+    public BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl(
         BACnetApplicationTagBoolean occupancyLowerLimitEnforced,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyLowerLimitEnforced = occupancyLowerLimitEnforced;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

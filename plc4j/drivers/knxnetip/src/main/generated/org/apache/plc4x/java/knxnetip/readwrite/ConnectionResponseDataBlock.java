@@ -109,9 +109,13 @@ public abstract class ConnectionResponseDataBlock implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ConnectionResponseDataBlockBuilder builder = null;
     if (EvaluationHelper.equals(connectionType, (short) 0x03)) {
-      builder = ConnectionResponseDataBlockDeviceManagement.staticParseBuilder(readBuffer);
+      builder =
+          ConnectionResponseDataBlockDeviceManagement.staticParseConnectionResponseDataBlockBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(connectionType, (short) 0x04)) {
-      builder = ConnectionResponseDataBlockTunnelConnection.staticParseBuilder(readBuffer);
+      builder =
+          ConnectionResponseDataBlockTunnelConnection.staticParseConnectionResponseDataBlockBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -128,7 +132,7 @@ public abstract class ConnectionResponseDataBlock implements Message {
     return _connectionResponseDataBlock;
   }
 
-  public static interface ConnectionResponseDataBlockBuilder {
+  public interface ConnectionResponseDataBlockBuilder {
     ConnectionResponseDataBlock build();
   }
 

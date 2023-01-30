@@ -111,7 +111,7 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDerivativeConstantBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataDerivativeConstant");
     // Create the instance
-    return new BACnetConstructedDataDerivativeConstantBuilder(
+    return new BACnetConstructedDataDerivativeConstantBuilderImpl(
         derivativeConstant, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDerivativeConstantBuilder
+  public static class BACnetConstructedDataDerivativeConstantBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal derivativeConstant;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDerivativeConstantBuilder(
+    public BACnetConstructedDataDerivativeConstantBuilderImpl(
         BACnetApplicationTagReal derivativeConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.derivativeConstant = derivativeConstant;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -85,7 +85,7 @@ public class BACnetConstructedDataDatetimepatternValueAll extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDatetimepatternValueAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,17 +104,17 @@ public class BACnetConstructedDataDatetimepatternValueAll extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDatetimepatternValueAll");
     // Create the instance
-    return new BACnetConstructedDataDatetimepatternValueAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDatetimepatternValueAllBuilderImpl(
+        tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDatetimepatternValueAllBuilder
+  public static class BACnetConstructedDataDatetimepatternValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDatetimepatternValueAllBuilder(
+    public BACnetConstructedDataDatetimepatternValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

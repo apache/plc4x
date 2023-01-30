@@ -68,7 +68,7 @@ public class SALDataReserved extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataReservedBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataReserved");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,12 @@ public class SALDataReserved extends SALData implements Message {
 
     readBuffer.closeContext("SALDataReserved");
     // Create the instance
-    return new SALDataReservedBuilder();
+    return new SALDataReservedBuilderImpl();
   }
 
-  public static class SALDataReservedBuilder implements SALData.SALDataBuilder {
+  public static class SALDataReservedBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataReservedBuilder() {}
+    public SALDataReservedBuilderImpl() {}
 
     public SALDataReserved build(SALData salData) {
       SALDataReserved sALDataReserved = new SALDataReserved(salData);

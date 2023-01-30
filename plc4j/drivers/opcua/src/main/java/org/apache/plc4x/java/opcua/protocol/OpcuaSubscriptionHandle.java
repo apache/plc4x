@@ -154,8 +154,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            createMonitoredItemsRequest,
-            false);
+            createMonitoredItemsRequest);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -262,8 +261,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         ExtensionObject extObject = new ExtensionObject(
                             extExpandedNodeId,
                             null,
-                            publishRequest,
-                            false);
+                            publishRequest);
 
                         try {
                             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -372,8 +370,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         ExtensionObject extObject = new ExtensionObject(
             extExpandedNodeId,
             null,
-            deleteSubscriptionrequest,
-            false);
+            deleteSubscriptionrequest);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);

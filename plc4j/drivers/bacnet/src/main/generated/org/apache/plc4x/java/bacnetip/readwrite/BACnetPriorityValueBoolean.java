@@ -87,7 +87,7 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueBooleanBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueBoolean");
     PositionAware positionAware = readBuffer;
@@ -103,17 +103,16 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueBoolean");
     // Create the instance
-    return new BACnetPriorityValueBooleanBuilder(booleanValue, objectTypeArgument);
+    return new BACnetPriorityValueBooleanBuilderImpl(booleanValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueBooleanBuilder
+  public static class BACnetPriorityValueBooleanBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBooleanBuilder(
+    public BACnetPriorityValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
-
       this.booleanValue = booleanValue;
       this.objectTypeArgument = objectTypeArgument;
     }

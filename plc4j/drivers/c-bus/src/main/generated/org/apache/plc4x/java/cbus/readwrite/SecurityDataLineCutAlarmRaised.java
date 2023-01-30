@@ -66,7 +66,7 @@ public class SecurityDataLineCutAlarmRaised extends SecurityData implements Mess
     return lengthInBits;
   }
 
-  public static SecurityDataLineCutAlarmRaisedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataLineCutAlarmRaised");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataLineCutAlarmRaised extends SecurityData implements Mess
 
     readBuffer.closeContext("SecurityDataLineCutAlarmRaised");
     // Create the instance
-    return new SecurityDataLineCutAlarmRaisedBuilder();
+    return new SecurityDataLineCutAlarmRaisedBuilderImpl();
   }
 
-  public static class SecurityDataLineCutAlarmRaisedBuilder
+  public static class SecurityDataLineCutAlarmRaisedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataLineCutAlarmRaisedBuilder() {}
+    public SecurityDataLineCutAlarmRaisedBuilderImpl() {}
 
     public SecurityDataLineCutAlarmRaised build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

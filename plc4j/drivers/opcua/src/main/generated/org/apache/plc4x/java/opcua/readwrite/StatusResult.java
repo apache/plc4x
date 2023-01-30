@@ -95,8 +95,8 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static StatusResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StatusResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,16 +115,15 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("StatusResult");
     // Create the instance
-    return new StatusResultBuilder(statusCode, diagnosticInfo);
+    return new StatusResultBuilderImpl(statusCode, diagnosticInfo);
   }
 
-  public static class StatusResultBuilder
+  public static class StatusResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final DiagnosticInfo diagnosticInfo;
 
-    public StatusResultBuilder(StatusCode statusCode, DiagnosticInfo diagnosticInfo) {
-
+    public StatusResultBuilderImpl(StatusCode statusCode, DiagnosticInfo diagnosticInfo) {
       this.statusCode = statusCode;
       this.diagnosticInfo = diagnosticInfo;
     }

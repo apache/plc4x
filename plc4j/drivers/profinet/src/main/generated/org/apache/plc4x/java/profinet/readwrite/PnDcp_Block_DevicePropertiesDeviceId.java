@@ -49,8 +49,6 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
   // Properties.
   protected final int vendorId;
   protected final int deviceId;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public PnDcp_Block_DevicePropertiesDeviceId(int vendorId, int deviceId) {
     super();
@@ -73,10 +71,7 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceId");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (vendorId)
     writeSimpleField("vendorId", vendorId, writeUnsignedInt(writeBuffer, 16));
@@ -109,8 +104,8 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceIdBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -125,26 +120,22 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceId");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceIdBuilder(vendorId, deviceId, reservedField0);
+    return new PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl(vendorId, deviceId);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceIdBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final int vendorId;
     private final int deviceId;
-    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceIdBuilder(
-        int vendorId, int deviceId, Integer reservedField0) {
+    public PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl(int vendorId, int deviceId) {
       this.vendorId = vendorId;
       this.deviceId = deviceId;
-      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceId build() {
       PnDcp_Block_DevicePropertiesDeviceId pnDcp_Block_DevicePropertiesDeviceId =
           new PnDcp_Block_DevicePropertiesDeviceId(vendorId, deviceId);
-      pnDcp_Block_DevicePropertiesDeviceId.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesDeviceId;
     }
   }

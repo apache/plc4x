@@ -40,8 +40,6 @@ public class SDOAbort implements Message {
   // Properties.
   protected final IndexAddress address;
   protected final long code;
-  // Reserved Fields
-  private Short reservedField0;
 
   public SDOAbort(IndexAddress address, long code) {
     super();
@@ -63,10 +61,7 @@ public class SDOAbort implements Message {
     writeBuffer.pushContext("SDOAbort");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (address)
     writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
@@ -124,7 +119,6 @@ public class SDOAbort implements Message {
     // Create the instance
     SDOAbort _sDOAbort;
     _sDOAbort = new SDOAbort(address, code);
-    _sDOAbort.reservedField0 = reservedField0;
     return _sDOAbort;
   }
 

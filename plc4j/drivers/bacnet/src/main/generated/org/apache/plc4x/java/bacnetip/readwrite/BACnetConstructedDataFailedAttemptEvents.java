@@ -104,7 +104,7 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFailedAttemptEventsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataFailedAttemptEvents");
     // Create the instance
-    return new BACnetConstructedDataFailedAttemptEventsBuilder(
+    return new BACnetConstructedDataFailedAttemptEventsBuilderImpl(
         failedAttemptEvents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFailedAttemptEventsBuilder
+  public static class BACnetConstructedDataFailedAttemptEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> failedAttemptEvents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFailedAttemptEventsBuilder(
+    public BACnetConstructedDataFailedAttemptEventsBuilderImpl(
         List<BACnetAccessEventTagged> failedAttemptEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.failedAttemptEvents = failedAttemptEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -379,7 +379,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandExtendedDiagnosticSummaryBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     PositionAware positionAware = readBuffer;
@@ -446,7 +446,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
 
     readBuffer.closeContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     // Create the instance
-    return new IdentifyReplyCommandExtendedDiagnosticSummaryBuilder(
+    return new IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl(
         lowApplication,
         highApplication,
         area,
@@ -472,7 +472,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         reservedField2);
   }
 
-  public static class IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+  public static class IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final ApplicationIdContainer lowApplication;
     private final ApplicationIdContainer highApplication;
@@ -498,7 +498,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     private final Byte reservedField1;
     private final Byte reservedField2;
 
-    public IdentifyReplyCommandExtendedDiagnosticSummaryBuilder(
+    public IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl(
         ApplicationIdContainer lowApplication,
         ApplicationIdContainer highApplication,
         byte area,

@@ -96,11 +96,12 @@ public abstract class Ethernet_FramePayload implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     Ethernet_FramePayloadBuilder builder = null;
     if (EvaluationHelper.equals(packetType, (int) 0x0800)) {
-      builder = Ethernet_FramePayload_IPv4.staticParseBuilder(readBuffer);
+      builder = Ethernet_FramePayload_IPv4.staticParseEthernet_FramePayloadBuilder(readBuffer);
     } else if (EvaluationHelper.equals(packetType, (int) 0x8100)) {
-      builder = Ethernet_FramePayload_VirtualLan.staticParseBuilder(readBuffer);
+      builder =
+          Ethernet_FramePayload_VirtualLan.staticParseEthernet_FramePayloadBuilder(readBuffer);
     } else if (EvaluationHelper.equals(packetType, (int) 0x8892)) {
-      builder = Ethernet_FramePayload_PnDcp.staticParseBuilder(readBuffer);
+      builder = Ethernet_FramePayload_PnDcp.staticParseEthernet_FramePayloadBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -117,7 +118,7 @@ public abstract class Ethernet_FramePayload implements Message {
     return _ethernet_FramePayload;
   }
 
-  public static interface Ethernet_FramePayloadBuilder {
+  public interface Ethernet_FramePayloadBuilder {
     Ethernet_FramePayload build();
   }
 

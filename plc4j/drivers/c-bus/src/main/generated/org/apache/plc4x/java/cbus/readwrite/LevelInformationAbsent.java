@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class LevelInformationAbsent extends LevelInformation implements Message {
 
   // Accessors for discriminator values.
+
   // Reserved Fields
   private Integer reservedField0;
 
@@ -77,7 +78,7 @@ public class LevelInformationAbsent extends LevelInformation implements Message 
     return lengthInBits;
   }
 
-  public static LevelInformationAbsentBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LevelInformationBuilder staticParseLevelInformationBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LevelInformationAbsent");
     PositionAware positionAware = readBuffer;
@@ -89,14 +90,14 @@ public class LevelInformationAbsent extends LevelInformation implements Message 
 
     readBuffer.closeContext("LevelInformationAbsent");
     // Create the instance
-    return new LevelInformationAbsentBuilder(reservedField0);
+    return new LevelInformationAbsentBuilderImpl(reservedField0);
   }
 
-  public static class LevelInformationAbsentBuilder
+  public static class LevelInformationAbsentBuilderImpl
       implements LevelInformation.LevelInformationBuilder {
     private final Integer reservedField0;
 
-    public LevelInformationAbsentBuilder(Integer reservedField0) {
+    public LevelInformationAbsentBuilderImpl(Integer reservedField0) {
       this.reservedField0 = reservedField0;
     }
 

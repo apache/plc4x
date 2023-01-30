@@ -106,10 +106,10 @@ public class CALDataIdentifyReply extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataIdentifyReplyBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataIdentifyReply");
     PositionAware positionAware = readBuffer;
@@ -135,19 +135,18 @@ public class CALDataIdentifyReply extends CALData implements Message {
 
     readBuffer.closeContext("CALDataIdentifyReply");
     // Create the instance
-    return new CALDataIdentifyReplyBuilder(attribute, identifyReplyCommand, requestContext);
+    return new CALDataIdentifyReplyBuilderImpl(attribute, identifyReplyCommand, requestContext);
   }
 
-  public static class CALDataIdentifyReplyBuilder implements CALData.CALDataBuilder {
+  public static class CALDataIdentifyReplyBuilderImpl implements CALData.CALDataBuilder {
     private final Attribute attribute;
     private final IdentifyReplyCommand identifyReplyCommand;
     private final RequestContext requestContext;
 
-    public CALDataIdentifyReplyBuilder(
+    public CALDataIdentifyReplyBuilderImpl(
         Attribute attribute,
         IdentifyReplyCommand identifyReplyCommand,
         RequestContext requestContext) {
-
       this.attribute = attribute;
       this.identifyReplyCommand = identifyReplyCommand;
       this.requestContext = requestContext;

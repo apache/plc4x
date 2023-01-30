@@ -126,9 +126,9 @@ public abstract class DF1Command implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1CommandBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x01)) {
-      builder = DF1UnprotectedReadRequest.staticParseBuilder(readBuffer);
+      builder = DF1UnprotectedReadRequest.staticParseDF1CommandBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandCode, (short) 0x41)) {
-      builder = DF1UnprotectedReadResponse.staticParseBuilder(readBuffer);
+      builder = DF1UnprotectedReadResponse.staticParseDF1CommandBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -145,7 +145,7 @@ public abstract class DF1Command implements Message {
     return _dF1Command;
   }
 
-  public static interface DF1CommandBuilder {
+  public interface DF1CommandBuilder {
     DF1Command build(short status, int transactionCounter);
   }
 

@@ -191,26 +191,35 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @return Map mapping discriminator names to types.
      */
     public Map<String, TypeReference> getDiscriminatorTypes() {
+        return getDiscriminatorTypes(thisType);
+    }
+    public Map<String, TypeReference> getDiscriminatorTypes(TypeDefinition type) {
         // Get the parent type (Which contains the typeSwitch field)
         SwitchField switchField = null;
         Function<String, TypeReference> typeRefRetriever = null;
-        if (thisType.isDiscriminatedComplexTypeDefinition()) {
-            ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
-            switchField = parentType.getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
-        } else if (thisType.isDataIoTypeDefinition()) {
-            final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) this.thisType;
+        if (type.isDiscriminatedComplexTypeDefinition()) {
+            DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = type.asDiscriminatedComplexTypeDefinition().orElseThrow();
+            switchField = discriminatedComplexTypeDefinition.getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> discriminatedComplexTypeDefinition.getTypeReferenceForProperty(propertyName).orElse(null);
+            // Please forgive us, we didn't know what we were doing.
+            if(switchField == null) {
+                ComplexTypeDefinition parentType = type.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
+                switchField = parentType.getSwitchField().orElse(null);
+                typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
+            }
+        } else if (type.isDataIoTypeDefinition()) {
+            final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) type;
             switchField = dataIoTypeDefinition.getSwitchField().orElseThrow();
-            typeRefRetriever = propertyName -> thisType.getParserArguments()
+            typeRefRetriever = propertyName -> type.getParserArguments()
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(argument -> argument.getName().equals(propertyName))
                 .findFirst()
                 .map(Argument::getType)
                 .orElse(null);
-        } else if (thisType.isComplexTypeDefinition()) {
-            switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(propertyName).orElse(null);
+        } else if (type.isComplexTypeDefinition()) {
+            switchField = ((ComplexTypeDefinition) type).getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> ((ComplexTypeDefinition) type).getTypeReferenceForProperty(propertyName).orElse(null);
         }
         // Get the typeSwitch field from that.
         if (switchField == null) {

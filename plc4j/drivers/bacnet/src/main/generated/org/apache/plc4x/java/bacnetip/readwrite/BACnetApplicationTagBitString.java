@@ -80,7 +80,7 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagBitStringBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagBitString");
     PositionAware positionAware = readBuffer;
@@ -98,15 +98,14 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
 
     readBuffer.closeContext("BACnetApplicationTagBitString");
     // Create the instance
-    return new BACnetApplicationTagBitStringBuilder(payload);
+    return new BACnetApplicationTagBitStringBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagBitStringBuilder
+  public static class BACnetApplicationTagBitStringBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadBitString payload;
 
-    public BACnetApplicationTagBitStringBuilder(BACnetTagPayloadBitString payload) {
-
+    public BACnetApplicationTagBitStringBuilderImpl(BACnetTagPayloadBitString payload) {
       this.payload = payload;
     }
 

@@ -161,7 +161,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static GetEndpointsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GetEndpointsRequest");
     PositionAware positionAware = readBuffer;
@@ -198,11 +198,11 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("GetEndpointsRequest");
     // Create the instance
-    return new GetEndpointsRequestBuilder(
+    return new GetEndpointsRequestBuilderImpl(
         requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfProfileUris, profileUris);
   }
 
-  public static class GetEndpointsRequestBuilder
+  public static class GetEndpointsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final PascalString endpointUrl;
@@ -211,14 +211,13 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     private final int noOfProfileUris;
     private final List<PascalString> profileUris;
 
-    public GetEndpointsRequestBuilder(
+    public GetEndpointsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         PascalString endpointUrl,
         int noOfLocaleIds,
         List<PascalString> localeIds,
         int noOfProfileUris,
         List<PascalString> profileUris) {
-
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
       this.noOfLocaleIds = noOfLocaleIds;

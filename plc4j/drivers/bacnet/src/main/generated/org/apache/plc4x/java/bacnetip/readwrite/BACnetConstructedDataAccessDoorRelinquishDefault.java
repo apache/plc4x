@@ -111,7 +111,7 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessDoorRelinquishDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,21 +136,20 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoorRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorRelinquishDefaultBuilder(
+    return new BACnetConstructedDataAccessDoorRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+  public static class BACnetConstructedDataAccessDoorRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorValueTagged relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessDoorRelinquishDefaultBuilder(
+    public BACnetConstructedDataAccessDoorRelinquishDefaultBuilderImpl(
         BACnetDoorValueTagged relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

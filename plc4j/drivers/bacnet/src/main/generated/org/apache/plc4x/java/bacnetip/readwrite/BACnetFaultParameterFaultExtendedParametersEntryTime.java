@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,17 +99,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder(timeValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl(timeValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagTime timeValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl(
         BACnetApplicationTagTime timeValue) {
-
       this.timeValue = timeValue;
     }
 

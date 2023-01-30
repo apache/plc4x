@@ -88,7 +88,7 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataStatusReport2Builder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatusReport2");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataStatusReport2");
     // Create the instance
-    return new SecurityDataStatusReport2Builder(zoneStatus);
+    return new SecurityDataStatusReport2BuilderImpl(zoneStatus);
   }
 
-  public static class SecurityDataStatusReport2Builder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataStatusReport2BuilderImpl
+      implements SecurityData.SecurityDataBuilder {
     private final List<ZoneStatus> zoneStatus;
 
-    public SecurityDataStatusReport2Builder(List<ZoneStatus> zoneStatus) {
-
+    public SecurityDataStatusReport2BuilderImpl(List<ZoneStatus> zoneStatus) {
       this.zoneStatus = zoneStatus;
     }
 

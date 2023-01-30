@@ -104,17 +104,17 @@ public abstract class SDOResponse implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SDOResponseBuilder builder = null;
     if (EvaluationHelper.equals(command, SDOResponseCommand.SEGMENT_UPLOAD)) {
-      builder = SDOSegmentUploadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentUploadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.SEGMENT_DOWNLOAD)) {
-      builder = SDOSegmentDownloadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentDownloadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.INITIATE_UPLOAD)) {
-      builder = SDOInitiateUploadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateUploadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.INITIATE_DOWNLOAD)) {
-      builder = SDOInitiateDownloadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateDownloadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.ABORT)) {
-      builder = SDOAbortResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOAbortResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.BLOCK)) {
-      builder = SDOBlockResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOBlockResponse.staticParseSDOResponseBuilder(readBuffer, command);
     }
     if (builder == null) {
       throw new ParseException(
@@ -127,7 +127,7 @@ public abstract class SDOResponse implements Message {
     return _sDOResponse;
   }
 
-  public static interface SDOResponseBuilder {
+  public interface SDOResponseBuilder {
     SDOResponse build();
   }
 

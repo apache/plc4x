@@ -102,7 +102,7 @@ public class ModbusPDUReadCoilsRequest extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUReadCoilsRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadCoilsRequest");
     PositionAware positionAware = readBuffer;
@@ -115,15 +115,14 @@ public class ModbusPDUReadCoilsRequest extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUReadCoilsRequest");
     // Create the instance
-    return new ModbusPDUReadCoilsRequestBuilder(startingAddress, quantity);
+    return new ModbusPDUReadCoilsRequestBuilderImpl(startingAddress, quantity);
   }
 
-  public static class ModbusPDUReadCoilsRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReadCoilsRequestBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
 
-    public ModbusPDUReadCoilsRequestBuilder(int startingAddress, int quantity) {
-
+    public ModbusPDUReadCoilsRequestBuilderImpl(int startingAddress, int quantity) {
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

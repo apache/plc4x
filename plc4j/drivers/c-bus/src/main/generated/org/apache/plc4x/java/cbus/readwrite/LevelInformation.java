@@ -238,11 +238,11 @@ public abstract class LevelInformation implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LevelInformationBuilder builder = null;
     if (EvaluationHelper.equals(isAbsent, (boolean) true)) {
-      builder = LevelInformationAbsent.staticParseBuilder(readBuffer);
+      builder = LevelInformationAbsent.staticParseLevelInformationBuilder(readBuffer);
     } else if (true && EvaluationHelper.equals(isCorrupted, (boolean) true)) {
-      builder = LevelInformationCorrupted.staticParseBuilder(readBuffer);
+      builder = LevelInformationCorrupted.staticParseLevelInformationBuilder(readBuffer);
     } else if (true) {
-      builder = LevelInformationNormal.staticParseBuilder(readBuffer);
+      builder = LevelInformationNormal.staticParseLevelInformationBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -262,7 +262,7 @@ public abstract class LevelInformation implements Message {
     return _levelInformation;
   }
 
-  public static interface LevelInformationBuilder {
+  public interface LevelInformationBuilder {
     LevelInformation build(int raw);
   }
 

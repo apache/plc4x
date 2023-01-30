@@ -47,8 +47,6 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
   protected final boolean indicated;
   protected final IndexAddress address;
   protected final SDOInitiateUploadResponsePayload payload;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public SDOInitiateUploadResponse(
       boolean expedited,
@@ -85,10 +83,7 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
     writeBuffer.pushContext("SDOInitiateUploadResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
@@ -144,7 +139,7 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateUploadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateUploadResponse");
     PositionAware positionAware = readBuffer;
@@ -176,34 +171,30 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadResponse");
     // Create the instance
-    return new SDOInitiateUploadResponseBuilder(
-        expedited, indicated, address, payload, reservedField0);
+    return new SDOInitiateUploadResponseBuilderImpl(expedited, indicated, address, payload);
   }
 
-  public static class SDOInitiateUploadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOInitiateUploadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final boolean expedited;
     private final boolean indicated;
     private final IndexAddress address;
     private final SDOInitiateUploadResponsePayload payload;
-    private final Byte reservedField0;
 
-    public SDOInitiateUploadResponseBuilder(
+    public SDOInitiateUploadResponseBuilderImpl(
         boolean expedited,
         boolean indicated,
         IndexAddress address,
-        SDOInitiateUploadResponsePayload payload,
-        Byte reservedField0) {
+        SDOInitiateUploadResponsePayload payload) {
       this.expedited = expedited;
       this.indicated = indicated;
       this.address = address;
       this.payload = payload;
-      this.reservedField0 = reservedField0;
     }
 
     public SDOInitiateUploadResponse build() {
       SDOInitiateUploadResponse sDOInitiateUploadResponse =
           new SDOInitiateUploadResponse(expedited, indicated, address, payload);
-      sDOInitiateUploadResponse.reservedField0 = reservedField0;
       return sDOInitiateUploadResponse;
     }
   }

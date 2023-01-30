@@ -72,7 +72,7 @@ public class SysexCommandAnalogMappingQueryRequest extends SysexCommand implemen
     return lengthInBits;
   }
 
-  public static SysexCommandAnalogMappingQueryRequestBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingQueryRequest");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandAnalogMappingQueryRequest extends SysexCommand implemen
 
     readBuffer.closeContext("SysexCommandAnalogMappingQueryRequest");
     // Create the instance
-    return new SysexCommandAnalogMappingQueryRequestBuilder();
+    return new SysexCommandAnalogMappingQueryRequestBuilderImpl();
   }
 
-  public static class SysexCommandAnalogMappingQueryRequestBuilder
+  public static class SysexCommandAnalogMappingQueryRequestBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandAnalogMappingQueryRequestBuilder() {}
+    public SysexCommandAnalogMappingQueryRequestBuilderImpl() {}
 
     public SysexCommandAnalogMappingQueryRequest build() {
       SysexCommandAnalogMappingQueryRequest sysexCommandAnalogMappingQueryRequest =

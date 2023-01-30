@@ -87,7 +87,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueDateTimeBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueDateTime");
     PositionAware positionAware = readBuffer;
@@ -102,17 +102,16 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueDateTime");
     // Create the instance
-    return new BACnetPriorityValueDateTimeBuilder(dateTimeValue, objectTypeArgument);
+    return new BACnetPriorityValueDateTimeBuilderImpl(dateTimeValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueDateTimeBuilder
+  public static class BACnetPriorityValueDateTimeBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDateTimeBuilder(
+    public BACnetPriorityValueDateTimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
-
       this.dateTimeValue = dateTimeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

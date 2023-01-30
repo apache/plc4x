@@ -54,9 +54,6 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
   protected final AdsTransMode transmissionMode;
   protected final long maxDelayInMs;
   protected final long cycleTimeInMs;
-  // Reserved Fields
-  private BigInteger reservedField0;
-  private BigInteger reservedField1;
 
   public AdsAddDeviceNotificationRequest(
       AmsNetId targetAmsNetId,
@@ -135,15 +132,11 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
 
     // Reserved Field (reserved)
     writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : BigInteger.valueOf(0x0000),
-        writeUnsignedBigInteger(writeBuffer, 64));
+        "reserved", BigInteger.valueOf(0x0000), writeUnsignedBigInteger(writeBuffer, 64));
 
     // Reserved Field (reserved)
     writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : BigInteger.valueOf(0x0000),
-        writeUnsignedBigInteger(writeBuffer, 64));
+        "reserved", BigInteger.valueOf(0x0000), writeUnsignedBigInteger(writeBuffer, 64));
 
     writeBuffer.popContext("AdsAddDeviceNotificationRequest");
   }
@@ -185,7 +178,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
     return lengthInBits;
   }
 
-  public static AdsAddDeviceNotificationRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsAddDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
@@ -219,44 +212,32 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
 
     readBuffer.closeContext("AdsAddDeviceNotificationRequest");
     // Create the instance
-    return new AdsAddDeviceNotificationRequestBuilder(
-        indexGroup,
-        indexOffset,
-        length,
-        transmissionMode,
-        maxDelayInMs,
-        cycleTimeInMs,
-        reservedField0,
-        reservedField1);
+    return new AdsAddDeviceNotificationRequestBuilderImpl(
+        indexGroup, indexOffset, length, transmissionMode, maxDelayInMs, cycleTimeInMs);
   }
 
-  public static class AdsAddDeviceNotificationRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsAddDeviceNotificationRequestBuilderImpl
+      implements AmsPacket.AmsPacketBuilder {
     private final long indexGroup;
     private final long indexOffset;
     private final long length;
     private final AdsTransMode transmissionMode;
     private final long maxDelayInMs;
     private final long cycleTimeInMs;
-    private final BigInteger reservedField0;
-    private final BigInteger reservedField1;
 
-    public AdsAddDeviceNotificationRequestBuilder(
+    public AdsAddDeviceNotificationRequestBuilderImpl(
         long indexGroup,
         long indexOffset,
         long length,
         AdsTransMode transmissionMode,
         long maxDelayInMs,
-        long cycleTimeInMs,
-        BigInteger reservedField0,
-        BigInteger reservedField1) {
+        long cycleTimeInMs) {
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.length = length;
       this.transmissionMode = transmissionMode;
       this.maxDelayInMs = maxDelayInMs;
       this.cycleTimeInMs = cycleTimeInMs;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public AdsAddDeviceNotificationRequest build(
@@ -280,8 +261,6 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
               transmissionMode,
               maxDelayInMs,
               cycleTimeInMs);
-      adsAddDeviceNotificationRequest.reservedField0 = reservedField0;
-      adsAddDeviceNotificationRequest.reservedField1 = reservedField1;
       return adsAddDeviceNotificationRequest;
     }
   }

@@ -148,9 +148,13 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetServiceAckAtomicReadFileStreamOrRecordBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)) {
-      builder = BACnetServiceAckAtomicReadFileStream.staticParseBuilder(readBuffer);
+      builder =
+          BACnetServiceAckAtomicReadFileStream
+              .staticParseBACnetServiceAckAtomicReadFileStreamOrRecordBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)) {
-      builder = BACnetServiceAckAtomicReadFileRecord.staticParseBuilder(readBuffer);
+      builder =
+          BACnetServiceAckAtomicReadFileRecord
+              .staticParseBACnetServiceAckAtomicReadFileStreamOrRecordBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -177,7 +181,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     return _bACnetServiceAckAtomicReadFileStreamOrRecord;
   }
 
-  public static interface BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+  public interface BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
     BACnetServiceAckAtomicReadFileStreamOrRecord build(
         BACnetTagHeader peekedTagHeader, BACnetOpeningTag openingTag, BACnetClosingTag closingTag);
   }

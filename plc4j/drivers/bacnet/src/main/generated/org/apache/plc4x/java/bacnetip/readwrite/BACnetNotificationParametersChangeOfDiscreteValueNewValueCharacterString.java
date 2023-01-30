@@ -93,8 +93,9 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
     PositionAware positionAware = readBuffer;
@@ -113,20 +114,19 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
     readBuffer.closeContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl(
         characterStringValue, tagNumber);
   }
 
   public static
-  class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+  class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue, Short tagNumber) {
-
       this.characterStringValue = characterStringValue;
       this.tagNumber = tagNumber;
     }

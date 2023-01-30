@@ -113,7 +113,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLinkSpeedAutonegotiateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,21 +136,20 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeedAutonegotiate");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilder(
+    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
         linkSpeedAutonegotiate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+  public static class BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean linkSpeedAutonegotiate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedAutonegotiateBuilder(
+    public BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
         BACnetApplicationTagBoolean linkSpeedAutonegotiate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.linkSpeedAutonegotiate = linkSpeedAutonegotiate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

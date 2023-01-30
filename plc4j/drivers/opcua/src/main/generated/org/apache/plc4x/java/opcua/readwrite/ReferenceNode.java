@@ -46,8 +46,6 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
   protected final NodeId referenceTypeId;
   protected final boolean isInverse;
   protected final ExpandedNodeId targetId;
-  // Reserved Fields
-  private Short reservedField0;
 
   public ReferenceNode(NodeId referenceTypeId, boolean isInverse, ExpandedNodeId targetId) {
     super();
@@ -80,10 +78,7 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isInverse)
     writeSimpleField("isInverse", isInverse, writeBoolean(writeBuffer));
@@ -119,8 +114,8 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static ReferenceNodeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReferenceNode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -144,27 +139,24 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ReferenceNode");
     // Create the instance
-    return new ReferenceNodeBuilder(referenceTypeId, isInverse, targetId, reservedField0);
+    return new ReferenceNodeBuilderImpl(referenceTypeId, isInverse, targetId);
   }
 
-  public static class ReferenceNodeBuilder
+  public static class ReferenceNodeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean isInverse;
     private final ExpandedNodeId targetId;
-    private final Short reservedField0;
 
-    public ReferenceNodeBuilder(
-        NodeId referenceTypeId, boolean isInverse, ExpandedNodeId targetId, Short reservedField0) {
+    public ReferenceNodeBuilderImpl(
+        NodeId referenceTypeId, boolean isInverse, ExpandedNodeId targetId) {
       this.referenceTypeId = referenceTypeId;
       this.isInverse = isInverse;
       this.targetId = targetId;
-      this.reservedField0 = reservedField0;
     }
 
     public ReferenceNode build() {
       ReferenceNode referenceNode = new ReferenceNode(referenceTypeId, isInverse, targetId);
-      referenceNode.reservedField0 = reservedField0;
       return referenceNode;
     }
   }

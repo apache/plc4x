@@ -46,19 +46,14 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
   // Properties.
   protected final List<Short> data;
 
-  // Arguments.
-  protected final Integer payloadLength;
-
   public DF1CommandResponseMessageProtectedTypedLogicalRead(
       short destinationAddress,
       short sourceAddress,
       short status,
       int transactionCounter,
-      List<Short> data,
-      Integer payloadLength) {
-    super(destinationAddress, sourceAddress, status, transactionCounter, payloadLength);
+      List<Short> data) {
+    super(destinationAddress, sourceAddress, status, transactionCounter);
     this.data = data;
-    this.payloadLength = payloadLength;
   }
 
   public List<Short> getData() {
@@ -96,7 +91,7 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
     return lengthInBits;
   }
 
-  public static DF1CommandResponseMessageProtectedTypedLogicalReadBuilder staticParseBuilder(
+  public static DF1ResponseMessageBuilder staticParseDF1ResponseMessageBuilder(
       ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
     readBuffer.pullContext("DF1CommandResponseMessageProtectedTypedLogicalRead");
     PositionAware positionAware = readBuffer;
@@ -108,36 +103,23 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
 
     readBuffer.closeContext("DF1CommandResponseMessageProtectedTypedLogicalRead");
     // Create the instance
-    return new DF1CommandResponseMessageProtectedTypedLogicalReadBuilder(data, payloadLength);
+    return new DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl(data);
   }
 
-  public static class DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+  public static class DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl
       implements DF1ResponseMessage.DF1ResponseMessageBuilder {
     private final List<Short> data;
-    private final Integer payloadLength;
 
-    public DF1CommandResponseMessageProtectedTypedLogicalReadBuilder(
-        List<Short> data, Integer payloadLength) {
-
+    public DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl(List<Short> data) {
       this.data = data;
-      this.payloadLength = payloadLength;
     }
 
     public DF1CommandResponseMessageProtectedTypedLogicalRead build(
-        short destinationAddress,
-        short sourceAddress,
-        short status,
-        int transactionCounter,
-        Integer payloadLength) {
+        short destinationAddress, short sourceAddress, short status, int transactionCounter) {
       DF1CommandResponseMessageProtectedTypedLogicalRead
           dF1CommandResponseMessageProtectedTypedLogicalRead =
               new DF1CommandResponseMessageProtectedTypedLogicalRead(
-                  destinationAddress,
-                  sourceAddress,
-                  status,
-                  transactionCounter,
-                  data,
-                  payloadLength);
+                  destinationAddress, sourceAddress, status, transactionCounter, data);
       return dF1CommandResponseMessageProtectedTypedLogicalRead;
     }
   }

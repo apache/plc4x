@@ -123,7 +123,7 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfCharacterStringBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfCharacterString");
     PositionAware positionAware = readBuffer;
@@ -165,23 +165,22 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
 
     readBuffer.closeContext("BACnetEventParameterChangeOfCharacterString");
     // Create the instance
-    return new BACnetEventParameterChangeOfCharacterStringBuilder(
+    return new BACnetEventParameterChangeOfCharacterStringBuilderImpl(
         openingTag, timeDelay, listOfAlarmValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfCharacterStringBuilder
+  public static class BACnetEventParameterChangeOfCharacterStringBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetEventParameterChangeOfCharacterStringListOfAlarmValues listOfAlarmValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfCharacterStringBuilder(
+    public BACnetEventParameterChangeOfCharacterStringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfCharacterStringListOfAlarmValues listOfAlarmValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfAlarmValues = listOfAlarmValues;

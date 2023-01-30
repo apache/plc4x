@@ -70,7 +70,7 @@ public class DceRpc_InterfaceUuid_SupervisorInterface extends DceRpc_InterfaceUu
     return lengthInBits;
   }
 
-  public static DceRpc_InterfaceUuid_SupervisorInterfaceBuilder staticParseBuilder(
+  public static DceRpc_InterfaceUuidBuilder staticParseDceRpc_InterfaceUuidBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_InterfaceUuid_SupervisorInterface");
     PositionAware positionAware = readBuffer;
@@ -79,13 +79,13 @@ public class DceRpc_InterfaceUuid_SupervisorInterface extends DceRpc_InterfaceUu
 
     readBuffer.closeContext("DceRpc_InterfaceUuid_SupervisorInterface");
     // Create the instance
-    return new DceRpc_InterfaceUuid_SupervisorInterfaceBuilder();
+    return new DceRpc_InterfaceUuid_SupervisorInterfaceBuilderImpl();
   }
 
-  public static class DceRpc_InterfaceUuid_SupervisorInterfaceBuilder
+  public static class DceRpc_InterfaceUuid_SupervisorInterfaceBuilderImpl
       implements DceRpc_InterfaceUuid.DceRpc_InterfaceUuidBuilder {
 
-    public DceRpc_InterfaceUuid_SupervisorInterfaceBuilder() {}
+    public DceRpc_InterfaceUuid_SupervisorInterfaceBuilderImpl() {}
 
     public DceRpc_InterfaceUuid_SupervisorInterface build() {
       DceRpc_InterfaceUuid_SupervisorInterface dceRpc_InterfaceUuid_SupervisorInterface =

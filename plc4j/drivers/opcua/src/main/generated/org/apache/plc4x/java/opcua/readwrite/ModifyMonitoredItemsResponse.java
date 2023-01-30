@@ -148,7 +148,7 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static ModifyMonitoredItemsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModifyMonitoredItemsResponse");
     PositionAware positionAware = readBuffer;
@@ -183,11 +183,11 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("ModifyMonitoredItemsResponse");
     // Create the instance
-    return new ModifyMonitoredItemsResponseBuilder(
+    return new ModifyMonitoredItemsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class ModifyMonitoredItemsResponseBuilder
+  public static class ModifyMonitoredItemsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +195,12 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public ModifyMonitoredItemsResponseBuilder(
+    public ModifyMonitoredItemsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

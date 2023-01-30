@@ -85,7 +85,7 @@ public class BACnetConstructedDataNotificationForwarderAll extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNotificationForwarderAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,17 +104,17 @@ public class BACnetConstructedDataNotificationForwarderAll extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataNotificationForwarderAll");
     // Create the instance
-    return new BACnetConstructedDataNotificationForwarderAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNotificationForwarderAllBuilderImpl(
+        tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNotificationForwarderAllBuilder
+  public static class BACnetConstructedDataNotificationForwarderAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotificationForwarderAllBuilder(
+    public BACnetConstructedDataNotificationForwarderAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

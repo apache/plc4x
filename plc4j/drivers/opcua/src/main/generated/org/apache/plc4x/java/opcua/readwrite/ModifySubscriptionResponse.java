@@ -126,7 +126,7 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ModifySubscriptionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModifySubscriptionResponse");
     PositionAware positionAware = readBuffer;
@@ -151,23 +151,22 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ModifySubscriptionResponse");
     // Create the instance
-    return new ModifySubscriptionResponseBuilder(
+    return new ModifySubscriptionResponseBuilderImpl(
         responseHeader, revisedPublishingInterval, revisedLifetimeCount, revisedMaxKeepAliveCount);
   }
 
-  public static class ModifySubscriptionResponseBuilder
+  public static class ModifySubscriptionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final double revisedPublishingInterval;
     private final long revisedLifetimeCount;
     private final long revisedMaxKeepAliveCount;
 
-    public ModifySubscriptionResponseBuilder(
+    public ModifySubscriptionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         double revisedPublishingInterval,
         long revisedLifetimeCount,
         long revisedMaxKeepAliveCount) {
-
       this.responseHeader = responseHeader;
       this.revisedPublishingInterval = revisedPublishingInterval;
       this.revisedLifetimeCount = revisedLifetimeCount;

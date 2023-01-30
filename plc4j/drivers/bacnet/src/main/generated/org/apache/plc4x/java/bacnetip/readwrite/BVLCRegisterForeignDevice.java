@@ -86,8 +86,7 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCRegisterForeignDeviceBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCRegisterForeignDevice");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +98,13 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCRegisterForeignDevice");
     // Create the instance
-    return new BVLCRegisterForeignDeviceBuilder(ttl);
+    return new BVLCRegisterForeignDeviceBuilderImpl(ttl);
   }
 
-  public static class BVLCRegisterForeignDeviceBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCRegisterForeignDeviceBuilderImpl implements BVLC.BVLCBuilder {
     private final int ttl;
 
-    public BVLCRegisterForeignDeviceBuilder(int ttl) {
-
+    public BVLCRegisterForeignDeviceBuilderImpl(int ttl) {
       this.ttl = ttl;
     }
 

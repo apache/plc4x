@@ -53,7 +53,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
     public void execute(CompletableFuture<PlcResponseCode> receiver) {
         if (data.length > 4) {
             // segmented
-            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length, (byte) 0);
+            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length);
             delegate.send(createFrame(new SDOInitiateDownloadRequest(false, true, indexAddress, size)))
                 .check(new NodeIdPredicate(answerNodeId))
                 .onTimeout(receiver::completeExceptionally)
@@ -86,7 +86,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         SDOInitiateDownloadRequest rq = new SDOInitiateDownloadRequest(
             true, true,
             indexAddress,
-            new SDOInitiateExpeditedUploadResponse(data,(byte)0)
+            new SDOInitiateExpeditedUploadResponse(data)
         );
 
         delegate.send(createFrame(rq))

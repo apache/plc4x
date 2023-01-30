@@ -166,11 +166,12 @@ public abstract class BACnetLogData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetLogDataBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetLogDataLogStatus.staticParseBuilder(readBuffer, tagNumber);
+      builder = BACnetLogDataLogStatus.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetLogDataLogData.staticParseBuilder(readBuffer, tagNumber);
+      builder = BACnetLogDataLogData.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetLogDataLogDataTimeChange.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogDataLogDataTimeChange.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -194,7 +195,7 @@ public abstract class BACnetLogData implements Message {
     return _bACnetLogData;
   }
 
-  public static interface BACnetLogDataBuilder {
+  public interface BACnetLogDataBuilder {
     BACnetLogData build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

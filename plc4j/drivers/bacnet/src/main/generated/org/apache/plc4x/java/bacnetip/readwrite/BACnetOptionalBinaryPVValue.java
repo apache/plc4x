@@ -81,8 +81,8 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     return lengthInBits;
   }
 
-  public static BACnetOptionalBinaryPVValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalBinaryPVBuilder staticParseBACnetOptionalBinaryPVBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalBinaryPVValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,15 +99,14 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
 
     readBuffer.closeContext("BACnetOptionalBinaryPVValue");
     // Create the instance
-    return new BACnetOptionalBinaryPVValueBuilder(binaryPv);
+    return new BACnetOptionalBinaryPVValueBuilderImpl(binaryPv);
   }
 
-  public static class BACnetOptionalBinaryPVValueBuilder
+  public static class BACnetOptionalBinaryPVValueBuilderImpl
       implements BACnetOptionalBinaryPV.BACnetOptionalBinaryPVBuilder {
     private final BACnetBinaryPVTagged binaryPv;
 
-    public BACnetOptionalBinaryPVValueBuilder(BACnetBinaryPVTagged binaryPv) {
-
+    public BACnetOptionalBinaryPVValueBuilderImpl(BACnetBinaryPVTagged binaryPv) {
       this.binaryPv = binaryPv;
     }
 

@@ -80,7 +80,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetScaleIntegerScaleBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetScaleBuilder staticParseBACnetScaleBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetScaleIntegerScale");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,13 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
 
     readBuffer.closeContext("BACnetScaleIntegerScale");
     // Create the instance
-    return new BACnetScaleIntegerScaleBuilder(integerScale);
+    return new BACnetScaleIntegerScaleBuilderImpl(integerScale);
   }
 
-  public static class BACnetScaleIntegerScaleBuilder implements BACnetScale.BACnetScaleBuilder {
+  public static class BACnetScaleIntegerScaleBuilderImpl implements BACnetScale.BACnetScaleBuilder {
     private final BACnetContextTagSignedInteger integerScale;
 
-    public BACnetScaleIntegerScaleBuilder(BACnetContextTagSignedInteger integerScale) {
-
+    public BACnetScaleIntegerScaleBuilderImpl(BACnetContextTagSignedInteger integerScale) {
       this.integerScale = integerScale;
     }
 

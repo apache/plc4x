@@ -95,8 +95,8 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static CancelResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CancelResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -113,16 +113,15 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("CancelResponse");
     // Create the instance
-    return new CancelResponseBuilder(responseHeader, cancelCount);
+    return new CancelResponseBuilderImpl(responseHeader, cancelCount);
   }
 
-  public static class CancelResponseBuilder
+  public static class CancelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long cancelCount;
 
-    public CancelResponseBuilder(ExtensionObjectDefinition responseHeader, long cancelCount) {
-
+    public CancelResponseBuilderImpl(ExtensionObjectDefinition responseHeader, long cancelCount) {
       this.responseHeader = responseHeader;
       this.cancelCount = cancelCount;
     }

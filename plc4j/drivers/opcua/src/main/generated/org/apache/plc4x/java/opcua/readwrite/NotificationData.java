@@ -69,8 +69,8 @@ public class NotificationData extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static NotificationDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NotificationData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class NotificationData extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("NotificationData");
     // Create the instance
-    return new NotificationDataBuilder();
+    return new NotificationDataBuilderImpl();
   }
 
-  public static class NotificationDataBuilder
+  public static class NotificationDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public NotificationDataBuilder() {}
+    public NotificationDataBuilderImpl() {}
 
     public NotificationData build() {
       NotificationData notificationData = new NotificationData();

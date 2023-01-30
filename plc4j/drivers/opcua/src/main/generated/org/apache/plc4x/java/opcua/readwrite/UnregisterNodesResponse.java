@@ -83,7 +83,7 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static UnregisterNodesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnregisterNodesResponse");
     PositionAware positionAware = readBuffer;
@@ -99,15 +99,14 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("UnregisterNodesResponse");
     // Create the instance
-    return new UnregisterNodesResponseBuilder(responseHeader);
+    return new UnregisterNodesResponseBuilderImpl(responseHeader);
   }
 
-  public static class UnregisterNodesResponseBuilder
+  public static class UnregisterNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
 
-    public UnregisterNodesResponseBuilder(ExtensionObjectDefinition responseHeader) {
-
+    public UnregisterNodesResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
       this.responseHeader = responseHeader;
     }
 

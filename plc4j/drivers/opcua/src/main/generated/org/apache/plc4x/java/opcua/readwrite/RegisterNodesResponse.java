@@ -117,7 +117,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static RegisterNodesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterNodesResponse");
     PositionAware positionAware = readBuffer;
@@ -142,21 +142,20 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("RegisterNodesResponse");
     // Create the instance
-    return new RegisterNodesResponseBuilder(
+    return new RegisterNodesResponseBuilderImpl(
         responseHeader, noOfRegisteredNodeIds, registeredNodeIds);
   }
 
-  public static class RegisterNodesResponseBuilder
+  public static class RegisterNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfRegisteredNodeIds;
     private final List<NodeId> registeredNodeIds;
 
-    public RegisterNodesResponseBuilder(
+    public RegisterNodesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfRegisteredNodeIds,
         List<NodeId> registeredNodeIds) {
-
       this.responseHeader = responseHeader;
       this.noOfRegisteredNodeIds = noOfRegisteredNodeIds;
       this.registeredNodeIds = registeredNodeIds;

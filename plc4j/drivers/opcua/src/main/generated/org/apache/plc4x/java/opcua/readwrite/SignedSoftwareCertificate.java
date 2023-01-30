@@ -96,7 +96,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SignedSoftwareCertificateBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SignedSoftwareCertificate");
     PositionAware positionAware = readBuffer;
@@ -117,17 +117,16 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SignedSoftwareCertificate");
     // Create the instance
-    return new SignedSoftwareCertificateBuilder(certificateData, signature);
+    return new SignedSoftwareCertificateBuilderImpl(certificateData, signature);
   }
 
-  public static class SignedSoftwareCertificateBuilder
+  public static class SignedSoftwareCertificateBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalByteString certificateData;
     private final PascalByteString signature;
 
-    public SignedSoftwareCertificateBuilder(
+    public SignedSoftwareCertificateBuilderImpl(
         PascalByteString certificateData, PascalByteString signature) {
-
       this.certificateData = certificateData;
       this.signature = signature;
     }

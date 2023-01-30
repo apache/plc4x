@@ -111,7 +111,7 @@ public class BACnetConstructedDataMultiStateValueRelinquishDefault extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataMultiStateValueRelinquishDefault extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataMultiStateValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataMultiStateValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataMultiStateValueRelinquishDefaultBuilderImpl(
         BACnetApplicationTagUnsignedInteger relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

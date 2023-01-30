@@ -82,7 +82,7 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryBooleanValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryBooleanValue");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryBooleanValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryBooleanValueBuilder(booleanValue);
+    return new BACnetLogDataLogDataEntryBooleanValueBuilderImpl(booleanValue);
   }
 
-  public static class BACnetLogDataLogDataEntryBooleanValueBuilder
+  public static class BACnetLogDataLogDataEntryBooleanValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagBoolean booleanValue;
 
-    public BACnetLogDataLogDataEntryBooleanValueBuilder(BACnetContextTagBoolean booleanValue) {
-
+    public BACnetLogDataLogDataEntryBooleanValueBuilderImpl(BACnetContextTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
     }
 

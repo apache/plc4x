@@ -82,7 +82,7 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLifeSafetyStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLifeSafetyState");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,15 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
 
     readBuffer.closeContext("BACnetPropertyStatesLifeSafetyState");
     // Create the instance
-    return new BACnetPropertyStatesLifeSafetyStateBuilder(lifeSafetyState);
+    return new BACnetPropertyStatesLifeSafetyStateBuilderImpl(lifeSafetyState);
   }
 
-  public static class BACnetPropertyStatesLifeSafetyStateBuilder
+  public static class BACnetPropertyStatesLifeSafetyStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLifeSafetyStateTagged lifeSafetyState;
 
-    public BACnetPropertyStatesLifeSafetyStateBuilder(BACnetLifeSafetyStateTagged lifeSafetyState) {
-
+    public BACnetPropertyStatesLifeSafetyStateBuilderImpl(
+        BACnetLifeSafetyStateTagged lifeSafetyState) {
       this.lifeSafetyState = lifeSafetyState;
     }
 

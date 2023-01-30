@@ -134,11 +134,11 @@ public class BACnetNotificationParametersChangeOfValue extends BACnetNotificatio
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfValueBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfValue");
     PositionAware positionAware = readBuffer;
@@ -179,11 +179,11 @@ public class BACnetNotificationParametersChangeOfValue extends BACnetNotificatio
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfValue");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfValueBuilder(
+    return new BACnetNotificationParametersChangeOfValueBuilderImpl(
         innerOpeningTag, newValue, statusFlags, innerClosingTag, tagNumber, objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfValueBuilder
+  public static class BACnetNotificationParametersChangeOfValueBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetNotificationParametersChangeOfValueNewValue newValue;
@@ -192,14 +192,13 @@ public class BACnetNotificationParametersChangeOfValue extends BACnetNotificatio
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfValueBuilder(
+    public BACnetNotificationParametersChangeOfValueBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetNotificationParametersChangeOfValueNewValue newValue,
         BACnetStatusFlagsTagged statusFlags,
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.newValue = newValue;
       this.statusFlags = statusFlags;

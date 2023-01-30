@@ -135,8 +135,8 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     return lengthInBits;
   }
 
-  public static BACnetEventParameterExtendedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -184,11 +184,11 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
 
     readBuffer.closeContext("BACnetEventParameterExtended");
     // Create the instance
-    return new BACnetEventParameterExtendedBuilder(
+    return new BACnetEventParameterExtendedBuilderImpl(
         openingTag, vendorId, extendedEventType, parameters, closingTag);
   }
 
-  public static class BACnetEventParameterExtendedBuilder
+  public static class BACnetEventParameterExtendedBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetVendorIdTagged vendorId;
@@ -196,13 +196,12 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     private final BACnetEventParameterExtendedParameters parameters;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterExtendedBuilder(
+    public BACnetEventParameterExtendedBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger extendedEventType,
         BACnetEventParameterExtendedParameters parameters,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.vendorId = vendorId;
       this.extendedEventType = extendedEventType;

@@ -95,7 +95,7 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static UnsignedRationalNumberBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnsignedRationalNumber");
     PositionAware positionAware = readBuffer;
@@ -108,16 +108,15 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("UnsignedRationalNumber");
     // Create the instance
-    return new UnsignedRationalNumberBuilder(numerator, denominator);
+    return new UnsignedRationalNumberBuilderImpl(numerator, denominator);
   }
 
-  public static class UnsignedRationalNumberBuilder
+  public static class UnsignedRationalNumberBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long numerator;
     private final long denominator;
 
-    public UnsignedRationalNumberBuilder(long numerator, long denominator) {
-
+    public UnsignedRationalNumberBuilderImpl(long numerator, long denominator) {
       this.numerator = numerator;
       this.denominator = denominator;
     }

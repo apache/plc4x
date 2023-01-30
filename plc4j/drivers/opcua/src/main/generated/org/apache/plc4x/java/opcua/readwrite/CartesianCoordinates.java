@@ -69,7 +69,7 @@ public class CartesianCoordinates extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static CartesianCoordinatesBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CartesianCoordinates");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class CartesianCoordinates extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("CartesianCoordinates");
     // Create the instance
-    return new CartesianCoordinatesBuilder();
+    return new CartesianCoordinatesBuilderImpl();
   }
 
-  public static class CartesianCoordinatesBuilder
+  public static class CartesianCoordinatesBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public CartesianCoordinatesBuilder() {}
+    public CartesianCoordinatesBuilderImpl() {}
 
     public CartesianCoordinates build() {
       CartesianCoordinates cartesianCoordinates = new CartesianCoordinates();

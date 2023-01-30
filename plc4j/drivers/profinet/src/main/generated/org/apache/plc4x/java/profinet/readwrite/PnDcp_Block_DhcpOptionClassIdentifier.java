@@ -72,8 +72,8 @@ public class PnDcp_Block_DhcpOptionClassIdentifier extends PnDcp_Block implement
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionClassIdentifierBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionClassIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_DhcpOptionClassIdentifier extends PnDcp_Block implement
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionClassIdentifier");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionClassIdentifierBuilder();
+    return new PnDcp_Block_DhcpOptionClassIdentifierBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionClassIdentifierBuilder
+  public static class PnDcp_Block_DhcpOptionClassIdentifierBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionClassIdentifierBuilder() {}
+    public PnDcp_Block_DhcpOptionClassIdentifierBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionClassIdentifier build() {
       PnDcp_Block_DhcpOptionClassIdentifier pnDcp_Block_DhcpOptionClassIdentifier =

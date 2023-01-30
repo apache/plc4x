@@ -42,12 +42,8 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
     return (short) 0x02;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRoutingTableResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRoutingTableResponse() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRoutingTableResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRoutingTableResponse");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtReadRoutingTableResponse");
     // Create the instance
-    return new ApduDataExtReadRoutingTableResponseBuilder(length);
+    return new ApduDataExtReadRoutingTableResponseBuilderImpl();
   }
 
-  public static class ApduDataExtReadRoutingTableResponseBuilder
+  public static class ApduDataExtReadRoutingTableResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRoutingTableResponseBuilder(Short length) {
+    public ApduDataExtReadRoutingTableResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRoutingTableResponse build(Short length) {
-
+    public ApduDataExtReadRoutingTableResponse build() {
       ApduDataExtReadRoutingTableResponse apduDataExtReadRoutingTableResponse =
-          new ApduDataExtReadRoutingTableResponse(length);
+          new ApduDataExtReadRoutingTableResponse();
       return apduDataExtReadRoutingTableResponse;
     }
   }

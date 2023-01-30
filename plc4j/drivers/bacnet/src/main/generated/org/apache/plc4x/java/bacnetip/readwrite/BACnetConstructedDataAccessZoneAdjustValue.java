@@ -110,7 +110,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessZoneAdjustValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAdjustValueBuilder(
+    return new BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
         adjustValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessZoneAdjustValueBuilder
+  public static class BACnetConstructedDataAccessZoneAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessZoneAdjustValueBuilder(
+    public BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
         BACnetApplicationTagSignedInteger adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

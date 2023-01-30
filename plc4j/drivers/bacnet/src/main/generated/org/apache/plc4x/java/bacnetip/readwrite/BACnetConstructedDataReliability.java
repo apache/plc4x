@@ -109,7 +109,7 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReliabilityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataReliability");
     // Create the instance
-    return new BACnetConstructedDataReliabilityBuilder(reliability, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataReliabilityBuilderImpl(
+        reliability, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReliabilityBuilder
+  public static class BACnetConstructedDataReliabilityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetReliabilityTagged reliability;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReliabilityBuilder(
+    public BACnetConstructedDataReliabilityBuilderImpl(
         BACnetReliabilityTagged reliability,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.reliability = reliability;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -148,8 +148,8 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static AddNodesResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -183,11 +183,11 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("AddNodesResponse");
     // Create the instance
-    return new AddNodesResponseBuilder(
+    return new AddNodesResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class AddNodesResponseBuilder
+  public static class AddNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +195,12 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public AddNodesResponseBuilder(
+    public AddNodesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

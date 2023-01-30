@@ -109,7 +109,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataEventEnable");
     // Create the instance
-    return new BACnetConstructedDataEventEnableBuilder(eventEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventEnableBuilderImpl(
+        eventEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventEnableBuilder
+  public static class BACnetConstructedDataEventEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged eventEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventEnableBuilder(
+    public BACnetConstructedDataEventEnableBuilderImpl(
         BACnetEventTransitionBitsTagged eventEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventEnable = eventEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

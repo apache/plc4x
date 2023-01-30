@@ -40,13 +40,9 @@ public class OpcuaAPU implements Message {
   // Properties.
   protected final MessagePDU message;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public OpcuaAPU(MessagePDU message, Boolean response) {
+  public OpcuaAPU(MessagePDU message) {
     super();
     this.message = message;
-    this.response = response;
   }
 
   public MessagePDU getMessage() {
@@ -120,7 +116,7 @@ public class OpcuaAPU implements Message {
     readBuffer.closeContext("OpcuaAPU");
     // Create the instance
     OpcuaAPU _opcuaAPU;
-    _opcuaAPU = new OpcuaAPU(message, response);
+    _opcuaAPU = new OpcuaAPU(message);
     return _opcuaAPU;
   }
 

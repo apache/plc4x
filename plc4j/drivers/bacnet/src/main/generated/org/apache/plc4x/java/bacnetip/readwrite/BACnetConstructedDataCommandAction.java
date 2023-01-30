@@ -135,7 +135,7 @@ public class BACnetConstructedDataCommandAction extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCommandActionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -170,23 +170,22 @@ public class BACnetConstructedDataCommandAction extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataCommandAction");
     // Create the instance
-    return new BACnetConstructedDataCommandActionBuilder(
+    return new BACnetConstructedDataCommandActionBuilderImpl(
         numberOfDataElements, actionLists, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCommandActionBuilder
+  public static class BACnetConstructedDataCommandActionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetActionList> actionLists;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCommandActionBuilder(
+    public BACnetConstructedDataCommandActionBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetActionList> actionLists,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.actionLists = actionLists;
       this.tagNumber = tagNumber;

@@ -192,7 +192,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet_ResBuilder staticParseBuilder(
+  public static PnIoCm_PacketBuilder staticParsePnIoCm_PacketBuilder(
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Res");
     PositionAware positionAware = readBuffer;
@@ -223,7 +223,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
 
     readBuffer.closeContext("PnIoCm_Packet_Res");
     // Create the instance
-    return new PnIoCm_Packet_ResBuilder(
+    return new PnIoCm_Packet_ResBuilderImpl(
         errorCode2,
         errorCode1,
         errorDecode,
@@ -235,7 +235,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
         blocks);
   }
 
-  public static class PnIoCm_Packet_ResBuilder implements PnIoCm_Packet.PnIoCm_PacketBuilder {
+  public static class PnIoCm_Packet_ResBuilderImpl implements PnIoCm_Packet.PnIoCm_PacketBuilder {
     private final short errorCode2;
     private final short errorCode1;
     private final short errorDecode;
@@ -246,7 +246,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     private final long arrayActualCount;
     private final List<PnIoCm_Block> blocks;
 
-    public PnIoCm_Packet_ResBuilder(
+    public PnIoCm_Packet_ResBuilderImpl(
         short errorCode2,
         short errorCode1,
         short errorDecode,
@@ -256,7 +256,6 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
         long arrayOffset,
         long arrayActualCount,
         List<PnIoCm_Block> blocks) {
-
       this.errorCode2 = errorCode2;
       this.errorCode1 = errorCode1;
       this.errorDecode = errorDecode;

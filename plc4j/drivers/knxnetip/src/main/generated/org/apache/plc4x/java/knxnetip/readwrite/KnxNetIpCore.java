@@ -82,7 +82,7 @@ public class KnxNetIpCore extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpCoreBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpCore");
     PositionAware positionAware = readBuffer;
@@ -93,14 +93,13 @@ public class KnxNetIpCore extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetIpCore");
     // Create the instance
-    return new KnxNetIpCoreBuilder(version);
+    return new KnxNetIpCoreBuilderImpl(version);
   }
 
-  public static class KnxNetIpCoreBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpCoreBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpCoreBuilder(short version) {
-
+    public KnxNetIpCoreBuilderImpl(short version) {
       this.version = version;
     }
 

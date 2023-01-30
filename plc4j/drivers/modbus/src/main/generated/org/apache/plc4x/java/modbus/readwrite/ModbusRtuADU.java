@@ -46,14 +46,10 @@ public class ModbusRtuADU extends ModbusADU implements Message {
   protected final short address;
   protected final ModbusPDU pdu;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public ModbusRtuADU(short address, ModbusPDU pdu, Boolean response) {
-    super(response);
+  public ModbusRtuADU(short address, ModbusPDU pdu) {
+    super();
     this.address = address;
     this.pdu = pdu;
-    this.response = response;
   }
 
   public short getAddress() {
@@ -116,7 +112,7 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusRtuADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusRtuADU");
     PositionAware positionAware = readBuffer;
@@ -147,24 +143,20 @@ public class ModbusRtuADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusRtuADU");
     // Create the instance
-    return new ModbusRtuADUBuilder(address, pdu, response);
+    return new ModbusRtuADUBuilderImpl(address, pdu);
   }
 
-  public static class ModbusRtuADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusRtuADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final short address;
     private final ModbusPDU pdu;
-    private final Boolean response;
 
-    public ModbusRtuADUBuilder(short address, ModbusPDU pdu, Boolean response) {
-
+    public ModbusRtuADUBuilderImpl(short address, ModbusPDU pdu) {
       this.address = address;
       this.pdu = pdu;
-      this.response = response;
     }
 
-    public ModbusRtuADU build(Boolean response) {
-
-      ModbusRtuADU modbusRtuADU = new ModbusRtuADU(address, pdu, response);
+    public ModbusRtuADU build() {
+      ModbusRtuADU modbusRtuADU = new ModbusRtuADU(address, pdu);
       return modbusRtuADU;
     }
   }

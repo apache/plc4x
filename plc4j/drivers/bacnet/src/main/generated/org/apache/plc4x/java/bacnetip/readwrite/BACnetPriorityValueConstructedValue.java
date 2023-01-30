@@ -88,7 +88,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueConstructedValueBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueConstructedValue");
     PositionAware positionAware = readBuffer;
@@ -111,17 +111,16 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueConstructedValue");
     // Create the instance
-    return new BACnetPriorityValueConstructedValueBuilder(constructedValue, objectTypeArgument);
+    return new BACnetPriorityValueConstructedValueBuilderImpl(constructedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueConstructedValueBuilder
+  public static class BACnetPriorityValueConstructedValueBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetConstructedData constructedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueConstructedValueBuilder(
+    public BACnetPriorityValueConstructedValueBuilderImpl(
         BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
-
       this.constructedValue = constructedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

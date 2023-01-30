@@ -102,7 +102,7 @@ public class ModbusPDUWriteFileRecordRequest extends ModbusPDU implements Messag
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteFileRecordRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteFileRecordRequest");
     PositionAware positionAware = readBuffer;
@@ -120,14 +120,15 @@ public class ModbusPDUWriteFileRecordRequest extends ModbusPDU implements Messag
 
     readBuffer.closeContext("ModbusPDUWriteFileRecordRequest");
     // Create the instance
-    return new ModbusPDUWriteFileRecordRequestBuilder(items);
+    return new ModbusPDUWriteFileRecordRequestBuilderImpl(items);
   }
 
-  public static class ModbusPDUWriteFileRecordRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUWriteFileRecordRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final List<ModbusPDUWriteFileRecordRequestItem> items;
 
-    public ModbusPDUWriteFileRecordRequestBuilder(List<ModbusPDUWriteFileRecordRequestItem> items) {
-
+    public ModbusPDUWriteFileRecordRequestBuilderImpl(
+        List<ModbusPDUWriteFileRecordRequestItem> items) {
       this.items = items;
     }
 

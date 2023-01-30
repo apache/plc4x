@@ -145,7 +145,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     return lengthInBits;
   }
 
-  public static BACnetServiceAckGetEnrollmentSummaryBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetEnrollmentSummary");
     PositionAware positionAware = readBuffer;
@@ -199,11 +199,11 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
 
     readBuffer.closeContext("BACnetServiceAckGetEnrollmentSummary");
     // Create the instance
-    return new BACnetServiceAckGetEnrollmentSummaryBuilder(
+    return new BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
         objectIdentifier, eventType, eventState, priority, notificationClass, serviceAckLength);
   }
 
-  public static class BACnetServiceAckGetEnrollmentSummaryBuilder
+  public static class BACnetServiceAckGetEnrollmentSummaryBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetEventTypeTagged eventType;
@@ -212,14 +212,13 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     private final BACnetApplicationTagUnsignedInteger notificationClass;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckGetEnrollmentSummaryBuilder(
+    public BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetEventTypeTagged eventType,
         BACnetEventStateTagged eventState,
         BACnetApplicationTagUnsignedInteger priority,
         BACnetApplicationTagUnsignedInteger notificationClass,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.eventType = eventType;
       this.eventState = eventState;

@@ -109,7 +109,7 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDaysRemainingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataDaysRemaining");
     // Create the instance
-    return new BACnetConstructedDataDaysRemainingBuilder(
+    return new BACnetConstructedDataDaysRemainingBuilderImpl(
         daysRemaining, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDaysRemainingBuilder
+  public static class BACnetConstructedDataDaysRemainingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger daysRemaining;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDaysRemainingBuilder(
+    public BACnetConstructedDataDaysRemainingBuilderImpl(
         BACnetApplicationTagSignedInteger daysRemaining,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.daysRemaining = daysRemaining;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

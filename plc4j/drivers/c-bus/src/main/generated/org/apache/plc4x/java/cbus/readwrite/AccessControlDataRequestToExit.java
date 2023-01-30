@@ -67,7 +67,7 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
     return lengthInBits;
   }
 
-  public static AccessControlDataRequestToExitBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataRequestToExit");
     PositionAware positionAware = readBuffer;
@@ -76,13 +76,13 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
 
     readBuffer.closeContext("AccessControlDataRequestToExit");
     // Create the instance
-    return new AccessControlDataRequestToExitBuilder();
+    return new AccessControlDataRequestToExitBuilderImpl();
   }
 
-  public static class AccessControlDataRequestToExitBuilder
+  public static class AccessControlDataRequestToExitBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataRequestToExitBuilder() {}
+    public AccessControlDataRequestToExitBuilderImpl() {}
 
     public AccessControlDataRequestToExit build(
         AccessControlCommandTypeContainer commandTypeContainer,

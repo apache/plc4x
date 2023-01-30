@@ -238,21 +238,21 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             if (bitLength == 64) {
                 if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                     if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.longValue());
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue());
+                        writeLong(logicalName, 32, value.longValue(), writerArgs);
+                        writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
                     } else {
-                        writeLong(logicalName, bitLength, value.longValue());
+                        writeLong(logicalName, bitLength, value.longValue(), writerArgs);
                     }
                 } else {
                     if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue());
-                        writeLong(logicalName, 32, value.longValue());
+                        writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
+                        writeLong(logicalName, 32, value.longValue(), writerArgs);
                     } else {
-                        writeLong(logicalName, bitLength, value.longValue());
+                        writeLong(logicalName, bitLength, value.longValue(), writerArgs);
                     }
                 }
             } else if (bitLength < 64) {
-                writeUnsignedLong(logicalName, bitLength, value.longValue());
+                writeUnsignedLong(logicalName, bitLength, value.longValue(), writerArgs);
             } else {
                 throw new SerializationException("Unsigned Big Integer can only contain max 64 bits");
             }

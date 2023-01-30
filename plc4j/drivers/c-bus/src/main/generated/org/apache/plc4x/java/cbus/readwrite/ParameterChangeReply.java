@@ -90,7 +90,7 @@ public class ParameterChangeReply extends Reply implements Message {
     return lengthInBits;
   }
 
-  public static ParameterChangeReplyBuilder staticParseBuilder(
+  public static ReplyBuilder staticParseReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ParameterChangeReply");
@@ -106,17 +106,16 @@ public class ParameterChangeReply extends Reply implements Message {
 
     readBuffer.closeContext("ParameterChangeReply");
     // Create the instance
-    return new ParameterChangeReplyBuilder(parameterChange, cBusOptions, requestContext);
+    return new ParameterChangeReplyBuilderImpl(parameterChange, cBusOptions, requestContext);
   }
 
-  public static class ParameterChangeReplyBuilder implements Reply.ReplyBuilder {
+  public static class ParameterChangeReplyBuilderImpl implements Reply.ReplyBuilder {
     private final ParameterChange parameterChange;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ParameterChangeReplyBuilder(
+    public ParameterChangeReplyBuilderImpl(
         ParameterChange parameterChange, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.parameterChange = parameterChange;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

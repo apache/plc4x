@@ -114,7 +114,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static AliasNameDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AliasNameDataType");
     PositionAware positionAware = readBuffer;
@@ -138,18 +138,17 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("AliasNameDataType");
     // Create the instance
-    return new AliasNameDataTypeBuilder(aliasName, noOfReferencedNodes, referencedNodes);
+    return new AliasNameDataTypeBuilderImpl(aliasName, noOfReferencedNodes, referencedNodes);
   }
 
-  public static class AliasNameDataTypeBuilder
+  public static class AliasNameDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final QualifiedName aliasName;
     private final int noOfReferencedNodes;
     private final List<ExpandedNodeId> referencedNodes;
 
-    public AliasNameDataTypeBuilder(
+    public AliasNameDataTypeBuilderImpl(
         QualifiedName aliasName, int noOfReferencedNodes, List<ExpandedNodeId> referencedNodes) {
-
       this.aliasName = aliasName;
       this.noOfReferencedNodes = noOfReferencedNodes;
       this.referencedNodes = referencedNodes;

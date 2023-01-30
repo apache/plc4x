@@ -92,9 +92,11 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -110,16 +112,16 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl(
+        categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+  public static class ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType;
 
-    public ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder(
+    public ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl(
         ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

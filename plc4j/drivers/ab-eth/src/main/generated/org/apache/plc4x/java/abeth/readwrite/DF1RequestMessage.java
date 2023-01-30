@@ -45,8 +45,6 @@ public abstract class DF1RequestMessage implements Message {
   protected final short sourceAddress;
   protected final short status;
   protected final int transactionCounter;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public DF1RequestMessage(
       short destinationAddress, short sourceAddress, short status, int transactionCounter) {
@@ -88,10 +86,7 @@ public abstract class DF1RequestMessage implements Message {
     writeSimpleField("sourceAddress", sourceAddress, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Discriminator Field (commandCode) (Used as input to a switch field)
     writeDiscriminatorField("commandCode", getCommandCode(), writeUnsignedShort(writeBuffer, 8));
@@ -170,7 +165,7 @@ public abstract class DF1RequestMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1RequestMessageBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x0F)) {
-      builder = DF1CommandRequestMessage.staticParseBuilder(readBuffer);
+      builder = DF1CommandRequestMessage.staticParseDF1RequestMessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -185,11 +180,10 @@ public abstract class DF1RequestMessage implements Message {
     // Create the instance
     DF1RequestMessage _dF1RequestMessage =
         builder.build(destinationAddress, sourceAddress, status, transactionCounter);
-    _dF1RequestMessage.reservedField0 = reservedField0;
     return _dF1RequestMessage;
   }
 
-  public static interface DF1RequestMessageBuilder {
+  public interface DF1RequestMessageBuilder {
     DF1RequestMessage build(
         short destinationAddress, short sourceAddress, short status, int transactionCounter);
   }

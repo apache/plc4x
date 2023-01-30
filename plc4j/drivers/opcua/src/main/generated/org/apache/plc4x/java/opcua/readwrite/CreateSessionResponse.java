@@ -247,7 +247,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static CreateSessionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSessionResponse");
     PositionAware positionAware = readBuffer;
@@ -319,7 +319,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("CreateSessionResponse");
     // Create the instance
-    return new CreateSessionResponseBuilder(
+    return new CreateSessionResponseBuilderImpl(
         responseHeader,
         sessionId,
         authenticationToken,
@@ -334,7 +334,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         maxRequestMessageSize);
   }
 
-  public static class CreateSessionResponseBuilder
+  public static class CreateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final NodeId sessionId;
@@ -349,7 +349,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     private final ExtensionObjectDefinition serverSignature;
     private final long maxRequestMessageSize;
 
-    public CreateSessionResponseBuilder(
+    public CreateSessionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         NodeId sessionId,
         NodeId authenticationToken,
@@ -362,7 +362,6 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         List<ExtensionObjectDefinition> serverSoftwareCertificates,
         ExtensionObjectDefinition serverSignature,
         long maxRequestMessageSize) {
-
       this.responseHeader = responseHeader;
       this.sessionId = sessionId;
       this.authenticationToken = authenticationToken;

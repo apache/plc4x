@@ -47,10 +47,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   protected final boolean dataValid;
   protected final boolean redundancy;
   protected final boolean statePrimary;
-  // Reserved Fields
-  private Boolean reservedField0;
-  private Boolean reservedField1;
-  private Short reservedField2;
 
   public PnDcp_Pdu_RealTimeCyclic(
       int frameIdValue,
@@ -112,10 +108,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("ignore", ignore, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (boolean) false,
-        writeBoolean(writeBuffer));
+    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
 
     // Simple Field (stationProblemIndicatorOk)
     writeSimpleField(
@@ -125,10 +118,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("providerStateRun", providerStateRun, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (boolean) false,
-        writeBoolean(writeBuffer));
+    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
 
     // Simple Field (dataValid)
     writeSimpleField("dataValid", dataValid, writeBoolean(writeBuffer));
@@ -140,10 +130,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("statePrimary", statePrimary, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField2 != null ? reservedField2 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("PnDcp_Pdu_RealTimeCyclic");
   }
@@ -191,7 +178,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_RealTimeCyclicBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_RealTimeCyclic");
     PositionAware positionAware = readBuffer;
@@ -224,20 +211,17 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_RealTimeCyclic");
     // Create the instance
-    return new PnDcp_Pdu_RealTimeCyclicBuilder(
+    return new PnDcp_Pdu_RealTimeCyclicBuilderImpl(
         cycleCounter,
         ignore,
         stationProblemIndicatorOk,
         providerStateRun,
         dataValid,
         redundancy,
-        statePrimary,
-        reservedField0,
-        reservedField1,
-        reservedField2);
+        statePrimary);
   }
 
-  public static class PnDcp_Pdu_RealTimeCyclicBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_RealTimeCyclicBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int cycleCounter;
     private final boolean ignore;
     private final boolean stationProblemIndicatorOk;
@@ -245,21 +229,15 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     private final boolean dataValid;
     private final boolean redundancy;
     private final boolean statePrimary;
-    private final Boolean reservedField0;
-    private final Boolean reservedField1;
-    private final Short reservedField2;
 
-    public PnDcp_Pdu_RealTimeCyclicBuilder(
+    public PnDcp_Pdu_RealTimeCyclicBuilderImpl(
         int cycleCounter,
         boolean ignore,
         boolean stationProblemIndicatorOk,
         boolean providerStateRun,
         boolean dataValid,
         boolean redundancy,
-        boolean statePrimary,
-        Boolean reservedField0,
-        Boolean reservedField1,
-        Short reservedField2) {
+        boolean statePrimary) {
       this.cycleCounter = cycleCounter;
       this.ignore = ignore;
       this.stationProblemIndicatorOk = stationProblemIndicatorOk;
@@ -267,9 +245,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       this.dataValid = dataValid;
       this.redundancy = redundancy;
       this.statePrimary = statePrimary;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
-      this.reservedField2 = reservedField2;
     }
 
     public PnDcp_Pdu_RealTimeCyclic build(int frameIdValue) {
@@ -283,9 +258,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
               dataValid,
               redundancy,
               statePrimary);
-      pnDcp_Pdu_RealTimeCyclic.reservedField0 = reservedField0;
-      pnDcp_Pdu_RealTimeCyclic.reservedField1 = reservedField1;
-      pnDcp_Pdu_RealTimeCyclic.reservedField2 = reservedField2;
       return pnDcp_Pdu_RealTimeCyclic;
     }
   }

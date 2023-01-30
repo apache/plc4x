@@ -67,7 +67,7 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataLineOnHookBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataLineOnHook");
     PositionAware positionAware = readBuffer;
@@ -76,12 +76,13 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataLineOnHook");
     // Create the instance
-    return new TelephonyDataLineOnHookBuilder();
+    return new TelephonyDataLineOnHookBuilderImpl();
   }
 
-  public static class TelephonyDataLineOnHookBuilder implements TelephonyData.TelephonyDataBuilder {
+  public static class TelephonyDataLineOnHookBuilderImpl
+      implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataLineOnHookBuilder() {}
+    public TelephonyDataLineOnHookBuilderImpl() {}
 
     public TelephonyDataLineOnHook build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

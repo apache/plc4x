@@ -185,8 +185,8 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static CallMethodResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallMethodResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -226,7 +226,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("CallMethodResult");
     // Create the instance
-    return new CallMethodResultBuilder(
+    return new CallMethodResultBuilderImpl(
         statusCode,
         noOfInputArgumentResults,
         inputArgumentResults,
@@ -236,7 +236,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
         outputArguments);
   }
 
-  public static class CallMethodResultBuilder
+  public static class CallMethodResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfInputArgumentResults;
@@ -246,7 +246,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     private final int noOfOutputArguments;
     private final List<Variant> outputArguments;
 
-    public CallMethodResultBuilder(
+    public CallMethodResultBuilderImpl(
         StatusCode statusCode,
         int noOfInputArgumentResults,
         List<StatusCode> inputArgumentResults,
@@ -254,7 +254,6 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
         List<DiagnosticInfo> inputArgumentDiagnosticInfos,
         int noOfOutputArguments,
         List<Variant> outputArguments) {
-
       this.statusCode = statusCode;
       this.noOfInputArgumentResults = noOfInputArgumentResults;
       this.inputArgumentResults = inputArgumentResults;

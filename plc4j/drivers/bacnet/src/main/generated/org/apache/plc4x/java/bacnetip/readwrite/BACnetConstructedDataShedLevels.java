@@ -135,7 +135,7 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedLevelsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,23 +173,22 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataShedLevels");
     // Create the instance
-    return new BACnetConstructedDataShedLevelsBuilder(
+    return new BACnetConstructedDataShedLevelsBuilderImpl(
         numberOfDataElements, shedLevels, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedLevelsBuilder
+  public static class BACnetConstructedDataShedLevelsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> shedLevels;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedLevelsBuilder(
+    public BACnetConstructedDataShedLevelsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> shedLevels,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevels = shedLevels;
       this.tagNumber = tagNumber;

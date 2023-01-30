@@ -52,8 +52,6 @@ public class DiagnosticInfo implements Message {
   protected final PascalString additionalInfo;
   protected final StatusCode innerStatusCode;
   protected final DiagnosticInfo innerDiagnosticInfo;
-  // Reserved Fields
-  private Boolean reservedField0;
 
   public DiagnosticInfo(
       boolean innerDiagnosticInfoSpecified,
@@ -149,10 +147,7 @@ public class DiagnosticInfo implements Message {
     writeBuffer.pushContext("DiagnosticInfo");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (boolean) false,
-        writeBoolean(writeBuffer));
+    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
 
     // Simple Field (innerDiagnosticInfoSpecified)
     writeSimpleField(
@@ -178,43 +173,28 @@ public class DiagnosticInfo implements Message {
     writeSimpleField("symbolicIdSpecified", symbolicIdSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (symbolicId) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "symbolicId", symbolicId, writeSignedInt(writeBuffer, 32), getSymbolicIdSpecified());
+    writeOptionalField("symbolicId", symbolicId, writeSignedInt(writeBuffer, 32));
 
     // Optional Field (namespaceURI) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "namespaceURI", namespaceURI, writeSignedInt(writeBuffer, 32), getNamespaceURISpecified());
+    writeOptionalField("namespaceURI", namespaceURI, writeSignedInt(writeBuffer, 32));
 
     // Optional Field (locale) (Can be skipped, if the value is null)
-    writeOptionalField("locale", locale, writeSignedInt(writeBuffer, 32), getLocaleSpecified());
+    writeOptionalField("locale", locale, writeSignedInt(writeBuffer, 32));
 
     // Optional Field (localizedText) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "localizedText",
-        localizedText,
-        writeSignedInt(writeBuffer, 32),
-        getLocalizedTextSpecified());
+    writeOptionalField("localizedText", localizedText, writeSignedInt(writeBuffer, 32));
 
     // Optional Field (additionalInfo) (Can be skipped, if the value is null)
     writeOptionalField(
-        "additionalInfo",
-        additionalInfo,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getAdditionalInfoSpecified());
+        "additionalInfo", additionalInfo, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (innerStatusCode) (Can be skipped, if the value is null)
     writeOptionalField(
-        "innerStatusCode",
-        innerStatusCode,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getInnerStatusCodeSpecified());
+        "innerStatusCode", innerStatusCode, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (innerDiagnosticInfo) (Can be skipped, if the value is null)
     writeOptionalField(
-        "innerDiagnosticInfo",
-        innerDiagnosticInfo,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getInnerDiagnosticInfoSpecified());
+        "innerDiagnosticInfo", innerDiagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("DiagnosticInfo");
   }
@@ -374,7 +354,6 @@ public class DiagnosticInfo implements Message {
             additionalInfo,
             innerStatusCode,
             innerDiagnosticInfo);
-    _diagnosticInfo.reservedField0 = reservedField0;
     return _diagnosticInfo;
   }
 

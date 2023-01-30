@@ -69,8 +69,8 @@ public class OpcuaVector extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaVectorBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpcuaVector");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class OpcuaVector extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("OpcuaVector");
     // Create the instance
-    return new OpcuaVectorBuilder();
+    return new OpcuaVectorBuilderImpl();
   }
 
-  public static class OpcuaVectorBuilder
+  public static class OpcuaVectorBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public OpcuaVectorBuilder() {}
+    public OpcuaVectorBuilderImpl() {}
 
     public OpcuaVector build() {
       OpcuaVector opcuaVector = new OpcuaVector();

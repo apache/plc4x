@@ -117,7 +117,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     return lengthInBits;
   }
 
-  public static TranslateBrowsePathsToNodeIdsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TranslateBrowsePathsToNodeIdsRequest");
     PositionAware positionAware = readBuffer;
@@ -143,21 +143,20 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
 
     readBuffer.closeContext("TranslateBrowsePathsToNodeIdsRequest");
     // Create the instance
-    return new TranslateBrowsePathsToNodeIdsRequestBuilder(
+    return new TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
         requestHeader, noOfBrowsePaths, browsePaths);
   }
 
-  public static class TranslateBrowsePathsToNodeIdsRequestBuilder
+  public static class TranslateBrowsePathsToNodeIdsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfBrowsePaths;
     private final List<ExtensionObjectDefinition> browsePaths;
 
-    public TranslateBrowsePathsToNodeIdsRequestBuilder(
+    public TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfBrowsePaths,
         List<ExtensionObjectDefinition> browsePaths) {
-
       this.requestHeader = requestHeader;
       this.noOfBrowsePaths = noOfBrowsePaths;
       this.browsePaths = browsePaths;

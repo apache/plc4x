@@ -73,11 +73,11 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTagNullBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagNull");
     PositionAware positionAware = readBuffer;
@@ -90,15 +90,14 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagNull");
     // Create the instance
-    return new BACnetContextTagNullBuilder(tagNumberArgument);
+    return new BACnetContextTagNullBuilderImpl(tagNumberArgument);
   }
 
-  public static class BACnetContextTagNullBuilder
+  public static class BACnetContextTagNullBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final Short tagNumberArgument;
 
-    public BACnetContextTagNullBuilder(Short tagNumberArgument) {
-
+    public BACnetContextTagNullBuilderImpl(Short tagNumberArgument) {
       this.tagNumberArgument = tagNumberArgument;
     }
 

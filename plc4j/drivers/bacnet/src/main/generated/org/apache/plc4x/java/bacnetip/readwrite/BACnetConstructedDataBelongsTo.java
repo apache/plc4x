@@ -109,7 +109,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBelongsToBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,20 +131,19 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataBelongsTo");
     // Create the instance
-    return new BACnetConstructedDataBelongsToBuilder(belongsTo, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBelongsToBuilderImpl(belongsTo, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBelongsToBuilder
+  public static class BACnetConstructedDataBelongsToBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference belongsTo;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBelongsToBuilder(
+    public BACnetConstructedDataBelongsToBuilderImpl(
         BACnetDeviceObjectReference belongsTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.belongsTo = belongsTo;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

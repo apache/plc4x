@@ -111,7 +111,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVerificationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,21 +136,20 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataVerificationTime");
     // Create the instance
-    return new BACnetConstructedDataVerificationTimeBuilder(
+    return new BACnetConstructedDataVerificationTimeBuilderImpl(
         verificationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVerificationTimeBuilder
+  public static class BACnetConstructedDataVerificationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger verificationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVerificationTimeBuilder(
+    public BACnetConstructedDataVerificationTimeBuilderImpl(
         BACnetApplicationTagSignedInteger verificationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.verificationTime = verificationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

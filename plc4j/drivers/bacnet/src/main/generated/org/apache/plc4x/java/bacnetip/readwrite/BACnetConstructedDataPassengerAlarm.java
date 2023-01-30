@@ -109,7 +109,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPassengerAlarmBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataPassengerAlarm");
     // Create the instance
-    return new BACnetConstructedDataPassengerAlarmBuilder(
+    return new BACnetConstructedDataPassengerAlarmBuilderImpl(
         passengerAlarm, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPassengerAlarmBuilder
+  public static class BACnetConstructedDataPassengerAlarmBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean passengerAlarm;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPassengerAlarmBuilder(
+    public BACnetConstructedDataPassengerAlarmBuilderImpl(
         BACnetApplicationTagBoolean passengerAlarm,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passengerAlarm = passengerAlarm;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

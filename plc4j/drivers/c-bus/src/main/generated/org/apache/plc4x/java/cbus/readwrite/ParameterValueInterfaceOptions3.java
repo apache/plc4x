@@ -101,7 +101,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
     return lengthInBits;
   }
 
-  public static ParameterValueInterfaceOptions3Builder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions3");
     PositionAware positionAware = readBuffer;
@@ -122,18 +122,17 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
 
     readBuffer.closeContext("ParameterValueInterfaceOptions3");
     // Create the instance
-    return new ParameterValueInterfaceOptions3Builder(value, data, numBytes);
+    return new ParameterValueInterfaceOptions3BuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueInterfaceOptions3Builder
+  public static class ParameterValueInterfaceOptions3BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions3 value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueInterfaceOptions3Builder(
+    public ParameterValueInterfaceOptions3BuilderImpl(
         InterfaceOptions3 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

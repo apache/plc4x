@@ -104,7 +104,7 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthorizationExemptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAuthorizationExemptions");
     // Create the instance
-    return new BACnetConstructedDataAuthorizationExemptionsBuilder(
+    return new BACnetConstructedDataAuthorizationExemptionsBuilderImpl(
         authorizationExemption, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthorizationExemptionsBuilder
+  public static class BACnetConstructedDataAuthorizationExemptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAuthorizationExemptionTagged> authorizationExemption;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthorizationExemptionsBuilder(
+    public BACnetConstructedDataAuthorizationExemptionsBuilderImpl(
         List<BACnetAuthorizationExemptionTagged> authorizationExemption,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authorizationExemption = authorizationExemption;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

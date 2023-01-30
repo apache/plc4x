@@ -164,7 +164,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadWriteRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadWriteRequest");
     PositionAware positionAware = readBuffer;
@@ -195,23 +195,22 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadWriteRequest");
     // Create the instance
-    return new AdsReadWriteRequestBuilder(indexGroup, indexOffset, readLength, items, data);
+    return new AdsReadWriteRequestBuilderImpl(indexGroup, indexOffset, readLength, items, data);
   }
 
-  public static class AdsReadWriteRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadWriteRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final long indexGroup;
     private final long indexOffset;
     private final long readLength;
     private final List<AdsMultiRequestItem> items;
     private final byte[] data;
 
-    public AdsReadWriteRequestBuilder(
+    public AdsReadWriteRequestBuilderImpl(
         long indexGroup,
         long indexOffset,
         long readLength,
         List<AdsMultiRequestItem> items,
         byte[] data) {
-
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.readLength = readLength;

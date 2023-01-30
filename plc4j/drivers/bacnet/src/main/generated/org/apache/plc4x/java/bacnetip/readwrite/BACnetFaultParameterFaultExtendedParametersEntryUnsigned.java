@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -100,17 +101,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder(unsignedValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

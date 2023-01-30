@@ -84,7 +84,7 @@ public class BACnetConstructedDataTrendLogAll extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,17 +103,16 @@ public class BACnetConstructedDataTrendLogAll extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogAll");
     // Create the instance
-    return new BACnetConstructedDataTrendLogAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTrendLogAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogAllBuilder
+  public static class BACnetConstructedDataTrendLogAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogAllBuilder(
+    public BACnetConstructedDataTrendLogAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

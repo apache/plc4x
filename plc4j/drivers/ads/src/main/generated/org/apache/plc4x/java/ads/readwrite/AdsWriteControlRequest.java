@@ -129,7 +129,7 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsWriteControlRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsWriteControlRequest");
     PositionAware positionAware = readBuffer;
@@ -146,16 +146,15 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsWriteControlRequest");
     // Create the instance
-    return new AdsWriteControlRequestBuilder(adsState, deviceState, data);
+    return new AdsWriteControlRequestBuilderImpl(adsState, deviceState, data);
   }
 
-  public static class AdsWriteControlRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsWriteControlRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final int adsState;
     private final int deviceState;
     private final byte[] data;
 
-    public AdsWriteControlRequestBuilder(int adsState, int deviceState, byte[] data) {
-
+    public AdsWriteControlRequestBuilderImpl(int adsState, int deviceState, byte[] data) {
       this.adsState = adsState;
       this.deviceState = deviceState;
       this.data = data;

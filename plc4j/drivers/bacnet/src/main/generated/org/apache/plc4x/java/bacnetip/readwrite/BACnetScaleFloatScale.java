@@ -79,7 +79,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetScaleFloatScaleBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetScaleBuilder staticParseBACnetScaleBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetScaleFloatScale");
     PositionAware positionAware = readBuffer;
@@ -98,14 +98,13 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
 
     readBuffer.closeContext("BACnetScaleFloatScale");
     // Create the instance
-    return new BACnetScaleFloatScaleBuilder(floatScale);
+    return new BACnetScaleFloatScaleBuilderImpl(floatScale);
   }
 
-  public static class BACnetScaleFloatScaleBuilder implements BACnetScale.BACnetScaleBuilder {
+  public static class BACnetScaleFloatScaleBuilderImpl implements BACnetScale.BACnetScaleBuilder {
     private final BACnetContextTagReal floatScale;
 
-    public BACnetScaleFloatScaleBuilder(BACnetContextTagReal floatScale) {
-
+    public BACnetScaleFloatScaleBuilderImpl(BACnetContextTagReal floatScale) {
       this.floatScale = floatScale;
     }
 

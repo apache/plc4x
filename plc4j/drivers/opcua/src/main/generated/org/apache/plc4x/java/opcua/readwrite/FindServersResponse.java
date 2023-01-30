@@ -116,7 +116,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static FindServersResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersResponse");
     PositionAware positionAware = readBuffer;
@@ -142,20 +142,19 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("FindServersResponse");
     // Create the instance
-    return new FindServersResponseBuilder(responseHeader, noOfServers, servers);
+    return new FindServersResponseBuilderImpl(responseHeader, noOfServers, servers);
   }
 
-  public static class FindServersResponseBuilder
+  public static class FindServersResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfServers;
     private final List<ExtensionObjectDefinition> servers;
 
-    public FindServersResponseBuilder(
+    public FindServersResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfServers,
         List<ExtensionObjectDefinition> servers) {
-
       this.responseHeader = responseHeader;
       this.noOfServers = noOfServers;
       this.servers = servers;

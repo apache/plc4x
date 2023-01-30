@@ -69,7 +69,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ReaderGroupMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReaderGroupMessageDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ReaderGroupMessageDataType");
     // Create the instance
-    return new ReaderGroupMessageDataTypeBuilder();
+    return new ReaderGroupMessageDataTypeBuilderImpl();
   }
 
-  public static class ReaderGroupMessageDataTypeBuilder
+  public static class ReaderGroupMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public ReaderGroupMessageDataTypeBuilder() {}
+    public ReaderGroupMessageDataTypeBuilderImpl() {}
 
     public ReaderGroupMessageDataType build() {
       ReaderGroupMessageDataType readerGroupMessageDataType = new ReaderGroupMessageDataType();

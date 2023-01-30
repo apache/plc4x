@@ -82,7 +82,7 @@ public class SDOAbortResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOAbortResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOAbortResponse");
     PositionAware positionAware = readBuffer;
@@ -96,14 +96,13 @@ public class SDOAbortResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOAbortResponse");
     // Create the instance
-    return new SDOAbortResponseBuilder(abort);
+    return new SDOAbortResponseBuilderImpl(abort);
   }
 
-  public static class SDOAbortResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOAbortResponseBuilderImpl implements SDOResponse.SDOResponseBuilder {
     private final SDOAbort abort;
 
-    public SDOAbortResponseBuilder(SDOAbort abort) {
-
+    public SDOAbortResponseBuilderImpl(SDOAbort abort) {
       this.abort = abort;
     }
 

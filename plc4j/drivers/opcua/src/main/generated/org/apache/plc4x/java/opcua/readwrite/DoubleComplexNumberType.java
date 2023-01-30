@@ -95,7 +95,7 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static DoubleComplexNumberTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DoubleComplexNumberType");
     PositionAware positionAware = readBuffer;
@@ -108,16 +108,15 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("DoubleComplexNumberType");
     // Create the instance
-    return new DoubleComplexNumberTypeBuilder(real, imaginary);
+    return new DoubleComplexNumberTypeBuilderImpl(real, imaginary);
   }
 
-  public static class DoubleComplexNumberTypeBuilder
+  public static class DoubleComplexNumberTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double real;
     private final double imaginary;
 
-    public DoubleComplexNumberTypeBuilder(double real, double imaginary) {
-
+    public DoubleComplexNumberTypeBuilderImpl(double real, double imaginary) {
       this.real = real;
       this.imaginary = imaginary;
     }

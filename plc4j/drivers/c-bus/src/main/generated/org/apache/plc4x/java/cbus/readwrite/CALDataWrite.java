@@ -118,10 +118,10 @@ public class CALDataWrite extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataWriteBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataWrite");
     PositionAware positionAware = readBuffer;
@@ -149,21 +149,20 @@ public class CALDataWrite extends CALData implements Message {
 
     readBuffer.closeContext("CALDataWrite");
     // Create the instance
-    return new CALDataWriteBuilder(paramNo, code, parameterValue, requestContext);
+    return new CALDataWriteBuilderImpl(paramNo, code, parameterValue, requestContext);
   }
 
-  public static class CALDataWriteBuilder implements CALData.CALDataBuilder {
+  public static class CALDataWriteBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final byte code;
     private final ParameterValue parameterValue;
     private final RequestContext requestContext;
 
-    public CALDataWriteBuilder(
+    public CALDataWriteBuilderImpl(
         Parameter paramNo,
         byte code,
         ParameterValue parameterValue,
         RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.code = code;
       this.parameterValue = parameterValue;

@@ -120,8 +120,8 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static CurrencyUnitTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CurrencyUnitType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -144,19 +144,18 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("CurrencyUnitType");
     // Create the instance
-    return new CurrencyUnitTypeBuilder(numericCode, exponent, alphabeticCode, currency);
+    return new CurrencyUnitTypeBuilderImpl(numericCode, exponent, alphabeticCode, currency);
   }
 
-  public static class CurrencyUnitTypeBuilder
+  public static class CurrencyUnitTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final short numericCode;
     private final byte exponent;
     private final PascalString alphabeticCode;
     private final LocalizedText currency;
 
-    public CurrencyUnitTypeBuilder(
+    public CurrencyUnitTypeBuilderImpl(
         short numericCode, byte exponent, PascalString alphabeticCode, LocalizedText currency) {
-
       this.numericCode = numericCode;
       this.exponent = exponent;
       this.alphabeticCode = alphabeticCode;

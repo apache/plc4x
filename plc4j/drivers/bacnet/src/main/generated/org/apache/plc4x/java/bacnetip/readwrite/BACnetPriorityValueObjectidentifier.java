@@ -90,7 +90,7 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueObjectidentifierBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueObjectidentifier");
     PositionAware positionAware = readBuffer;
@@ -108,19 +108,18 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueObjectidentifier");
     // Create the instance
-    return new BACnetPriorityValueObjectidentifierBuilder(
+    return new BACnetPriorityValueObjectidentifierBuilderImpl(
         objectidentifierValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueObjectidentifierBuilder
+  public static class BACnetPriorityValueObjectidentifierBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueObjectidentifierBuilder(
+    public BACnetPriorityValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.objectTypeArgument = objectTypeArgument;
     }

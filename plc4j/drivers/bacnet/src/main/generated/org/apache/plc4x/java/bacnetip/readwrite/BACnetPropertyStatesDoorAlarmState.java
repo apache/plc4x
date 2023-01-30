@@ -81,7 +81,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesDoorAlarmStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesDoorAlarmState");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,15 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
 
     readBuffer.closeContext("BACnetPropertyStatesDoorAlarmState");
     // Create the instance
-    return new BACnetPropertyStatesDoorAlarmStateBuilder(doorAlarmState);
+    return new BACnetPropertyStatesDoorAlarmStateBuilderImpl(doorAlarmState);
   }
 
-  public static class BACnetPropertyStatesDoorAlarmStateBuilder
+  public static class BACnetPropertyStatesDoorAlarmStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetDoorAlarmStateTagged doorAlarmState;
 
-    public BACnetPropertyStatesDoorAlarmStateBuilder(BACnetDoorAlarmStateTagged doorAlarmState) {
-
+    public BACnetPropertyStatesDoorAlarmStateBuilderImpl(
+        BACnetDoorAlarmStateTagged doorAlarmState) {
       this.doorAlarmState = doorAlarmState;
     }
 

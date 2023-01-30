@@ -149,13 +149,16 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     BACnetConfirmedServiceRequestReadRangeRangeBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)) {
       builder =
-          BACnetConfirmedServiceRequestReadRangeRangeByPosition.staticParseBuilder(readBuffer);
+          BACnetConfirmedServiceRequestReadRangeRangeByPosition
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)) {
       builder =
-          BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.staticParseBuilder(
-              readBuffer);
+          BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)) {
-      builder = BACnetConfirmedServiceRequestReadRangeRangeByTime.staticParseBuilder(readBuffer);
+      builder =
+          BACnetConfirmedServiceRequestReadRangeRangeByTime
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -182,7 +185,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     return _bACnetConfirmedServiceRequestReadRangeRange;
   }
 
-  public static interface BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+  public interface BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     BACnetConfirmedServiceRequestReadRangeRange build(
         BACnetTagHeader peekedTagHeader, BACnetOpeningTag openingTag, BACnetClosingTag closingTag);
   }

@@ -137,7 +137,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -172,23 +172,22 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataNetworkAccessSecurityPolicies");
     // Create the instance
-    return new BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder(
+    return new BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
         numberOfDataElements, networkAccessSecurityPolicies, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
+  public static class BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder(
+    public BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.networkAccessSecurityPolicies = networkAccessSecurityPolicies;
       this.tagNumber = tagNumber;

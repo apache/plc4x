@@ -109,7 +109,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSilencedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataSilenced");
     // Create the instance
-    return new BACnetConstructedDataSilencedBuilder(silenced, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSilencedBuilderImpl(silenced, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSilencedBuilder
+  public static class BACnetConstructedDataSilencedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSilencedStateTagged silenced;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSilencedBuilder(
+    public BACnetConstructedDataSilencedBuilderImpl(
         BACnetSilencedStateTagged silenced,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.silenced = silenced;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

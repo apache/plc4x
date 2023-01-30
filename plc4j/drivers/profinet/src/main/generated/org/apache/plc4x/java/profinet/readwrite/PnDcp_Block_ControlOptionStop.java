@@ -72,7 +72,7 @@ public class PnDcp_Block_ControlOptionStop extends PnDcp_Block implements Messag
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionStopBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionStop");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class PnDcp_Block_ControlOptionStop extends PnDcp_Block implements Messag
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionStop");
     // Create the instance
-    return new PnDcp_Block_ControlOptionStopBuilder();
+    return new PnDcp_Block_ControlOptionStopBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionStopBuilder
+  public static class PnDcp_Block_ControlOptionStopBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionStopBuilder() {}
+    public PnDcp_Block_ControlOptionStopBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionStop build() {
       PnDcp_Block_ControlOptionStop pnDcp_Block_ControlOptionStop =

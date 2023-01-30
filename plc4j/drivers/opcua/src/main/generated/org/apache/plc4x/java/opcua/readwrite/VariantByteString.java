@@ -73,8 +73,7 @@ public class VariantByteString extends Variant implements Message {
     writeBuffer.pushContext("VariantByteString");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -109,7 +108,7 @@ public class VariantByteString extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantByteStringBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantByteString");
     PositionAware positionAware = readBuffer;
@@ -128,15 +127,14 @@ public class VariantByteString extends Variant implements Message {
 
     readBuffer.closeContext("VariantByteString");
     // Create the instance
-    return new VariantByteStringBuilder(arrayLength, value);
+    return new VariantByteStringBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantByteStringBuilder implements Variant.VariantBuilder {
+  public static class VariantByteStringBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<ByteStringArray> value;
 
-    public VariantByteStringBuilder(Integer arrayLength, List<ByteStringArray> value) {
-
+    public VariantByteStringBuilderImpl(Integer arrayLength, List<ByteStringArray> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

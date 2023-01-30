@@ -88,11 +88,11 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
     return lengthInBits;
   }
 
-  public static BACnetContextTagBitStringBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagBitString");
     PositionAware positionAware = readBuffer;
@@ -110,17 +110,16 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
 
     readBuffer.closeContext("BACnetContextTagBitString");
     // Create the instance
-    return new BACnetContextTagBitStringBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagBitStringBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagBitStringBuilder
+  public static class BACnetContextTagBitStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadBitString payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagBitStringBuilder(
+    public BACnetContextTagBitStringBuilderImpl(
         BACnetTagPayloadBitString payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

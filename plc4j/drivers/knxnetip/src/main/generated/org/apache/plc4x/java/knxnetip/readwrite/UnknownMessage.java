@@ -45,13 +45,9 @@ public class UnknownMessage extends KnxNetIpMessage implements Message {
   // Properties.
   protected final byte[] unknownData;
 
-  // Arguments.
-  protected final Integer totalLength;
-
-  public UnknownMessage(byte[] unknownData, Integer totalLength) {
+  public UnknownMessage(byte[] unknownData) {
     super();
     this.unknownData = unknownData;
-    this.totalLength = totalLength;
   }
 
   public byte[] getUnknownData() {
@@ -93,8 +89,8 @@ public class UnknownMessage extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static UnknownMessageBuilder staticParseBuilder(ReadBuffer readBuffer, Integer totalLength)
-      throws ParseException {
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(
+      ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("UnknownMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,21 +104,18 @@ public class UnknownMessage extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("UnknownMessage");
     // Create the instance
-    return new UnknownMessageBuilder(unknownData, totalLength);
+    return new UnknownMessageBuilderImpl(unknownData);
   }
 
-  public static class UnknownMessageBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class UnknownMessageBuilderImpl implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final byte[] unknownData;
-    private final Integer totalLength;
 
-    public UnknownMessageBuilder(byte[] unknownData, Integer totalLength) {
-
+    public UnknownMessageBuilderImpl(byte[] unknownData) {
       this.unknownData = unknownData;
-      this.totalLength = totalLength;
     }
 
     public UnknownMessage build() {
-      UnknownMessage unknownMessage = new UnknownMessage(unknownData, totalLength);
+      UnknownMessage unknownMessage = new UnknownMessage(unknownData);
       return unknownMessage;
     }
   }

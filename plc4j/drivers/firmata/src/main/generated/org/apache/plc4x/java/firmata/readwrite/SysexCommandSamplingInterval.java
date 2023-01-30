@@ -72,7 +72,7 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
     return lengthInBits;
   }
 
-  public static SysexCommandSamplingIntervalBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandSamplingInterval");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
 
     readBuffer.closeContext("SysexCommandSamplingInterval");
     // Create the instance
-    return new SysexCommandSamplingIntervalBuilder();
+    return new SysexCommandSamplingIntervalBuilderImpl();
   }
 
-  public static class SysexCommandSamplingIntervalBuilder
+  public static class SysexCommandSamplingIntervalBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandSamplingIntervalBuilder() {}
+    public SysexCommandSamplingIntervalBuilderImpl() {}
 
     public SysexCommandSamplingInterval build() {
       SysexCommandSamplingInterval sysexCommandSamplingInterval =

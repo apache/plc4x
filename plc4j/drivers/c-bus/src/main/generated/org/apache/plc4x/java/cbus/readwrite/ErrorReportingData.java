@@ -134,7 +134,7 @@ public abstract class ErrorReportingData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ErrorReportingDataBuilder builder = null;
     if (true) {
-      builder = ErrorReportingDataGeneric.staticParseBuilder(readBuffer);
+      builder = ErrorReportingDataGeneric.staticParseErrorReportingDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -151,7 +151,7 @@ public abstract class ErrorReportingData implements Message {
     return _errorReportingData;
   }
 
-  public static interface ErrorReportingDataBuilder {
+  public interface ErrorReportingDataBuilder {
     ErrorReportingData build(ErrorReportingCommandTypeContainer commandTypeContainer);
   }
 

@@ -148,34 +148,34 @@ public abstract class MeteringData implements Message {
     MeteringDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x01)) {
-      builder = MeteringDataMeasureElectricity.staticParseBuilder(readBuffer);
+      builder = MeteringDataMeasureElectricity.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x02)) {
-      builder = MeteringDataMeasureGas.staticParseBuilder(readBuffer);
+      builder = MeteringDataMeasureGas.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x03)) {
-      builder = MeteringDataMeasureDrinkingWater.staticParseBuilder(readBuffer);
+      builder = MeteringDataMeasureDrinkingWater.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x04)) {
-      builder = MeteringDataMeasureOtherWater.staticParseBuilder(readBuffer);
+      builder = MeteringDataMeasureOtherWater.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x05)) {
-      builder = MeteringDataMeasureOil.staticParseBuilder(readBuffer);
+      builder = MeteringDataMeasureOil.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x81)) {
-      builder = MeteringDataElectricityConsumption.staticParseBuilder(readBuffer);
+      builder = MeteringDataElectricityConsumption.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x82)) {
-      builder = MeteringDataGasConsumption.staticParseBuilder(readBuffer);
+      builder = MeteringDataGasConsumption.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x83)) {
-      builder = MeteringDataDrinkingWaterConsumption.staticParseBuilder(readBuffer);
+      builder = MeteringDataDrinkingWaterConsumption.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x84)) {
-      builder = MeteringDataOtherWaterConsumption.staticParseBuilder(readBuffer);
+      builder = MeteringDataOtherWaterConsumption.staticParseMeteringDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MeteringCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x85)) {
-      builder = MeteringDataOilConsumption.staticParseBuilder(readBuffer);
+      builder = MeteringDataOilConsumption.staticParseMeteringDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -195,7 +195,7 @@ public abstract class MeteringData implements Message {
     return _meteringData;
   }
 
-  public static interface MeteringDataBuilder {
+  public interface MeteringDataBuilder {
     MeteringData build(MeteringCommandTypeContainer commandTypeContainer, byte argument);
   }
 

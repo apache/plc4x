@@ -69,7 +69,7 @@ public class HistoryReadDetails extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static HistoryReadDetailsBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadDetails");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class HistoryReadDetails extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("HistoryReadDetails");
     // Create the instance
-    return new HistoryReadDetailsBuilder();
+    return new HistoryReadDetailsBuilderImpl();
   }
 
-  public static class HistoryReadDetailsBuilder
+  public static class HistoryReadDetailsBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public HistoryReadDetailsBuilder() {}
+    public HistoryReadDetailsBuilderImpl() {}
 
     public HistoryReadDetails build() {
       HistoryReadDetails historyReadDetails = new HistoryReadDetails();

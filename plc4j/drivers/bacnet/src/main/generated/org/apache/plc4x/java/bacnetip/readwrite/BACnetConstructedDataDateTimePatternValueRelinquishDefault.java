@@ -111,14 +111,13 @@ public class BACnetConstructedDataDateTimePatternValueRelinquishDefault
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDateTimePatternValueRelinquishDefault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -134,21 +133,20 @@ public class BACnetConstructedDataDateTimePatternValueRelinquishDefault
 
     readBuffer.closeContext("BACnetConstructedDataDateTimePatternValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilderImpl(
         BACnetDateTime relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

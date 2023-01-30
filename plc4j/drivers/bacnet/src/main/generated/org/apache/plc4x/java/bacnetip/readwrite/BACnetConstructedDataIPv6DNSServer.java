@@ -135,7 +135,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6DNSServerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -172,23 +172,22 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DNSServer");
     // Create the instance
-    return new BACnetConstructedDataIPv6DNSServerBuilder(
+    return new BACnetConstructedDataIPv6DNSServerBuilderImpl(
         numberOfDataElements, ipv6DnsServer, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6DNSServerBuilder
+  public static class BACnetConstructedDataIPv6DNSServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagOctetString> ipv6DnsServer;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6DNSServerBuilder(
+    public BACnetConstructedDataIPv6DNSServerBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagOctetString> ipv6DnsServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.ipv6DnsServer = ipv6DnsServer;
       this.tagNumber = tagNumber;

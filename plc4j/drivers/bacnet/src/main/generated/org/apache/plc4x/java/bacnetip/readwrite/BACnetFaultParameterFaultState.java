@@ -109,8 +109,8 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultStateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -139,20 +139,19 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
 
     readBuffer.closeContext("BACnetFaultParameterFaultState");
     // Create the instance
-    return new BACnetFaultParameterFaultStateBuilder(openingTag, listOfFaultValues, closingTag);
+    return new BACnetFaultParameterFaultStateBuilderImpl(openingTag, listOfFaultValues, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultStateBuilder
+  public static class BACnetFaultParameterFaultStateBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultStateBuilder(
+    public BACnetFaultParameterFaultStateBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.closingTag = closingTag;

@@ -136,8 +136,9 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAddListElementBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAddListElement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -192,11 +193,11 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAddListElement");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAddListElementBuilder(
+    return new BACnetConfirmedServiceRequestAddListElementBuilderImpl(
         objectIdentifier, propertyIdentifier, arrayIndex, listOfElements, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAddListElementBuilder
+  public static class BACnetConfirmedServiceRequestAddListElementBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
@@ -204,13 +205,12 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     private final BACnetConstructedData listOfElements;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAddListElementBuilder(
+    public BACnetConfirmedServiceRequestAddListElementBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData listOfElements,
         Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

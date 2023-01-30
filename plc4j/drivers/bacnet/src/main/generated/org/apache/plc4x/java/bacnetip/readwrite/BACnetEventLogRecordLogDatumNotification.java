@@ -118,7 +118,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     return lengthInBits;
   }
 
-  public static BACnetEventLogRecordLogDatumNotificationBuilder staticParseBuilder(
+  public static BACnetEventLogRecordLogDatumBuilder staticParseBACnetEventLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventLogRecordLogDatumNotification");
     PositionAware positionAware = readBuffer;
@@ -145,23 +145,22 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
 
     readBuffer.closeContext("BACnetEventLogRecordLogDatumNotification");
     // Create the instance
-    return new BACnetEventLogRecordLogDatumNotificationBuilder(
+    return new BACnetEventLogRecordLogDatumNotificationBuilderImpl(
         innerOpeningTag, notification, innerClosingTag, tagNumber);
   }
 
-  public static class BACnetEventLogRecordLogDatumNotificationBuilder
+  public static class BACnetEventLogRecordLogDatumNotificationBuilderImpl
       implements BACnetEventLogRecordLogDatum.BACnetEventLogRecordLogDatumBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final ConfirmedEventNotificationRequest notification;
     private final BACnetClosingTag innerClosingTag;
     private final Short tagNumber;
 
-    public BACnetEventLogRecordLogDatumNotificationBuilder(
+    public BACnetEventLogRecordLogDatumNotificationBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         ConfirmedEventNotificationRequest notification,
         BACnetClosingTag innerClosingTag,
         Short tagNumber) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.notification = notification;
       this.innerClosingTag = innerClosingTag;

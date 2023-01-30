@@ -189,7 +189,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     return _pnDcp_Pdu_IdentifyRes_Payload;
   }
 
-  public static interface PnDcp_Pdu_IdentifyRes_PayloadBuilder {
+  public interface PnDcp_Pdu_IdentifyRes_PayloadBuilder {
     PnDcp_Pdu_IdentifyRes_Payload build(
         PnDcp_ServiceType serviceType, long xid, int responseDelayFactorOrPadding);
   }

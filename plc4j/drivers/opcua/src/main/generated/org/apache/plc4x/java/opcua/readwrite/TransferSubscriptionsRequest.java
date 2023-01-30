@@ -47,8 +47,6 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
   protected final int noOfSubscriptionIds;
   protected final List<Long> subscriptionIds;
   protected final boolean sendInitialValues;
-  // Reserved Fields
-  private Short reservedField0;
 
   public TransferSubscriptionsRequest(
       ExtensionObjectDefinition requestHeader,
@@ -96,10 +94,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
         "subscriptionIds", subscriptionIds, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (sendInitialValues)
     writeSimpleField("sendInitialValues", sendInitialValues, writeBoolean(writeBuffer));
@@ -137,7 +132,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static TransferSubscriptionsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferSubscriptionsRequest");
     PositionAware positionAware = readBuffer;
@@ -164,36 +159,32 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("TransferSubscriptionsRequest");
     // Create the instance
-    return new TransferSubscriptionsRequestBuilder(
-        requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues, reservedField0);
+    return new TransferSubscriptionsRequestBuilderImpl(
+        requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues);
   }
 
-  public static class TransferSubscriptionsRequestBuilder
+  public static class TransferSubscriptionsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfSubscriptionIds;
     private final List<Long> subscriptionIds;
     private final boolean sendInitialValues;
-    private final Short reservedField0;
 
-    public TransferSubscriptionsRequestBuilder(
+    public TransferSubscriptionsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionIds,
         List<Long> subscriptionIds,
-        boolean sendInitialValues,
-        Short reservedField0) {
+        boolean sendInitialValues) {
       this.requestHeader = requestHeader;
       this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;
       this.sendInitialValues = sendInitialValues;
-      this.reservedField0 = reservedField0;
     }
 
     public TransferSubscriptionsRequest build() {
       TransferSubscriptionsRequest transferSubscriptionsRequest =
           new TransferSubscriptionsRequest(
               requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues);
-      transferSubscriptionsRequest.reservedField0 = reservedField0;
       return transferSubscriptionsRequest;
     }
   }

@@ -67,7 +67,7 @@ public class AccessControlDataAccessPointClosed extends AccessControlData implem
     return lengthInBits;
   }
 
-  public static AccessControlDataAccessPointClosedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataAccessPointClosed");
     PositionAware positionAware = readBuffer;
@@ -76,13 +76,13 @@ public class AccessControlDataAccessPointClosed extends AccessControlData implem
 
     readBuffer.closeContext("AccessControlDataAccessPointClosed");
     // Create the instance
-    return new AccessControlDataAccessPointClosedBuilder();
+    return new AccessControlDataAccessPointClosedBuilderImpl();
   }
 
-  public static class AccessControlDataAccessPointClosedBuilder
+  public static class AccessControlDataAccessPointClosedBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataAccessPointClosedBuilder() {}
+    public AccessControlDataAccessPointClosedBuilderImpl() {}
 
     public AccessControlDataAccessPointClosed build(
         AccessControlCommandTypeContainer commandTypeContainer,

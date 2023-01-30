@@ -68,7 +68,7 @@ public class S7MessageRequest extends S7Message implements Message {
     return lengthInBits;
   }
 
-  public static S7MessageRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7MessageBuilder staticParseS7MessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7MessageRequest");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class S7MessageRequest extends S7Message implements Message {
 
     readBuffer.closeContext("S7MessageRequest");
     // Create the instance
-    return new S7MessageRequestBuilder();
+    return new S7MessageRequestBuilderImpl();
   }
 
-  public static class S7MessageRequestBuilder implements S7Message.S7MessageBuilder {
+  public static class S7MessageRequestBuilderImpl implements S7Message.S7MessageBuilder {
 
-    public S7MessageRequestBuilder() {}
+    public S7MessageRequestBuilderImpl() {}
 
     public S7MessageRequest build(int tpduReference, S7Parameter parameter, S7Payload payload) {
       S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduReference, parameter, payload);

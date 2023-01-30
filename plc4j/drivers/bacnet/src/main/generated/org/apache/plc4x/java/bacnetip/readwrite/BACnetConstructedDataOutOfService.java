@@ -109,7 +109,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOutOfServiceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataOutOfService");
     // Create the instance
-    return new BACnetConstructedDataOutOfServiceBuilder(
+    return new BACnetConstructedDataOutOfServiceBuilderImpl(
         outOfService, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOutOfServiceBuilder
+  public static class BACnetConstructedDataOutOfServiceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean outOfService;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOutOfServiceBuilder(
+    public BACnetConstructedDataOutOfServiceBuilderImpl(
         BACnetApplicationTagBoolean outOfService,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.outOfService = outOfService;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

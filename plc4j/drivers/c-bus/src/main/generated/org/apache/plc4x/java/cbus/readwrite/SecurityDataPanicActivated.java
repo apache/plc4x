@@ -66,7 +66,7 @@ public class SecurityDataPanicActivated extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataPanicActivatedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataPanicActivated");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataPanicActivated extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataPanicActivated");
     // Create the instance
-    return new SecurityDataPanicActivatedBuilder();
+    return new SecurityDataPanicActivatedBuilderImpl();
   }
 
-  public static class SecurityDataPanicActivatedBuilder
+  public static class SecurityDataPanicActivatedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataPanicActivatedBuilder() {}
+    public SecurityDataPanicActivatedBuilderImpl() {}
 
     public SecurityDataPanicActivated build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

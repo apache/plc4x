@@ -98,7 +98,7 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTagRealBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagReal");
@@ -115,16 +115,15 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagReal");
     // Create the instance
-    return new BACnetContextTagRealBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagRealBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagRealBuilder
+  public static class BACnetContextTagRealBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadReal payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagRealBuilder(BACnetTagPayloadReal payload, Short tagNumberArgument) {
-
+    public BACnetContextTagRealBuilderImpl(BACnetTagPayloadReal payload, Short tagNumberArgument) {
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

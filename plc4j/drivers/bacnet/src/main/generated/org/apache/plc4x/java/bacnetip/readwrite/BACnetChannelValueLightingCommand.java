@@ -82,8 +82,8 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     return lengthInBits;
   }
 
-  public static BACnetChannelValueLightingCommandBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueLightingCommand");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,16 +98,15 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
 
     readBuffer.closeContext("BACnetChannelValueLightingCommand");
     // Create the instance
-    return new BACnetChannelValueLightingCommandBuilder(ligthingCommandValue);
+    return new BACnetChannelValueLightingCommandBuilderImpl(ligthingCommandValue);
   }
 
-  public static class BACnetChannelValueLightingCommandBuilder
+  public static class BACnetChannelValueLightingCommandBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetLightingCommandEnclosed ligthingCommandValue;
 
-    public BACnetChannelValueLightingCommandBuilder(
+    public BACnetChannelValueLightingCommandBuilderImpl(
         BACnetLightingCommandEnclosed ligthingCommandValue) {
-
       this.ligthingCommandValue = ligthingCommandValue;
     }
 

@@ -56,8 +56,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   protected final String magicKey;
   protected final AlarmStateType Alarmtype;
   protected final Short Reserve;
-  // Reserved Fields
-  private Short reservedField0;
 
   public S7PayloadUserDataItemCpuFunctionMsgSubscription(
       DataTransportErrorCode returnCode,
@@ -100,10 +98,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     writeSimpleField("Subscription", Subscription, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (magicKey)
     writeSimpleField("magicKey", magicKey, writeString(writeBuffer, 64));
@@ -118,8 +113,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
         (getSubscription()) >= (128));
 
     // Optional Field (Reserve) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "Reserve", Reserve, writeUnsignedShort(writeBuffer, 8), (getSubscription()) >= (128));
+    writeOptionalField("Reserve", Reserve, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
   }
@@ -156,7 +150,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
     PositionAware positionAware = readBuffer;
@@ -182,29 +176,23 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder(
-        Subscription, magicKey, Alarmtype, Reserve, reservedField0);
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl(
+        Subscription, magicKey, Alarmtype, Reserve);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short Subscription;
     private final String magicKey;
     private final AlarmStateType Alarmtype;
     private final Short Reserve;
-    private final Short reservedField0;
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder(
-        short Subscription,
-        String magicKey,
-        AlarmStateType Alarmtype,
-        Short Reserve,
-        Short reservedField0) {
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl(
+        short Subscription, String magicKey, AlarmStateType Alarmtype, Short Reserve) {
       this.Subscription = Subscription;
       this.magicKey = magicKey;
       this.Alarmtype = Alarmtype;
       this.Reserve = Reserve;
-      this.reservedField0 = reservedField0;
     }
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscription build(
@@ -213,7 +201,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
           s7PayloadUserDataItemCpuFunctionMsgSubscription =
               new S7PayloadUserDataItemCpuFunctionMsgSubscription(
                   returnCode, transportSize, Subscription, magicKey, Alarmtype, Reserve);
-      s7PayloadUserDataItemCpuFunctionMsgSubscription.reservedField0 = reservedField0;
       return s7PayloadUserDataItemCpuFunctionMsgSubscription;
     }
   }

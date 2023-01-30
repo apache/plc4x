@@ -109,7 +109,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDirectReadingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataDirectReading");
     // Create the instance
-    return new BACnetConstructedDataDirectReadingBuilder(
+    return new BACnetConstructedDataDirectReadingBuilderImpl(
         directReading, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDirectReadingBuilder
+  public static class BACnetConstructedDataDirectReadingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal directReading;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDirectReadingBuilder(
+    public BACnetConstructedDataDirectReadingBuilderImpl(
         BACnetApplicationTagReal directReading,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.directReading = directReading;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

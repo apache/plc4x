@@ -111,7 +111,7 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInstantaneousPowerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataInstantaneousPower");
     // Create the instance
-    return new BACnetConstructedDataInstantaneousPowerBuilder(
+    return new BACnetConstructedDataInstantaneousPowerBuilderImpl(
         instantaneousPower, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInstantaneousPowerBuilder
+  public static class BACnetConstructedDataInstantaneousPowerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal instantaneousPower;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInstantaneousPowerBuilder(
+    public BACnetConstructedDataInstantaneousPowerBuilderImpl(
         BACnetApplicationTagReal instantaneousPower,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.instantaneousPower = instantaneousPower;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -67,8 +67,8 @@ public class TriggerControlDataTriggerMax extends TriggerControlData implements 
     return lengthInBits;
   }
 
-  public static TriggerControlDataTriggerMaxBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerMax");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class TriggerControlDataTriggerMax extends TriggerControlData implements 
 
     readBuffer.closeContext("TriggerControlDataTriggerMax");
     // Create the instance
-    return new TriggerControlDataTriggerMaxBuilder();
+    return new TriggerControlDataTriggerMaxBuilderImpl();
   }
 
-  public static class TriggerControlDataTriggerMaxBuilder
+  public static class TriggerControlDataTriggerMaxBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
 
-    public TriggerControlDataTriggerMaxBuilder() {}
+    public TriggerControlDataTriggerMaxBuilderImpl() {}
 
     public TriggerControlDataTriggerMax build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup) {

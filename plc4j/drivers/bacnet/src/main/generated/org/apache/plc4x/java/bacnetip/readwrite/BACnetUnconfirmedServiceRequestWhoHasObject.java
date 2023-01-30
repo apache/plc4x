@@ -115,9 +115,12 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     BACnetUnconfirmedServiceRequestWhoHasObjectBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier.staticParseBuilder(readBuffer);
+          BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+              .staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetUnconfirmedServiceRequestWhoHasObjectName.staticParseBuilder(readBuffer);
+      builder =
+          BACnetUnconfirmedServiceRequestWhoHasObjectName
+              .staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -135,7 +138,7 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     return _bACnetUnconfirmedServiceRequestWhoHasObject;
   }
 
-  public static interface BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+  public interface BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
     BACnetUnconfirmedServiceRequestWhoHasObject build(BACnetTagHeader peekedTagHeader);
   }
 

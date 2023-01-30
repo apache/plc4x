@@ -42,12 +42,8 @@ public class ApduDataExtReadRouterMemoryRequest extends ApduDataExt implements M
     return (short) 0x08;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRouterMemoryRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRouterMemoryRequest() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtReadRouterMemoryRequest extends ApduDataExt implements M
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRouterMemoryRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRouterMemoryRequest");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtReadRouterMemoryRequest extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtReadRouterMemoryRequest");
     // Create the instance
-    return new ApduDataExtReadRouterMemoryRequestBuilder(length);
+    return new ApduDataExtReadRouterMemoryRequestBuilderImpl();
   }
 
-  public static class ApduDataExtReadRouterMemoryRequestBuilder
+  public static class ApduDataExtReadRouterMemoryRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRouterMemoryRequestBuilder(Short length) {
+    public ApduDataExtReadRouterMemoryRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRouterMemoryRequest build(Short length) {
-
+    public ApduDataExtReadRouterMemoryRequest build() {
       ApduDataExtReadRouterMemoryRequest apduDataExtReadRouterMemoryRequest =
-          new ApduDataExtReadRouterMemoryRequest(length);
+          new ApduDataExtReadRouterMemoryRequest();
       return apduDataExtReadRouterMemoryRequest;
     }
   }

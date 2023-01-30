@@ -124,7 +124,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandNetworkVoltageBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandNetworkVoltage");
     PositionAware positionAware = readBuffer;
@@ -142,18 +142,17 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
 
     readBuffer.closeContext("IdentifyReplyCommandNetworkVoltage");
     // Create the instance
-    return new IdentifyReplyCommandNetworkVoltageBuilder(volts, voltsDecimalPlace, numBytes);
+    return new IdentifyReplyCommandNetworkVoltageBuilderImpl(volts, voltsDecimalPlace, numBytes);
   }
 
-  public static class IdentifyReplyCommandNetworkVoltageBuilder
+  public static class IdentifyReplyCommandNetworkVoltageBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String volts;
     private final String voltsDecimalPlace;
     private final Short numBytes;
 
-    public IdentifyReplyCommandNetworkVoltageBuilder(
+    public IdentifyReplyCommandNetworkVoltageBuilderImpl(
         String volts, String voltsDecimalPlace, Short numBytes) {
-
       this.volts = volts;
       this.voltsDecimalPlace = voltsDecimalPlace;
       this.numBytes = numBytes;

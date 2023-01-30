@@ -109,7 +109,7 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastUseTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,20 +130,20 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLastUseTime");
     // Create the instance
-    return new BACnetConstructedDataLastUseTimeBuilder(lastUseTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastUseTimeBuilderImpl(
+        lastUseTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastUseTimeBuilder
+  public static class BACnetConstructedDataLastUseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime lastUseTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastUseTimeBuilder(
+    public BACnetConstructedDataLastUseTimeBuilderImpl(
         BACnetDateTime lastUseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastUseTime = lastUseTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

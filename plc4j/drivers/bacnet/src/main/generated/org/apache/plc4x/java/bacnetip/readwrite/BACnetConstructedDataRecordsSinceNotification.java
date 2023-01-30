@@ -113,7 +113,7 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRecordsSinceNotificationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,21 +139,20 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataRecordsSinceNotification");
     // Create the instance
-    return new BACnetConstructedDataRecordsSinceNotificationBuilder(
+    return new BACnetConstructedDataRecordsSinceNotificationBuilderImpl(
         recordsSinceNotifications, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRecordsSinceNotificationBuilder
+  public static class BACnetConstructedDataRecordsSinceNotificationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger recordsSinceNotifications;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRecordsSinceNotificationBuilder(
+    public BACnetConstructedDataRecordsSinceNotificationBuilderImpl(
         BACnetApplicationTagUnsignedInteger recordsSinceNotifications,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.recordsSinceNotifications = recordsSinceNotifications;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

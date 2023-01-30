@@ -69,7 +69,7 @@ public class MonitoringFilterResult extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static MonitoringFilterResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoringFilterResult");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class MonitoringFilterResult extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("MonitoringFilterResult");
     // Create the instance
-    return new MonitoringFilterResultBuilder();
+    return new MonitoringFilterResultBuilderImpl();
   }
 
-  public static class MonitoringFilterResultBuilder
+  public static class MonitoringFilterResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public MonitoringFilterResultBuilder() {}
+    public MonitoringFilterResultBuilderImpl() {}
 
     public MonitoringFilterResult build() {
       MonitoringFilterResult monitoringFilterResult = new MonitoringFilterResult();

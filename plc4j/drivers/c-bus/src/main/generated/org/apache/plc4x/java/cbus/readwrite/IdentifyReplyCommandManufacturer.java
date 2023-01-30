@@ -87,7 +87,7 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandManufacturerBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandManufacturer");
     PositionAware positionAware = readBuffer;
@@ -98,16 +98,15 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
 
     readBuffer.closeContext("IdentifyReplyCommandManufacturer");
     // Create the instance
-    return new IdentifyReplyCommandManufacturerBuilder(manufacturerName, numBytes);
+    return new IdentifyReplyCommandManufacturerBuilderImpl(manufacturerName, numBytes);
   }
 
-  public static class IdentifyReplyCommandManufacturerBuilder
+  public static class IdentifyReplyCommandManufacturerBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String manufacturerName;
     private final Short numBytes;
 
-    public IdentifyReplyCommandManufacturerBuilder(String manufacturerName, Short numBytes) {
-
+    public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName, Short numBytes) {
       this.manufacturerName = manufacturerName;
       this.numBytes = numBytes;
     }

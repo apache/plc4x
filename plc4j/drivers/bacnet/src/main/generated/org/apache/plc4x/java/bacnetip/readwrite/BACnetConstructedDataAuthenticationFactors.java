@@ -136,7 +136,7 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthenticationFactorsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAuthenticationFactors");
     // Create the instance
-    return new BACnetConstructedDataAuthenticationFactorsBuilder(
+    return new BACnetConstructedDataAuthenticationFactorsBuilderImpl(
         numberOfDataElements, authenticationFactors, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthenticationFactorsBuilder
+  public static class BACnetConstructedDataAuthenticationFactorsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetCredentialAuthenticationFactor> authenticationFactors;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthenticationFactorsBuilder(
+    public BACnetConstructedDataAuthenticationFactorsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetCredentialAuthenticationFactor> authenticationFactors,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.authenticationFactors = authenticationFactors;
       this.tagNumber = tagNumber;

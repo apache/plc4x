@@ -42,12 +42,8 @@ public class TDataConnectedReq extends CEMI implements Message {
     return (short) 0x41;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public TDataConnectedReq(Integer size) {
-    super(size);
-    this.size = size;
+  public TDataConnectedReq() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class TDataConnectedReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static TDataConnectedReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("TDataConnectedReq");
     PositionAware positionAware = readBuffer;
@@ -81,21 +77,15 @@ public class TDataConnectedReq extends CEMI implements Message {
 
     readBuffer.closeContext("TDataConnectedReq");
     // Create the instance
-    return new TDataConnectedReqBuilder(size);
+    return new TDataConnectedReqBuilderImpl();
   }
 
-  public static class TDataConnectedReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class TDataConnectedReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public TDataConnectedReqBuilder(Integer size) {
+    public TDataConnectedReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public TDataConnectedReq build(Integer size) {
-
-      TDataConnectedReq tDataConnectedReq = new TDataConnectedReq(size);
-
+    public TDataConnectedReq build() {
+      TDataConnectedReq tDataConnectedReq = new TDataConnectedReq();
       return tDataConnectedReq;
     }
   }

@@ -102,7 +102,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenSDORequestBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenSDORequest");
     PositionAware positionAware = readBuffer;
@@ -125,15 +125,14 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenSDORequest");
     // Create the instance
-    return new CANOpenSDORequestBuilder(command, request);
+    return new CANOpenSDORequestBuilderImpl(command, request);
   }
 
-  public static class CANOpenSDORequestBuilder implements CANOpenPayload.CANOpenPayloadBuilder {
+  public static class CANOpenSDORequestBuilderImpl implements CANOpenPayload.CANOpenPayloadBuilder {
     private final SDORequestCommand command;
     private final SDORequest request;
 
-    public CANOpenSDORequestBuilder(SDORequestCommand command, SDORequest request) {
-
+    public CANOpenSDORequestBuilderImpl(SDORequestCommand command, SDORequest request) {
       this.command = command;
       this.request = request;
     }

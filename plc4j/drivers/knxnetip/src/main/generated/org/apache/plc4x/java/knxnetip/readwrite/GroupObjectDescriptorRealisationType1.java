@@ -46,8 +46,6 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
   protected final boolean communicationEnable;
   protected final CEMIPriority priority;
   protected final ComObjectValueType valueType;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public GroupObjectDescriptorRealisationType1(
       short dataPointer,
@@ -110,10 +108,7 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
     writeSimpleField("dataPointer", dataPointer, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x1,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x1, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (transmitEnable)
     writeSimpleField("transmitEnable", transmitEnable, writeBoolean(writeBuffer));
@@ -247,7 +242,6 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
             communicationEnable,
             priority,
             valueType);
-    _groupObjectDescriptorRealisationType1.reservedField0 = reservedField0;
     return _groupObjectDescriptorRealisationType1;
   }
 

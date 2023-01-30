@@ -109,7 +109,7 @@ public class BACnetConstructedDataCount extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataCount extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataCount");
     // Create the instance
-    return new BACnetConstructedDataCountBuilder(count, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCountBuilderImpl(count, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCountBuilder
+  public static class BACnetConstructedDataCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger count;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCountBuilder(
+    public BACnetConstructedDataCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger count,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.count = count;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

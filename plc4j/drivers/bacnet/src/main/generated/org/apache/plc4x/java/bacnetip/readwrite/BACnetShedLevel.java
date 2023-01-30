@@ -113,11 +113,11 @@ public abstract class BACnetShedLevel implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetShedLevelBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetShedLevelPercent.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelPercent.staticParseBACnetShedLevelBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetShedLevelLevel.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelLevel.staticParseBACnetShedLevelBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetShedLevelAmount.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelAmount.staticParseBACnetShedLevelBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +134,7 @@ public abstract class BACnetShedLevel implements Message {
     return _bACnetShedLevel;
   }
 
-  public static interface BACnetShedLevelBuilder {
+  public interface BACnetShedLevelBuilder {
     BACnetShedLevel build(BACnetTagHeader peekedTagHeader);
   }
 
