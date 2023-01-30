@@ -67,6 +67,13 @@ public class DceRpc_Packet implements Message {
   protected final DceRpc_Operation operation;
   protected final PnIoCm_Packet payload;
 
+  // Reserved Fields
+  private Boolean reservedField0;
+  private Boolean reservedField1;
+  private Short reservedField2;
+  private Boolean reservedField3;
+  private Short reservedField4;
+
   public DceRpc_Packet(
       DceRpc_PacketType packetType,
       boolean idempotent,
@@ -229,7 +236,7 @@ public class DceRpc_Packet implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (boolean) false,
+        reservedField0 != null ? reservedField0 : (boolean) false,
         writeBoolean(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -275,14 +282,14 @@ public class DceRpc_Packet implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (boolean) false,
+        reservedField1 != null ? reservedField1 : (boolean) false,
         writeBoolean(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (short) 0x00,
+        reservedField2 != null ? reservedField2 : (short) 0x00,
         writeUnsignedShort(writeBuffer, 6),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -296,7 +303,7 @@ public class DceRpc_Packet implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (boolean) false,
+        reservedField3 != null ? reservedField3 : (boolean) false,
         writeBoolean(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -334,7 +341,7 @@ public class DceRpc_Packet implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (short) 0x00,
+        reservedField4 != null ? reservedField4 : (short) 0x00,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -890,6 +897,11 @@ public class DceRpc_Packet implements Message {
             sequenceNumber,
             operation,
             payload);
+    _dceRpc_Packet.reservedField0 = reservedField0;
+    _dceRpc_Packet.reservedField1 = reservedField1;
+    _dceRpc_Packet.reservedField2 = reservedField2;
+    _dceRpc_Packet.reservedField3 = reservedField3;
+    _dceRpc_Packet.reservedField4 = reservedField4;
     return _dceRpc_Packet;
   }
 

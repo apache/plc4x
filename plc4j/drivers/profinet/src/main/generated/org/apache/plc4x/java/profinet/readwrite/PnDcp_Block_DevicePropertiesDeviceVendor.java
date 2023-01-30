@@ -49,9 +49,15 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
   // Properties.
   protected final byte[] deviceVendorValue;
 
-  public PnDcp_Block_DevicePropertiesDeviceVendor(byte[] deviceVendorValue) {
+  // Arguments.
+  protected final Integer blockLength;
+  // Reserved Fields
+  private Integer reservedField0;
+
+  public PnDcp_Block_DevicePropertiesDeviceVendor(byte[] deviceVendorValue, Integer blockLength) {
     super();
     this.deviceVendorValue = deviceVendorValue;
+    this.blockLength = blockLength;
   }
 
   public byte[] getDeviceVendorValue() {
@@ -65,7 +71,10 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceVendor");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (deviceVendorValue)
     writeByteArrayField("deviceVendorValue", deviceVendorValue, writeByteArray(writeBuffer, 8));
@@ -136,20 +145,27 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceVendor");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(deviceVendorValue);
+    return new PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
+        deviceVendorValue, blockLength, reservedField0);
   }
 
   public static class PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] deviceVendorValue;
+    private final Integer blockLength;
+    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(byte[] deviceVendorValue) {
+    public PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
+        byte[] deviceVendorValue, Integer blockLength, Integer reservedField0) {
       this.deviceVendorValue = deviceVendorValue;
+      this.blockLength = blockLength;
+      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceVendor build() {
       PnDcp_Block_DevicePropertiesDeviceVendor pnDcp_Block_DevicePropertiesDeviceVendor =
-          new PnDcp_Block_DevicePropertiesDeviceVendor(deviceVendorValue);
+          new PnDcp_Block_DevicePropertiesDeviceVendor(deviceVendorValue, blockLength);
+      pnDcp_Block_DevicePropertiesDeviceVendor.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesDeviceVendor;
     }
   }

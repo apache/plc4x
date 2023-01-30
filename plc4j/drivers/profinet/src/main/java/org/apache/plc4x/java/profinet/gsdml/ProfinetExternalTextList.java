@@ -16,17 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.profinet.protocol;
 
-import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+package org.apache.plc4x.java.profinet.gsdml;
 
-public class ProfinetDiscoveryLogic extends Plc4xProtocolBase<Ethernet_Frame> {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-    @Override
-    public void close(ConversationContext<Ethernet_Frame> context) {
+import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ProfinetExternalTextList {
+
+    @JacksonXmlProperty(localName="PrimaryLanguage")
+    private ProfinetPrimaryLanguage primaryLanguage;
+
+    public ProfinetPrimaryLanguage getPrimaryLanguage() {
+        return primaryLanguage;
     }
-
 }

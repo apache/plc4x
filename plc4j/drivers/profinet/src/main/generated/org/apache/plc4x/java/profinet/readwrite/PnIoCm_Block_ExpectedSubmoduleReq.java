@@ -43,14 +43,26 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis;
 
   public PnIoCm_Block_ExpectedSubmoduleReq(
       short blockVersionHigh,
       short blockVersionLow,
       List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.apis = apis;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
   }
 
   public List<PnIoCm_ExpectedSubmoduleBlockReqApi> getApis() {
@@ -62,6 +74,29 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     PositionAware positionAware = writeBuffer;
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ExpectedSubmoduleReq");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
@@ -89,6 +124,15 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ExpectedSubmoduleReq _value = this;
 
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
+
     // Implicit Field (numberOfApis)
     lengthInBits += 16;
 
@@ -111,6 +155,24 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     int startPos = positionAware.getPos();
     int curPos;
 
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
     int numberOfApis =
         readImplicitField(
             "numberOfApis",
@@ -127,19 +189,26 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
 
     readBuffer.closeContext("PnIoCm_Block_ExpectedSubmoduleReq");
     // Create the instance
-    return new PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(apis);
+    return new PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(
+        blockVersionHigh, blockVersionLow, apis);
   }
 
   public static class PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl
       implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis;
 
     public PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(
+        short blockVersionHigh,
+        short blockVersionLow,
         List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.apis = apis;
     }
 
-    public PnIoCm_Block_ExpectedSubmoduleReq build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_ExpectedSubmoduleReq build() {
       PnIoCm_Block_ExpectedSubmoduleReq pnIoCm_Block_ExpectedSubmoduleReq =
           new PnIoCm_Block_ExpectedSubmoduleReq(blockVersionHigh, blockVersionLow, apis);
       return pnIoCm_Block_ExpectedSubmoduleReq;
@@ -155,12 +224,16 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
       return false;
     }
     PnIoCm_Block_ExpectedSubmoduleReq that = (PnIoCm_Block_ExpectedSubmoduleReq) o;
-    return (getApis() == that.getApis()) && super.equals(that) && true;
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getApis() == that.getApis())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getApis());
+    return Objects.hash(super.hashCode(), getBlockVersionHigh(), getBlockVersionLow(), getApis());
   }
 
   @Override
