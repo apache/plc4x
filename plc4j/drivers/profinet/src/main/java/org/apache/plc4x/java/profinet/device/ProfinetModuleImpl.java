@@ -255,7 +255,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
     }
 
     @Override
-    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems, String addressSpace, Map<String, PlcValue> options) {
+    public List<PlcBrowseItem> browseTags(List<PlcBrowseItem> browseItems, String addressSpace, Map<String, PlcValue> options) {
         for (PnIoCm_IoDataObject block : inputIoPsApiBlocks) {
             int identNumber = block.getSubSlotNumber();
             for (ProfinetVirtualSubmoduleItem virtual : module.getVirtualSubmoduleList()) {
@@ -268,19 +268,19 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     }
 
                     String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + virtual.getId() + ".Status";
-                    browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
+                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options));
                     if (virtual.getIoData() != null && virtual.getIoData().getInput() != null) {
                         for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
                             for (ProfinetDataItem item : input.getDataItemList()) {
                                 if (item.isUseAsBits()) {
                                     for (ProfinetBitDataItem bitItem : item.getBitDataItem()) {
                                         String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + bitItem.getBitOffset();
-                                        browseItems.put(tagName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":BOOL"), tagName, false, false, true, new HashMap<>(), options)));
+                                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":BOOL"), tagName, false, false, true, new HashMap<>(), options));
                                     }
                                 } else {
                                     String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId();
                                     String datatype = ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).toString();
-                                    browseItems.put(tagName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":" + datatype), tagName, false, false, true, new HashMap<>(), options)));
+                                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":" + datatype), tagName, false, false, true, new HashMap<>(), options));
                                 }
                             }
                         }
@@ -291,13 +291,13 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 for (ProfinetInterfaceSubmoduleItem systemInterface : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
                     if (identNumber == systemInterface.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getId() + ".Status";
-                        browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
+                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options));
                     }
                 }
                 for (ProfinetPortSubmoduleItem systemPort : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
                     if (identNumber == systemPort.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getId() + ".Status";
-                        browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
+                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options));
                     }
                 }
             }
@@ -322,8 +322,8 @@ public class ProfinetModuleImpl implements ProfinetModule {
                                     }
                                 } else {
                                     String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId();
-                                    String datatype = ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).toString();
-                                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.firstEnumForFieldConversion(datatype), 1)));
+                                    ProfinetDataType datatype = ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase());
+                                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, datatype, 1)));
                                 }
                             }
                         }

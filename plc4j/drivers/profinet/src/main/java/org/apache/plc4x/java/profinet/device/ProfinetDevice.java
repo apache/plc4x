@@ -70,7 +70,6 @@ public class ProfinetDevice implements PlcSubscriber{
     private String deviceId;
     private Thread eventLoop = null;
     Map<String, List<Consumer<PlcSubscriptionEvent>>> registrations = new HashMap<>();
-    Map<Consumer<PlcSubscriptionEvent>, Consumer<PlcSubscriptionEvent>> consumers = new HashMap<>();
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -252,7 +251,7 @@ public class ProfinetDevice implements PlcSubscriber{
         The children are a list of configured submodules, with the same format as the parent.
         Each address of the children is formatted with the format i.e. parent.submodule.chiildtag
      */
-    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems) {
+    public List<PlcBrowseItem> browseTags(List<PlcBrowseItem> browseItems) {
         Map<String, PlcValue> options = getDeviceInfo();
         for (ProfinetModule module : deviceContext.getModules()) {
             browseItems = module.browseTags(browseItems, deviceContext.getDeviceName(), options);
@@ -555,6 +554,13 @@ public class ProfinetDevice implements PlcSubscriber{
                     if (connectResponse.getErrorCode() == 0) {
                         deviceContext.setState(ProfinetDeviceState.STARTUP);
                         responseHandled.complete(true);
+                        for (PnIoCm_Block module : connectResponse.getBlocks()) {
+                            if (module.getBlockType() == PnIoCm_BlockType.MODULE_DIFF_BLOCK) {
+                                PnIoCm_Block_ModuleDiff diffModule = (PnIoCm_Block_ModuleDiff) module;
+                                logger.error("Module is different to what is expected in slot {}", diffModule.getApis().get(0).getModules().get(0).getSlotNumber());
+                                deviceContext.setState(ProfinetDeviceState.ABORT);
+                            }
+                        }
                     } else {
                         deviceContext.setState(ProfinetDeviceState.ABORT);
                         // TODO:- Introduce the error code lookups
@@ -648,7 +654,7 @@ public class ProfinetDevice implements PlcSubscriber{
                     }
                 }
 
-                if (foundModule.getVirtualSubmoduleList().get(0).getRecordDataList() != null) {
+                if (foundModule != null && foundModule.getVirtualSubmoduleList().get(0).getRecordDataList() != null) {
                     for (ProfinetParameterRecordDataItem record : foundModule.getVirtualSubmoduleList().get(0).getRecordDataList()) {
                         requests.add(
                             new IODWriteRequestHeader(

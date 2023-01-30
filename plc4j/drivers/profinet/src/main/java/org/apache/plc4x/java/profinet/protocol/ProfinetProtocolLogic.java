@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.profinet.protocol;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -97,7 +99,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
     }
 
-    private void onDeviceDiscovery() throws InterruptedException {
+    private void onDeviceDiscovery() throws InterruptedException, PlcConnectionException {
         ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(driverContext.getChannel());
         driverContext.getChannel().setDiscoverer(discoverer);
         DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(discoverer, new LinkedHashMap<>());
@@ -105,7 +107,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         waitForDeviceDiscovery();
     }
 
-    private void waitForDeviceDiscovery() throws InterruptedException {
+    private void waitForDeviceDiscovery() throws InterruptedException, PlcConnectionException {
         // Once we receive an LLDP and PN-DCP message for each device move on.
         boolean discovered = false;
         int count = 0;
@@ -121,7 +123,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 count += 1;
             }
             if (count > 5) {
-                break;
+                throw new PlcConnectionException("One device failed to respond to discovery packet");
             }
         }
     }
@@ -129,15 +131,19 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
-        Map<String, List<PlcBrowseItem>> values = new HashMap<>();
+        List<PlcBrowseItem> values = new ArrayList<>();
         Map<String, PlcResponseCode> codes = new HashMap<>();
+        Map<String, List<PlcBrowseItem>> responseValues = new HashMap<>();
 
         for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
             device.getValue().browseTags(values);
-            codes.put(device.getKey(), PlcResponseCode.OK);
         }
 
-        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, codes, values);
+        for (String queryname : browseRequest.getQueryNames()) {
+            responseValues.put(queryname, values);
+        }
+
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, codes, responseValues);
         future.complete(response);
         return future;
     }
@@ -158,7 +164,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         try {
             onDeviceDiscovery();
-        } catch (InterruptedException ignored) {}
+        } catch (PlcException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
             device.getValue().getDeviceContext().setChannel(driverContext.getChannel());

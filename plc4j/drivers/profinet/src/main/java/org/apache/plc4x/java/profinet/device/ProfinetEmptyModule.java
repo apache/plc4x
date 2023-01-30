@@ -70,7 +70,7 @@ public class ProfinetEmptyModule implements ProfinetModule{
     }
 
     @Override
-    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems, String addressSpace, Map<String, PlcValue> options) {
+    public List<PlcBrowseItem> browseTags(List<PlcBrowseItem> browseItems, String addressSpace, Map<String, PlcValue> options) {
         return browseItems;
     }
 
