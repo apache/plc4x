@@ -42,12 +42,8 @@ public class MResetInd extends CEMI implements Message {
     return (short) 0xF0;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MResetInd(Integer size) {
-    super(size);
-    this.size = size;
+  public MResetInd() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class MResetInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MResetIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MResetInd");
     PositionAware positionAware = readBuffer;
@@ -81,21 +77,15 @@ public class MResetInd extends CEMI implements Message {
 
     readBuffer.closeContext("MResetInd");
     // Create the instance
-    return new MResetIndBuilder(size);
+    return new MResetIndBuilderImpl();
   }
 
-  public static class MResetIndBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class MResetIndBuilderImpl implements CEMI.CEMIBuilder {
 
-    public MResetIndBuilder(Integer size) {
+    public MResetIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MResetInd build(Integer size) {
-
-      MResetInd mResetInd = new MResetInd(size);
-
+    public MResetInd build() {
+      MResetInd mResetInd = new MResetInd();
       return mResetInd;
     }
   }

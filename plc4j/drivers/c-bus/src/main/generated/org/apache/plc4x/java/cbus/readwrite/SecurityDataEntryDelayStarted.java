@@ -66,7 +66,7 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
     return lengthInBits;
   }
 
-  public static SecurityDataEntryDelayStartedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataEntryDelayStarted");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
 
     readBuffer.closeContext("SecurityDataEntryDelayStarted");
     // Create the instance
-    return new SecurityDataEntryDelayStartedBuilder();
+    return new SecurityDataEntryDelayStartedBuilderImpl();
   }
 
-  public static class SecurityDataEntryDelayStartedBuilder
+  public static class SecurityDataEntryDelayStartedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataEntryDelayStartedBuilder() {}
+    public SecurityDataEntryDelayStartedBuilderImpl() {}
 
     public SecurityDataEntryDelayStarted build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

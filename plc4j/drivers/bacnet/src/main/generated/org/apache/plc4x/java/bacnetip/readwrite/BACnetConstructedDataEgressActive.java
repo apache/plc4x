@@ -109,7 +109,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEgressActiveBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataEgressActive");
     // Create the instance
-    return new BACnetConstructedDataEgressActiveBuilder(
+    return new BACnetConstructedDataEgressActiveBuilderImpl(
         egressActive, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEgressActiveBuilder
+  public static class BACnetConstructedDataEgressActiveBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean egressActive;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEgressActiveBuilder(
+    public BACnetConstructedDataEgressActiveBuilderImpl(
         BACnetApplicationTagBoolean egressActive,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressActive = egressActive;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

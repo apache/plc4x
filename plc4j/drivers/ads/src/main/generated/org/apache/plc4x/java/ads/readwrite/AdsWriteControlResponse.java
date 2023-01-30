@@ -98,7 +98,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsWriteControlResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsWriteControlResponse");
     PositionAware positionAware = readBuffer;
@@ -114,14 +114,13 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsWriteControlResponse");
     // Create the instance
-    return new AdsWriteControlResponseBuilder(result);
+    return new AdsWriteControlResponseBuilderImpl(result);
   }
 
-  public static class AdsWriteControlResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsWriteControlResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
 
-    public AdsWriteControlResponseBuilder(ReturnCode result) {
-
+    public AdsWriteControlResponseBuilderImpl(ReturnCode result) {
       this.result = result;
     }
 

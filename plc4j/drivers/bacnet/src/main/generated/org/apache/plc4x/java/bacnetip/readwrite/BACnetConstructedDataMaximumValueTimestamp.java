@@ -113,7 +113,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaximumValueTimestampBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMaximumValueTimestamp");
     // Create the instance
-    return new BACnetConstructedDataMaximumValueTimestampBuilder(
+    return new BACnetConstructedDataMaximumValueTimestampBuilderImpl(
         maximumValueTimestamp, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaximumValueTimestampBuilder
+  public static class BACnetConstructedDataMaximumValueTimestampBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime maximumValueTimestamp;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaximumValueTimestampBuilder(
+    public BACnetConstructedDataMaximumValueTimestampBuilderImpl(
         BACnetDateTime maximumValueTimestamp,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maximumValueTimestamp = maximumValueTimestamp;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

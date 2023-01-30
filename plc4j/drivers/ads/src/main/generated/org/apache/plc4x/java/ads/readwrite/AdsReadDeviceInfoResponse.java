@@ -152,7 +152,7 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadDeviceInfoResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadDeviceInfoResponse");
     PositionAware positionAware = readBuffer;
@@ -176,20 +176,19 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadDeviceInfoResponse");
     // Create the instance
-    return new AdsReadDeviceInfoResponseBuilder(
+    return new AdsReadDeviceInfoResponseBuilderImpl(
         result, majorVersion, minorVersion, version, device);
   }
 
-  public static class AdsReadDeviceInfoResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadDeviceInfoResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
     private final short majorVersion;
     private final short minorVersion;
     private final int version;
     private final byte[] device;
 
-    public AdsReadDeviceInfoResponseBuilder(
+    public AdsReadDeviceInfoResponseBuilderImpl(
         ReturnCode result, short majorVersion, short minorVersion, int version, byte[] device) {
-
       this.result = result;
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;

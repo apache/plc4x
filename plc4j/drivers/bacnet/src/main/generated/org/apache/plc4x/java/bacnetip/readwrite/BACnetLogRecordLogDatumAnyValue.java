@@ -91,7 +91,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumAnyValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumAnyValue");
     PositionAware positionAware = readBuffer;
@@ -114,16 +114,16 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
 
     readBuffer.closeContext("BACnetLogRecordLogDatumAnyValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumAnyValueBuilder(anyValue, tagNumber);
+    return new BACnetLogRecordLogDatumAnyValueBuilderImpl(anyValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumAnyValueBuilder
+  public static class BACnetLogRecordLogDatumAnyValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetConstructedData anyValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumAnyValueBuilder(BACnetConstructedData anyValue, Short tagNumber) {
-
+    public BACnetLogRecordLogDatumAnyValueBuilderImpl(
+        BACnetConstructedData anyValue, Short tagNumber) {
       this.anyValue = anyValue;
       this.tagNumber = tagNumber;
     }

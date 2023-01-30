@@ -78,7 +78,7 @@ public class ErrorResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static ErrorResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ErrorResponse");
     PositionAware positionAware = readBuffer;
@@ -87,12 +87,12 @@ public class ErrorResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("ErrorResponse");
     // Create the instance
-    return new ErrorResponseBuilder();
+    return new ErrorResponseBuilderImpl();
   }
 
-  public static class ErrorResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class ErrorResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
 
-    public ErrorResponseBuilder() {}
+    public ErrorResponseBuilderImpl() {}
 
     public ErrorResponse build(
         AmsNetId targetAmsNetId,

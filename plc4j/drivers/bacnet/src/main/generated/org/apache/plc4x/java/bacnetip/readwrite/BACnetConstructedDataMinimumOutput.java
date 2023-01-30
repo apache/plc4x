@@ -109,7 +109,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumOutputBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOutput");
     // Create the instance
-    return new BACnetConstructedDataMinimumOutputBuilder(
+    return new BACnetConstructedDataMinimumOutputBuilderImpl(
         minimumOutput, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumOutputBuilder
+  public static class BACnetConstructedDataMinimumOutputBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minimumOutput;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumOutputBuilder(
+    public BACnetConstructedDataMinimumOutputBuilderImpl(
         BACnetApplicationTagReal minimumOutput,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumOutput = minimumOutput;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

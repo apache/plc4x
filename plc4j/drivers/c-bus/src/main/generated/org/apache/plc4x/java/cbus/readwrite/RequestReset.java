@@ -133,7 +133,7 @@ public class RequestReset extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestResetBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestReset");
     PositionAware positionAware = readBuffer;
@@ -168,23 +168,22 @@ public class RequestReset extends Request implements Message {
 
     readBuffer.closeContext("RequestReset");
     // Create the instance
-    return new RequestResetBuilder(tildePeek, secondTilde, tildePeek2, thirdTilde, cBusOptions);
+    return new RequestResetBuilderImpl(tildePeek, secondTilde, tildePeek2, thirdTilde, cBusOptions);
   }
 
-  public static class RequestResetBuilder implements Request.RequestBuilder {
+  public static class RequestResetBuilderImpl implements Request.RequestBuilder {
     private final RequestType tildePeek;
     private final RequestType secondTilde;
     private final RequestType tildePeek2;
     private final RequestType thirdTilde;
     private final CBusOptions cBusOptions;
 
-    public RequestResetBuilder(
+    public RequestResetBuilderImpl(
         RequestType tildePeek,
         RequestType secondTilde,
         RequestType tildePeek2,
         RequestType thirdTilde,
         CBusOptions cBusOptions) {
-
       this.tildePeek = tildePeek;
       this.secondTilde = secondTilde;
       this.tildePeek2 = tildePeek2;

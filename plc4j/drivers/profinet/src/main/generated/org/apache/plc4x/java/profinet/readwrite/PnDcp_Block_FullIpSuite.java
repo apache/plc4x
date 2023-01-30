@@ -72,7 +72,7 @@ public class PnDcp_Block_FullIpSuite extends PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block_FullIpSuiteBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_FullIpSuite");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,12 @@ public class PnDcp_Block_FullIpSuite extends PnDcp_Block implements Message {
 
     readBuffer.closeContext("PnDcp_Block_FullIpSuite");
     // Create the instance
-    return new PnDcp_Block_FullIpSuiteBuilder();
+    return new PnDcp_Block_FullIpSuiteBuilderImpl();
   }
 
-  public static class PnDcp_Block_FullIpSuiteBuilder implements PnDcp_Block.PnDcp_BlockBuilder {
+  public static class PnDcp_Block_FullIpSuiteBuilderImpl implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_FullIpSuiteBuilder() {}
+    public PnDcp_Block_FullIpSuiteBuilderImpl() {}
 
     public PnDcp_Block_FullIpSuite build() {
       PnDcp_Block_FullIpSuite pnDcp_Block_FullIpSuite = new PnDcp_Block_FullIpSuite();

@@ -83,7 +83,7 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
     return lengthInBits;
   }
 
-  public static KnxGroupAddressFreeLevelBuilder staticParseBuilder(
+  public static KnxGroupAddressBuilder staticParseKnxGroupAddressBuilder(
       ReadBuffer readBuffer, Byte numLevels) throws ParseException {
     readBuffer.pullContext("KnxGroupAddressFreeLevel");
     PositionAware positionAware = readBuffer;
@@ -94,15 +94,14 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
 
     readBuffer.closeContext("KnxGroupAddressFreeLevel");
     // Create the instance
-    return new KnxGroupAddressFreeLevelBuilder(subGroup);
+    return new KnxGroupAddressFreeLevelBuilderImpl(subGroup);
   }
 
-  public static class KnxGroupAddressFreeLevelBuilder
+  public static class KnxGroupAddressFreeLevelBuilderImpl
       implements KnxGroupAddress.KnxGroupAddressBuilder {
     private final int subGroup;
 
-    public KnxGroupAddressFreeLevelBuilder(int subGroup) {
-
+    public KnxGroupAddressFreeLevelBuilderImpl(int subGroup) {
       this.subGroup = subGroup;
     }
 

@@ -68,7 +68,7 @@ public class ApduControlConnect extends ApduControl implements Message {
     return lengthInBits;
   }
 
-  public static ApduControlConnectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ApduControlBuilder staticParseApduControlBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ApduControlConnect");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class ApduControlConnect extends ApduControl implements Message {
 
     readBuffer.closeContext("ApduControlConnect");
     // Create the instance
-    return new ApduControlConnectBuilder();
+    return new ApduControlConnectBuilderImpl();
   }
 
-  public static class ApduControlConnectBuilder implements ApduControl.ApduControlBuilder {
+  public static class ApduControlConnectBuilderImpl implements ApduControl.ApduControlBuilder {
 
-    public ApduControlConnectBuilder() {}
+    public ApduControlConnectBuilderImpl() {}
 
     public ApduControlConnect build() {
       ApduControlConnect apduControlConnect = new ApduControlConnect();

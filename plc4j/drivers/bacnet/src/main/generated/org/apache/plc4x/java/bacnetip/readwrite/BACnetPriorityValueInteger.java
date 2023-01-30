@@ -87,7 +87,7 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueIntegerBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueInteger");
     PositionAware positionAware = readBuffer;
@@ -105,17 +105,16 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueInteger");
     // Create the instance
-    return new BACnetPriorityValueIntegerBuilder(integerValue, objectTypeArgument);
+    return new BACnetPriorityValueIntegerBuilderImpl(integerValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueIntegerBuilder
+  public static class BACnetPriorityValueIntegerBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueIntegerBuilder(
+    public BACnetPriorityValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
-
       this.integerValue = integerValue;
       this.objectTypeArgument = objectTypeArgument;
     }

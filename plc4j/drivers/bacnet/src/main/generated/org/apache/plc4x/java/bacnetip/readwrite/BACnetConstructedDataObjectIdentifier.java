@@ -111,7 +111,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectIdentifierBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataObjectIdentifier");
     // Create the instance
-    return new BACnetConstructedDataObjectIdentifierBuilder(
+    return new BACnetConstructedDataObjectIdentifierBuilderImpl(
         objectIdentifier, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectIdentifierBuilder
+  public static class BACnetConstructedDataObjectIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectIdentifierBuilder(
+    public BACnetConstructedDataObjectIdentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectIdentifier = objectIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

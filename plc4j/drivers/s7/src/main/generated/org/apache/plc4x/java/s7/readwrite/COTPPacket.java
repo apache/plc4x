@@ -44,14 +44,10 @@ public abstract class COTPPacket implements Message {
   protected final List<COTPParameter> parameters;
   protected final S7Message payload;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
-  public COTPPacket(List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
+  public COTPPacket(List<COTPParameter> parameters, S7Message payload) {
     super();
     this.parameters = parameters;
     this.payload = payload;
-    this.cotpLen = cotpLen;
   }
 
   public List<COTPParameter> getParameters() {
@@ -89,11 +85,7 @@ public abstract class COTPPacket implements Message {
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "payload",
-        payload,
-        new DataWriterComplexDefault<>(writeBuffer),
-        ((positionAware.getPos() - startPos)) < (cotpLen));
+    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("COTPPacket");
   }
@@ -165,17 +157,17 @@ public abstract class COTPPacket implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     COTPPacketBuilder builder = null;
     if (EvaluationHelper.equals(tpduCode, (short) 0xF0)) {
-      builder = COTPPacketData.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketData.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     } else if (EvaluationHelper.equals(tpduCode, (short) 0xE0)) {
-      builder = COTPPacketConnectionRequest.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketConnectionRequest.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     } else if (EvaluationHelper.equals(tpduCode, (short) 0xD0)) {
-      builder = COTPPacketConnectionResponse.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketConnectionResponse.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     } else if (EvaluationHelper.equals(tpduCode, (short) 0x80)) {
-      builder = COTPPacketDisconnectRequest.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketDisconnectRequest.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     } else if (EvaluationHelper.equals(tpduCode, (short) 0xC0)) {
-      builder = COTPPacketDisconnectResponse.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketDisconnectResponse.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     } else if (EvaluationHelper.equals(tpduCode, (short) 0x70)) {
-      builder = COTPPacketTpduError.staticParseBuilder(readBuffer, cotpLen);
+      builder = COTPPacketTpduError.staticParseCOTPPacketBuilder(readBuffer, cotpLen);
     }
     if (builder == null) {
       throw new ParseException(
@@ -205,12 +197,12 @@ public abstract class COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacket");
     // Create the instance
-    COTPPacket _cOTPPacket = builder.build(parameters, payload, cotpLen);
+    COTPPacket _cOTPPacket = builder.build(parameters, payload);
     return _cOTPPacket;
   }
 
-  public static interface COTPPacketBuilder {
-    COTPPacket build(List<COTPParameter> parameters, S7Message payload, Integer cotpLen);
+  public interface COTPPacketBuilder {
+    COTPPacket build(List<COTPParameter> parameters, S7Message payload);
   }
 
   @Override

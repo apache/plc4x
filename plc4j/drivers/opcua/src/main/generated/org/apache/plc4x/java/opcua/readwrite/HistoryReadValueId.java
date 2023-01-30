@@ -124,7 +124,7 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static HistoryReadValueIdBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadValueId");
     PositionAware positionAware = readBuffer;
@@ -155,22 +155,21 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("HistoryReadValueId");
     // Create the instance
-    return new HistoryReadValueIdBuilder(nodeId, indexRange, dataEncoding, continuationPoint);
+    return new HistoryReadValueIdBuilderImpl(nodeId, indexRange, dataEncoding, continuationPoint);
   }
 
-  public static class HistoryReadValueIdBuilder
+  public static class HistoryReadValueIdBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final PascalString indexRange;
     private final QualifiedName dataEncoding;
     private final PascalByteString continuationPoint;
 
-    public HistoryReadValueIdBuilder(
+    public HistoryReadValueIdBuilderImpl(
         NodeId nodeId,
         PascalString indexRange,
         QualifiedName dataEncoding,
         PascalByteString continuationPoint) {
-
       this.nodeId = nodeId;
       this.indexRange = indexRange;
       this.dataEncoding = dataEncoding;

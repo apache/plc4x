@@ -46,17 +46,11 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
   protected final DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock;
   protected final CEMI cemi;
 
-  // Arguments.
-  protected final Integer totalLength;
-
   public DeviceConfigurationRequest(
-      DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock,
-      CEMI cemi,
-      Integer totalLength) {
+      DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock, CEMI cemi) {
     super();
     this.deviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock;
     this.cemi = cemi;
-    this.totalLength = totalLength;
   }
 
   public DeviceConfigurationRequestDataBlock getDeviceConfigurationRequestDataBlock() {
@@ -110,7 +104,7 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
     return lengthInBits;
   }
 
-  public static DeviceConfigurationRequestBuilder staticParseBuilder(
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(
       ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("DeviceConfigurationRequest");
     PositionAware positionAware = readBuffer;
@@ -140,29 +134,23 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
 
     readBuffer.closeContext("DeviceConfigurationRequest");
     // Create the instance
-    return new DeviceConfigurationRequestBuilder(
-        deviceConfigurationRequestDataBlock, cemi, totalLength);
+    return new DeviceConfigurationRequestBuilderImpl(deviceConfigurationRequestDataBlock, cemi);
   }
 
-  public static class DeviceConfigurationRequestBuilder
+  public static class DeviceConfigurationRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock;
     private final CEMI cemi;
-    private final Integer totalLength;
 
-    public DeviceConfigurationRequestBuilder(
-        DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock,
-        CEMI cemi,
-        Integer totalLength) {
-
+    public DeviceConfigurationRequestBuilderImpl(
+        DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock, CEMI cemi) {
       this.deviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock;
       this.cemi = cemi;
-      this.totalLength = totalLength;
     }
 
     public DeviceConfigurationRequest build() {
       DeviceConfigurationRequest deviceConfigurationRequest =
-          new DeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi, totalLength);
+          new DeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi);
       return deviceConfigurationRequest;
     }
   }

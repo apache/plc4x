@@ -135,7 +135,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,23 +173,22 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataFaultValues");
     // Create the instance
-    return new BACnetConstructedDataFaultValuesBuilder(
+    return new BACnetConstructedDataFaultValuesBuilderImpl(
         numberOfDataElements, faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFaultValuesBuilder
+  public static class BACnetConstructedDataFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLifeSafetyStateTagged> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultValuesBuilder(
+    public BACnetConstructedDataFaultValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetLifeSafetyStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;

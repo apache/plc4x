@@ -154,11 +154,11 @@ func (m *_BACnetContextTagBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagBoolean, error) {
-	return BACnetContextTagBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, header)
+func BACnetContextTagBooleanParse(theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagBoolean, error) {
+	return BACnetContextTagBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagBooleanParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagBoolean, error) {
+func BACnetContextTagBooleanParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {

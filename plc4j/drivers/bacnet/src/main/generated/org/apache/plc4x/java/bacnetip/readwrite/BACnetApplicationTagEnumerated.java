@@ -91,7 +91,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagEnumeratedBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagEnumerated");
     PositionAware positionAware = readBuffer;
@@ -110,15 +110,14 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
 
     readBuffer.closeContext("BACnetApplicationTagEnumerated");
     // Create the instance
-    return new BACnetApplicationTagEnumeratedBuilder(payload);
+    return new BACnetApplicationTagEnumeratedBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagEnumeratedBuilder
+  public static class BACnetApplicationTagEnumeratedBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadEnumerated payload;
 
-    public BACnetApplicationTagEnumeratedBuilder(BACnetTagPayloadEnumerated payload) {
-
+    public BACnetApplicationTagEnumeratedBuilderImpl(BACnetTagPayloadEnumerated payload) {
       this.payload = payload;
     }
 

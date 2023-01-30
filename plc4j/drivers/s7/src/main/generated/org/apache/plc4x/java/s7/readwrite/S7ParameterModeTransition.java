@@ -52,8 +52,6 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
   protected final byte cpuFunctionGroup;
   protected final short currentMode;
   protected final short sequenceNumber;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public S7ParameterModeTransition(
       short method,
@@ -96,10 +94,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     writeBuffer.pushContext("S7ParameterModeTransition");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0010,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0010, writeUnsignedInt(writeBuffer, 16));
 
     // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
@@ -158,7 +153,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     return lengthInBits;
   }
 
-  public static S7ParameterModeTransitionBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterModeTransition");
     PositionAware positionAware = readBuffer;
@@ -182,38 +177,35 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
 
     readBuffer.closeContext("S7ParameterModeTransition");
     // Create the instance
-    return new S7ParameterModeTransitionBuilder(
-        method, cpuFunctionType, cpuFunctionGroup, currentMode, sequenceNumber, reservedField0);
+    return new S7ParameterModeTransitionBuilderImpl(
+        method, cpuFunctionType, cpuFunctionGroup, currentMode, sequenceNumber);
   }
 
-  public static class S7ParameterModeTransitionBuilder implements S7Parameter.S7ParameterBuilder {
+  public static class S7ParameterModeTransitionBuilderImpl
+      implements S7Parameter.S7ParameterBuilder {
     private final short method;
     private final byte cpuFunctionType;
     private final byte cpuFunctionGroup;
     private final short currentMode;
     private final short sequenceNumber;
-    private final Integer reservedField0;
 
-    public S7ParameterModeTransitionBuilder(
+    public S7ParameterModeTransitionBuilderImpl(
         short method,
         byte cpuFunctionType,
         byte cpuFunctionGroup,
         short currentMode,
-        short sequenceNumber,
-        Integer reservedField0) {
+        short sequenceNumber) {
       this.method = method;
       this.cpuFunctionType = cpuFunctionType;
       this.cpuFunctionGroup = cpuFunctionGroup;
       this.currentMode = currentMode;
       this.sequenceNumber = sequenceNumber;
-      this.reservedField0 = reservedField0;
     }
 
     public S7ParameterModeTransition build() {
       S7ParameterModeTransition s7ParameterModeTransition =
           new S7ParameterModeTransition(
               method, cpuFunctionType, cpuFunctionGroup, currentMode, sequenceNumber);
-      s7ParameterModeTransition.reservedField0 = reservedField0;
       return s7ParameterModeTransition;
     }
   }

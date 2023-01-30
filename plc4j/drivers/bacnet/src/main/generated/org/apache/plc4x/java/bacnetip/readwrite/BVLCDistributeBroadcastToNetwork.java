@@ -90,8 +90,8 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCDistributeBroadcastToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCDistributeBroadcastToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,15 +106,14 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCDistributeBroadcastToNetwork");
     // Create the instance
-    return new BVLCDistributeBroadcastToNetworkBuilder(npdu, bvlcPayloadLength);
+    return new BVLCDistributeBroadcastToNetworkBuilderImpl(npdu, bvlcPayloadLength);
   }
 
-  public static class BVLCDistributeBroadcastToNetworkBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCDistributeBroadcastToNetworkBuilderImpl implements BVLC.BVLCBuilder {
     private final NPDU npdu;
     private final Integer bvlcPayloadLength;
 
-    public BVLCDistributeBroadcastToNetworkBuilder(NPDU npdu, Integer bvlcPayloadLength) {
-
+    public BVLCDistributeBroadcastToNetworkBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
       this.npdu = npdu;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

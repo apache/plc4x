@@ -67,7 +67,7 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
     return lengthInBits;
   }
 
-  public static TelephonyDataClearDiversionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataClearDiversion");
     PositionAware positionAware = readBuffer;
@@ -76,13 +76,13 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
 
     readBuffer.closeContext("TelephonyDataClearDiversion");
     // Create the instance
-    return new TelephonyDataClearDiversionBuilder();
+    return new TelephonyDataClearDiversionBuilderImpl();
   }
 
-  public static class TelephonyDataClearDiversionBuilder
+  public static class TelephonyDataClearDiversionBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataClearDiversionBuilder() {}
+    public TelephonyDataClearDiversionBuilderImpl() {}
 
     public TelephonyDataClearDiversion build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

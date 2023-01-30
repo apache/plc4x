@@ -136,7 +136,7 @@ public class BACnetConstructedDataAuthenticationPolicyList extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthenticationPolicyListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataAuthenticationPolicyList extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataAuthenticationPolicyList");
     // Create the instance
-    return new BACnetConstructedDataAuthenticationPolicyListBuilder(
+    return new BACnetConstructedDataAuthenticationPolicyListBuilderImpl(
         numberOfDataElements, authenticationPolicyList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthenticationPolicyListBuilder
+  public static class BACnetConstructedDataAuthenticationPolicyListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAuthenticationPolicy> authenticationPolicyList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthenticationPolicyListBuilder(
+    public BACnetConstructedDataAuthenticationPolicyListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAuthenticationPolicy> authenticationPolicyList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.authenticationPolicyList = authenticationPolicyList;
       this.tagNumber = tagNumber;

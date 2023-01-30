@@ -109,7 +109,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNotifyTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataNotifyType");
     // Create the instance
-    return new BACnetConstructedDataNotifyTypeBuilder(notifyType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNotifyTypeBuilderImpl(
+        notifyType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNotifyTypeBuilder
+  public static class BACnetConstructedDataNotifyTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNotifyTypeTagged notifyType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotifyTypeBuilder(
+    public BACnetConstructedDataNotifyTypeBuilderImpl(
         BACnetNotifyTypeTagged notifyType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.notifyType = notifyType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

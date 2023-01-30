@@ -135,7 +135,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -170,23 +170,22 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataLogBufferBuilder(
+    return new BACnetConstructedDataLogBufferBuilderImpl(
         numberOfDataElements, floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLogBufferBuilder
+  public static class BACnetConstructedDataLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLogRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLogBufferBuilder(
+    public BACnetConstructedDataLogBufferBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.floorText = floorText;
       this.tagNumber = tagNumber;

@@ -109,7 +109,7 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMACAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,20 +133,20 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataMACAddress");
     // Create the instance
-    return new BACnetConstructedDataMACAddressBuilder(macAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMACAddressBuilderImpl(
+        macAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMACAddressBuilder
+  public static class BACnetConstructedDataMACAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString macAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMACAddressBuilder(
+    public BACnetConstructedDataMACAddressBuilderImpl(
         BACnetApplicationTagOctetString macAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.macAddress = macAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

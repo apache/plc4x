@@ -88,7 +88,7 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueEnumeratedBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueEnumerated");
     PositionAware positionAware = readBuffer;
@@ -104,17 +104,16 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
 
     readBuffer.closeContext("BACnetPriorityValueEnumerated");
     // Create the instance
-    return new BACnetPriorityValueEnumeratedBuilder(enumeratedValue, objectTypeArgument);
+    return new BACnetPriorityValueEnumeratedBuilderImpl(enumeratedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueEnumeratedBuilder
+  public static class BACnetPriorityValueEnumeratedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueEnumeratedBuilder(
+    public BACnetPriorityValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
-
       this.enumeratedValue = enumeratedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

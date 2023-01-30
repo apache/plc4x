@@ -174,8 +174,8 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
     return lengthInBits;
   }
 
-  public static MeasurementDataChannelMeasurementDataBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static MeasurementDataBuilder staticParseMeasurementDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("MeasurementDataChannelMeasurementData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -202,11 +202,11 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
 
     readBuffer.closeContext("MeasurementDataChannelMeasurementData");
     // Create the instance
-    return new MeasurementDataChannelMeasurementDataBuilder(
+    return new MeasurementDataChannelMeasurementDataBuilderImpl(
         deviceId, channel, units, multiplier, msb, lsb);
   }
 
-  public static class MeasurementDataChannelMeasurementDataBuilder
+  public static class MeasurementDataChannelMeasurementDataBuilderImpl
       implements MeasurementData.MeasurementDataBuilder {
     private final short deviceId;
     private final short channel;
@@ -215,14 +215,13 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
     private final short msb;
     private final short lsb;
 
-    public MeasurementDataChannelMeasurementDataBuilder(
+    public MeasurementDataChannelMeasurementDataBuilderImpl(
         short deviceId,
         short channel,
         MeasurementUnits units,
         byte multiplier,
         short msb,
         short lsb) {
-
       this.deviceId = deviceId;
       this.channel = channel;
       this.units = units;

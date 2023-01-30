@@ -109,7 +109,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAdjustValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAdjustValueBuilder(adjustValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAdjustValueBuilderImpl(
+        adjustValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAdjustValueBuilder
+  public static class BACnetConstructedDataAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAdjustValueBuilder(
+    public BACnetConstructedDataAdjustValueBuilderImpl(
         BACnetApplicationTagSignedInteger adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

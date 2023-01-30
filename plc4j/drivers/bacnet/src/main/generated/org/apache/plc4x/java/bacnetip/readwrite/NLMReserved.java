@@ -88,7 +88,7 @@ public class NLMReserved extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMReservedBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("NLMReserved");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class NLMReserved extends NLM implements Message {
 
     readBuffer.closeContext("NLMReserved");
     // Create the instance
-    return new NLMReservedBuilder(unknownBytes, apduLength);
+    return new NLMReservedBuilderImpl(unknownBytes, apduLength);
   }
 
-  public static class NLMReservedBuilder implements NLM.NLMBuilder {
+  public static class NLMReservedBuilderImpl implements NLM.NLMBuilder {
     private final byte[] unknownBytes;
     private final Integer apduLength;
 
-    public NLMReservedBuilder(byte[] unknownBytes, Integer apduLength) {
-
+    public NLMReservedBuilderImpl(byte[] unknownBytes, Integer apduLength) {
       this.unknownBytes = unknownBytes;
       this.apduLength = apduLength;
     }

@@ -87,7 +87,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static SearchRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SearchRequest");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,13 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("SearchRequest");
     // Create the instance
-    return new SearchRequestBuilder(hpaiIDiscoveryEndpoint);
+    return new SearchRequestBuilderImpl(hpaiIDiscoveryEndpoint);
   }
 
-  public static class SearchRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class SearchRequestBuilderImpl implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint;
 
-    public SearchRequestBuilder(HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint) {
-
+    public SearchRequestBuilderImpl(HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint) {
       this.hpaiIDiscoveryEndpoint = hpaiIDiscoveryEndpoint;
     }
 

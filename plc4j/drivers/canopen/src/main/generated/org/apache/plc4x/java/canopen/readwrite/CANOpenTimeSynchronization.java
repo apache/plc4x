@@ -83,7 +83,7 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
     return lengthInBits;
   }
 
-  public static CANOpenTimeSynchronizationBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenTimeSynchronization");
     PositionAware positionAware = readBuffer;
@@ -97,15 +97,14 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
 
     readBuffer.closeContext("CANOpenTimeSynchronization");
     // Create the instance
-    return new CANOpenTimeSynchronizationBuilder(timeOfDay);
+    return new CANOpenTimeSynchronizationBuilderImpl(timeOfDay);
   }
 
-  public static class CANOpenTimeSynchronizationBuilder
+  public static class CANOpenTimeSynchronizationBuilderImpl
       implements CANOpenPayload.CANOpenPayloadBuilder {
     private final CANOpenTime timeOfDay;
 
-    public CANOpenTimeSynchronizationBuilder(CANOpenTime timeOfDay) {
-
+    public CANOpenTimeSynchronizationBuilderImpl(CANOpenTime timeOfDay) {
       this.timeOfDay = timeOfDay;
     }
 

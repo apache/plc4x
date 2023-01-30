@@ -147,11 +147,11 @@ public class BACnetNotificationParametersChangeOfCharacterString
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfCharacterStringBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfCharacterString");
     PositionAware positionAware = readBuffer;
@@ -207,7 +207,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfCharacterString");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfCharacterStringBuilder(
+    return new BACnetNotificationParametersChangeOfCharacterStringBuilderImpl(
         innerOpeningTag,
         changedValue,
         statusFlags,
@@ -217,7 +217,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfCharacterStringBuilder
+  public static class BACnetNotificationParametersChangeOfCharacterStringBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagCharacterString changedValue;
@@ -227,7 +227,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfCharacterStringBuilder(
+    public BACnetNotificationParametersChangeOfCharacterStringBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagCharacterString changedValue,
         BACnetStatusFlagsTagged statusFlags,
@@ -235,7 +235,6 @@ public class BACnetNotificationParametersChangeOfCharacterString
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.changedValue = changedValue;
       this.statusFlags = statusFlags;

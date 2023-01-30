@@ -83,7 +83,7 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static CloseSecureChannelRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CloseSecureChannelRequest");
     PositionAware positionAware = readBuffer;
@@ -99,15 +99,14 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("CloseSecureChannelRequest");
     // Create the instance
-    return new CloseSecureChannelRequestBuilder(requestHeader);
+    return new CloseSecureChannelRequestBuilderImpl(requestHeader);
   }
 
-  public static class CloseSecureChannelRequestBuilder
+  public static class CloseSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
 
-    public CloseSecureChannelRequestBuilder(ExtensionObjectDefinition requestHeader) {
-
+    public CloseSecureChannelRequestBuilderImpl(ExtensionObjectDefinition requestHeader) {
       this.requestHeader = requestHeader;
     }
 

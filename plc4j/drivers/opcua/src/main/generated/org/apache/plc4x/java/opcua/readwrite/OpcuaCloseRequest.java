@@ -160,8 +160,8 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaCloseRequestBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaCloseRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -187,11 +187,11 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaCloseRequest");
     // Create the instance
-    return new OpcuaCloseRequestBuilder(
+    return new OpcuaCloseRequestBuilderImpl(
         chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
   }
 
-  public static class OpcuaCloseRequestBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaCloseRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final int secureTokenId;
@@ -199,14 +199,13 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     private final int requestId;
     private final ExtensionObject message;
 
-    public OpcuaCloseRequestBuilder(
+    public OpcuaCloseRequestBuilderImpl(
         String chunk,
         int secureChannelId,
         int secureTokenId,
         int sequenceNumber,
         int requestId,
         ExtensionObject message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.secureTokenId = secureTokenId;

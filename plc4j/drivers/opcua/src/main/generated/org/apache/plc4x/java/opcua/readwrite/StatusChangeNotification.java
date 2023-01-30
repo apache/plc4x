@@ -103,7 +103,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static StatusChangeNotificationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StatusChangeNotification");
     PositionAware positionAware = readBuffer;
@@ -125,16 +125,15 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("StatusChangeNotification");
     // Create the instance
-    return new StatusChangeNotificationBuilder(status, diagnosticInfo);
+    return new StatusChangeNotificationBuilderImpl(status, diagnosticInfo);
   }
 
-  public static class StatusChangeNotificationBuilder
+  public static class StatusChangeNotificationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode status;
     private final DiagnosticInfo diagnosticInfo;
 
-    public StatusChangeNotificationBuilder(StatusCode status, DiagnosticInfo diagnosticInfo) {
-
+    public StatusChangeNotificationBuilderImpl(StatusCode status, DiagnosticInfo diagnosticInfo) {
       this.status = status;
       this.diagnosticInfo = diagnosticInfo;
     }

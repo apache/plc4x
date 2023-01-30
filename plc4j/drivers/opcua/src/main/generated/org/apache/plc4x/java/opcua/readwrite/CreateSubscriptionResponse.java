@@ -139,7 +139,7 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static CreateSubscriptionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionResponse");
     PositionAware positionAware = readBuffer;
@@ -166,7 +166,7 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("CreateSubscriptionResponse");
     // Create the instance
-    return new CreateSubscriptionResponseBuilder(
+    return new CreateSubscriptionResponseBuilderImpl(
         responseHeader,
         subscriptionId,
         revisedPublishingInterval,
@@ -174,7 +174,7 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
         revisedMaxKeepAliveCount);
   }
 
-  public static class CreateSubscriptionResponseBuilder
+  public static class CreateSubscriptionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long subscriptionId;
@@ -182,13 +182,12 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
     private final long revisedLifetimeCount;
     private final long revisedMaxKeepAliveCount;
 
-    public CreateSubscriptionResponseBuilder(
+    public CreateSubscriptionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long subscriptionId,
         double revisedPublishingInterval,
         long revisedLifetimeCount,
         long revisedMaxKeepAliveCount) {
-
       this.responseHeader = responseHeader;
       this.subscriptionId = subscriptionId;
       this.revisedPublishingInterval = revisedPublishingInterval;

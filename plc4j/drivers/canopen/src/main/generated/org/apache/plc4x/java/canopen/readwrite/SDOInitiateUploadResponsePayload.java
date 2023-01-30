@@ -42,12 +42,8 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
   public abstract Boolean getIndicated();
 
-  // Arguments.
-  protected final Byte size;
-
-  public SDOInitiateUploadResponsePayload(Byte size) {
+  public SDOInitiateUploadResponsePayload() {
     super();
-    this.size = size;
   }
 
   protected abstract void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
@@ -132,17 +128,17 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
     if (EvaluationHelper.equals(expedited, (boolean) true)
         && EvaluationHelper.equals(indicated, (boolean) true)) {
       builder =
-          SDOInitiateExpeditedUploadResponse.staticParseBuilder(
+          SDOInitiateExpeditedUploadResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     } else if (EvaluationHelper.equals(expedited, (boolean) false)
         && EvaluationHelper.equals(indicated, (boolean) true)) {
       builder =
-          SDOInitiateSegmentedUploadResponse.staticParseBuilder(
+          SDOInitiateSegmentedUploadResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     } else if (EvaluationHelper.equals(expedited, (boolean) false)
         && EvaluationHelper.equals(indicated, (boolean) false)) {
       builder =
-          SDOInitiateSegmentedReservedResponse.staticParseBuilder(
+          SDOInitiateSegmentedReservedResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     }
     if (builder == null) {
@@ -159,13 +155,12 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadResponsePayload");
     // Create the instance
-    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build(size);
-
+    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build();
     return _sDOInitiateUploadResponsePayload;
   }
 
-  public static interface SDOInitiateUploadResponsePayloadBuilder {
-    SDOInitiateUploadResponsePayload build(Byte size);
+  public interface SDOInitiateUploadResponsePayloadBuilder {
+    SDOInitiateUploadResponsePayload build();
   }
 
   @Override

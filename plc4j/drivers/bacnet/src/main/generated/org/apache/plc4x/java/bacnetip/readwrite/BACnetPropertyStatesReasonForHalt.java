@@ -81,7 +81,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesReasonForHaltBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesReasonForHalt");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesReasonForHalt");
     // Create the instance
-    return new BACnetPropertyStatesReasonForHaltBuilder(reasonForHalt);
+    return new BACnetPropertyStatesReasonForHaltBuilderImpl(reasonForHalt);
   }
 
-  public static class BACnetPropertyStatesReasonForHaltBuilder
+  public static class BACnetPropertyStatesReasonForHaltBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetProgramErrorTagged reasonForHalt;
 
-    public BACnetPropertyStatesReasonForHaltBuilder(BACnetProgramErrorTagged reasonForHalt) {
-
+    public BACnetPropertyStatesReasonForHaltBuilderImpl(BACnetProgramErrorTagged reasonForHalt) {
       this.reasonForHalt = reasonForHalt;
     }
 

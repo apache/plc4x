@@ -117,7 +117,7 @@ public class ComObjectTableRealisationType1 extends ComObjectTable implements Me
     return lengthInBits;
   }
 
-  public static ComObjectTableRealisationType1Builder staticParseBuilder(
+  public static ComObjectTableBuilder staticParseComObjectTableBuilder(
       ReadBuffer readBuffer, FirmwareType firmwareType) throws ParseException {
     readBuffer.pullContext("ComObjectTableRealisationType1");
     PositionAware positionAware = readBuffer;
@@ -138,21 +138,20 @@ public class ComObjectTableRealisationType1 extends ComObjectTable implements Me
 
     readBuffer.closeContext("ComObjectTableRealisationType1");
     // Create the instance
-    return new ComObjectTableRealisationType1Builder(
+    return new ComObjectTableRealisationType1BuilderImpl(
         numEntries, ramFlagsTablePointer, comObjectDescriptors);
   }
 
-  public static class ComObjectTableRealisationType1Builder
+  public static class ComObjectTableRealisationType1BuilderImpl
       implements ComObjectTable.ComObjectTableBuilder {
     private final short numEntries;
     private final short ramFlagsTablePointer;
     private final List<GroupObjectDescriptorRealisationType1> comObjectDescriptors;
 
-    public ComObjectTableRealisationType1Builder(
+    public ComObjectTableRealisationType1BuilderImpl(
         short numEntries,
         short ramFlagsTablePointer,
         List<GroupObjectDescriptorRealisationType1> comObjectDescriptors) {
-
       this.numEntries = numEntries;
       this.ramFlagsTablePointer = ramFlagsTablePointer;
       this.comObjectDescriptors = comObjectDescriptors;

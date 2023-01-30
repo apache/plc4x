@@ -77,7 +77,7 @@ public class LDataFrameACK extends LDataFrame implements Message {
     return lengthInBits;
   }
 
-  public static LDataFrameACKBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LDataFrameBuilder staticParseLDataFrameBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LDataFrameACK");
     PositionAware positionAware = readBuffer;
@@ -86,12 +86,12 @@ public class LDataFrameACK extends LDataFrame implements Message {
 
     readBuffer.closeContext("LDataFrameACK");
     // Create the instance
-    return new LDataFrameACKBuilder();
+    return new LDataFrameACKBuilderImpl();
   }
 
-  public static class LDataFrameACKBuilder implements LDataFrame.LDataFrameBuilder {
+  public static class LDataFrameACKBuilderImpl implements LDataFrame.LDataFrameBuilder {
 
-    public LDataFrameACKBuilder() {}
+    public LDataFrameACKBuilderImpl() {}
 
     public LDataFrameACK build(
         boolean frameType,

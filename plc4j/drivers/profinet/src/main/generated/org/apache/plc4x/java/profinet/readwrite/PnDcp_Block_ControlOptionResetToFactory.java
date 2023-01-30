@@ -72,8 +72,8 @@ public class PnDcp_Block_ControlOptionResetToFactory extends PnDcp_Block impleme
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionResetToFactoryBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionResetToFactory");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_ControlOptionResetToFactory extends PnDcp_Block impleme
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionResetToFactory");
     // Create the instance
-    return new PnDcp_Block_ControlOptionResetToFactoryBuilder();
+    return new PnDcp_Block_ControlOptionResetToFactoryBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionResetToFactoryBuilder
+  public static class PnDcp_Block_ControlOptionResetToFactoryBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionResetToFactoryBuilder() {}
+    public PnDcp_Block_ControlOptionResetToFactoryBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionResetToFactory build() {
       PnDcp_Block_ControlOptionResetToFactory pnDcp_Block_ControlOptionResetToFactory =

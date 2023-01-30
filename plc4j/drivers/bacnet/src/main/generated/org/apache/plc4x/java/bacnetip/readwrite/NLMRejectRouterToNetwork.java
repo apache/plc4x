@@ -109,8 +109,8 @@ public class NLMRejectRouterToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMRejectRouterToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMRejectRouterToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -129,19 +129,19 @@ public class NLMRejectRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMRejectRouterToNetwork");
     // Create the instance
-    return new NLMRejectRouterToNetworkBuilder(rejectReason, destinationNetworkAddress, apduLength);
+    return new NLMRejectRouterToNetworkBuilderImpl(
+        rejectReason, destinationNetworkAddress, apduLength);
   }
 
-  public static class NLMRejectRouterToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMRejectRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final NLMRejectRouterToNetworkRejectReason rejectReason;
     private final int destinationNetworkAddress;
     private final Integer apduLength;
 
-    public NLMRejectRouterToNetworkBuilder(
+    public NLMRejectRouterToNetworkBuilderImpl(
         NLMRejectRouterToNetworkRejectReason rejectReason,
         int destinationNetworkAddress,
         Integer apduLength) {
-
       this.rejectReason = rejectReason;
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;

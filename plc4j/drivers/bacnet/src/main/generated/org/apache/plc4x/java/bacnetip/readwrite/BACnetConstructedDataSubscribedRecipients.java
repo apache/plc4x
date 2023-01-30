@@ -104,7 +104,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubscribedRecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,21 +128,20 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataSubscribedRecipients");
     // Create the instance
-    return new BACnetConstructedDataSubscribedRecipientsBuilder(
+    return new BACnetConstructedDataSubscribedRecipientsBuilderImpl(
         subscribedRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubscribedRecipientsBuilder
+  public static class BACnetConstructedDataSubscribedRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventNotificationSubscription> subscribedRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubscribedRecipientsBuilder(
+    public BACnetConstructedDataSubscribedRecipientsBuilderImpl(
         List<BACnetEventNotificationSubscription> subscribedRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.subscribedRecipients = subscribedRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

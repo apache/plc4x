@@ -109,7 +109,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPassbackModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataPassbackMode");
     // Create the instance
-    return new BACnetConstructedDataPassbackModeBuilder(
+    return new BACnetConstructedDataPassbackModeBuilderImpl(
         passbackMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPassbackModeBuilder
+  public static class BACnetConstructedDataPassbackModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessPassbackModeTagged passbackMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPassbackModeBuilder(
+    public BACnetConstructedDataPassbackModeBuilderImpl(
         BACnetAccessPassbackModeTagged passbackMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passbackMode = passbackMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

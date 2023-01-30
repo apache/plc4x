@@ -107,7 +107,7 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
     return lengthInBits;
   }
 
-  public static CBusPointToMultiPointCommandStatusBuilder staticParseBuilder(
+  public static CBusPointToMultiPointCommandBuilder staticParseCBusPointToMultiPointCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToMultiPointCommandStatus");
     PositionAware positionAware = readBuffer;
@@ -126,18 +126,18 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
 
     readBuffer.closeContext("CBusPointToMultiPointCommandStatus");
     // Create the instance
-    return new CBusPointToMultiPointCommandStatusBuilder(
+    return new CBusPointToMultiPointCommandStatusBuilderImpl(
         statusRequest, cBusOptions, reservedField0, reservedField1);
   }
 
-  public static class CBusPointToMultiPointCommandStatusBuilder
+  public static class CBusPointToMultiPointCommandStatusBuilderImpl
       implements CBusPointToMultiPointCommand.CBusPointToMultiPointCommandBuilder {
     private final StatusRequest statusRequest;
     private final CBusOptions cBusOptions;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public CBusPointToMultiPointCommandStatusBuilder(
+    public CBusPointToMultiPointCommandStatusBuilderImpl(
         StatusRequest statusRequest,
         CBusOptions cBusOptions,
         Byte reservedField0,

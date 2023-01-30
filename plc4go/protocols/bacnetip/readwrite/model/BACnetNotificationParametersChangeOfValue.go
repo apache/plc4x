@@ -157,11 +157,11 @@ func (m *_BACnetNotificationParametersChangeOfValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfValue, error) {
-	return BACnetNotificationParametersChangeOfValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, peekedTagNumber)
+func BACnetNotificationParametersChangeOfValueParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfValue, error) {
+	return BACnetNotificationParametersChangeOfValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersChangeOfValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfValue, error) {
+func BACnetNotificationParametersChangeOfValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValue"); pullErr != nil {

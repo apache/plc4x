@@ -143,11 +143,11 @@ func (m *_BACnetContextTagEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagEnumeratedParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagEnumerated, error) {
-	return BACnetContextTagEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, header)
+func BACnetContextTagEnumeratedParse(theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagEnumerated, error) {
+	return BACnetContextTagEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagEnumerated, error) {
+func BACnetContextTagEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagEnumerated"); pullErr != nil {

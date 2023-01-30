@@ -166,7 +166,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static SetTriggeringRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetTriggeringRequest");
     PositionAware positionAware = readBuffer;
@@ -196,7 +196,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("SetTriggeringRequest");
     // Create the instance
-    return new SetTriggeringRequestBuilder(
+    return new SetTriggeringRequestBuilderImpl(
         requestHeader,
         subscriptionId,
         triggeringItemId,
@@ -206,7 +206,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
         linksToRemove);
   }
 
-  public static class SetTriggeringRequestBuilder
+  public static class SetTriggeringRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -216,7 +216,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     private final int noOfLinksToRemove;
     private final List<Long> linksToRemove;
 
-    public SetTriggeringRequestBuilder(
+    public SetTriggeringRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         long triggeringItemId,
@@ -224,7 +224,6 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
         List<Long> linksToAdd,
         int noOfLinksToRemove,
         List<Long> linksToRemove) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.triggeringItemId = triggeringItemId;

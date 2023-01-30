@@ -81,7 +81,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesExtendedValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesExtendedValue");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,15 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesExtendedValue");
     // Create the instance
-    return new BACnetPropertyStatesExtendedValueBuilder(extendedValue);
+    return new BACnetPropertyStatesExtendedValueBuilderImpl(extendedValue);
   }
 
-  public static class BACnetPropertyStatesExtendedValueBuilder
+  public static class BACnetPropertyStatesExtendedValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagUnsignedInteger extendedValue;
 
-    public BACnetPropertyStatesExtendedValueBuilder(BACnetContextTagUnsignedInteger extendedValue) {
-
+    public BACnetPropertyStatesExtendedValueBuilderImpl(
+        BACnetContextTagUnsignedInteger extendedValue) {
       this.extendedValue = extendedValue;
     }
 

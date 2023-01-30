@@ -49,13 +49,9 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadDataItem> items;
 
-  // Arguments.
-  protected final S7Parameter parameter;
-
-  public S7PayloadWriteVarRequest(List<S7VarPayloadDataItem> items, S7Parameter parameter) {
-    super(parameter);
+  public S7PayloadWriteVarRequest(List<S7VarPayloadDataItem> items) {
+    super();
     this.items = items;
-    this.parameter = parameter;
   }
 
   public List<S7VarPayloadDataItem> getItems() {
@@ -96,7 +92,7 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadWriteVarRequestBuilder staticParseBuilder(
+  public static S7PayloadBuilder staticParseS7PayloadBuilder(
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7PayloadWriteVarRequest");
     PositionAware positionAware = readBuffer;
@@ -112,24 +108,18 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadWriteVarRequest");
     // Create the instance
-    return new S7PayloadWriteVarRequestBuilder(items, parameter);
+    return new S7PayloadWriteVarRequestBuilderImpl(items);
   }
 
-  public static class S7PayloadWriteVarRequestBuilder implements S7Payload.S7PayloadBuilder {
+  public static class S7PayloadWriteVarRequestBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadDataItem> items;
-    private final S7Parameter parameter;
 
-    public S7PayloadWriteVarRequestBuilder(
-        List<S7VarPayloadDataItem> items, S7Parameter parameter) {
-
+    public S7PayloadWriteVarRequestBuilderImpl(List<S7VarPayloadDataItem> items) {
       this.items = items;
-      this.parameter = parameter;
     }
 
-    public S7PayloadWriteVarRequest build(S7Parameter parameter) {
-
-      S7PayloadWriteVarRequest s7PayloadWriteVarRequest =
-          new S7PayloadWriteVarRequest(items, parameter);
+    public S7PayloadWriteVarRequest build() {
+      S7PayloadWriteVarRequest s7PayloadWriteVarRequest = new S7PayloadWriteVarRequest(items);
       return s7PayloadWriteVarRequest;
     }
   }

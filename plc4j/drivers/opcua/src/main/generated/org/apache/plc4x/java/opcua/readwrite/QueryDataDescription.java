@@ -108,7 +108,7 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static QueryDataDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryDataDescription");
     PositionAware positionAware = readBuffer;
@@ -131,18 +131,17 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("QueryDataDescription");
     // Create the instance
-    return new QueryDataDescriptionBuilder(relativePath, attributeId, indexRange);
+    return new QueryDataDescriptionBuilderImpl(relativePath, attributeId, indexRange);
   }
 
-  public static class QueryDataDescriptionBuilder
+  public static class QueryDataDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition relativePath;
     private final long attributeId;
     private final PascalString indexRange;
 
-    public QueryDataDescriptionBuilder(
+    public QueryDataDescriptionBuilderImpl(
         ExtensionObjectDefinition relativePath, long attributeId, PascalString indexRange) {
-
       this.relativePath = relativePath;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

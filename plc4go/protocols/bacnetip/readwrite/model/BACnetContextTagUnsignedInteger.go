@@ -143,11 +143,11 @@ func (m *_BACnetContextTagUnsignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagUnsignedIntegerParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagUnsignedInteger, error) {
-	return BACnetContextTagUnsignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, header)
+func BACnetContextTagUnsignedIntegerParse(theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnsignedInteger, error) {
+	return BACnetContextTagUnsignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagUnsignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagUnsignedInteger, error) {
+func BACnetContextTagUnsignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnsignedInteger"); pullErr != nil {

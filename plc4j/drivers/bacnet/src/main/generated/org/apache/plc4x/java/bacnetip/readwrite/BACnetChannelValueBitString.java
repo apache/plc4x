@@ -81,8 +81,8 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
     return lengthInBits;
   }
 
-  public static BACnetChannelValueBitStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +97,14 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
 
     readBuffer.closeContext("BACnetChannelValueBitString");
     // Create the instance
-    return new BACnetChannelValueBitStringBuilder(bitStringValue);
+    return new BACnetChannelValueBitStringBuilderImpl(bitStringValue);
   }
 
-  public static class BACnetChannelValueBitStringBuilder
+  public static class BACnetChannelValueBitStringBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
 
-    public BACnetChannelValueBitStringBuilder(BACnetApplicationTagBitString bitStringValue) {
-
+    public BACnetChannelValueBitStringBuilderImpl(BACnetApplicationTagBitString bitStringValue) {
       this.bitStringValue = bitStringValue;
     }
 

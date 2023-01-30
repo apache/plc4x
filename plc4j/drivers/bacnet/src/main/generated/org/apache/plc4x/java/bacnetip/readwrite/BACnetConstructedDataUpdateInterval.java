@@ -109,7 +109,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUpdateIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataUpdateInterval");
     // Create the instance
-    return new BACnetConstructedDataUpdateIntervalBuilder(
+    return new BACnetConstructedDataUpdateIntervalBuilderImpl(
         updateInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUpdateIntervalBuilder
+  public static class BACnetConstructedDataUpdateIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger updateInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUpdateIntervalBuilder(
+    public BACnetConstructedDataUpdateIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger updateInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateInterval = updateInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

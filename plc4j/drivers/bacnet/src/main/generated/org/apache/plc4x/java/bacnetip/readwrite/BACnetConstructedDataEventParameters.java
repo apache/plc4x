@@ -109,7 +109,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventParametersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEventParameters");
     // Create the instance
-    return new BACnetConstructedDataEventParametersBuilder(
+    return new BACnetConstructedDataEventParametersBuilderImpl(
         eventParameter, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventParametersBuilder
+  public static class BACnetConstructedDataEventParametersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventParameter eventParameter;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventParametersBuilder(
+    public BACnetConstructedDataEventParametersBuilderImpl(
         BACnetEventParameter eventParameter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventParameter = eventParameter;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

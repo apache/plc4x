@@ -135,7 +135,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPropertyListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,23 +173,22 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataPropertyList");
     // Create the instance
-    return new BACnetConstructedDataPropertyListBuilder(
+    return new BACnetConstructedDataPropertyListBuilderImpl(
         numberOfDataElements, propertyList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPropertyListBuilder
+  public static class BACnetConstructedDataPropertyListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetPropertyIdentifierTagged> propertyList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPropertyListBuilder(
+    public BACnetConstructedDataPropertyListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetPropertyIdentifierTagged> propertyList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.propertyList = propertyList;
       this.tagNumber = tagNumber;

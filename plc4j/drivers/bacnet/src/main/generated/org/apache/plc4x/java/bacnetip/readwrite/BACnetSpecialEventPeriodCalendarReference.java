@@ -83,7 +83,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     return lengthInBits;
   }
 
-  public static BACnetSpecialEventPeriodCalendarReferenceBuilder staticParseBuilder(
+  public static BACnetSpecialEventPeriodBuilder staticParseBACnetSpecialEventPeriodBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEventPeriodCalendarReference");
     PositionAware positionAware = readBuffer;
@@ -104,16 +104,15 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
 
     readBuffer.closeContext("BACnetSpecialEventPeriodCalendarReference");
     // Create the instance
-    return new BACnetSpecialEventPeriodCalendarReferenceBuilder(calendarReference);
+    return new BACnetSpecialEventPeriodCalendarReferenceBuilderImpl(calendarReference);
   }
 
-  public static class BACnetSpecialEventPeriodCalendarReferenceBuilder
+  public static class BACnetSpecialEventPeriodCalendarReferenceBuilderImpl
       implements BACnetSpecialEventPeriod.BACnetSpecialEventPeriodBuilder {
     private final BACnetContextTagObjectIdentifier calendarReference;
 
-    public BACnetSpecialEventPeriodCalendarReferenceBuilder(
+    public BACnetSpecialEventPeriodCalendarReferenceBuilderImpl(
         BACnetContextTagObjectIdentifier calendarReference) {
-
       this.calendarReference = calendarReference;
     }
 

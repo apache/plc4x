@@ -136,7 +136,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveAccessRulesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataPositiveAccessRules");
     // Create the instance
-    return new BACnetConstructedDataPositiveAccessRulesBuilder(
+    return new BACnetConstructedDataPositiveAccessRulesBuilderImpl(
         numberOfDataElements, positiveAccessRules, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveAccessRulesBuilder
+  public static class BACnetConstructedDataPositiveAccessRulesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAccessRule> positiveAccessRules;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveAccessRulesBuilder(
+    public BACnetConstructedDataPositiveAccessRulesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAccessRule> positiveAccessRules,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.positiveAccessRules = positiveAccessRules;
       this.tagNumber = tagNumber;

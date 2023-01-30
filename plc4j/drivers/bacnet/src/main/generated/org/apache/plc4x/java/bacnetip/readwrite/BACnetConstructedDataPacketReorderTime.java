@@ -111,7 +111,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPacketReorderTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataPacketReorderTime");
     // Create the instance
-    return new BACnetConstructedDataPacketReorderTimeBuilder(
+    return new BACnetConstructedDataPacketReorderTimeBuilderImpl(
         packetReorderTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPacketReorderTimeBuilder
+  public static class BACnetConstructedDataPacketReorderTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger packetReorderTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPacketReorderTimeBuilder(
+    public BACnetConstructedDataPacketReorderTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger packetReorderTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.packetReorderTime = packetReorderTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

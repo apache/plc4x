@@ -149,7 +149,7 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     return lengthInBits;
   }
 
-  public static TranslateBrowsePathsToNodeIdsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TranslateBrowsePathsToNodeIdsResponse");
     PositionAware positionAware = readBuffer;
@@ -184,11 +184,11 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
 
     readBuffer.closeContext("TranslateBrowsePathsToNodeIdsResponse");
     // Create the instance
-    return new TranslateBrowsePathsToNodeIdsResponseBuilder(
+    return new TranslateBrowsePathsToNodeIdsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class TranslateBrowsePathsToNodeIdsResponseBuilder
+  public static class TranslateBrowsePathsToNodeIdsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -196,13 +196,12 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public TranslateBrowsePathsToNodeIdsResponseBuilder(
+    public TranslateBrowsePathsToNodeIdsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

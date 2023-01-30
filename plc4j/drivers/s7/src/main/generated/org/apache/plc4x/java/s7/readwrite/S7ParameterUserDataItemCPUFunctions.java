@@ -134,21 +134,13 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
 
     // Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
     writeOptionalField(
-        "dataUnitReferenceNumber",
-        dataUnitReferenceNumber,
-        writeUnsignedShort(writeBuffer, 8),
-        (getCpuFunctionType()) == (8));
+        "dataUnitReferenceNumber", dataUnitReferenceNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (lastDataUnit) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "lastDataUnit",
-        lastDataUnit,
-        writeUnsignedShort(writeBuffer, 8),
-        (getCpuFunctionType()) == (8));
+    writeOptionalField("lastDataUnit", lastDataUnit, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (errorCode) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "errorCode", errorCode, writeUnsignedInt(writeBuffer, 16), (getCpuFunctionType()) == (8));
+    writeOptionalField("errorCode", errorCode, writeUnsignedInt(writeBuffer, 16));
 
     writeBuffer.popContext("S7ParameterUserDataItemCPUFunctions");
   }
@@ -199,8 +191,8 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
     return lengthInBits;
   }
 
-  public static S7ParameterUserDataItemCPUFunctionsBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static S7ParameterUserDataItemBuilder staticParseS7ParameterUserDataItemBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7ParameterUserDataItemCPUFunctions");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -231,7 +223,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
 
     readBuffer.closeContext("S7ParameterUserDataItemCPUFunctions");
     // Create the instance
-    return new S7ParameterUserDataItemCPUFunctionsBuilder(
+    return new S7ParameterUserDataItemCPUFunctionsBuilderImpl(
         method,
         cpuFunctionType,
         cpuFunctionGroup,
@@ -242,7 +234,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
         errorCode);
   }
 
-  public static class S7ParameterUserDataItemCPUFunctionsBuilder
+  public static class S7ParameterUserDataItemCPUFunctionsBuilderImpl
       implements S7ParameterUserDataItem.S7ParameterUserDataItemBuilder {
     private final short method;
     private final byte cpuFunctionType;
@@ -253,7 +245,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
     private final Short lastDataUnit;
     private final Integer errorCode;
 
-    public S7ParameterUserDataItemCPUFunctionsBuilder(
+    public S7ParameterUserDataItemCPUFunctionsBuilderImpl(
         short method,
         byte cpuFunctionType,
         byte cpuFunctionGroup,
@@ -262,7 +254,6 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
         Short dataUnitReferenceNumber,
         Short lastDataUnit,
         Integer errorCode) {
-
       this.method = method;
       this.cpuFunctionType = cpuFunctionType;
       this.cpuFunctionGroup = cpuFunctionGroup;

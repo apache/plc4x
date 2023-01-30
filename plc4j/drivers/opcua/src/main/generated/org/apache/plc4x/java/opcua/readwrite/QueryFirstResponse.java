@@ -207,7 +207,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static QueryFirstResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryFirstResponse");
     PositionAware positionAware = readBuffer;
@@ -265,7 +265,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("QueryFirstResponse");
     // Create the instance
-    return new QueryFirstResponseBuilder(
+    return new QueryFirstResponseBuilderImpl(
         responseHeader,
         noOfQueryDataSets,
         queryDataSets,
@@ -277,7 +277,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
         filterResult);
   }
 
-  public static class QueryFirstResponseBuilder
+  public static class QueryFirstResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfQueryDataSets;
@@ -289,7 +289,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     private final List<DiagnosticInfo> diagnosticInfos;
     private final ExtensionObjectDefinition filterResult;
 
-    public QueryFirstResponseBuilder(
+    public QueryFirstResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfQueryDataSets,
         List<ExtensionObjectDefinition> queryDataSets,
@@ -299,7 +299,6 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos,
         ExtensionObjectDefinition filterResult) {
-
       this.responseHeader = responseHeader;
       this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;

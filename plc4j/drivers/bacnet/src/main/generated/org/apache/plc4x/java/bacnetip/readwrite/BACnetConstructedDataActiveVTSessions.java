@@ -104,7 +104,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActiveVTSessionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,21 +128,20 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataActiveVTSessions");
     // Create the instance
-    return new BACnetConstructedDataActiveVTSessionsBuilder(
+    return new BACnetConstructedDataActiveVTSessionsBuilderImpl(
         activeVTSession, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActiveVTSessionsBuilder
+  public static class BACnetConstructedDataActiveVTSessionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTSession> activeVTSession;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveVTSessionsBuilder(
+    public BACnetConstructedDataActiveVTSessionsBuilderImpl(
         List<BACnetVTSession> activeVTSession,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeVTSession = activeVTSession;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

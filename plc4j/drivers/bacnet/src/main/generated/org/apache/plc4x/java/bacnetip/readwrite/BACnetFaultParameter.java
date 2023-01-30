@@ -113,21 +113,27 @@ public abstract class BACnetFaultParameter implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetFaultParameterBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetFaultParameterNone.staticParseBuilder(readBuffer);
+      builder = BACnetFaultParameterNone.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetFaultParameterFaultCharacterString.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultCharacterString.staticParseBACnetFaultParameterBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetFaultParameterFaultExtended.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultExtended.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetFaultParameterFaultLifeSafety.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultLifeSafety.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder = BACnetFaultParameterFaultState.staticParseBuilder(readBuffer);
+      builder = BACnetFaultParameterFaultState.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
-      builder = BACnetFaultParameterFaultStatusFlags.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultStatusFlags.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
-      builder = BACnetFaultParameterFaultOutOfRange.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultOutOfRange.staticParseBACnetFaultParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
-      builder = BACnetFaultParameterFaultListed.staticParseBuilder(readBuffer);
+      builder = BACnetFaultParameterFaultListed.staticParseBACnetFaultParameterBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -144,7 +150,7 @@ public abstract class BACnetFaultParameter implements Message {
     return _bACnetFaultParameter;
   }
 
-  public static interface BACnetFaultParameterBuilder {
+  public interface BACnetFaultParameterBuilder {
     BACnetFaultParameter build(BACnetTagHeader peekedTagHeader);
   }
 

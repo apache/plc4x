@@ -85,8 +85,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -103,18 +104,17 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder(
+    return new BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl(
         objectidentifierValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

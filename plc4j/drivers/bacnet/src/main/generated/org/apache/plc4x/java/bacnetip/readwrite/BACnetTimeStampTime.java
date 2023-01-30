@@ -80,7 +80,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTimeStampTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetTimeStampBuilder staticParseBACnetTimeStampBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampTime");
     PositionAware positionAware = readBuffer;
@@ -99,14 +99,14 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
 
     readBuffer.closeContext("BACnetTimeStampTime");
     // Create the instance
-    return new BACnetTimeStampTimeBuilder(timeValue);
+    return new BACnetTimeStampTimeBuilderImpl(timeValue);
   }
 
-  public static class BACnetTimeStampTimeBuilder implements BACnetTimeStamp.BACnetTimeStampBuilder {
+  public static class BACnetTimeStampTimeBuilderImpl
+      implements BACnetTimeStamp.BACnetTimeStampBuilder {
     private final BACnetContextTagTime timeValue;
 
-    public BACnetTimeStampTimeBuilder(BACnetContextTagTime timeValue) {
-
+    public BACnetTimeStampTimeBuilderImpl(BACnetContextTagTime timeValue) {
       this.timeValue = timeValue;
     }
 

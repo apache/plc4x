@@ -109,7 +109,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGroupIDBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataGroupID");
     // Create the instance
-    return new BACnetConstructedDataGroupIDBuilder(groupId, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupIDBuilderImpl(groupId, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGroupIDBuilder
+  public static class BACnetConstructedDataGroupIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger groupId;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGroupIDBuilder(
+    public BACnetConstructedDataGroupIDBuilderImpl(
         BACnetApplicationTagUnsignedInteger groupId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.groupId = groupId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

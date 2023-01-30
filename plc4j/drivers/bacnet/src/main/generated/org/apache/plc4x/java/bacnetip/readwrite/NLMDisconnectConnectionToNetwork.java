@@ -87,8 +87,8 @@ public class NLMDisconnectConnectionToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMDisconnectConnectionToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMDisconnectConnectionToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,16 +99,15 @@ public class NLMDisconnectConnectionToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMDisconnectConnectionToNetwork");
     // Create the instance
-    return new NLMDisconnectConnectionToNetworkBuilder(destinationNetworkAddress, apduLength);
+    return new NLMDisconnectConnectionToNetworkBuilderImpl(destinationNetworkAddress, apduLength);
   }
 
-  public static class NLMDisconnectConnectionToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMDisconnectConnectionToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final Integer apduLength;
 
-    public NLMDisconnectConnectionToNetworkBuilder(
+    public NLMDisconnectConnectionToNetworkBuilderImpl(
         int destinationNetworkAddress, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;
     }

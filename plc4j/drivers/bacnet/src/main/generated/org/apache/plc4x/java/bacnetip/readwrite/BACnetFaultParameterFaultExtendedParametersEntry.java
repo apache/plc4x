@@ -136,59 +136,74 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
     BACnetFaultParameterFaultExtendedParametersEntryBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetFaultParameterFaultExtendedParametersEntryNull.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultExtendedParametersEntryNull
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetFaultParameterFaultExtendedParametersEntryReal.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultExtendedParametersEntryReal
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryUnsigned.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryUnsigned
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryBoolean.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryBoolean
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryInteger.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryInteger
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryDouble.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryDouble
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryOctetString.staticParseBuilder(
-              readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryOctetString
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryCharacterString.staticParseBuilder(
-              readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryCharacterString
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x8)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryBitString.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryBitString
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x9)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryEnumerated.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xA)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetFaultParameterFaultExtendedParametersEntryDate.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultExtendedParametersEntryDate
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xB)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetFaultParameterFaultExtendedParametersEntryTime.staticParseBuilder(readBuffer);
+      builder =
+          BACnetFaultParameterFaultExtendedParametersEntryTime
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xC)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.staticParseBuilder(
-              readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetFaultParameterFaultExtendedParametersEntryReference.staticParseBuilder(readBuffer);
+          BACnetFaultParameterFaultExtendedParametersEntryReference
+              .staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -209,7 +224,7 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
     return _bACnetFaultParameterFaultExtendedParametersEntry;
   }
 
-  public static interface BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+  public interface BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     BACnetFaultParameterFaultExtendedParametersEntry build(BACnetTagHeader peekedTagHeader);
   }
 

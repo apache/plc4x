@@ -67,8 +67,8 @@ public class TriggerControlDataTriggerMin extends TriggerControlData implements 
     return lengthInBits;
   }
 
-  public static TriggerControlDataTriggerMinBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerMin");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class TriggerControlDataTriggerMin extends TriggerControlData implements 
 
     readBuffer.closeContext("TriggerControlDataTriggerMin");
     // Create the instance
-    return new TriggerControlDataTriggerMinBuilder();
+    return new TriggerControlDataTriggerMinBuilderImpl();
   }
 
-  public static class TriggerControlDataTriggerMinBuilder
+  public static class TriggerControlDataTriggerMinBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
 
-    public TriggerControlDataTriggerMinBuilder() {}
+    public TriggerControlDataTriggerMinBuilderImpl() {}
 
     public TriggerControlDataTriggerMin build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup) {

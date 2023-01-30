@@ -243,8 +243,8 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static FieldMetaDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FieldMetaData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -302,7 +302,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("FieldMetaData");
     // Create the instance
-    return new FieldMetaDataBuilder(
+    return new FieldMetaDataBuilderImpl(
         name,
         description,
         fieldFlags,
@@ -317,7 +317,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         properties);
   }
 
-  public static class FieldMetaDataBuilder
+  public static class FieldMetaDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final LocalizedText description;
@@ -332,7 +332,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     private final int noOfProperties;
     private final List<ExtensionObjectDefinition> properties;
 
-    public FieldMetaDataBuilder(
+    public FieldMetaDataBuilderImpl(
         PascalString name,
         LocalizedText description,
         DataSetFieldFlags fieldFlags,
@@ -345,7 +345,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         GuidValue dataSetFieldId,
         int noOfProperties,
         List<ExtensionObjectDefinition> properties) {
-
       this.name = name;
       this.description = description;
       this.fieldFlags = fieldFlags;

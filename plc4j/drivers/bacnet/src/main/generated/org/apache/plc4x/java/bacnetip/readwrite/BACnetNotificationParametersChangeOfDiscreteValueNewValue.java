@@ -189,53 +189,63 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x9)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
           BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
-              .staticParseBuilder(readBuffer, tagNumber);
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xA)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xB)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xC)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
           BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
-              .staticParseBuilder(readBuffer, tagNumber);
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+              .staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+                  readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -263,7 +273,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     return _bACnetNotificationParametersChangeOfDiscreteValueNewValue;
   }
 
-  public static interface BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+  public interface BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     BACnetNotificationParametersChangeOfDiscreteValueNewValue build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

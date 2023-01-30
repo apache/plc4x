@@ -47,17 +47,17 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
   protected final List<BACnetReadAccessSpecification> data;
 
   // Arguments.
-  protected final Long serviceRequestLength;
   protected final Long serviceRequestPayloadLength;
+  protected final Long serviceRequestLength;
 
   public BACnetConfirmedServiceRequestReadPropertyMultiple(
       List<BACnetReadAccessSpecification> data,
-      Long serviceRequestLength,
-      Long serviceRequestPayloadLength) {
+      Long serviceRequestPayloadLength,
+      Long serviceRequestLength) {
     super(serviceRequestLength);
     this.data = data;
-    this.serviceRequestLength = serviceRequestLength;
     this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+    this.serviceRequestLength = serviceRequestLength;
   }
 
   public List<BACnetReadAccessSpecification> getData() {
@@ -97,9 +97,10 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadPropertyMultipleBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestPayloadLength, Long serviceRequestLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadPropertyMultiple");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -114,24 +115,23 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadPropertyMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadPropertyMultipleBuilder(
-        data, serviceRequestLength, serviceRequestPayloadLength);
+    return new BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl(
+        data, serviceRequestPayloadLength, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
+  public static class BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final List<BACnetReadAccessSpecification> data;
-    private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
+    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestReadPropertyMultipleBuilder(
+    public BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl(
         List<BACnetReadAccessSpecification> data,
-        Long serviceRequestLength,
-        Long serviceRequestPayloadLength) {
-
+        Long serviceRequestPayloadLength,
+        Long serviceRequestLength) {
       this.data = data;
-      this.serviceRequestLength = serviceRequestLength;
       this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestReadPropertyMultiple build(Long serviceRequestLength) {
@@ -139,7 +139,7 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
       BACnetConfirmedServiceRequestReadPropertyMultiple
           bACnetConfirmedServiceRequestReadPropertyMultiple =
               new BACnetConfirmedServiceRequestReadPropertyMultiple(
-                  data, serviceRequestLength, serviceRequestPayloadLength);
+                  data, serviceRequestPayloadLength, serviceRequestLength);
       return bACnetConfirmedServiceRequestReadPropertyMultiple;
     }
   }

@@ -95,7 +95,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static MonitoredItemNotificationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemNotification");
     PositionAware positionAware = readBuffer;
@@ -111,16 +111,15 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("MonitoredItemNotification");
     // Create the instance
-    return new MonitoredItemNotificationBuilder(clientHandle, value);
+    return new MonitoredItemNotificationBuilderImpl(clientHandle, value);
   }
 
-  public static class MonitoredItemNotificationBuilder
+  public static class MonitoredItemNotificationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long clientHandle;
     private final DataValue value;
 
-    public MonitoredItemNotificationBuilder(long clientHandle, DataValue value) {
-
+    public MonitoredItemNotificationBuilderImpl(long clientHandle, DataValue value) {
       this.clientHandle = clientHandle;
       this.value = value;
     }

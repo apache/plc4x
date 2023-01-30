@@ -40,6 +40,7 @@ public class HVACAuxiliaryLevel implements Message {
   // Properties.
   protected final boolean fanMode;
   protected final short mode;
+
   // Reserved Fields
   private Boolean reservedField0;
 

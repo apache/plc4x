@@ -109,7 +109,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEnergyMeterRefBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataEnergyMeterRef");
     // Create the instance
-    return new BACnetConstructedDataEnergyMeterRefBuilder(
+    return new BACnetConstructedDataEnergyMeterRefBuilderImpl(
         energyMeterRef, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEnergyMeterRefBuilder
+  public static class BACnetConstructedDataEnergyMeterRefBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference energyMeterRef;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEnergyMeterRefBuilder(
+    public BACnetConstructedDataEnergyMeterRefBuilderImpl(
         BACnetDeviceObjectReference energyMeterRef,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.energyMeterRef = energyMeterRef;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

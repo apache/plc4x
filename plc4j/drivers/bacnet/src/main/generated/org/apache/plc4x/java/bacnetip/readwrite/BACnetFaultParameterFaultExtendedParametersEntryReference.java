@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryReference");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -100,17 +101,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryReference");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder(reference);
+    return new BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilderImpl(reference);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetDeviceObjectPropertyReferenceEnclosed reference;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilderImpl(
         BACnetDeviceObjectPropertyReferenceEnclosed reference) {
-
       this.reference = reference;
     }
 

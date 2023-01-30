@@ -68,7 +68,7 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingDataRequestRefreshBuilder staticParseBuilder(
+  public static ClockAndTimekeepingDataBuilder staticParseClockAndTimekeepingDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataRequestRefresh");
     PositionAware positionAware = readBuffer;
@@ -77,13 +77,13 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
 
     readBuffer.closeContext("ClockAndTimekeepingDataRequestRefresh");
     // Create the instance
-    return new ClockAndTimekeepingDataRequestRefreshBuilder();
+    return new ClockAndTimekeepingDataRequestRefreshBuilderImpl();
   }
 
-  public static class ClockAndTimekeepingDataRequestRefreshBuilder
+  public static class ClockAndTimekeepingDataRequestRefreshBuilderImpl
       implements ClockAndTimekeepingData.ClockAndTimekeepingDataBuilder {
 
-    public ClockAndTimekeepingDataRequestRefreshBuilder() {}
+    public ClockAndTimekeepingDataRequestRefreshBuilderImpl() {}
 
     public ClockAndTimekeepingDataRequestRefresh build(
         ClockAndTimekeepingCommandTypeContainer commandTypeContainer, byte argument) {

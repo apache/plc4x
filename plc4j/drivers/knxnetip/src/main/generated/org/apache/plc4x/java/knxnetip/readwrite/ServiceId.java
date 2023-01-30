@@ -95,19 +95,19 @@ public abstract class ServiceId implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ServiceIdBuilder builder = null;
     if (EvaluationHelper.equals(serviceType, (short) 0x02)) {
-      builder = KnxNetIpCore.staticParseBuilder(readBuffer);
+      builder = KnxNetIpCore.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x03)) {
-      builder = KnxNetIpDeviceManagement.staticParseBuilder(readBuffer);
+      builder = KnxNetIpDeviceManagement.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x04)) {
-      builder = KnxNetIpTunneling.staticParseBuilder(readBuffer);
+      builder = KnxNetIpTunneling.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x05)) {
-      builder = KnxNetIpRouting.staticParseBuilder(readBuffer);
+      builder = KnxNetIpRouting.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x06)) {
-      builder = KnxNetRemoteLogging.staticParseBuilder(readBuffer);
+      builder = KnxNetRemoteLogging.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x07)) {
-      builder = KnxNetRemoteConfigurationAndDiagnosis.staticParseBuilder(readBuffer);
+      builder = KnxNetRemoteConfigurationAndDiagnosis.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x08)) {
-      builder = KnxNetObjectServer.staticParseBuilder(readBuffer);
+      builder = KnxNetObjectServer.staticParseServiceIdBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -124,7 +124,7 @@ public abstract class ServiceId implements Message {
     return _serviceId;
   }
 
-  public static interface ServiceIdBuilder {
+  public interface ServiceIdBuilder {
     ServiceId build();
   }
 

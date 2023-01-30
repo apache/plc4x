@@ -84,7 +84,7 @@ public class BACnetConstructedDataBinaryInputAll extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryInputAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,17 +103,16 @@ public class BACnetConstructedDataBinaryInputAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataBinaryInputAll");
     // Create the instance
-    return new BACnetConstructedDataBinaryInputAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBinaryInputAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryInputAllBuilder
+  public static class BACnetConstructedDataBinaryInputAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryInputAllBuilder(
+    public BACnetConstructedDataBinaryInputAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

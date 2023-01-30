@@ -164,8 +164,8 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static RequestHeaderBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RequestHeader");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -197,7 +197,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("RequestHeader");
     // Create the instance
-    return new RequestHeaderBuilder(
+    return new RequestHeaderBuilderImpl(
         authenticationToken,
         timestamp,
         requestHandle,
@@ -207,7 +207,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
         additionalHeader);
   }
 
-  public static class RequestHeaderBuilder
+  public static class RequestHeaderBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId authenticationToken;
     private final long timestamp;
@@ -217,7 +217,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     private final long timeoutHint;
     private final ExtensionObject additionalHeader;
 
-    public RequestHeaderBuilder(
+    public RequestHeaderBuilderImpl(
         NodeId authenticationToken,
         long timestamp,
         long requestHandle,
@@ -225,7 +225,6 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
         PascalString auditEntryId,
         long timeoutHint,
         ExtensionObject additionalHeader) {
-
       this.authenticationToken = authenticationToken;
       this.timestamp = timestamp;
       this.requestHandle = requestHandle;

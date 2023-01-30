@@ -109,7 +109,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLimitEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLimitEnable");
     // Create the instance
-    return new BACnetConstructedDataLimitEnableBuilder(limitEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLimitEnableBuilderImpl(
+        limitEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLimitEnableBuilder
+  public static class BACnetConstructedDataLimitEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLimitEnableTagged limitEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLimitEnableBuilder(
+    public BACnetConstructedDataLimitEnableBuilderImpl(
         BACnetLimitEnableTagged limitEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.limitEnable = limitEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

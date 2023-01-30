@@ -117,11 +117,11 @@ public abstract class BACnetCalendarEntry implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetCalendarEntryBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetCalendarEntryDate.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryDate.staticParseBACnetCalendarEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetCalendarEntryDateRange.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryDateRange.staticParseBACnetCalendarEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetCalendarEntryWeekNDay.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryWeekNDay.staticParseBACnetCalendarEntryBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -138,7 +138,7 @@ public abstract class BACnetCalendarEntry implements Message {
     return _bACnetCalendarEntry;
   }
 
-  public static interface BACnetCalendarEntryBuilder {
+  public interface BACnetCalendarEntryBuilder {
     BACnetCalendarEntry build(BACnetTagHeader peekedTagHeader);
   }
 

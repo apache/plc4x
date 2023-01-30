@@ -66,7 +66,7 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureOtherWaterBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureOtherWater");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
 
     readBuffer.closeContext("MeteringDataMeasureOtherWater");
     // Create the instance
-    return new MeteringDataMeasureOtherWaterBuilder();
+    return new MeteringDataMeasureOtherWaterBuilderImpl();
   }
 
-  public static class MeteringDataMeasureOtherWaterBuilder
+  public static class MeteringDataMeasureOtherWaterBuilderImpl
       implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureOtherWaterBuilder() {}
+    public MeteringDataMeasureOtherWaterBuilderImpl() {}
 
     public MeteringDataMeasureOtherWater build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

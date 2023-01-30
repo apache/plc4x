@@ -81,7 +81,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftFaultBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftFault");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesLiftFault");
     // Create the instance
-    return new BACnetPropertyStatesLiftFaultBuilder(liftFault);
+    return new BACnetPropertyStatesLiftFaultBuilderImpl(liftFault);
   }
 
-  public static class BACnetPropertyStatesLiftFaultBuilder
+  public static class BACnetPropertyStatesLiftFaultBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftFaultTagged liftFault;
 
-    public BACnetPropertyStatesLiftFaultBuilder(BACnetLiftFaultTagged liftFault) {
-
+    public BACnetPropertyStatesLiftFaultBuilderImpl(BACnetLiftFaultTagged liftFault) {
       this.liftFault = liftFault;
     }
 

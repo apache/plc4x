@@ -110,7 +110,7 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueResolutionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueResolution");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueResolutionBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueResolutionBuilderImpl(
         resolution, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueResolutionBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger resolution;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueResolutionBuilder(
+    public BACnetConstructedDataPositiveIntegerValueResolutionBuilderImpl(
         BACnetApplicationTagUnsignedInteger resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

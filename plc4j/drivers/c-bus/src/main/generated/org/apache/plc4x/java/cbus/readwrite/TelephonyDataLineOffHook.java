@@ -106,7 +106,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataLineOffHookBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataLineOffHook");
@@ -127,16 +127,15 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataLineOffHook");
     // Create the instance
-    return new TelephonyDataLineOffHookBuilder(reason, number);
+    return new TelephonyDataLineOffHookBuilderImpl(reason, number);
   }
 
-  public static class TelephonyDataLineOffHookBuilder
+  public static class TelephonyDataLineOffHookBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final LineOffHookReason reason;
     private final String number;
 
-    public TelephonyDataLineOffHookBuilder(LineOffHookReason reason, String number) {
-
+    public TelephonyDataLineOffHookBuilderImpl(LineOffHookReason reason, String number) {
       this.reason = reason;
       this.number = number;
     }

@@ -179,11 +179,11 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfLifeSafetyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfLifeSafety, error) {
-	return BACnetNotificationParametersChangeOfLifeSafetyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, peekedTagNumber)
+func BACnetNotificationParametersChangeOfLifeSafetyParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfLifeSafety, error) {
+	return BACnetNotificationParametersChangeOfLifeSafetyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersChangeOfLifeSafetyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfLifeSafety, error) {
+func BACnetNotificationParametersChangeOfLifeSafetyParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfLifeSafety, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfLifeSafety"); pullErr != nil {

@@ -52,8 +52,6 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
   protected final int maxBufferSize;
   protected final int channelLifetime;
   protected final int securityTokenLifetime;
-  // Reserved Fields
-  private Short reservedField0;
 
   public EndpointConfiguration(
       int operationTimeout,
@@ -124,10 +122,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     writeSimpleField("operationTimeout", operationTimeout, writeSignedInt(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (useBinaryEncoding)
     writeSimpleField("useBinaryEncoding", useBinaryEncoding, writeBoolean(writeBuffer));
@@ -200,7 +195,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static EndpointConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointConfiguration");
     PositionAware positionAware = readBuffer;
@@ -231,7 +226,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("EndpointConfiguration");
     // Create the instance
-    return new EndpointConfigurationBuilder(
+    return new EndpointConfigurationBuilderImpl(
         operationTimeout,
         useBinaryEncoding,
         maxStringLength,
@@ -240,11 +235,10 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
         maxMessageSize,
         maxBufferSize,
         channelLifetime,
-        securityTokenLifetime,
-        reservedField0);
+        securityTokenLifetime);
   }
 
-  public static class EndpointConfigurationBuilder
+  public static class EndpointConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int operationTimeout;
     private final boolean useBinaryEncoding;
@@ -255,9 +249,8 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     private final int maxBufferSize;
     private final int channelLifetime;
     private final int securityTokenLifetime;
-    private final Short reservedField0;
 
-    public EndpointConfigurationBuilder(
+    public EndpointConfigurationBuilderImpl(
         int operationTimeout,
         boolean useBinaryEncoding,
         int maxStringLength,
@@ -266,8 +259,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
         int maxMessageSize,
         int maxBufferSize,
         int channelLifetime,
-        int securityTokenLifetime,
-        Short reservedField0) {
+        int securityTokenLifetime) {
       this.operationTimeout = operationTimeout;
       this.useBinaryEncoding = useBinaryEncoding;
       this.maxStringLength = maxStringLength;
@@ -277,7 +269,6 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
       this.maxBufferSize = maxBufferSize;
       this.channelLifetime = channelLifetime;
       this.securityTokenLifetime = securityTokenLifetime;
-      this.reservedField0 = reservedField0;
     }
 
     public EndpointConfiguration build() {
@@ -292,7 +283,6 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
               maxBufferSize,
               channelLifetime,
               securityTokenLifetime);
-      endpointConfiguration.reservedField0 = reservedField0;
       return endpointConfiguration;
     }
   }

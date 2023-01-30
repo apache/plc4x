@@ -59,8 +59,6 @@ public abstract class AmsPacket implements Message {
   protected final int sourceAmsPort;
   protected final long errorCode;
   protected final long invokeId;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public AmsPacket(
       AmsNetId targetAmsNetId,
@@ -190,10 +188,7 @@ public abstract class AmsPacket implements Message {
     writeConstField("broadcast", BROADCAST, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x0,
-        writeSignedByte(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x0, writeSignedByte(writeBuffer, 7));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
@@ -349,85 +344,85 @@ public abstract class AmsPacket implements Message {
     if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsInvalidRequest.staticParseBuilder(readBuffer);
+      builder = AdsInvalidRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsInvalidResponse.staticParseBuilder(readBuffer);
+      builder = AdsInvalidResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadDeviceInfoRequest.staticParseBuilder(readBuffer);
+      builder = AdsReadDeviceInfoRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadDeviceInfoResponse.staticParseBuilder(readBuffer);
+      builder = AdsReadDeviceInfoResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadRequest.staticParseBuilder(readBuffer);
+      builder = AdsReadRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadResponse.staticParseBuilder(readBuffer);
+      builder = AdsReadResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsWriteRequest.staticParseBuilder(readBuffer);
+      builder = AdsWriteRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsWriteResponse.staticParseBuilder(readBuffer);
+      builder = AdsWriteResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadStateRequest.staticParseBuilder(readBuffer);
+      builder = AdsReadStateRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadStateResponse.staticParseBuilder(readBuffer);
+      builder = AdsReadStateResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsWriteControlRequest.staticParseBuilder(readBuffer);
+      builder = AdsWriteControlRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsWriteControlResponse.staticParseBuilder(readBuffer);
+      builder = AdsWriteControlResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsAddDeviceNotificationRequest.staticParseBuilder(readBuffer);
+      builder = AdsAddDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsAddDeviceNotificationResponse.staticParseBuilder(readBuffer);
+      builder = AdsAddDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsDeleteDeviceNotificationRequest.staticParseBuilder(readBuffer);
+      builder = AdsDeleteDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsDeleteDeviceNotificationResponse.staticParseBuilder(readBuffer);
+      builder = AdsDeleteDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsDeviceNotificationRequest.staticParseBuilder(readBuffer);
+      builder = AdsDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsDeviceNotificationResponse.staticParseBuilder(readBuffer);
+      builder = AdsDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadWriteRequest.staticParseBuilder(readBuffer);
+      builder = AdsReadWriteRequest.staticParseAmsPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
         && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadWriteResponse.staticParseBuilder(readBuffer);
+      builder = AdsReadWriteResponse.staticParseAmsPacketBuilder(readBuffer);
     } else {
-      builder = ErrorResponse.staticParseBuilder(readBuffer);
+      builder = ErrorResponse.staticParseAmsPacketBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -449,11 +444,10 @@ public abstract class AmsPacket implements Message {
     AmsPacket _amsPacket =
         builder.build(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId);
-    _amsPacket.reservedField0 = reservedField0;
     return _amsPacket;
   }
 
-  public static interface AmsPacketBuilder {
+  public interface AmsPacketBuilder {
     AmsPacket build(
         AmsNetId targetAmsNetId,
         int targetAmsPort,

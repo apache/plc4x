@@ -67,8 +67,8 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
     return lengthInBits;
   }
 
-  public static AccessControlDataAccessPointForcedOpenBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("AccessControlDataAccessPointForcedOpen");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
 
     readBuffer.closeContext("AccessControlDataAccessPointForcedOpen");
     // Create the instance
-    return new AccessControlDataAccessPointForcedOpenBuilder();
+    return new AccessControlDataAccessPointForcedOpenBuilderImpl();
   }
 
-  public static class AccessControlDataAccessPointForcedOpenBuilder
+  public static class AccessControlDataAccessPointForcedOpenBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataAccessPointForcedOpenBuilder() {}
+    public AccessControlDataAccessPointForcedOpenBuilderImpl() {}
 
     public AccessControlDataAccessPointForcedOpen build(
         AccessControlCommandTypeContainer commandTypeContainer,

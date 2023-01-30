@@ -66,7 +66,7 @@ public class SecurityDataCurrentAlarmType extends SecurityData implements Messag
     return lengthInBits;
   }
 
-  public static SecurityDataCurrentAlarmTypeBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataCurrentAlarmType");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataCurrentAlarmType extends SecurityData implements Messag
 
     readBuffer.closeContext("SecurityDataCurrentAlarmType");
     // Create the instance
-    return new SecurityDataCurrentAlarmTypeBuilder();
+    return new SecurityDataCurrentAlarmTypeBuilderImpl();
   }
 
-  public static class SecurityDataCurrentAlarmTypeBuilder
+  public static class SecurityDataCurrentAlarmTypeBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataCurrentAlarmTypeBuilder() {}
+    public SecurityDataCurrentAlarmTypeBuilderImpl() {}
 
     public SecurityDataCurrentAlarmType build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

@@ -119,8 +119,9 @@ public class BACnetServiceAckAtomicReadFileRecord
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileRecordBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+      staticParseBACnetServiceAckAtomicReadFileStreamOrRecordBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileRecord");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -155,22 +156,21 @@ public class BACnetServiceAckAtomicReadFileRecord
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFileRecord");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileRecordBuilder(
+    return new BACnetServiceAckAtomicReadFileRecordBuilderImpl(
         fileStartRecord, returnedRecordCount, fileRecordData);
   }
 
-  public static class BACnetServiceAckAtomicReadFileRecordBuilder
+  public static class BACnetServiceAckAtomicReadFileRecordBuilderImpl
       implements BACnetServiceAckAtomicReadFileStreamOrRecord
           .BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
     private final BACnetApplicationTagSignedInteger fileStartRecord;
     private final BACnetApplicationTagUnsignedInteger returnedRecordCount;
     private final List<BACnetApplicationTagOctetString> fileRecordData;
 
-    public BACnetServiceAckAtomicReadFileRecordBuilder(
+    public BACnetServiceAckAtomicReadFileRecordBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartRecord,
         BACnetApplicationTagUnsignedInteger returnedRecordCount,
         List<BACnetApplicationTagOctetString> fileRecordData) {
-
       this.fileStartRecord = fileStartRecord;
       this.returnedRecordCount = returnedRecordCount;
       this.fileRecordData = fileRecordData;

@@ -86,7 +86,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     return lengthInBits;
   }
 
-  public static SALDataPoolsSpasPondsFountainsControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataPoolsSpasPondsFountainsControl");
     PositionAware positionAware = readBuffer;
@@ -100,15 +100,15 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
 
     readBuffer.closeContext("SALDataPoolsSpasPondsFountainsControl");
     // Create the instance
-    return new SALDataPoolsSpasPondsFountainsControlBuilder(poolsSpaPondsFountainsData);
+    return new SALDataPoolsSpasPondsFountainsControlBuilderImpl(poolsSpaPondsFountainsData);
   }
 
-  public static class SALDataPoolsSpasPondsFountainsControlBuilder
+  public static class SALDataPoolsSpasPondsFountainsControlBuilderImpl
       implements SALData.SALDataBuilder {
     private final LightingData poolsSpaPondsFountainsData;
 
-    public SALDataPoolsSpasPondsFountainsControlBuilder(LightingData poolsSpaPondsFountainsData) {
-
+    public SALDataPoolsSpasPondsFountainsControlBuilderImpl(
+        LightingData poolsSpaPondsFountainsData) {
       this.poolsSpaPondsFountainsData = poolsSpaPondsFountainsData;
     }
 

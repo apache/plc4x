@@ -102,7 +102,7 @@ public class ModbusPDUWriteSingleCoilResponse extends ModbusPDU implements Messa
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteSingleCoilResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteSingleCoilResponse");
     PositionAware positionAware = readBuffer;
@@ -115,16 +115,15 @@ public class ModbusPDUWriteSingleCoilResponse extends ModbusPDU implements Messa
 
     readBuffer.closeContext("ModbusPDUWriteSingleCoilResponse");
     // Create the instance
-    return new ModbusPDUWriteSingleCoilResponseBuilder(address, value);
+    return new ModbusPDUWriteSingleCoilResponseBuilderImpl(address, value);
   }
 
-  public static class ModbusPDUWriteSingleCoilResponseBuilder
+  public static class ModbusPDUWriteSingleCoilResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int address;
     private final int value;
 
-    public ModbusPDUWriteSingleCoilResponseBuilder(int address, int value) {
-
+    public ModbusPDUWriteSingleCoilResponseBuilderImpl(int address, int value) {
       this.address = address;
       this.value = value;
     }

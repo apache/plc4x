@@ -122,7 +122,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionRequest");
     PositionAware positionAware = readBuffer;
@@ -152,20 +152,20 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionRequest");
     // Create the instance
-    return new ConnectionRequestBuilder(
+    return new ConnectionRequestBuilderImpl(
         hpaiDiscoveryEndpoint, hpaiDataEndpoint, connectionRequestInformation);
   }
 
-  public static class ConnectionRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class ConnectionRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint;
     private final HPAIDataEndpoint hpaiDataEndpoint;
     private final ConnectionRequestInformation connectionRequestInformation;
 
-    public ConnectionRequestBuilder(
+    public ConnectionRequestBuilderImpl(
         HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint,
         HPAIDataEndpoint hpaiDataEndpoint,
         ConnectionRequestInformation connectionRequestInformation) {
-
       this.hpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint;
       this.hpaiDataEndpoint = hpaiDataEndpoint;
       this.connectionRequestInformation = connectionRequestInformation;

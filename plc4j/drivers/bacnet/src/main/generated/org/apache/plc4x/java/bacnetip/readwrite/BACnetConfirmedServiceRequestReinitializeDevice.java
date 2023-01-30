@@ -111,8 +111,9 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReinitializeDeviceBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReinitializeDevice");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -145,23 +146,22 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReinitializeDevice");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReinitializeDeviceBuilder(
+    return new BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
         reinitializedStateOfDevice, password, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+  public static class BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
         reinitializedStateOfDevice;
     private final BACnetContextTagCharacterString password;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestReinitializeDeviceBuilder(
+    public BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
             reinitializedStateOfDevice,
         BACnetContextTagCharacterString password,
         Long serviceRequestLength) {
-
       this.reinitializedStateOfDevice = reinitializedStateOfDevice;
       this.password = password;
       this.serviceRequestLength = serviceRequestLength;

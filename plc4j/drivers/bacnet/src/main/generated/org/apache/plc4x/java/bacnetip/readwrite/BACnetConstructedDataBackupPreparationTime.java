@@ -113,7 +113,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupPreparationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,21 +139,20 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupPreparationTime");
     // Create the instance
-    return new BACnetConstructedDataBackupPreparationTimeBuilder(
+    return new BACnetConstructedDataBackupPreparationTimeBuilderImpl(
         backupPreparationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupPreparationTimeBuilder
+  public static class BACnetConstructedDataBackupPreparationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupPreparationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupPreparationTimeBuilder(
+    public BACnetConstructedDataBackupPreparationTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger backupPreparationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupPreparationTime = backupPreparationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

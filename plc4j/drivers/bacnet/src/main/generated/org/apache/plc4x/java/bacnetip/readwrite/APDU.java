@@ -120,23 +120,23 @@ public abstract class APDU implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     APDUBuilder builder = null;
     if (EvaluationHelper.equals(apduType, ApduType.CONFIRMED_REQUEST_PDU)) {
-      builder = APDUConfirmedRequest.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUConfirmedRequest.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.UNCONFIRMED_REQUEST_PDU)) {
-      builder = APDUUnconfirmedRequest.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUUnconfirmedRequest.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.SIMPLE_ACK_PDU)) {
-      builder = APDUSimpleAck.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUSimpleAck.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.COMPLEX_ACK_PDU)) {
-      builder = APDUComplexAck.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUComplexAck.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.SEGMENT_ACK_PDU)) {
-      builder = APDUSegmentAck.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUSegmentAck.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.ERROR_PDU)) {
-      builder = APDUError.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUError.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.REJECT_PDU)) {
-      builder = APDUReject.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUReject.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(apduType, ApduType.ABORT_PDU)) {
-      builder = APDUAbort.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUAbort.staticParseAPDUBuilder(readBuffer, apduLength);
     } else if (true) {
-      builder = APDUUnknown.staticParseBuilder(readBuffer, apduLength);
+      builder = APDUUnknown.staticParseAPDUBuilder(readBuffer, apduLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -154,7 +154,7 @@ public abstract class APDU implements Message {
     return _aPDU;
   }
 
-  public static interface APDUBuilder {
+  public interface APDUBuilder {
     APDU build(Integer apduLength);
   }
 

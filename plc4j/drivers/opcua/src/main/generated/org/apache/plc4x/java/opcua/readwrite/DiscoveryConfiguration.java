@@ -69,7 +69,7 @@ public class DiscoveryConfiguration extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static DiscoveryConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DiscoveryConfiguration");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class DiscoveryConfiguration extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("DiscoveryConfiguration");
     // Create the instance
-    return new DiscoveryConfigurationBuilder();
+    return new DiscoveryConfigurationBuilderImpl();
   }
 
-  public static class DiscoveryConfigurationBuilder
+  public static class DiscoveryConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DiscoveryConfigurationBuilder() {}
+    public DiscoveryConfigurationBuilderImpl() {}
 
     public DiscoveryConfiguration build() {
       DiscoveryConfiguration discoveryConfiguration = new DiscoveryConfiguration();

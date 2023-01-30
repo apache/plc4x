@@ -110,7 +110,7 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyZonePresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZonePresentValue");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZonePresentValueBuilder(
+    return new BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+  public static class BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyStateTagged presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZonePresentValueBuilder(
+    public BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl(
         BACnetLifeSafetyStateTagged presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

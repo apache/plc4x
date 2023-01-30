@@ -82,7 +82,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesFileAccessMethodBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesFileAccessMethod");
     PositionAware positionAware = readBuffer;
@@ -102,16 +102,15 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
 
     readBuffer.closeContext("BACnetPropertyStatesFileAccessMethod");
     // Create the instance
-    return new BACnetPropertyStatesFileAccessMethodBuilder(fileAccessMethod);
+    return new BACnetPropertyStatesFileAccessMethodBuilderImpl(fileAccessMethod);
   }
 
-  public static class BACnetPropertyStatesFileAccessMethodBuilder
+  public static class BACnetPropertyStatesFileAccessMethodBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetFileAccessMethodTagged fileAccessMethod;
 
-    public BACnetPropertyStatesFileAccessMethodBuilder(
+    public BACnetPropertyStatesFileAccessMethodBuilderImpl(
         BACnetFileAccessMethodTagged fileAccessMethod) {
-
       this.fileAccessMethod = fileAccessMethod;
     }
 

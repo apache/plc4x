@@ -109,7 +109,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEscalatorModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataEscalatorMode");
     // Create the instance
-    return new BACnetConstructedDataEscalatorModeBuilder(
+    return new BACnetConstructedDataEscalatorModeBuilderImpl(
         escalatorMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEscalatorModeBuilder
+  public static class BACnetConstructedDataEscalatorModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEscalatorModeTagged escalatorMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEscalatorModeBuilder(
+    public BACnetConstructedDataEscalatorModeBuilderImpl(
         BACnetEscalatorModeTagged escalatorMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.escalatorMode = escalatorMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

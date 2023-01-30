@@ -45,15 +45,9 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
   // Properties.
   protected final SysexCommand command;
 
-  // Arguments.
-  protected final Boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public FirmataCommandSysex(SysexCommand command, Boolean response) {
-    super(response);
+  public FirmataCommandSysex(SysexCommand command) {
+    super();
     this.command = command;
-    this.response = response;
   }
 
   public SysexCommand getCommand() {
@@ -71,10 +65,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0xF7,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0xF7, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("FirmataCommandSysex");
   }
@@ -98,7 +89,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     return lengthInBits;
   }
 
-  public static FirmataCommandSysexBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSysex");
     PositionAware positionAware = readBuffer;
@@ -116,25 +107,19 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
 
     readBuffer.closeContext("FirmataCommandSysex");
     // Create the instance
-    return new FirmataCommandSysexBuilder(command, response, reservedField0);
+    return new FirmataCommandSysexBuilderImpl(command);
   }
 
-  public static class FirmataCommandSysexBuilder implements FirmataCommand.FirmataCommandBuilder {
+  public static class FirmataCommandSysexBuilderImpl
+      implements FirmataCommand.FirmataCommandBuilder {
     private final SysexCommand command;
-    private final Boolean response;
-    private final Short reservedField0;
 
-    public FirmataCommandSysexBuilder(
-        SysexCommand command, Boolean response, Short reservedField0) {
+    public FirmataCommandSysexBuilderImpl(SysexCommand command) {
       this.command = command;
-      this.response = response;
-      this.reservedField0 = reservedField0;
     }
 
-    public FirmataCommandSysex build(Boolean response) {
-
-      FirmataCommandSysex firmataCommandSysex = new FirmataCommandSysex(command, response);
-      firmataCommandSysex.reservedField0 = reservedField0;
+    public FirmataCommandSysex build() {
+      FirmataCommandSysex firmataCommandSysex = new FirmataCommandSysex(command);
       return firmataCommandSysex;
     }
   }

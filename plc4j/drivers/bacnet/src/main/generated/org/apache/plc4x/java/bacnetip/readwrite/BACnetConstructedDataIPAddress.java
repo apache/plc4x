@@ -109,7 +109,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,20 +133,19 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataIPAddress");
     // Create the instance
-    return new BACnetConstructedDataIPAddressBuilder(ipAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPAddressBuilderImpl(ipAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPAddressBuilder
+  public static class BACnetConstructedDataIPAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPAddressBuilder(
+    public BACnetConstructedDataIPAddressBuilderImpl(
         BACnetApplicationTagOctetString ipAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipAddress = ipAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

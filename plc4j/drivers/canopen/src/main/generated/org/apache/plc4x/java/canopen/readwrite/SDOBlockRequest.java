@@ -82,7 +82,7 @@ public class SDOBlockRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOBlockRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOBlockRequest");
     PositionAware positionAware = readBuffer;
@@ -96,14 +96,13 @@ public class SDOBlockRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOBlockRequest");
     // Create the instance
-    return new SDOBlockRequestBuilder(block);
+    return new SDOBlockRequestBuilderImpl(block);
   }
 
-  public static class SDOBlockRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOBlockRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final SDOBlockData block;
 
-    public SDOBlockRequestBuilder(SDOBlockData block) {
-
+    public SDOBlockRequestBuilderImpl(SDOBlockData block) {
       this.block = block;
     }
 

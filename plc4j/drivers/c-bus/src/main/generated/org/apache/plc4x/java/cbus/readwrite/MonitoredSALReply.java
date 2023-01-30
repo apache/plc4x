@@ -89,7 +89,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
     return lengthInBits;
   }
 
-  public static MonitoredSALReplyBuilder staticParseBuilder(
+  public static EncodedReplyBuilder staticParseEncodedReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("MonitoredSALReply");
@@ -106,17 +106,16 @@ public class MonitoredSALReply extends EncodedReply implements Message {
 
     readBuffer.closeContext("MonitoredSALReply");
     // Create the instance
-    return new MonitoredSALReplyBuilder(monitoredSAL, cBusOptions, requestContext);
+    return new MonitoredSALReplyBuilderImpl(monitoredSAL, cBusOptions, requestContext);
   }
 
-  public static class MonitoredSALReplyBuilder implements EncodedReply.EncodedReplyBuilder {
+  public static class MonitoredSALReplyBuilderImpl implements EncodedReply.EncodedReplyBuilder {
     private final MonitoredSAL monitoredSAL;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public MonitoredSALReplyBuilder(
+    public MonitoredSALReplyBuilderImpl(
         MonitoredSAL monitoredSAL, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.monitoredSAL = monitoredSAL;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

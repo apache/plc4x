@@ -92,9 +92,11 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeClimateControllersBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeClimateControllers");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -110,16 +112,15 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeClimateControllers");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeClimateControllersBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl(categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeClimateControllersBuilder
+  public static class ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForClimateControllers categoryForType;
 
-    public ErrorReportingSystemCategoryTypeClimateControllersBuilder(
+    public ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl(
         ErrorReportingSystemCategoryTypeForClimateControllers categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

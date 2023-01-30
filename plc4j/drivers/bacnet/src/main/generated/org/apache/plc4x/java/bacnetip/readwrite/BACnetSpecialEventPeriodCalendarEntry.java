@@ -82,7 +82,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     return lengthInBits;
   }
 
-  public static BACnetSpecialEventPeriodCalendarEntryBuilder staticParseBuilder(
+  public static BACnetSpecialEventPeriodBuilder staticParseBACnetSpecialEventPeriodBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEventPeriodCalendarEntry");
     PositionAware positionAware = readBuffer;
@@ -98,15 +98,15 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
 
     readBuffer.closeContext("BACnetSpecialEventPeriodCalendarEntry");
     // Create the instance
-    return new BACnetSpecialEventPeriodCalendarEntryBuilder(calendarEntry);
+    return new BACnetSpecialEventPeriodCalendarEntryBuilderImpl(calendarEntry);
   }
 
-  public static class BACnetSpecialEventPeriodCalendarEntryBuilder
+  public static class BACnetSpecialEventPeriodCalendarEntryBuilderImpl
       implements BACnetSpecialEventPeriod.BACnetSpecialEventPeriodBuilder {
     private final BACnetCalendarEntryEnclosed calendarEntry;
 
-    public BACnetSpecialEventPeriodCalendarEntryBuilder(BACnetCalendarEntryEnclosed calendarEntry) {
-
+    public BACnetSpecialEventPeriodCalendarEntryBuilderImpl(
+        BACnetCalendarEntryEnclosed calendarEntry) {
       this.calendarEntry = calendarEntry;
     }
 

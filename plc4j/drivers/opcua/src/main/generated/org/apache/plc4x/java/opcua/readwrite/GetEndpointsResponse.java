@@ -116,7 +116,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static GetEndpointsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GetEndpointsResponse");
     PositionAware positionAware = readBuffer;
@@ -142,20 +142,19 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("GetEndpointsResponse");
     // Create the instance
-    return new GetEndpointsResponseBuilder(responseHeader, noOfEndpoints, endpoints);
+    return new GetEndpointsResponseBuilderImpl(responseHeader, noOfEndpoints, endpoints);
   }
 
-  public static class GetEndpointsResponseBuilder
+  public static class GetEndpointsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfEndpoints;
     private final List<ExtensionObjectDefinition> endpoints;
 
-    public GetEndpointsResponseBuilder(
+    public GetEndpointsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfEndpoints,
         List<ExtensionObjectDefinition> endpoints) {
-
       this.responseHeader = responseHeader;
       this.noOfEndpoints = noOfEndpoints;
       this.endpoints = endpoints;

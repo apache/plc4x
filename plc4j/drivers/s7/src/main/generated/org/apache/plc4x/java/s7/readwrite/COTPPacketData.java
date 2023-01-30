@@ -46,19 +46,11 @@ public class COTPPacketData extends COTPPacket implements Message {
   protected final boolean eot;
   protected final short tpduRef;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
   public COTPPacketData(
-      List<COTPParameter> parameters,
-      S7Message payload,
-      boolean eot,
-      short tpduRef,
-      Integer cotpLen) {
-    super(parameters, payload, cotpLen);
+      List<COTPParameter> parameters, S7Message payload, boolean eot, short tpduRef) {
+    super(parameters, payload);
     this.eot = eot;
     this.tpduRef = tpduRef;
-    this.cotpLen = cotpLen;
   }
 
   public boolean getEot() {
@@ -103,8 +95,8 @@ public class COTPPacketData extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketDataBuilder staticParseBuilder(ReadBuffer readBuffer, Integer cotpLen)
-      throws ParseException {
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
+      ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -116,25 +108,20 @@ public class COTPPacketData extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketData");
     // Create the instance
-    return new COTPPacketDataBuilder(eot, tpduRef, cotpLen);
+    return new COTPPacketDataBuilderImpl(eot, tpduRef);
   }
 
-  public static class COTPPacketDataBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketDataBuilderImpl implements COTPPacket.COTPPacketBuilder {
     private final boolean eot;
     private final short tpduRef;
-    private final Integer cotpLen;
 
-    public COTPPacketDataBuilder(boolean eot, short tpduRef, Integer cotpLen) {
-
+    public COTPPacketDataBuilderImpl(boolean eot, short tpduRef) {
       this.eot = eot;
       this.tpduRef = tpduRef;
-      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketData build(
-        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
-      COTPPacketData cOTPPacketData =
-          new COTPPacketData(parameters, payload, eot, tpduRef, cotpLen);
+    public COTPPacketData build(List<COTPParameter> parameters, S7Message payload) {
+      COTPPacketData cOTPPacketData = new COTPPacketData(parameters, payload, eot, tpduRef);
       return cOTPPacketData;
     }
   }

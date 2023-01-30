@@ -107,8 +107,8 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static AnnotationBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Annotation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -128,17 +128,16 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Annotation");
     // Create the instance
-    return new AnnotationBuilder(message, userName, annotationTime);
+    return new AnnotationBuilderImpl(message, userName, annotationTime);
   }
 
-  public static class AnnotationBuilder
+  public static class AnnotationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString message;
     private final PascalString userName;
     private final long annotationTime;
 
-    public AnnotationBuilder(PascalString message, PascalString userName, long annotationTime) {
-
+    public AnnotationBuilderImpl(PascalString message, PascalString userName, long annotationTime) {
       this.message = message;
       this.userName = userName;
       this.annotationTime = annotationTime;

@@ -118,52 +118,55 @@ public abstract class SALData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SALDataBuilder builder = null;
     if (EvaluationHelper.equals(applicationId, ApplicationId.RESERVED)) {
-      builder = SALDataReserved.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataReserved.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.FREE_USAGE)) {
-      builder = SALDataFreeUsage.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataFreeUsage.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.TEMPERATURE_BROADCAST)) {
-      builder = SALDataTemperatureBroadcast.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataTemperatureBroadcast.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.ROOM_CONTROL_SYSTEM)) {
-      builder = SALDataRoomControlSystem.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataRoomControlSystem.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.LIGHTING)) {
-      builder = SALDataLighting.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataLighting.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.VENTILATION)) {
-      builder = SALDataVentilation.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataVentilation.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.IRRIGATION_CONTROL)) {
-      builder = SALDataIrrigationControl.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataIrrigationControl.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(
         applicationId, ApplicationId.POOLS_SPAS_PONDS_FOUNTAINS_CONTROL)) {
-      builder = SALDataPoolsSpasPondsFountainsControl.staticParseBuilder(readBuffer, applicationId);
+      builder =
+          SALDataPoolsSpasPondsFountainsControl.staticParseSALDataBuilder(
+              readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.HEATING)) {
-      builder = SALDataHeating.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataHeating.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.AIR_CONDITIONING)) {
-      builder = SALDataAirConditioning.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataAirConditioning.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.TRIGGER_CONTROL)) {
-      builder = SALDataTriggerControl.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataTriggerControl.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.ENABLE_CONTROL)) {
-      builder = SALDataEnableControl.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataEnableControl.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.AUDIO_AND_VIDEO)) {
-      builder = SALDataAudioAndVideo.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataAudioAndVideo.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.SECURITY)) {
-      builder = SALDataSecurity.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataSecurity.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.METERING)) {
-      builder = SALDataMetering.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataMetering.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.ACCESS_CONTROL)) {
-      builder = SALDataAccessControl.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataAccessControl.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.CLOCK_AND_TIMEKEEPING)) {
-      builder = SALDataClockAndTimekeeping.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataClockAndTimekeeping.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.TELEPHONY_STATUS_AND_CONTROL)) {
-      builder = SALDataTelephonyStatusAndControl.staticParseBuilder(readBuffer, applicationId);
+      builder =
+          SALDataTelephonyStatusAndControl.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.MEASUREMENT)) {
-      builder = SALDataMeasurement.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataMeasurement.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.TESTING)) {
-      builder = SALDataTesting.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataTesting.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.MEDIA_TRANSPORT_CONTROL)) {
-      builder = SALDataMediaTransport.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataMediaTransport.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.ERROR_REPORTING)) {
-      builder = SALDataErrorReporting.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataErrorReporting.staticParseSALDataBuilder(readBuffer, applicationId);
     } else if (EvaluationHelper.equals(applicationId, ApplicationId.HVAC_ACTUATOR)) {
-      builder = SALDataHvacActuator.staticParseBuilder(readBuffer, applicationId);
+      builder = SALDataHvacActuator.staticParseSALDataBuilder(readBuffer, applicationId);
     }
     if (builder == null) {
       throw new ParseException(
@@ -187,7 +190,7 @@ public abstract class SALData implements Message {
     return _sALData;
   }
 
-  public static interface SALDataBuilder {
+  public interface SALDataBuilder {
     SALData build(SALData salData);
   }
 

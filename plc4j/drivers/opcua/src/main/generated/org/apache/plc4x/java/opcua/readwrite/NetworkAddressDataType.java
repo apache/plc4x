@@ -84,7 +84,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static NetworkAddressDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NetworkAddressDataType");
     PositionAware positionAware = readBuffer;
@@ -98,15 +98,14 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("NetworkAddressDataType");
     // Create the instance
-    return new NetworkAddressDataTypeBuilder(networkInterface);
+    return new NetworkAddressDataTypeBuilderImpl(networkInterface);
   }
 
-  public static class NetworkAddressDataTypeBuilder
+  public static class NetworkAddressDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString networkInterface;
 
-    public NetworkAddressDataTypeBuilder(PascalString networkInterface) {
-
+    public NetworkAddressDataTypeBuilderImpl(PascalString networkInterface) {
       this.networkInterface = networkInterface;
     }
 

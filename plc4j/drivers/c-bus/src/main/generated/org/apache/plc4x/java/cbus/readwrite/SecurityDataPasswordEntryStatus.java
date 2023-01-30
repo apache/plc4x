@@ -130,7 +130,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
     return lengthInBits;
   }
 
-  public static SecurityDataPasswordEntryStatusBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataPasswordEntryStatus");
     PositionAware positionAware = readBuffer;
@@ -150,15 +150,14 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
 
     readBuffer.closeContext("SecurityDataPasswordEntryStatus");
     // Create the instance
-    return new SecurityDataPasswordEntryStatusBuilder(code);
+    return new SecurityDataPasswordEntryStatusBuilderImpl(code);
   }
 
-  public static class SecurityDataPasswordEntryStatusBuilder
+  public static class SecurityDataPasswordEntryStatusBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final byte code;
 
-    public SecurityDataPasswordEntryStatusBuilder(byte code) {
-
+    public SecurityDataPasswordEntryStatusBuilderImpl(byte code) {
       this.code = code;
     }
 

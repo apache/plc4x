@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckAuthenticate) GetBytesOfRemovedService() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
-func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckAuthenticate {
+func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckAuthenticate {
 	_result := &_BACnetServiceAckAuthenticate{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,11 +129,11 @@ func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAuthenticateParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckAuthenticate, error) {
-	return BACnetServiceAckAuthenticateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckAuthenticateParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
+	return BACnetServiceAckAuthenticateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckAuthenticateParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckAuthenticate, error) {
+func BACnetServiceAckAuthenticateParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAuthenticate"); pullErr != nil {

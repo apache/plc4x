@@ -72,7 +72,7 @@ public class PnDcp_Block_ControlOptionStart extends PnDcp_Block implements Messa
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionStartBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionStart");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class PnDcp_Block_ControlOptionStart extends PnDcp_Block implements Messa
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionStart");
     // Create the instance
-    return new PnDcp_Block_ControlOptionStartBuilder();
+    return new PnDcp_Block_ControlOptionStartBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionStartBuilder
+  public static class PnDcp_Block_ControlOptionStartBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionStartBuilder() {}
+    public PnDcp_Block_ControlOptionStartBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionStart build() {
       PnDcp_Block_ControlOptionStart pnDcp_Block_ControlOptionStart =

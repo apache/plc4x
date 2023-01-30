@@ -83,7 +83,7 @@ public class SALDataMeasurement extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataMeasurementBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataMeasurement");
     PositionAware positionAware = readBuffer;
@@ -98,14 +98,13 @@ public class SALDataMeasurement extends SALData implements Message {
 
     readBuffer.closeContext("SALDataMeasurement");
     // Create the instance
-    return new SALDataMeasurementBuilder(measurementData);
+    return new SALDataMeasurementBuilderImpl(measurementData);
   }
 
-  public static class SALDataMeasurementBuilder implements SALData.SALDataBuilder {
+  public static class SALDataMeasurementBuilderImpl implements SALData.SALDataBuilder {
     private final MeasurementData measurementData;
 
-    public SALDataMeasurementBuilder(MeasurementData measurementData) {
-
+    public SALDataMeasurementBuilderImpl(MeasurementData measurementData) {
       this.measurementData = measurementData;
     }
 

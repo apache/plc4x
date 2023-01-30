@@ -87,7 +87,7 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSelectionNameBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer, MediaTransportControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSelectionName");
@@ -102,15 +102,14 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
 
     readBuffer.closeContext("MediaTransportControlDataSelectionName");
     // Create the instance
-    return new MediaTransportControlDataSelectionNameBuilder(selectionName);
+    return new MediaTransportControlDataSelectionNameBuilderImpl(selectionName);
   }
 
-  public static class MediaTransportControlDataSelectionNameBuilder
+  public static class MediaTransportControlDataSelectionNameBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final String selectionName;
 
-    public MediaTransportControlDataSelectionNameBuilder(String selectionName) {
-
+    public MediaTransportControlDataSelectionNameBuilderImpl(String selectionName) {
       this.selectionName = selectionName;
     }
 

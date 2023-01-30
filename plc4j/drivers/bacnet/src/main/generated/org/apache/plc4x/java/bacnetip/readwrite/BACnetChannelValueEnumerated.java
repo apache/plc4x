@@ -82,8 +82,8 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     return lengthInBits;
   }
 
-  public static BACnetChannelValueEnumeratedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueEnumerated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +98,14 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
 
     readBuffer.closeContext("BACnetChannelValueEnumerated");
     // Create the instance
-    return new BACnetChannelValueEnumeratedBuilder(enumeratedValue);
+    return new BACnetChannelValueEnumeratedBuilderImpl(enumeratedValue);
   }
 
-  public static class BACnetChannelValueEnumeratedBuilder
+  public static class BACnetChannelValueEnumeratedBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
 
-    public BACnetChannelValueEnumeratedBuilder(BACnetApplicationTagEnumerated enumeratedValue) {
-
+    public BACnetChannelValueEnumeratedBuilderImpl(BACnetApplicationTagEnumerated enumeratedValue) {
       this.enumeratedValue = enumeratedValue;
     }
 

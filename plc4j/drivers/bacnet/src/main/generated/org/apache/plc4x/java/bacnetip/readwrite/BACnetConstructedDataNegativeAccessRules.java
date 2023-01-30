@@ -136,7 +136,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNegativeAccessRulesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataNegativeAccessRules");
     // Create the instance
-    return new BACnetConstructedDataNegativeAccessRulesBuilder(
+    return new BACnetConstructedDataNegativeAccessRulesBuilderImpl(
         numberOfDataElements, negativeAccessRules, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNegativeAccessRulesBuilder
+  public static class BACnetConstructedDataNegativeAccessRulesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAccessRule> negativeAccessRules;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNegativeAccessRulesBuilder(
+    public BACnetConstructedDataNegativeAccessRulesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAccessRule> negativeAccessRules,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.negativeAccessRules = negativeAccessRules;
       this.tagNumber = tagNumber;

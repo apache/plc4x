@@ -90,7 +90,7 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandGAVPhysicalAddressesBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVPhysicalAddresses");
     PositionAware positionAware = readBuffer;
@@ -101,16 +101,15 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
 
     readBuffer.closeContext("IdentifyReplyCommandGAVPhysicalAddresses");
     // Create the instance
-    return new IdentifyReplyCommandGAVPhysicalAddressesBuilder(values, numBytes);
+    return new IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(values, numBytes);
   }
 
-  public static class IdentifyReplyCommandGAVPhysicalAddressesBuilder
+  public static class IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
     private final Short numBytes;
 
-    public IdentifyReplyCommandGAVPhysicalAddressesBuilder(byte[] values, Short numBytes) {
-
+    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Short numBytes) {
       this.values = values;
       this.numBytes = numBytes;
     }

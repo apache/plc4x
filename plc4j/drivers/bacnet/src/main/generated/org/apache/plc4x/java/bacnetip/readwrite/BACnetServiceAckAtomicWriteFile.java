@@ -89,7 +89,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicWriteFileBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicWriteFile");
     PositionAware positionAware = readBuffer;
@@ -110,17 +110,16 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
 
     readBuffer.closeContext("BACnetServiceAckAtomicWriteFile");
     // Create the instance
-    return new BACnetServiceAckAtomicWriteFileBuilder(fileStartPosition, serviceAckLength);
+    return new BACnetServiceAckAtomicWriteFileBuilderImpl(fileStartPosition, serviceAckLength);
   }
 
-  public static class BACnetServiceAckAtomicWriteFileBuilder
+  public static class BACnetServiceAckAtomicWriteFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetContextTagSignedInteger fileStartPosition;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckAtomicWriteFileBuilder(
+    public BACnetServiceAckAtomicWriteFileBuilderImpl(
         BACnetContextTagSignedInteger fileStartPosition, Long serviceAckLength) {
-
       this.fileStartPosition = fileStartPosition;
       this.serviceAckLength = serviceAckLength;
     }

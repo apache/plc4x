@@ -113,7 +113,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupAndRestoreStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -138,21 +138,20 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupAndRestoreState");
     // Create the instance
-    return new BACnetConstructedDataBackupAndRestoreStateBuilder(
+    return new BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
         backupAndRestoreState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupAndRestoreStateBuilder
+  public static class BACnetConstructedDataBackupAndRestoreStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBackupStateTagged backupAndRestoreState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupAndRestoreStateBuilder(
+    public BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
         BACnetBackupStateTagged backupAndRestoreState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupAndRestoreState = backupAndRestoreState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

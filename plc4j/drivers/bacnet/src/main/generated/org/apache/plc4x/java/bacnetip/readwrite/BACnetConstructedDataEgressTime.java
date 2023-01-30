@@ -109,7 +109,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEgressTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataEgressTime");
     // Create the instance
-    return new BACnetConstructedDataEgressTimeBuilder(egressTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEgressTimeBuilderImpl(
+        egressTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEgressTimeBuilder
+  public static class BACnetConstructedDataEgressTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger egressTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEgressTimeBuilder(
+    public BACnetConstructedDataEgressTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger egressTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressTime = egressTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

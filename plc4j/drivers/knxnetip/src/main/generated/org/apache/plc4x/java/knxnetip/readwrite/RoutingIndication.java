@@ -69,7 +69,7 @@ public class RoutingIndication extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static RoutingIndicationBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("RoutingIndication");
     PositionAware positionAware = readBuffer;
@@ -78,12 +78,13 @@ public class RoutingIndication extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("RoutingIndication");
     // Create the instance
-    return new RoutingIndicationBuilder();
+    return new RoutingIndicationBuilderImpl();
   }
 
-  public static class RoutingIndicationBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class RoutingIndicationBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
 
-    public RoutingIndicationBuilder() {}
+    public RoutingIndicationBuilderImpl() {}
 
     public RoutingIndication build() {
       RoutingIndication routingIndication = new RoutingIndication();

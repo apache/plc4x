@@ -135,7 +135,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLinkSpeedsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeeds");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedsBuilder(
+    return new BACnetConstructedDataLinkSpeedsBuilderImpl(
         numberOfDataElements, linkSpeeds, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLinkSpeedsBuilder
+  public static class BACnetConstructedDataLinkSpeedsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagReal> linkSpeeds;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedsBuilder(
+    public BACnetConstructedDataLinkSpeedsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagReal> linkSpeeds,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.linkSpeeds = linkSpeeds;
       this.tagNumber = tagNumber;

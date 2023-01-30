@@ -111,7 +111,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFirmwareRevisionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFirmwareRevision");
     // Create the instance
-    return new BACnetConstructedDataFirmwareRevisionBuilder(
+    return new BACnetConstructedDataFirmwareRevisionBuilderImpl(
         firmwareRevision, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFirmwareRevisionBuilder
+  public static class BACnetConstructedDataFirmwareRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString firmwareRevision;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFirmwareRevisionBuilder(
+    public BACnetConstructedDataFirmwareRevisionBuilderImpl(
         BACnetApplicationTagCharacterString firmwareRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.firmwareRevision = firmwareRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

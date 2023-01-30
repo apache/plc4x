@@ -88,7 +88,7 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTagDateBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagDate");
@@ -104,16 +104,15 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagDate");
     // Create the instance
-    return new BACnetContextTagDateBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagDateBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagDateBuilder
+  public static class BACnetContextTagDateBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadDate payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagDateBuilder(BACnetTagPayloadDate payload, Short tagNumberArgument) {
-
+    public BACnetContextTagDateBuilderImpl(BACnetTagPayloadDate payload, Short tagNumberArgument) {
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

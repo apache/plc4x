@@ -127,7 +127,7 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataStatusReport1Builder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatusReport1");
     PositionAware positionAware = readBuffer;
@@ -158,21 +158,22 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataStatusReport1");
     // Create the instance
-    return new SecurityDataStatusReport1Builder(armCodeType, tamperStatus, panicStatus, zoneStatus);
+    return new SecurityDataStatusReport1BuilderImpl(
+        armCodeType, tamperStatus, panicStatus, zoneStatus);
   }
 
-  public static class SecurityDataStatusReport1Builder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataStatusReport1BuilderImpl
+      implements SecurityData.SecurityDataBuilder {
     private final SecurityArmCode armCodeType;
     private final TamperStatus tamperStatus;
     private final PanicStatus panicStatus;
     private final List<ZoneStatus> zoneStatus;
 
-    public SecurityDataStatusReport1Builder(
+    public SecurityDataStatusReport1BuilderImpl(
         SecurityArmCode armCodeType,
         TamperStatus tamperStatus,
         PanicStatus panicStatus,
         List<ZoneStatus> zoneStatus) {
-
       this.armCodeType = armCodeType;
       this.tamperStatus = tamperStatus;
       this.panicStatus = panicStatus;

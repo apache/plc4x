@@ -87,7 +87,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DeviceConfigurationAckBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DeviceConfigurationAck");
     PositionAware positionAware = readBuffer;
@@ -103,16 +103,15 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DeviceConfigurationAck");
     // Create the instance
-    return new DeviceConfigurationAckBuilder(deviceConfigurationAckDataBlock);
+    return new DeviceConfigurationAckBuilderImpl(deviceConfigurationAckDataBlock);
   }
 
-  public static class DeviceConfigurationAckBuilder
+  public static class DeviceConfigurationAckBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock;
 
-    public DeviceConfigurationAckBuilder(
+    public DeviceConfigurationAckBuilderImpl(
         DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock) {
-
       this.deviceConfigurationAckDataBlock = deviceConfigurationAckDataBlock;
     }
 

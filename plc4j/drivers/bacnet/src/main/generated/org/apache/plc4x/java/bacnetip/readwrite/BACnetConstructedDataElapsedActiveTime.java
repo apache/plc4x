@@ -111,7 +111,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElapsedActiveTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataElapsedActiveTime");
     // Create the instance
-    return new BACnetConstructedDataElapsedActiveTimeBuilder(
+    return new BACnetConstructedDataElapsedActiveTimeBuilderImpl(
         elapsedActiveTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElapsedActiveTimeBuilder
+  public static class BACnetConstructedDataElapsedActiveTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger elapsedActiveTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElapsedActiveTimeBuilder(
+    public BACnetConstructedDataElapsedActiveTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger elapsedActiveTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.elapsedActiveTime = elapsedActiveTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

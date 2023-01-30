@@ -42,12 +42,8 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
     return (short) 0x2B;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtGroupPropertyValueInfoReport(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtGroupPropertyValueInfoReport() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
     return lengthInBits;
   }
 
-  public static ApduDataExtGroupPropertyValueInfoReportBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtGroupPropertyValueInfoReport");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueInfoReport");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueInfoReportBuilder(length);
+    return new ApduDataExtGroupPropertyValueInfoReportBuilderImpl();
   }
 
-  public static class ApduDataExtGroupPropertyValueInfoReportBuilder
+  public static class ApduDataExtGroupPropertyValueInfoReportBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtGroupPropertyValueInfoReportBuilder(Short length) {
+    public ApduDataExtGroupPropertyValueInfoReportBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtGroupPropertyValueInfoReport build(Short length) {
-
+    public ApduDataExtGroupPropertyValueInfoReport build() {
       ApduDataExtGroupPropertyValueInfoReport apduDataExtGroupPropertyValueInfoReport =
-          new ApduDataExtGroupPropertyValueInfoReport(length);
+          new ApduDataExtGroupPropertyValueInfoReport();
       return apduDataExtGroupPropertyValueInfoReport;
     }
   }

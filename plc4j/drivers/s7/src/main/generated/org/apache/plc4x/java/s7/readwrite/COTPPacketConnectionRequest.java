@@ -47,21 +47,16 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
   protected final int sourceReference;
   protected final COTPProtocolClass protocolClass;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
   public COTPPacketConnectionRequest(
       List<COTPParameter> parameters,
       S7Message payload,
       int destinationReference,
       int sourceReference,
-      COTPProtocolClass protocolClass,
-      Integer cotpLen) {
-    super(parameters, payload, cotpLen);
+      COTPProtocolClass protocolClass) {
+    super(parameters, payload);
     this.destinationReference = destinationReference;
     this.sourceReference = sourceReference;
     this.protocolClass = protocolClass;
-    this.cotpLen = cotpLen;
   }
 
   public int getDestinationReference() {
@@ -124,7 +119,7 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketConnectionRequestBuilder staticParseBuilder(
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketConnectionRequest");
     PositionAware positionAware = readBuffer;
@@ -145,33 +140,27 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketConnectionRequest");
     // Create the instance
-    return new COTPPacketConnectionRequestBuilder(
-        destinationReference, sourceReference, protocolClass, cotpLen);
+    return new COTPPacketConnectionRequestBuilderImpl(
+        destinationReference, sourceReference, protocolClass);
   }
 
-  public static class COTPPacketConnectionRequestBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketConnectionRequestBuilderImpl
+      implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final int sourceReference;
     private final COTPProtocolClass protocolClass;
-    private final Integer cotpLen;
 
-    public COTPPacketConnectionRequestBuilder(
-        int destinationReference,
-        int sourceReference,
-        COTPProtocolClass protocolClass,
-        Integer cotpLen) {
-
+    public COTPPacketConnectionRequestBuilderImpl(
+        int destinationReference, int sourceReference, COTPProtocolClass protocolClass) {
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
       this.protocolClass = protocolClass;
-      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketConnectionRequest build(
-        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
+    public COTPPacketConnectionRequest build(List<COTPParameter> parameters, S7Message payload) {
       COTPPacketConnectionRequest cOTPPacketConnectionRequest =
           new COTPPacketConnectionRequest(
-              parameters, payload, destinationReference, sourceReference, protocolClass, cotpLen);
+              parameters, payload, destinationReference, sourceReference, protocolClass);
       return cOTPPacketConnectionRequest;
     }
   }

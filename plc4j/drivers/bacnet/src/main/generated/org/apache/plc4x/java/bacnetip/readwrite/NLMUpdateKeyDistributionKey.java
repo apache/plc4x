@@ -99,8 +99,8 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMUpdateKeyDistributionKeyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMUpdateKeyDistributionKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -116,17 +116,16 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMUpdateKeyDistributionKey");
     // Create the instance
-    return new NLMUpdateKeyDistributionKeyBuilder(keyRevision, key, apduLength);
+    return new NLMUpdateKeyDistributionKeyBuilderImpl(keyRevision, key, apduLength);
   }
 
-  public static class NLMUpdateKeyDistributionKeyBuilder implements NLM.NLMBuilder {
+  public static class NLMUpdateKeyDistributionKeyBuilderImpl implements NLM.NLMBuilder {
     private final byte keyRevision;
     private final NLMUpdateKeyUpdateKeyEntry key;
     private final Integer apduLength;
 
-    public NLMUpdateKeyDistributionKeyBuilder(
+    public NLMUpdateKeyDistributionKeyBuilderImpl(
         byte keyRevision, NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
       this.keyRevision = keyRevision;
       this.key = key;
       this.apduLength = apduLength;

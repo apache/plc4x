@@ -83,7 +83,7 @@ public class SALDataAirConditioning extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataAirConditioningBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataAirConditioning");
     PositionAware positionAware = readBuffer;
@@ -98,14 +98,13 @@ public class SALDataAirConditioning extends SALData implements Message {
 
     readBuffer.closeContext("SALDataAirConditioning");
     // Create the instance
-    return new SALDataAirConditioningBuilder(airConditioningData);
+    return new SALDataAirConditioningBuilderImpl(airConditioningData);
   }
 
-  public static class SALDataAirConditioningBuilder implements SALData.SALDataBuilder {
+  public static class SALDataAirConditioningBuilderImpl implements SALData.SALDataBuilder {
     private final AirConditioningData airConditioningData;
 
-    public SALDataAirConditioningBuilder(AirConditioningData airConditioningData) {
-
+    public SALDataAirConditioningBuilderImpl(AirConditioningData airConditioningData) {
       this.airConditioningData = airConditioningData;
     }
 

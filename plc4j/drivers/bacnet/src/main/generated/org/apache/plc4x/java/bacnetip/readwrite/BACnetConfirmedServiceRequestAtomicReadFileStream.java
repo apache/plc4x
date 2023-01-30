@@ -100,8 +100,9 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
+      staticParseBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder(
+          ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -127,20 +128,19 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder(
+    return new BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl(
         fileStartPosition, requestOctetCount);
   }
 
-  public static class BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+  public static class BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl
       implements BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
           .BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
     private final BACnetApplicationTagSignedInteger fileStartPosition;
     private final BACnetApplicationTagUnsignedInteger requestOctetCount;
 
-    public BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder(
+    public BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagUnsignedInteger requestOctetCount) {
-
       this.fileStartPosition = fileStartPosition;
       this.requestOctetCount = requestOctetCount;
     }

@@ -168,7 +168,7 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventTimeStampsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -222,23 +222,22 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEventTimeStamps");
     // Create the instance
-    return new BACnetConstructedDataEventTimeStampsBuilder(
+    return new BACnetConstructedDataEventTimeStampsBuilderImpl(
         numberOfDataElements, eventTimeStamps, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventTimeStampsBuilder
+  public static class BACnetConstructedDataEventTimeStampsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetTimeStamp> eventTimeStamps;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventTimeStampsBuilder(
+    public BACnetConstructedDataEventTimeStampsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetTimeStamp> eventTimeStamps,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.eventTimeStamps = eventTimeStamps;
       this.tagNumber = tagNumber;

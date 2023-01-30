@@ -109,7 +109,7 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6ZoneIndexBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataIPv6ZoneIndex");
     // Create the instance
-    return new BACnetConstructedDataIPv6ZoneIndexBuilder(
+    return new BACnetConstructedDataIPv6ZoneIndexBuilderImpl(
         ipv6ZoneIndex, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6ZoneIndexBuilder
+  public static class BACnetConstructedDataIPv6ZoneIndexBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString ipv6ZoneIndex;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6ZoneIndexBuilder(
+    public BACnetConstructedDataIPv6ZoneIndexBuilderImpl(
         BACnetApplicationTagCharacterString ipv6ZoneIndex,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6ZoneIndex = ipv6ZoneIndex;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

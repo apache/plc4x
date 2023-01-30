@@ -144,8 +144,8 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static UserTokenPolicyBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UserTokenPolicy");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -180,11 +180,11 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("UserTokenPolicy");
     // Create the instance
-    return new UserTokenPolicyBuilder(
+    return new UserTokenPolicyBuilderImpl(
         policyId, tokenType, issuedTokenType, issuerEndpointUrl, securityPolicyUri);
   }
 
-  public static class UserTokenPolicyBuilder
+  public static class UserTokenPolicyBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString policyId;
     private final UserTokenType tokenType;
@@ -192,13 +192,12 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     private final PascalString issuerEndpointUrl;
     private final PascalString securityPolicyUri;
 
-    public UserTokenPolicyBuilder(
+    public UserTokenPolicyBuilderImpl(
         PascalString policyId,
         UserTokenType tokenType,
         PascalString issuedTokenType,
         PascalString issuerEndpointUrl,
         PascalString securityPolicyUri) {
-
       this.policyId = policyId;
       this.tokenType = tokenType;
       this.issuedTokenType = issuedTokenType;

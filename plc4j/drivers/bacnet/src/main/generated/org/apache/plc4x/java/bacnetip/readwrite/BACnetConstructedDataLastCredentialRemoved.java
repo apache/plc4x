@@ -113,7 +113,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastCredentialRemovedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLastCredentialRemoved");
     // Create the instance
-    return new BACnetConstructedDataLastCredentialRemovedBuilder(
+    return new BACnetConstructedDataLastCredentialRemovedBuilderImpl(
         lastCredentialRemoved, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastCredentialRemovedBuilder
+  public static class BACnetConstructedDataLastCredentialRemovedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference lastCredentialRemoved;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastCredentialRemovedBuilder(
+    public BACnetConstructedDataLastCredentialRemovedBuilderImpl(
         BACnetDeviceObjectReference lastCredentialRemoved,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCredentialRemoved = lastCredentialRemoved;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

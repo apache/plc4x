@@ -82,7 +82,7 @@ public class BACnetPropertyStatesDoorSecuredStatus extends BACnetPropertyStates 
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesDoorSecuredStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesDoorSecuredStatus");
     PositionAware positionAware = readBuffer;
@@ -102,16 +102,15 @@ public class BACnetPropertyStatesDoorSecuredStatus extends BACnetPropertyStates 
 
     readBuffer.closeContext("BACnetPropertyStatesDoorSecuredStatus");
     // Create the instance
-    return new BACnetPropertyStatesDoorSecuredStatusBuilder(doorSecuredStatus);
+    return new BACnetPropertyStatesDoorSecuredStatusBuilderImpl(doorSecuredStatus);
   }
 
-  public static class BACnetPropertyStatesDoorSecuredStatusBuilder
+  public static class BACnetPropertyStatesDoorSecuredStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetDoorSecuredStatusTagged doorSecuredStatus;
 
-    public BACnetPropertyStatesDoorSecuredStatusBuilder(
+    public BACnetPropertyStatesDoorSecuredStatusBuilderImpl(
         BACnetDoorSecuredStatusTagged doorSecuredStatus) {
-
       this.doorSecuredStatus = doorSecuredStatus;
     }
 

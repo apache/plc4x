@@ -110,7 +110,7 @@ public class BACnetConstructedDataAnalogInputFaultLowLimit extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAnalogInputFaultLowLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,21 +133,20 @@ public class BACnetConstructedDataAnalogInputFaultLowLimit extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataAnalogInputFaultLowLimit");
     // Create the instance
-    return new BACnetConstructedDataAnalogInputFaultLowLimitBuilder(
+    return new BACnetConstructedDataAnalogInputFaultLowLimitBuilderImpl(
         faultLowLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAnalogInputFaultLowLimitBuilder
+  public static class BACnetConstructedDataAnalogInputFaultLowLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal faultLowLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAnalogInputFaultLowLimitBuilder(
+    public BACnetConstructedDataAnalogInputFaultLowLimitBuilderImpl(
         BACnetApplicationTagReal faultLowLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultLowLimit = faultLowLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

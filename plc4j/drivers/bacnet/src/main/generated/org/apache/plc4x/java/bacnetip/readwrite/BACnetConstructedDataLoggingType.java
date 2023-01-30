@@ -109,7 +109,7 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLoggingTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLoggingType");
     // Create the instance
-    return new BACnetConstructedDataLoggingTypeBuilder(loggingType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoggingTypeBuilderImpl(
+        loggingType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLoggingTypeBuilder
+  public static class BACnetConstructedDataLoggingTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLoggingTypeTagged loggingType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoggingTypeBuilder(
+    public BACnetConstructedDataLoggingTypeBuilderImpl(
         BACnetLoggingTypeTagged loggingType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.loggingType = loggingType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

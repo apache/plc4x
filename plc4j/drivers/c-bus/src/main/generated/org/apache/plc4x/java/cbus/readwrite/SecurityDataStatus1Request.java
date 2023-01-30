@@ -66,7 +66,7 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataStatus1RequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatus1Request");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataStatus1Request");
     // Create the instance
-    return new SecurityDataStatus1RequestBuilder();
+    return new SecurityDataStatus1RequestBuilderImpl();
   }
 
-  public static class SecurityDataStatus1RequestBuilder
+  public static class SecurityDataStatus1RequestBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataStatus1RequestBuilder() {}
+    public SecurityDataStatus1RequestBuilderImpl() {}
 
     public SecurityDataStatus1Request build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

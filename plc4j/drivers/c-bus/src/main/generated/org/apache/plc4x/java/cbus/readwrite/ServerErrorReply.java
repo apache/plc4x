@@ -85,7 +85,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
     return lengthInBits;
   }
 
-  public static ServerErrorReplyBuilder staticParseBuilder(
+  public static ReplyOrConfirmationBuilder staticParseReplyOrConfirmationBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ServerErrorReply");
@@ -98,16 +98,15 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
 
     readBuffer.closeContext("ServerErrorReply");
     // Create the instance
-    return new ServerErrorReplyBuilder(cBusOptions, requestContext);
+    return new ServerErrorReplyBuilderImpl(cBusOptions, requestContext);
   }
 
-  public static class ServerErrorReplyBuilder
+  public static class ServerErrorReplyBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ServerErrorReplyBuilder(CBusOptions cBusOptions, RequestContext requestContext) {
-
+    public ServerErrorReplyBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

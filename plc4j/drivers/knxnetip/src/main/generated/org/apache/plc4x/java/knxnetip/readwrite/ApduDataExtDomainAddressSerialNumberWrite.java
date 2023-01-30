@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
     return (short) 0x2E;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberWrite() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberWrite");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberWriteBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberWriteBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberWriteBuilder
+  public static class ApduDataExtDomainAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberWriteBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberWrite build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberWrite build() {
       ApduDataExtDomainAddressSerialNumberWrite apduDataExtDomainAddressSerialNumberWrite =
-          new ApduDataExtDomainAddressSerialNumberWrite(length);
+          new ApduDataExtDomainAddressSerialNumberWrite();
       return apduDataExtDomainAddressSerialNumberWrite;
     }
   }

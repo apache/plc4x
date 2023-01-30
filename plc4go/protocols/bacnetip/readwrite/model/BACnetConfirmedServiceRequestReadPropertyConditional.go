@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetBytesOfRemove
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadPropertyConditional factory function for _BACnetConfirmedServiceRequestReadPropertyConditional
-func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestReadPropertyConditional {
+func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadPropertyConditional {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		BytesOfRemovedService:          bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,11 +130,11 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyConditionalParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
-	return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestReadPropertyConditionalParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pullErr != nil {

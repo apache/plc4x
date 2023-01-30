@@ -116,8 +116,8 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static TransferResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -139,21 +139,20 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("TransferResult");
     // Create the instance
-    return new TransferResultBuilder(
+    return new TransferResultBuilderImpl(
         statusCode, noOfAvailableSequenceNumbers, availableSequenceNumbers);
   }
 
-  public static class TransferResultBuilder
+  public static class TransferResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfAvailableSequenceNumbers;
     private final List<Long> availableSequenceNumbers;
 
-    public TransferResultBuilder(
+    public TransferResultBuilderImpl(
         StatusCode statusCode,
         int noOfAvailableSequenceNumbers,
         List<Long> availableSequenceNumbers) {
-
       this.statusCode = statusCode;
       this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
       this.availableSequenceNumbers = availableSequenceNumbers;

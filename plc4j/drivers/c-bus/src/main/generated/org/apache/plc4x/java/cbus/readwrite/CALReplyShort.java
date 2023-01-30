@@ -72,7 +72,7 @@ public class CALReplyShort extends CALReply implements Message {
     return lengthInBits;
   }
 
-  public static CALReplyShortBuilder staticParseBuilder(
+  public static CALReplyBuilder staticParseCALReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALReplyShort");
@@ -82,15 +82,14 @@ public class CALReplyShort extends CALReply implements Message {
 
     readBuffer.closeContext("CALReplyShort");
     // Create the instance
-    return new CALReplyShortBuilder(cBusOptions, requestContext);
+    return new CALReplyShortBuilderImpl(cBusOptions, requestContext);
   }
 
-  public static class CALReplyShortBuilder implements CALReply.CALReplyBuilder {
+  public static class CALReplyShortBuilderImpl implements CALReply.CALReplyBuilder {
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public CALReplyShortBuilder(CBusOptions cBusOptions, RequestContext requestContext) {
-
+    public CALReplyShortBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

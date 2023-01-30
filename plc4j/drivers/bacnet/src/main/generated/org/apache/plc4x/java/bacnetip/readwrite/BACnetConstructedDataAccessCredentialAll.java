@@ -85,7 +85,7 @@ public class BACnetConstructedDataAccessCredentialAll extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessCredentialAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,17 +104,16 @@ public class BACnetConstructedDataAccessCredentialAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataAccessCredentialAll");
     // Create the instance
-    return new BACnetConstructedDataAccessCredentialAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessCredentialAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessCredentialAllBuilder
+  public static class BACnetConstructedDataAccessCredentialAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessCredentialAllBuilder(
+    public BACnetConstructedDataAccessCredentialAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

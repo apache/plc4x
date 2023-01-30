@@ -142,7 +142,7 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataArmSystemBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmSystem");
     PositionAware positionAware = readBuffer;
@@ -167,14 +167,13 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataArmSystem");
     // Create the instance
-    return new SecurityDataArmSystemBuilder(armMode);
+    return new SecurityDataArmSystemBuilderImpl(armMode);
   }
 
-  public static class SecurityDataArmSystemBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataArmSystemBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte armMode;
 
-    public SecurityDataArmSystemBuilder(byte armMode) {
-
+    public SecurityDataArmSystemBuilderImpl(byte armMode) {
       this.armMode = armMode;
     }
 

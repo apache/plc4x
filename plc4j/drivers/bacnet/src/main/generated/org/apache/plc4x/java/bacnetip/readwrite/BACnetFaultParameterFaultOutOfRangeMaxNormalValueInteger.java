@@ -90,8 +90,9 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
+      staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,19 +109,18 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder(
+    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl(
         integerValue, tagNumber);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMaxNormalValue
           .BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
     private final Short tagNumber;
 
-    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder(
+    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, Short tagNumber) {
-
       this.integerValue = integerValue;
       this.tagNumber = tagNumber;
     }

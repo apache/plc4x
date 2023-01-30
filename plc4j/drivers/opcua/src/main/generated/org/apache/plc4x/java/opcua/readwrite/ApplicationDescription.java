@@ -189,7 +189,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ApplicationDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ApplicationDescription");
     PositionAware positionAware = readBuffer;
@@ -239,7 +239,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ApplicationDescription");
     // Create the instance
-    return new ApplicationDescriptionBuilder(
+    return new ApplicationDescriptionBuilderImpl(
         applicationUri,
         productUri,
         applicationName,
@@ -250,7 +250,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         discoveryUrls);
   }
 
-  public static class ApplicationDescriptionBuilder
+  public static class ApplicationDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString applicationUri;
     private final PascalString productUri;
@@ -261,7 +261,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     private final int noOfDiscoveryUrls;
     private final List<PascalString> discoveryUrls;
 
-    public ApplicationDescriptionBuilder(
+    public ApplicationDescriptionBuilderImpl(
         PascalString applicationUri,
         PascalString productUri,
         LocalizedText applicationName,
@@ -270,7 +270,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         PascalString discoveryProfileUri,
         int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls) {
-
       this.applicationUri = applicationUri;
       this.productUri = productUri;
       this.applicationName = applicationName;

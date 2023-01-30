@@ -103,11 +103,11 @@ public abstract class KnxGroupAddress implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     KnxGroupAddressBuilder builder = null;
     if (EvaluationHelper.equals(numLevels, (byte) 1)) {
-      builder = KnxGroupAddressFreeLevel.staticParseBuilder(readBuffer, numLevels);
+      builder = KnxGroupAddressFreeLevel.staticParseKnxGroupAddressBuilder(readBuffer, numLevels);
     } else if (EvaluationHelper.equals(numLevels, (byte) 2)) {
-      builder = KnxGroupAddress2Level.staticParseBuilder(readBuffer, numLevels);
+      builder = KnxGroupAddress2Level.staticParseKnxGroupAddressBuilder(readBuffer, numLevels);
     } else if (EvaluationHelper.equals(numLevels, (byte) 3)) {
-      builder = KnxGroupAddress3Level.staticParseBuilder(readBuffer, numLevels);
+      builder = KnxGroupAddress3Level.staticParseKnxGroupAddressBuilder(readBuffer, numLevels);
     }
     if (builder == null) {
       throw new ParseException(
@@ -124,7 +124,7 @@ public abstract class KnxGroupAddress implements Message {
     return _knxGroupAddress;
   }
 
-  public static interface KnxGroupAddressBuilder {
+  public interface KnxGroupAddressBuilder {
     KnxGroupAddress build();
   }
 

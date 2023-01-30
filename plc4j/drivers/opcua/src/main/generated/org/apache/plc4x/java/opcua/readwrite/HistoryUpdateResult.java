@@ -148,7 +148,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static HistoryUpdateResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateResult");
     PositionAware positionAware = readBuffer;
@@ -180,11 +180,11 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("HistoryUpdateResult");
     // Create the instance
-    return new HistoryUpdateResultBuilder(
+    return new HistoryUpdateResultBuilderImpl(
         statusCode, noOfOperationResults, operationResults, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class HistoryUpdateResultBuilder
+  public static class HistoryUpdateResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfOperationResults;
@@ -192,13 +192,12 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public HistoryUpdateResultBuilder(
+    public HistoryUpdateResultBuilderImpl(
         StatusCode statusCode,
         int noOfOperationResults,
         List<StatusCode> operationResults,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfOperationResults = noOfOperationResults;
       this.operationResults = operationResults;

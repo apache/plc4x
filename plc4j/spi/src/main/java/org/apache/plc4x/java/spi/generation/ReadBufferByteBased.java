@@ -264,16 +264,35 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned long can only contain max 64 bits");
         }
         try {
-            // Read as signed value
-            long val = bi.readLong(false, bitLength);
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                val = Long.reverseBytes(val);
-            }
-            if (val >= 0) {
-                return BigInteger.valueOf(val);
-            } else {
-                BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
-                return BigInteger.valueOf(val).add(constant);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new ParseException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    byte[] stringBytes = new byte[charLen];
+                    for (int i = 0; i < charLen; i++) {
+                        stringBytes[i] = bi.readByte(false, 8);
+                    }
+                    String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
+                    stringValue = stringValue.trim();
+                    return new BigInteger(stringValue);
+                case "default":
+                    // Read as signed value
+                    long val = bi.readLong(false, bitLength);
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        val = Long.reverseBytes(val);
+                    }
+                    if (val >= 0) {
+                        return BigInteger.valueOf(val);
+                    } else {
+                        BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
+                        return BigInteger.valueOf(val).add(constant);
+                    }
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned big integer", e);

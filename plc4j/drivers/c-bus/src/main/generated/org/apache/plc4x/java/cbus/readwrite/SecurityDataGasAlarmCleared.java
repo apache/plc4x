@@ -66,7 +66,7 @@ public class SecurityDataGasAlarmCleared extends SecurityData implements Message
     return lengthInBits;
   }
 
-  public static SecurityDataGasAlarmClearedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataGasAlarmCleared");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataGasAlarmCleared extends SecurityData implements Message
 
     readBuffer.closeContext("SecurityDataGasAlarmCleared");
     // Create the instance
-    return new SecurityDataGasAlarmClearedBuilder();
+    return new SecurityDataGasAlarmClearedBuilderImpl();
   }
 
-  public static class SecurityDataGasAlarmClearedBuilder
+  public static class SecurityDataGasAlarmClearedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataGasAlarmClearedBuilder() {}
+    public SecurityDataGasAlarmClearedBuilderImpl() {}
 
     public SecurityDataGasAlarmCleared build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

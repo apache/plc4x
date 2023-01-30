@@ -109,7 +109,7 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataScaleFactorBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,20 +132,20 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataScaleFactor");
     // Create the instance
-    return new BACnetConstructedDataScaleFactorBuilder(scaleFactor, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScaleFactorBuilderImpl(
+        scaleFactor, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataScaleFactorBuilder
+  public static class BACnetConstructedDataScaleFactorBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal scaleFactor;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScaleFactorBuilder(
+    public BACnetConstructedDataScaleFactorBuilderImpl(
         BACnetApplicationTagReal scaleFactor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scaleFactor = scaleFactor;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

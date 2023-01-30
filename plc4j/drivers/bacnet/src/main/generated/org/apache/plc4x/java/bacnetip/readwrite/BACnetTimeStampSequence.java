@@ -81,7 +81,7 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
     return lengthInBits;
   }
 
-  public static BACnetTimeStampSequenceBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetTimeStampBuilder staticParseBACnetTimeStampBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampSequence");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,14 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
 
     readBuffer.closeContext("BACnetTimeStampSequence");
     // Create the instance
-    return new BACnetTimeStampSequenceBuilder(sequenceNumber);
+    return new BACnetTimeStampSequenceBuilderImpl(sequenceNumber);
   }
 
-  public static class BACnetTimeStampSequenceBuilder
+  public static class BACnetTimeStampSequenceBuilderImpl
       implements BACnetTimeStamp.BACnetTimeStampBuilder {
     private final BACnetContextTagUnsignedInteger sequenceNumber;
 
-    public BACnetTimeStampSequenceBuilder(BACnetContextTagUnsignedInteger sequenceNumber) {
-
+    public BACnetTimeStampSequenceBuilderImpl(BACnetContextTagUnsignedInteger sequenceNumber) {
       this.sequenceNumber = sequenceNumber;
     }
 

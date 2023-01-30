@@ -67,8 +67,8 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
     return lengthInBits;
   }
 
-  public static TelephonyDataInternetConnectionRequestMadeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("TelephonyDataInternetConnectionRequestMade");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
 
     readBuffer.closeContext("TelephonyDataInternetConnectionRequestMade");
     // Create the instance
-    return new TelephonyDataInternetConnectionRequestMadeBuilder();
+    return new TelephonyDataInternetConnectionRequestMadeBuilderImpl();
   }
 
-  public static class TelephonyDataInternetConnectionRequestMadeBuilder
+  public static class TelephonyDataInternetConnectionRequestMadeBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataInternetConnectionRequestMadeBuilder() {}
+    public TelephonyDataInternetConnectionRequestMadeBuilderImpl() {}
 
     public TelephonyDataInternetConnectionRequestMade build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

@@ -111,7 +111,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialDisableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDisable");
     // Create the instance
-    return new BACnetConstructedDataCredentialDisableBuilder(
+    return new BACnetConstructedDataCredentialDisableBuilderImpl(
         credentialDisable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialDisableBuilder
+  public static class BACnetConstructedDataCredentialDisableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessCredentialDisableTagged credentialDisable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialDisableBuilder(
+    public BACnetConstructedDataCredentialDisableBuilderImpl(
         BACnetAccessCredentialDisableTagged credentialDisable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentialDisable = credentialDisable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

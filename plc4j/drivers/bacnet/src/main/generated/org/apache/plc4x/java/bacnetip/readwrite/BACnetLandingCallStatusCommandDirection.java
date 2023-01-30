@@ -82,8 +82,9 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatusCommandDirectionBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetLandingCallStatusCommandBuilder
+      staticParseBACnetLandingCallStatusCommandBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatusCommandDirection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -100,15 +101,15 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
 
     readBuffer.closeContext("BACnetLandingCallStatusCommandDirection");
     // Create the instance
-    return new BACnetLandingCallStatusCommandDirectionBuilder(direction);
+    return new BACnetLandingCallStatusCommandDirectionBuilderImpl(direction);
   }
 
-  public static class BACnetLandingCallStatusCommandDirectionBuilder
+  public static class BACnetLandingCallStatusCommandDirectionBuilderImpl
       implements BACnetLandingCallStatusCommand.BACnetLandingCallStatusCommandBuilder {
     private final BACnetLiftCarDirectionTagged direction;
 
-    public BACnetLandingCallStatusCommandDirectionBuilder(BACnetLiftCarDirectionTagged direction) {
-
+    public BACnetLandingCallStatusCommandDirectionBuilderImpl(
+        BACnetLiftCarDirectionTagged direction) {
       this.direction = direction;
     }
 

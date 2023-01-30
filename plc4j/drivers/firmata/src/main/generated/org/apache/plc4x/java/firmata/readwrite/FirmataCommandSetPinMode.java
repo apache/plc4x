@@ -46,14 +46,10 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
   protected final short pin;
   protected final PinMode mode;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataCommandSetPinMode(short pin, PinMode mode, Boolean response) {
-    super(response);
+  public FirmataCommandSetPinMode(short pin, PinMode mode) {
+    super();
     this.pin = pin;
     this.mode = mode;
-    this.response = response;
   }
 
   public short getPin() {
@@ -104,7 +100,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
     return lengthInBits;
   }
 
-  public static FirmataCommandSetPinModeBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSetPinMode");
     PositionAware positionAware = readBuffer;
@@ -121,26 +117,21 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
 
     readBuffer.closeContext("FirmataCommandSetPinMode");
     // Create the instance
-    return new FirmataCommandSetPinModeBuilder(pin, mode, response);
+    return new FirmataCommandSetPinModeBuilderImpl(pin, mode);
   }
 
-  public static class FirmataCommandSetPinModeBuilder
+  public static class FirmataCommandSetPinModeBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final PinMode mode;
-    private final Boolean response;
 
-    public FirmataCommandSetPinModeBuilder(short pin, PinMode mode, Boolean response) {
-
+    public FirmataCommandSetPinModeBuilderImpl(short pin, PinMode mode) {
       this.pin = pin;
       this.mode = mode;
-      this.response = response;
     }
 
-    public FirmataCommandSetPinMode build(Boolean response) {
-
-      FirmataCommandSetPinMode firmataCommandSetPinMode =
-          new FirmataCommandSetPinMode(pin, mode, response);
+    public FirmataCommandSetPinMode build() {
+      FirmataCommandSetPinMode firmataCommandSetPinMode = new FirmataCommandSetPinMode(pin, mode);
       return firmataCommandSetPinMode;
     }
   }

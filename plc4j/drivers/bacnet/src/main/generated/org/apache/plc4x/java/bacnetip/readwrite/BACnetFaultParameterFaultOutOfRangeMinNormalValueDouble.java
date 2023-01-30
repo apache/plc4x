@@ -90,8 +90,9 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
+      staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,19 +107,18 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder(
+    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilderImpl(
         doubleValue, tagNumber);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMinNormalValue
           .BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
     private final Short tagNumber;
 
-    public BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder(
+    public BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, Short tagNumber) {
-
       this.doubleValue = doubleValue;
       this.tagNumber = tagNumber;
     }

@@ -109,7 +109,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProgramStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataProgramState");
     // Create the instance
-    return new BACnetConstructedDataProgramStateBuilder(
+    return new BACnetConstructedDataProgramStateBuilderImpl(
         programState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProgramStateBuilder
+  public static class BACnetConstructedDataProgramStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramStateTagged programState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProgramStateBuilder(
+    public BACnetConstructedDataProgramStateBuilderImpl(
         BACnetProgramStateTagged programState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programState = programState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

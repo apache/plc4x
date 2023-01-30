@@ -82,7 +82,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesZoneOccupanyStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesZoneOccupanyState");
     PositionAware positionAware = readBuffer;
@@ -102,16 +102,15 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
 
     readBuffer.closeContext("BACnetPropertyStatesZoneOccupanyState");
     // Create the instance
-    return new BACnetPropertyStatesZoneOccupanyStateBuilder(zoneOccupanyState);
+    return new BACnetPropertyStatesZoneOccupanyStateBuilderImpl(zoneOccupanyState);
   }
 
-  public static class BACnetPropertyStatesZoneOccupanyStateBuilder
+  public static class BACnetPropertyStatesZoneOccupanyStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessZoneOccupancyStateTagged zoneOccupanyState;
 
-    public BACnetPropertyStatesZoneOccupanyStateBuilder(
+    public BACnetPropertyStatesZoneOccupanyStateBuilderImpl(
         BACnetAccessZoneOccupancyStateTagged zoneOccupanyState) {
-
       this.zoneOccupanyState = zoneOccupanyState;
     }
 

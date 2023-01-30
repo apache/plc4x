@@ -136,7 +136,7 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElevatorGroupGroupMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,23 +174,22 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroupGroupMembers");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupGroupMembersBuilder(
+    return new BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl(
         numberOfDataElements, groupMembers, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElevatorGroupGroupMembersBuilder
+  public static class BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> groupMembers;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElevatorGroupGroupMembersBuilder(
+    public BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

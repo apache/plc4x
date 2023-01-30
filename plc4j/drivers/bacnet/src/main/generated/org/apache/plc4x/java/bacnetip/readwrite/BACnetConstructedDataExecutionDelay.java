@@ -135,7 +135,7 @@ public class BACnetConstructedDataExecutionDelay extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExecutionDelayBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,23 +173,22 @@ public class BACnetConstructedDataExecutionDelay extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataExecutionDelay");
     // Create the instance
-    return new BACnetConstructedDataExecutionDelayBuilder(
+    return new BACnetConstructedDataExecutionDelayBuilderImpl(
         numberOfDataElements, executionDelay, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExecutionDelayBuilder
+  public static class BACnetConstructedDataExecutionDelayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> executionDelay;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExecutionDelayBuilder(
+    public BACnetConstructedDataExecutionDelayBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> executionDelay,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.executionDelay = executionDelay;
       this.tagNumber = tagNumber;

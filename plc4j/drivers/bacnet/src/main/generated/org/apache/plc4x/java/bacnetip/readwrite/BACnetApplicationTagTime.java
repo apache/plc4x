@@ -80,8 +80,8 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -95,15 +95,14 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
 
     readBuffer.closeContext("BACnetApplicationTagTime");
     // Create the instance
-    return new BACnetApplicationTagTimeBuilder(payload);
+    return new BACnetApplicationTagTimeBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagTimeBuilder
+  public static class BACnetApplicationTagTimeBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadTime payload;
 
-    public BACnetApplicationTagTimeBuilder(BACnetTagPayloadTime payload) {
-
+    public BACnetApplicationTagTimeBuilderImpl(BACnetTagPayloadTime payload) {
       this.payload = payload;
     }
 

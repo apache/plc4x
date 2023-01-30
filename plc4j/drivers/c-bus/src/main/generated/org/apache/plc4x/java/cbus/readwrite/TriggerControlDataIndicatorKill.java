@@ -67,8 +67,8 @@ public class TriggerControlDataIndicatorKill extends TriggerControlData implemen
     return lengthInBits;
   }
 
-  public static TriggerControlDataIndicatorKillBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataIndicatorKill");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,13 +76,13 @@ public class TriggerControlDataIndicatorKill extends TriggerControlData implemen
 
     readBuffer.closeContext("TriggerControlDataIndicatorKill");
     // Create the instance
-    return new TriggerControlDataIndicatorKillBuilder();
+    return new TriggerControlDataIndicatorKillBuilderImpl();
   }
 
-  public static class TriggerControlDataIndicatorKillBuilder
+  public static class TriggerControlDataIndicatorKillBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
 
-    public TriggerControlDataIndicatorKillBuilder() {}
+    public TriggerControlDataIndicatorKillBuilderImpl() {}
 
     public TriggerControlDataIndicatorKill build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup) {

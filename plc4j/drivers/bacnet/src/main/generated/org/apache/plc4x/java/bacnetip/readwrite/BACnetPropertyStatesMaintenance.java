@@ -81,7 +81,7 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesMaintenanceBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesMaintenance");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesMaintenance");
     // Create the instance
-    return new BACnetPropertyStatesMaintenanceBuilder(maintenance);
+    return new BACnetPropertyStatesMaintenanceBuilderImpl(maintenance);
   }
 
-  public static class BACnetPropertyStatesMaintenanceBuilder
+  public static class BACnetPropertyStatesMaintenanceBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetMaintenanceTagged maintenance;
 
-    public BACnetPropertyStatesMaintenanceBuilder(BACnetMaintenanceTagged maintenance) {
-
+    public BACnetPropertyStatesMaintenanceBuilderImpl(BACnetMaintenanceTagged maintenance) {
       this.maintenance = maintenance;
     }
 

@@ -110,7 +110,7 @@ public class BACnetConstructedDataPositiveIntegerValueLowLimit extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueLowLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataPositiveIntegerValueLowLimit extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueLowLimit");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueLowLimitBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueLowLimitBuilderImpl(
         lowLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueLowLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lowLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueLowLimitBuilder(
+    public BACnetConstructedDataPositiveIntegerValueLowLimitBuilderImpl(
         BACnetApplicationTagUnsignedInteger lowLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowLimit = lowLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

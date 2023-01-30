@@ -136,8 +136,8 @@ public class NLMSecurityResponse extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSecurityResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMSecurityResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -160,24 +160,23 @@ public class NLMSecurityResponse extends NLM implements Message {
 
     readBuffer.closeContext("NLMSecurityResponse");
     // Create the instance
-    return new NLMSecurityResponseBuilder(
+    return new NLMSecurityResponseBuilderImpl(
         responseCode, originalMessageId, originalTimestamp, variableParameters, apduLength);
   }
 
-  public static class NLMSecurityResponseBuilder implements NLM.NLMBuilder {
+  public static class NLMSecurityResponseBuilderImpl implements NLM.NLMBuilder {
     private final SecurityResponseCode responseCode;
     private final long originalMessageId;
     private final long originalTimestamp;
     private final byte[] variableParameters;
     private final Integer apduLength;
 
-    public NLMSecurityResponseBuilder(
+    public NLMSecurityResponseBuilderImpl(
         SecurityResponseCode responseCode,
         long originalMessageId,
         long originalTimestamp,
         byte[] variableParameters,
         Integer apduLength) {
-
       this.responseCode = responseCode;
       this.originalMessageId = originalMessageId;
       this.originalTimestamp = originalTimestamp;

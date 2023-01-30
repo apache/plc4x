@@ -173,17 +173,17 @@ public abstract class Plc4xMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     Plc4xMessageBuilder builder = null;
     if (EvaluationHelper.equals(requestType, Plc4xRequestType.CONNECT_REQUEST)) {
-      builder = Plc4xConnectRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xConnectRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.CONNECT_RESPONSE)) {
-      builder = Plc4xConnectResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xConnectResponse.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.READ_REQUEST)) {
-      builder = Plc4xReadRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xReadRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.READ_RESPONSE)) {
-      builder = Plc4xReadResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xReadResponse.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.WRITE_REQUEST)) {
-      builder = Plc4xWriteRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xWriteRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.WRITE_RESPONSE)) {
-      builder = Plc4xWriteResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xWriteResponse.staticParsePlc4xMessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -200,7 +200,7 @@ public abstract class Plc4xMessage implements Message {
     return _plc4xMessage;
   }
 
-  public static interface Plc4xMessageBuilder {
+  public interface Plc4xMessageBuilder {
     Plc4xMessage build(int requestId);
   }
 

@@ -40,6 +40,7 @@ public class TriggerControlLabelOptions implements Message {
   // Properties.
   protected final TriggerControlLabelFlavour labelFlavour;
   protected final TriggerControlLabelType labelType;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

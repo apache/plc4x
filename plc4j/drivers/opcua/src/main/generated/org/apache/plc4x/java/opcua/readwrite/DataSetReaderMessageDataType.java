@@ -69,7 +69,7 @@ public class DataSetReaderMessageDataType extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static DataSetReaderMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetReaderMessageDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class DataSetReaderMessageDataType extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("DataSetReaderMessageDataType");
     // Create the instance
-    return new DataSetReaderMessageDataTypeBuilder();
+    return new DataSetReaderMessageDataTypeBuilderImpl();
   }
 
-  public static class DataSetReaderMessageDataTypeBuilder
+  public static class DataSetReaderMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DataSetReaderMessageDataTypeBuilder() {}
+    public DataSetReaderMessageDataTypeBuilderImpl() {}
 
     public DataSetReaderMessageDataType build() {
       DataSetReaderMessageDataType dataSetReaderMessageDataType =

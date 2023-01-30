@@ -143,11 +143,11 @@ func (m *_BACnetContextTagSignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagSignedIntegerParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagSignedInteger, error) {
-	return BACnetContextTagSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, header)
+func BACnetContextTagSignedIntegerParse(theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagSignedInteger, error) {
+	return BACnetContextTagSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header BACnetTagHeader) (BACnetContextTagSignedInteger, error) {
+func BACnetContextTagSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagSignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagSignedInteger"); pullErr != nil {

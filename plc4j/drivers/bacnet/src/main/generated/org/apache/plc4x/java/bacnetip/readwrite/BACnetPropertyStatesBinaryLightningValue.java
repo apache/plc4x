@@ -83,7 +83,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBinaryLightningValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBinaryLightningValue");
     PositionAware positionAware = readBuffer;
@@ -103,16 +103,15 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesBinaryLightningValue");
     // Create the instance
-    return new BACnetPropertyStatesBinaryLightningValueBuilder(binaryLightningValue);
+    return new BACnetPropertyStatesBinaryLightningValueBuilderImpl(binaryLightningValue);
   }
 
-  public static class BACnetPropertyStatesBinaryLightningValueBuilder
+  public static class BACnetPropertyStatesBinaryLightningValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetBinaryLightingPVTagged binaryLightningValue;
 
-    public BACnetPropertyStatesBinaryLightningValueBuilder(
+    public BACnetPropertyStatesBinaryLightningValueBuilderImpl(
         BACnetBinaryLightingPVTagged binaryLightningValue) {
-
       this.binaryLightningValue = binaryLightningValue;
     }
 

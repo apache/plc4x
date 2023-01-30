@@ -45,13 +45,9 @@ public class ApduDataContainer extends Apdu implements Message {
   // Properties.
   protected final ApduData dataApdu;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataContainer(boolean numbered, byte counter, ApduData dataApdu, Short dataLength) {
-    super(numbered, counter, dataLength);
+  public ApduDataContainer(boolean numbered, byte counter, ApduData dataApdu) {
+    super(numbered, counter);
     this.dataApdu = dataApdu;
-    this.dataLength = dataLength;
   }
 
   public ApduData getDataApdu() {
@@ -86,7 +82,7 @@ public class ApduDataContainer extends Apdu implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataContainerBuilder staticParseBuilder(ReadBuffer readBuffer, Short dataLength)
+  public static ApduBuilder staticParseApduBuilder(ReadBuffer readBuffer, Short dataLength)
       throws ParseException {
     readBuffer.pullContext("ApduDataContainer");
     PositionAware positionAware = readBuffer;
@@ -101,22 +97,18 @@ public class ApduDataContainer extends Apdu implements Message {
 
     readBuffer.closeContext("ApduDataContainer");
     // Create the instance
-    return new ApduDataContainerBuilder(dataApdu, dataLength);
+    return new ApduDataContainerBuilderImpl(dataApdu);
   }
 
-  public static class ApduDataContainerBuilder implements Apdu.ApduBuilder {
+  public static class ApduDataContainerBuilderImpl implements Apdu.ApduBuilder {
     private final ApduData dataApdu;
-    private final Short dataLength;
 
-    public ApduDataContainerBuilder(ApduData dataApdu, Short dataLength) {
-
+    public ApduDataContainerBuilderImpl(ApduData dataApdu) {
       this.dataApdu = dataApdu;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataContainer build(boolean numbered, byte counter, Short dataLength) {
-      ApduDataContainer apduDataContainer =
-          new ApduDataContainer(numbered, counter, dataApdu, dataLength);
+    public ApduDataContainer build(boolean numbered, byte counter) {
+      ApduDataContainer apduDataContainer = new ApduDataContainer(numbered, counter, dataApdu);
       return apduDataContainer;
     }
   }

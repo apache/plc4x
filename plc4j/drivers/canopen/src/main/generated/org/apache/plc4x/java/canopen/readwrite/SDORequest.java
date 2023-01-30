@@ -104,17 +104,17 @@ public abstract class SDORequest implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SDORequestBuilder builder = null;
     if (EvaluationHelper.equals(command, SDORequestCommand.SEGMENT_DOWNLOAD)) {
-      builder = SDOSegmentDownloadRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentDownloadRequest.staticParseSDORequestBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDORequestCommand.INITIATE_DOWNLOAD)) {
-      builder = SDOInitiateDownloadRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateDownloadRequest.staticParseSDORequestBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDORequestCommand.INITIATE_UPLOAD)) {
-      builder = SDOInitiateUploadRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateUploadRequest.staticParseSDORequestBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDORequestCommand.SEGMENT_UPLOAD)) {
-      builder = SDOSegmentUploadRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentUploadRequest.staticParseSDORequestBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDORequestCommand.ABORT)) {
-      builder = SDOAbortRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOAbortRequest.staticParseSDORequestBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDORequestCommand.BLOCK)) {
-      builder = SDOBlockRequest.staticParseBuilder(readBuffer, command);
+      builder = SDOBlockRequest.staticParseSDORequestBuilder(readBuffer, command);
     }
     if (builder == null) {
       throw new ParseException(
@@ -127,7 +127,7 @@ public abstract class SDORequest implements Message {
     return _sDORequest;
   }
 
-  public static interface SDORequestBuilder {
+  public interface SDORequestBuilder {
     SDORequest build();
   }
 

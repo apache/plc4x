@@ -121,7 +121,7 @@ public class LevelInformationCorrupted extends LevelInformation implements Messa
     return lengthInBits;
   }
 
-  public static LevelInformationCorruptedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LevelInformationBuilder staticParseLevelInformationBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LevelInformationCorrupted");
     PositionAware positionAware = readBuffer;
@@ -138,23 +138,22 @@ public class LevelInformationCorrupted extends LevelInformation implements Messa
 
     readBuffer.closeContext("LevelInformationCorrupted");
     // Create the instance
-    return new LevelInformationCorruptedBuilder(
+    return new LevelInformationCorruptedBuilderImpl(
         corruptedNibble1, corruptedNibble2, corruptedNibble3, corruptedNibble4);
   }
 
-  public static class LevelInformationCorruptedBuilder
+  public static class LevelInformationCorruptedBuilderImpl
       implements LevelInformation.LevelInformationBuilder {
     private final byte corruptedNibble1;
     private final byte corruptedNibble2;
     private final byte corruptedNibble3;
     private final byte corruptedNibble4;
 
-    public LevelInformationCorruptedBuilder(
+    public LevelInformationCorruptedBuilderImpl(
         byte corruptedNibble1,
         byte corruptedNibble2,
         byte corruptedNibble3,
         byte corruptedNibble4) {
-
       this.corruptedNibble1 = corruptedNibble1;
       this.corruptedNibble2 = corruptedNibble2;
       this.corruptedNibble3 = corruptedNibble3;

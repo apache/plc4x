@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
-func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
+func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
 	_result := &_BACnetConfirmedServiceRequestRequestKey{
 		BytesOfRemovedService:          bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,11 +130,11 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
-	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestRequestKeyParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
+	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
+func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {

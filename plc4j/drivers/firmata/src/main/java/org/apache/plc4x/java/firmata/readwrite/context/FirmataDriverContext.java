@@ -69,7 +69,7 @@ public class FirmataDriverContext implements DriverContext {
                     digitalPins.put(pin, PinMode.PinModeOutput);
                     messages.add(
                         new FirmataMessageCommand(
-                            new FirmataCommandSetPinMode((byte) pin, PinMode.PinModeOutput, false), false
+                            new FirmataCommandSetPinMode((byte) pin, PinMode.PinModeOutput)
                         )
                     );
                 }
@@ -81,8 +81,7 @@ public class FirmataDriverContext implements DriverContext {
 
                 messages.add(
                     new FirmataMessageCommand(
-                        new FirmataCommandSetDigitalPinValue((short) pin, plcValue.getIndex(i).getBoolean(), false),
-                        false
+                        new FirmataCommandSetDigitalPinValue((short) pin, plcValue.getIndex(i).getBoolean())
                     )
                 );
             }
@@ -148,14 +147,14 @@ public class FirmataDriverContext implements DriverContext {
             int pin = entry.getKey();
             PinMode pinMode = entry.getValue();
             // Digital pins can be input and output, so first we have to set it to "input"
-            messages.add(new FirmataMessageCommand(new FirmataCommandSetPinMode((byte) pin, pinMode, false), false));
+            messages.add(new FirmataMessageCommand(new FirmataCommandSetPinMode((byte) pin, pinMode)));
             // And then tell the remote to send change of state information.
-            messages.add(new FirmataMessageSubscribeDigitalPinValue((byte) pin, true, false));
+            messages.add(new FirmataMessageSubscribeDigitalPinValue((byte) pin, true));
         }
         for (Map.Entry<Integer, PinMode> entry : requestAnalogTagPinModes.entrySet()) {
             int pin = entry.getKey();
             // Tell the remote to send change of state information for this analog pin.
-            messages.add(new FirmataMessageSubscribeAnalogPinValue((byte) pin, true, false));
+            messages.add(new FirmataMessageSubscribeAnalogPinValue((byte) pin, true));
         }
 
         return messages;

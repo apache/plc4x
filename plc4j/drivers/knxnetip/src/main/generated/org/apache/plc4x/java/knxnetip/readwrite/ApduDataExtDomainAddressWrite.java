@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressWrite extends ApduDataExt implements Messag
     return (short) 0x20;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressWrite() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtDomainAddressWrite extends ApduDataExt implements Messag
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressWrite");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressWrite extends ApduDataExt implements Messag
 
     readBuffer.closeContext("ApduDataExtDomainAddressWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressWriteBuilder(length);
+    return new ApduDataExtDomainAddressWriteBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressWriteBuilder
+  public static class ApduDataExtDomainAddressWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressWriteBuilder(Short length) {
+    public ApduDataExtDomainAddressWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressWrite build(Short length) {
-
+    public ApduDataExtDomainAddressWrite build() {
       ApduDataExtDomainAddressWrite apduDataExtDomainAddressWrite =
-          new ApduDataExtDomainAddressWrite(length);
+          new ApduDataExtDomainAddressWrite();
       return apduDataExtDomainAddressWrite;
     }
   }

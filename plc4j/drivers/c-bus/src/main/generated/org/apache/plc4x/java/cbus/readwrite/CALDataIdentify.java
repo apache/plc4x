@@ -92,7 +92,7 @@ public class CALDataIdentify extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataIdentifyBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataIdentify");
     PositionAware positionAware = readBuffer;
@@ -107,15 +107,14 @@ public class CALDataIdentify extends CALData implements Message {
 
     readBuffer.closeContext("CALDataIdentify");
     // Create the instance
-    return new CALDataIdentifyBuilder(attribute, requestContext);
+    return new CALDataIdentifyBuilderImpl(attribute, requestContext);
   }
 
-  public static class CALDataIdentifyBuilder implements CALData.CALDataBuilder {
+  public static class CALDataIdentifyBuilderImpl implements CALData.CALDataBuilder {
     private final Attribute attribute;
     private final RequestContext requestContext;
 
-    public CALDataIdentifyBuilder(Attribute attribute, RequestContext requestContext) {
-
+    public CALDataIdentifyBuilderImpl(Attribute attribute, RequestContext requestContext) {
       this.attribute = attribute;
       this.requestContext = requestContext;
     }

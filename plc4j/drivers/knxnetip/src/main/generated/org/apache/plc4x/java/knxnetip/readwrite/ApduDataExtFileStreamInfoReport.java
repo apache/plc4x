@@ -42,12 +42,8 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
     return (short) 0x30;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtFileStreamInfoReport(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtFileStreamInfoReport() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
     return lengthInBits;
   }
 
-  public static ApduDataExtFileStreamInfoReportBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtFileStreamInfoReport");
     PositionAware positionAware = readBuffer;
@@ -81,22 +77,17 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
 
     readBuffer.closeContext("ApduDataExtFileStreamInfoReport");
     // Create the instance
-    return new ApduDataExtFileStreamInfoReportBuilder(length);
+    return new ApduDataExtFileStreamInfoReportBuilderImpl();
   }
 
-  public static class ApduDataExtFileStreamInfoReportBuilder
+  public static class ApduDataExtFileStreamInfoReportBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtFileStreamInfoReportBuilder(Short length) {
+    public ApduDataExtFileStreamInfoReportBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtFileStreamInfoReport build(Short length) {
-
+    public ApduDataExtFileStreamInfoReport build() {
       ApduDataExtFileStreamInfoReport apduDataExtFileStreamInfoReport =
-          new ApduDataExtFileStreamInfoReport(length);
+          new ApduDataExtFileStreamInfoReport();
       return apduDataExtFileStreamInfoReport;
     }
   }

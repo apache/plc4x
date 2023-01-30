@@ -170,7 +170,7 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static ModifySubscriptionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModifySubscriptionRequest");
     PositionAware positionAware = readBuffer;
@@ -202,7 +202,7 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("ModifySubscriptionRequest");
     // Create the instance
-    return new ModifySubscriptionRequestBuilder(
+    return new ModifySubscriptionRequestBuilderImpl(
         requestHeader,
         subscriptionId,
         requestedPublishingInterval,
@@ -212,7 +212,7 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
         priority);
   }
 
-  public static class ModifySubscriptionRequestBuilder
+  public static class ModifySubscriptionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -222,7 +222,7 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
     private final long maxNotificationsPerPublish;
     private final short priority;
 
-    public ModifySubscriptionRequestBuilder(
+    public ModifySubscriptionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         double requestedPublishingInterval,
@@ -230,7 +230,6 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
         long requestedMaxKeepAliveCount,
         long maxNotificationsPerPublish,
         short priority) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.requestedPublishingInterval = requestedPublishingInterval;

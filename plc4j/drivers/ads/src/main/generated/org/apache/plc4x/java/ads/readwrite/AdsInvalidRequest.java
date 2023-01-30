@@ -78,7 +78,7 @@ public class AdsInvalidRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsInvalidRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsInvalidRequest");
     PositionAware positionAware = readBuffer;
@@ -87,12 +87,12 @@ public class AdsInvalidRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsInvalidRequest");
     // Create the instance
-    return new AdsInvalidRequestBuilder();
+    return new AdsInvalidRequestBuilderImpl();
   }
 
-  public static class AdsInvalidRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsInvalidRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
 
-    public AdsInvalidRequestBuilder() {}
+    public AdsInvalidRequestBuilderImpl() {}
 
     public AdsInvalidRequest build(
         AmsNetId targetAmsNetId,

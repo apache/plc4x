@@ -73,8 +73,7 @@ public class VariantXmlElement extends Variant implements Message {
     writeBuffer.pushContext("VariantXmlElement");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -109,7 +108,7 @@ public class VariantXmlElement extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantXmlElementBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantXmlElement");
     PositionAware positionAware = readBuffer;
@@ -127,15 +126,14 @@ public class VariantXmlElement extends Variant implements Message {
 
     readBuffer.closeContext("VariantXmlElement");
     // Create the instance
-    return new VariantXmlElementBuilder(arrayLength, value);
+    return new VariantXmlElementBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantXmlElementBuilder implements Variant.VariantBuilder {
+  public static class VariantXmlElementBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<PascalString> value;
 
-    public VariantXmlElementBuilder(Integer arrayLength, List<PascalString> value) {
-
+    public VariantXmlElementBuilderImpl(Integer arrayLength, List<PascalString> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

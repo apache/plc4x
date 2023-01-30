@@ -109,7 +109,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLockStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLockStatus");
     // Create the instance
-    return new BACnetConstructedDataLockStatusBuilder(lockStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockStatusBuilderImpl(
+        lockStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLockStatusBuilder
+  public static class BACnetConstructedDataLockStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLockStatusTagged lockStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockStatusBuilder(
+    public BACnetConstructedDataLockStatusBuilderImpl(
         BACnetLockStatusTagged lockStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockStatus = lockStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

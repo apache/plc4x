@@ -73,8 +73,7 @@ public class VariantExtensionObject extends Variant implements Message {
     writeBuffer.pushContext("VariantExtensionObject");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -109,7 +108,7 @@ public class VariantExtensionObject extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantExtensionObjectBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantExtensionObject");
     PositionAware positionAware = readBuffer;
@@ -128,15 +127,14 @@ public class VariantExtensionObject extends Variant implements Message {
 
     readBuffer.closeContext("VariantExtensionObject");
     // Create the instance
-    return new VariantExtensionObjectBuilder(arrayLength, value);
+    return new VariantExtensionObjectBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantExtensionObjectBuilder implements Variant.VariantBuilder {
+  public static class VariantExtensionObjectBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<ExtensionObject> value;
 
-    public VariantExtensionObjectBuilder(Integer arrayLength, List<ExtensionObject> value) {
-
+    public VariantExtensionObjectBuilderImpl(Integer arrayLength, List<ExtensionObject> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

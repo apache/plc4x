@@ -109,7 +109,7 @@ public class BACnetConstructedDataUserName extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUserNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataUserName extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataUserName");
     // Create the instance
-    return new BACnetConstructedDataUserNameBuilder(userName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUserNameBuilderImpl(userName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUserNameBuilder
+  public static class BACnetConstructedDataUserNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString userName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUserNameBuilder(
+    public BACnetConstructedDataUserNameBuilderImpl(
         BACnetApplicationTagCharacterString userName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userName = userName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -92,8 +92,8 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCReadForeignDeviceTableAckBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCReadForeignDeviceTableAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -109,16 +109,15 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCReadForeignDeviceTableAck");
     // Create the instance
-    return new BVLCReadForeignDeviceTableAckBuilder(table, bvlcPayloadLength);
+    return new BVLCReadForeignDeviceTableAckBuilderImpl(table, bvlcPayloadLength);
   }
 
-  public static class BVLCReadForeignDeviceTableAckBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCReadForeignDeviceTableAckBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCForeignDeviceTableEntry> table;
     private final Integer bvlcPayloadLength;
 
-    public BVLCReadForeignDeviceTableAckBuilder(
+    public BVLCReadForeignDeviceTableAckBuilderImpl(
         List<BVLCForeignDeviceTableEntry> table, Integer bvlcPayloadLength) {
-
       this.table = table;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

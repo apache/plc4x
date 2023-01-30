@@ -108,7 +108,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
     return lengthInBits;
   }
 
-  public static BACnetContextTagObjectIdentifierBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagObjectIdentifier");
@@ -128,17 +128,16 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
 
     readBuffer.closeContext("BACnetContextTagObjectIdentifier");
     // Create the instance
-    return new BACnetContextTagObjectIdentifierBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagObjectIdentifierBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagObjectIdentifierBuilder
+  public static class BACnetContextTagObjectIdentifierBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadObjectIdentifier payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagObjectIdentifierBuilder(
+    public BACnetContextTagObjectIdentifierBuilderImpl(
         BACnetTagPayloadObjectIdentifier payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

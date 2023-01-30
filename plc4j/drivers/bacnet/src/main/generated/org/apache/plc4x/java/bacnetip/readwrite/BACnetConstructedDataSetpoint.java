@@ -109,7 +109,7 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSetpointBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,20 +132,19 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataSetpoint");
     // Create the instance
-    return new BACnetConstructedDataSetpointBuilder(setpoint, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSetpointBuilderImpl(setpoint, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSetpointBuilder
+  public static class BACnetConstructedDataSetpointBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal setpoint;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSetpointBuilder(
+    public BACnetConstructedDataSetpointBuilderImpl(
         BACnetApplicationTagReal setpoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setpoint = setpoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

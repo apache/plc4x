@@ -65,7 +65,7 @@ public class SecurityDataAlarmOn extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataAlarmOnBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataAlarmOn");
     PositionAware positionAware = readBuffer;
@@ -74,12 +74,12 @@ public class SecurityDataAlarmOn extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataAlarmOn");
     // Create the instance
-    return new SecurityDataAlarmOnBuilder();
+    return new SecurityDataAlarmOnBuilderImpl();
   }
 
-  public static class SecurityDataAlarmOnBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataAlarmOnBuilderImpl implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataAlarmOnBuilder() {}
+    public SecurityDataAlarmOnBuilderImpl() {}
 
     public SecurityDataAlarmOn build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

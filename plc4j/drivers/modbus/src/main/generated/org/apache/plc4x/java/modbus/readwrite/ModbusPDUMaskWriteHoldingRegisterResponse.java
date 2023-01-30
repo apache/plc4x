@@ -114,7 +114,7 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
     return lengthInBits;
   }
 
-  public static ModbusPDUMaskWriteHoldingRegisterResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUMaskWriteHoldingRegisterResponse");
     PositionAware positionAware = readBuffer;
@@ -129,18 +129,18 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
 
     readBuffer.closeContext("ModbusPDUMaskWriteHoldingRegisterResponse");
     // Create the instance
-    return new ModbusPDUMaskWriteHoldingRegisterResponseBuilder(referenceAddress, andMask, orMask);
+    return new ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl(
+        referenceAddress, andMask, orMask);
   }
 
-  public static class ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+  public static class ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int referenceAddress;
     private final int andMask;
     private final int orMask;
 
-    public ModbusPDUMaskWriteHoldingRegisterResponseBuilder(
+    public ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl(
         int referenceAddress, int andMask, int orMask) {
-
       this.referenceAddress = referenceAddress;
       this.andMask = andMask;
       this.orMask = orMask;

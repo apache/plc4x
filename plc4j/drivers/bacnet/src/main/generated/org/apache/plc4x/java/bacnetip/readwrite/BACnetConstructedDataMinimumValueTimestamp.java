@@ -113,7 +113,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumValueTimestampBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMinimumValueTimestamp");
     // Create the instance
-    return new BACnetConstructedDataMinimumValueTimestampBuilder(
+    return new BACnetConstructedDataMinimumValueTimestampBuilderImpl(
         minimumValueTimestamp, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumValueTimestampBuilder
+  public static class BACnetConstructedDataMinimumValueTimestampBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime minimumValueTimestamp;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumValueTimestampBuilder(
+    public BACnetConstructedDataMinimumValueTimestampBuilderImpl(
         BACnetDateTime minimumValueTimestamp,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumValueTimestamp = minimumValueTimestamp;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

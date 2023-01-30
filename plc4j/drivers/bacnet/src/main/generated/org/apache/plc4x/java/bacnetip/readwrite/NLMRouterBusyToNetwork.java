@@ -91,8 +91,8 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMRouterBusyToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMRouterBusyToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -104,16 +104,15 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMRouterBusyToNetwork");
     // Create the instance
-    return new NLMRouterBusyToNetworkBuilder(destinationNetworkAddresses, apduLength);
+    return new NLMRouterBusyToNetworkBuilderImpl(destinationNetworkAddresses, apduLength);
   }
 
-  public static class NLMRouterBusyToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMRouterBusyToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final List<Integer> destinationNetworkAddresses;
     private final Integer apduLength;
 
-    public NLMRouterBusyToNetworkBuilder(
+    public NLMRouterBusyToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

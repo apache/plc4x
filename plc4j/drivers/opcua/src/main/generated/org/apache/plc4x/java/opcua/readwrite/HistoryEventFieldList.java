@@ -101,7 +101,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static HistoryEventFieldListBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryEventFieldList");
     PositionAware positionAware = readBuffer;
@@ -118,16 +118,15 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("HistoryEventFieldList");
     // Create the instance
-    return new HistoryEventFieldListBuilder(noOfEventFields, eventFields);
+    return new HistoryEventFieldListBuilderImpl(noOfEventFields, eventFields);
   }
 
-  public static class HistoryEventFieldListBuilder
+  public static class HistoryEventFieldListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfEventFields;
     private final List<Variant> eventFields;
 
-    public HistoryEventFieldListBuilder(int noOfEventFields, List<Variant> eventFields) {
-
+    public HistoryEventFieldListBuilderImpl(int noOfEventFields, List<Variant> eventFields) {
       this.noOfEventFields = noOfEventFields;
       this.eventFields = eventFields;
     }

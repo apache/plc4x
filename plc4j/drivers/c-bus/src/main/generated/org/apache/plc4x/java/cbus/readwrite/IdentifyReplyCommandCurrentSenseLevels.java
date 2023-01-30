@@ -90,7 +90,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandCurrentSenseLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandCurrentSenseLevels");
     PositionAware positionAware = readBuffer;
@@ -102,17 +102,16 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
 
     readBuffer.closeContext("IdentifyReplyCommandCurrentSenseLevels");
     // Create the instance
-    return new IdentifyReplyCommandCurrentSenseLevelsBuilder(currentSenseLevels, numBytes);
+    return new IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(currentSenseLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandCurrentSenseLevelsBuilder
+  public static class IdentifyReplyCommandCurrentSenseLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] currentSenseLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandCurrentSenseLevelsBuilder(
+    public IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(
         byte[] currentSenseLevels, Short numBytes) {
-
       this.currentSenseLevels = currentSenseLevels;
       this.numBytes = numBytes;
     }

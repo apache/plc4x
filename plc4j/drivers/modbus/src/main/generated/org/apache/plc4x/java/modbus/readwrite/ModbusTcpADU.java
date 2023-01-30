@@ -50,16 +50,11 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   protected final short unitIdentifier;
   protected final ModbusPDU pdu;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public ModbusTcpADU(
-      int transactionIdentifier, short unitIdentifier, ModbusPDU pdu, Boolean response) {
-    super(response);
+  public ModbusTcpADU(int transactionIdentifier, short unitIdentifier, ModbusPDU pdu) {
+    super();
     this.transactionIdentifier = transactionIdentifier;
     this.unitIdentifier = unitIdentifier;
     this.pdu = pdu;
-    this.response = response;
   }
 
   public int getTransactionIdentifier() {
@@ -152,7 +147,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusTcpADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusTcpADU");
     PositionAware positionAware = readBuffer;
@@ -193,28 +188,22 @@ public class ModbusTcpADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusTcpADU");
     // Create the instance
-    return new ModbusTcpADUBuilder(transactionIdentifier, unitIdentifier, pdu, response);
+    return new ModbusTcpADUBuilderImpl(transactionIdentifier, unitIdentifier, pdu);
   }
 
-  public static class ModbusTcpADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusTcpADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final int transactionIdentifier;
     private final short unitIdentifier;
     private final ModbusPDU pdu;
-    private final Boolean response;
 
-    public ModbusTcpADUBuilder(
-        int transactionIdentifier, short unitIdentifier, ModbusPDU pdu, Boolean response) {
-
+    public ModbusTcpADUBuilderImpl(int transactionIdentifier, short unitIdentifier, ModbusPDU pdu) {
       this.transactionIdentifier = transactionIdentifier;
       this.unitIdentifier = unitIdentifier;
       this.pdu = pdu;
-      this.response = response;
     }
 
-    public ModbusTcpADU build(Boolean response) {
-
-      ModbusTcpADU modbusTcpADU =
-          new ModbusTcpADU(transactionIdentifier, unitIdentifier, pdu, response);
+    public ModbusTcpADU build() {
+      ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, pdu);
       return modbusTcpADU;
     }
   }

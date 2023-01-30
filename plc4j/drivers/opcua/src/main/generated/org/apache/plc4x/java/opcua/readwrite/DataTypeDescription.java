@@ -95,7 +95,7 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static DataTypeDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeDescription");
     PositionAware positionAware = readBuffer;
@@ -115,16 +115,15 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("DataTypeDescription");
     // Create the instance
-    return new DataTypeDescriptionBuilder(dataTypeId, name);
+    return new DataTypeDescriptionBuilderImpl(dataTypeId, name);
   }
 
-  public static class DataTypeDescriptionBuilder
+  public static class DataTypeDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId dataTypeId;
     private final QualifiedName name;
 
-    public DataTypeDescriptionBuilder(NodeId dataTypeId, QualifiedName name) {
-
+    public DataTypeDescriptionBuilderImpl(NodeId dataTypeId, QualifiedName name) {
       this.dataTypeId = dataTypeId;
       this.name = name;
     }

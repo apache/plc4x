@@ -47,7 +47,13 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     public Set<String> supportedOptions() {
-        return Collections.singleton("package");
+        return new HashSet<>(Arrays.asList(
+            // Overrides the package name generated.
+            "package",
+            // Generates additional properties to save parser arguments.
+            "generate-properties-for-parser-arguments",
+            // Generates additional properties to save values of reserved fields for the case that the value differs from the expected value.
+            "generate-properties-for-reserved-fields"));
     }
 
     @Override
