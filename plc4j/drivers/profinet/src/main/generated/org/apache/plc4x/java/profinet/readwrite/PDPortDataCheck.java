@@ -184,7 +184,7 @@ public class PDPortDataCheck extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PDPortDataCheckBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PDPortDataCheck");
     PositionAware positionAware = readBuffer;
@@ -236,24 +236,23 @@ public class PDPortDataCheck extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PDPortDataCheck");
     // Create the instance
-    return new PDPortDataCheckBuilder(
+    return new PDPortDataCheckBuilderImpl(
         blockVersionHigh, blockVersionLow, slotNumber, subSlotNumber, checkPeers);
   }
 
-  public static class PDPortDataCheckBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PDPortDataCheckBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final int slotNumber;
     private final int subSlotNumber;
     private final PnIoCm_Block checkPeers;
 
-    public PDPortDataCheckBuilder(
+    public PDPortDataCheckBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         int slotNumber,
         int subSlotNumber,
         PnIoCm_Block checkPeers) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.slotNumber = slotNumber;

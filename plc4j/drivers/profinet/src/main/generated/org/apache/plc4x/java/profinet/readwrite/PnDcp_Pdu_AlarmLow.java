@@ -195,7 +195,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_AlarmLowBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_AlarmLow");
     PositionAware positionAware = readBuffer;
@@ -224,7 +224,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_AlarmLow");
     // Create the instance
-    return new PnDcp_Pdu_AlarmLowBuilder(
+    return new PnDcp_Pdu_AlarmLowBuilderImpl(
         alarmDstEndpoint,
         alarmSrcEndpoint,
         version,
@@ -236,7 +236,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
         varPart);
   }
 
-  public static class PnDcp_Pdu_AlarmLowBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_AlarmLowBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int alarmDstEndpoint;
     private final int alarmSrcEndpoint;
     private final byte version;
@@ -247,7 +247,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
     private final int ackSeqNum;
     private final byte[] varPart;
 
-    public PnDcp_Pdu_AlarmLowBuilder(
+    public PnDcp_Pdu_AlarmLowBuilderImpl(
         int alarmDstEndpoint,
         int alarmSrcEndpoint,
         byte version,
@@ -257,7 +257,6 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
         int senSeqNum,
         int ackSeqNum,
         byte[] varPart) {
-
       this.alarmDstEndpoint = alarmDstEndpoint;
       this.alarmSrcEndpoint = alarmSrcEndpoint;
       this.version = version;

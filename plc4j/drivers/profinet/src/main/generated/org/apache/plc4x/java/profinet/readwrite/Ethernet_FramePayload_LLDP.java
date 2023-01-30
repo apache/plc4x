@@ -83,8 +83,8 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload_LLDPBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static Ethernet_FramePayloadBuilder staticParseEthernet_FramePayloadBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_LLDP");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +97,14 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
 
     readBuffer.closeContext("Ethernet_FramePayload_LLDP");
     // Create the instance
-    return new Ethernet_FramePayload_LLDPBuilder(pdu);
+    return new Ethernet_FramePayload_LLDPBuilderImpl(pdu);
   }
 
-  public static class Ethernet_FramePayload_LLDPBuilder
+  public static class Ethernet_FramePayload_LLDPBuilderImpl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final Lldp_Pdu pdu;
 
-    public Ethernet_FramePayload_LLDPBuilder(Lldp_Pdu pdu) {
-
+    public Ethernet_FramePayload_LLDPBuilderImpl(Lldp_Pdu pdu) {
       this.pdu = pdu;
     }
 

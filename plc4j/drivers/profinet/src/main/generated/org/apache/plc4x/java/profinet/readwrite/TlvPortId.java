@@ -94,8 +94,8 @@ public class TlvPortId extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvPortIdBuilder staticParseBuilder(ReadBuffer readBuffer, Integer tlvIdLength)
-      throws ParseException {
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(
+      ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
     readBuffer.pullContext("TlvPortId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,15 +108,14 @@ public class TlvPortId extends LldpUnit implements Message {
 
     readBuffer.closeContext("TlvPortId");
     // Create the instance
-    return new TlvPortIdBuilder(portIdSubType, portId);
+    return new TlvPortIdBuilderImpl(portIdSubType, portId);
   }
 
-  public static class TlvPortIdBuilder implements LldpUnit.LldpUnitBuilder {
+  public static class TlvPortIdBuilderImpl implements LldpUnit.LldpUnitBuilder {
     private final short portIdSubType;
     private final String portId;
 
-    public TlvPortIdBuilder(short portIdSubType, String portId) {
-
+    public TlvPortIdBuilderImpl(short portIdSubType, String portId) {
       this.portIdSubType = portIdSubType;
       this.portId = portId;
     }

@@ -86,7 +86,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvOrganizationSpecificBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvOrganizationSpecific");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
 
     readBuffer.closeContext("TlvOrganizationSpecific");
     // Create the instance
-    return new TlvOrganizationSpecificBuilder(organizationSpecificUnit);
+    return new TlvOrganizationSpecificBuilderImpl(organizationSpecificUnit);
   }
 
-  public static class TlvOrganizationSpecificBuilder implements LldpUnit.LldpUnitBuilder {
+  public static class TlvOrganizationSpecificBuilderImpl implements LldpUnit.LldpUnitBuilder {
     private final TlvOrganizationSpecificUnit organizationSpecificUnit;
 
-    public TlvOrganizationSpecificBuilder(TlvOrganizationSpecificUnit organizationSpecificUnit) {
-
+    public TlvOrganizationSpecificBuilderImpl(
+        TlvOrganizationSpecificUnit organizationSpecificUnit) {
       this.organizationSpecificUnit = organizationSpecificUnit;
     }
 

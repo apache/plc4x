@@ -203,7 +203,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ArResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ArRes");
     PositionAware positionAware = readBuffer;
@@ -262,7 +262,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_ArRes");
     // Create the instance
-    return new PnIoCm_Block_ArResBuilder(
+    return new PnIoCm_Block_ArResBuilderImpl(
         blockVersionHigh,
         blockVersionLow,
         arType,
@@ -272,7 +272,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         responderUDPRTPort);
   }
 
-  public static class PnIoCm_Block_ArResBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ArResBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final PnIoCm_ArType arType;
@@ -281,7 +281,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     private final MacAddress cmResponderMacAddr;
     private final int responderUDPRTPort;
 
-    public PnIoCm_Block_ArResBuilder(
+    public PnIoCm_Block_ArResBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         PnIoCm_ArType arType,
@@ -289,7 +289,6 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         int sessionKey,
         MacAddress cmResponderMacAddr,
         int responderUDPRTPort) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.arType = arType;

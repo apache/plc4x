@@ -137,7 +137,7 @@ public class PnIoCm_Submodule_InputData extends PnIoCm_Submodule implements Mess
     return lengthInBits;
   }
 
-  public static PnIoCm_Submodule_InputDataBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_SubmoduleBuilder staticParsePnIoCm_SubmoduleBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Submodule_InputData");
     PositionAware positionAware = readBuffer;
@@ -159,19 +159,18 @@ public class PnIoCm_Submodule_InputData extends PnIoCm_Submodule implements Mess
 
     readBuffer.closeContext("PnIoCm_Submodule_InputData");
     // Create the instance
-    return new PnIoCm_Submodule_InputDataBuilder(
+    return new PnIoCm_Submodule_InputDataBuilderImpl(
         inputSubmoduleDataLength, inputLengthIoCs, inputLengthIoPs);
   }
 
-  public static class PnIoCm_Submodule_InputDataBuilder
+  public static class PnIoCm_Submodule_InputDataBuilderImpl
       implements PnIoCm_Submodule.PnIoCm_SubmoduleBuilder {
     private final int inputSubmoduleDataLength;
     private final short inputLengthIoCs;
     private final short inputLengthIoPs;
 
-    public PnIoCm_Submodule_InputDataBuilder(
+    public PnIoCm_Submodule_InputDataBuilderImpl(
         int inputSubmoduleDataLength, short inputLengthIoCs, short inputLengthIoPs) {
-
       this.inputSubmoduleDataLength = inputSubmoduleDataLength;
       this.inputLengthIoCs = inputLengthIoCs;
       this.inputLengthIoPs = inputLengthIoPs;

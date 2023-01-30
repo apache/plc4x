@@ -121,8 +121,8 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     return lengthInBits;
   }
 
-  public static TlvOrgSpecificIeee8023Builder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TlvOrganizationSpecificUnitBuilder staticParseTlvOrganizationSpecificUnitBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificIeee8023");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -140,23 +140,22 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
 
     readBuffer.closeContext("TlvOrgSpecificIeee8023");
     // Create the instance
-    return new TlvOrgSpecificIeee8023Builder(
+    return new TlvOrgSpecificIeee8023BuilderImpl(
         subType, negotiationSupport, negotiationCapability, operationalMauType);
   }
 
-  public static class TlvOrgSpecificIeee8023Builder
+  public static class TlvOrgSpecificIeee8023BuilderImpl
       implements TlvOrganizationSpecificUnit.TlvOrganizationSpecificUnitBuilder {
     private final short subType;
     private final short negotiationSupport;
     private final int negotiationCapability;
     private final int operationalMauType;
 
-    public TlvOrgSpecificIeee8023Builder(
+    public TlvOrgSpecificIeee8023BuilderImpl(
         short subType,
         short negotiationSupport,
         int negotiationCapability,
         int operationalMauType) {
-
       this.subType = subType;
       this.negotiationSupport = negotiationSupport;
       this.negotiationCapability = negotiationCapability;

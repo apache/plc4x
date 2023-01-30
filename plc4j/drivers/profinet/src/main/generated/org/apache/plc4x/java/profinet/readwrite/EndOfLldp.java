@@ -68,7 +68,8 @@ public class EndOfLldp extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static EndOfLldpBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("EndOfLldp");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -76,12 +77,12 @@ public class EndOfLldp extends LldpUnit implements Message {
 
     readBuffer.closeContext("EndOfLldp");
     // Create the instance
-    return new EndOfLldpBuilder();
+    return new EndOfLldpBuilderImpl();
   }
 
-  public static class EndOfLldpBuilder implements LldpUnit.LldpUnitBuilder {
+  public static class EndOfLldpBuilderImpl implements LldpUnit.LldpUnitBuilder {
 
-    public EndOfLldpBuilder() {}
+    public EndOfLldpBuilderImpl() {}
 
     public EndOfLldp build(int tlvIdLength) {
       EndOfLldp endOfLldp = new EndOfLldp(tlvIdLength);

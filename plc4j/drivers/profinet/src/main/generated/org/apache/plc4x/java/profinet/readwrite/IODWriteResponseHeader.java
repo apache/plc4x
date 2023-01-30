@@ -267,7 +267,7 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static IODWriteResponseHeaderBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("IODWriteResponseHeader");
     PositionAware positionAware = readBuffer;
@@ -348,7 +348,7 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("IODWriteResponseHeader");
     // Create the instance
-    return new IODWriteResponseHeaderBuilder(
+    return new IODWriteResponseHeaderBuilderImpl(
         blockVersionHigh,
         blockVersionLow,
         sequenceNumber,
@@ -360,7 +360,8 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
         recordDataLength);
   }
 
-  public static class IODWriteResponseHeaderBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class IODWriteResponseHeaderBuilderImpl
+      implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final int sequenceNumber;
@@ -371,7 +372,7 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
     private final int index;
     private final long recordDataLength;
 
-    public IODWriteResponseHeaderBuilder(
+    public IODWriteResponseHeaderBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         int sequenceNumber,
@@ -381,7 +382,6 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
         int subSlotNumber,
         int index,
         long recordDataLength) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.sequenceNumber = sequenceNumber;

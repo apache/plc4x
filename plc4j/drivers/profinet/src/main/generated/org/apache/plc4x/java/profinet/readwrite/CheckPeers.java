@@ -167,7 +167,8 @@ public class CheckPeers extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static CheckPeersBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("CheckPeers");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -212,21 +213,20 @@ public class CheckPeers extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("CheckPeers");
     // Create the instance
-    return new CheckPeersBuilder(blockVersionHigh, blockVersionLow, peerPortId, peerChassisId);
+    return new CheckPeersBuilderImpl(blockVersionHigh, blockVersionLow, peerPortId, peerChassisId);
   }
 
-  public static class CheckPeersBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class CheckPeersBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final PascalString peerPortId;
     private final PascalString peerChassisId;
 
-    public CheckPeersBuilder(
+    public CheckPeersBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         PascalString peerPortId,
         PascalString peerChassisId) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.peerPortId = peerPortId;

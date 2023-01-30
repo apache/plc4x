@@ -184,7 +184,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PDInterfaceAdjustBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PDInterfaceAdjust");
     PositionAware positionAware = readBuffer;
@@ -240,20 +240,19 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PDInterfaceAdjust");
     // Create the instance
-    return new PDInterfaceAdjustBuilder(
+    return new PDInterfaceAdjustBuilderImpl(
         blockVersionHigh, blockVersionLow, multipleInterfaceModeNameOfDevice);
   }
 
-  public static class PDInterfaceAdjustBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PDInterfaceAdjustBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final MultipleInterfaceModeNameOfDevice multipleInterfaceModeNameOfDevice;
 
-    public PDInterfaceAdjustBuilder(
+    public PDInterfaceAdjustBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         MultipleInterfaceModeNameOfDevice multipleInterfaceModeNameOfDevice) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.multipleInterfaceModeNameOfDevice = multipleInterfaceModeNameOfDevice;

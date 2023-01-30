@@ -55,6 +55,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
   protected final int maxAlarmDataLength;
   protected final int alarmCtrTagHeaderHigh;
   protected final int alarmCtrTagHeaderLow;
+
   // Reserved Fields
   private Long reservedField0;
 
@@ -302,7 +303,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_AlarmCrReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_AlarmCrReq");
     PositionAware positionAware = readBuffer;
@@ -392,7 +393,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_AlarmCrReq");
     // Create the instance
-    return new PnIoCm_Block_AlarmCrReqBuilder(
+    return new PnIoCm_Block_AlarmCrReqBuilderImpl(
         blockVersionHigh,
         blockVersionLow,
         alarmType,
@@ -408,7 +409,8 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         reservedField0);
   }
 
-  public static class PnIoCm_Block_AlarmCrReqBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_AlarmCrReqBuilderImpl
+      implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final PnIoCm_AlarmCrType alarmType;
@@ -423,7 +425,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     private final int alarmCtrTagHeaderLow;
     private final Long reservedField0;
 
-    public PnIoCm_Block_AlarmCrReqBuilder(
+    public PnIoCm_Block_AlarmCrReqBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         PnIoCm_AlarmCrType alarmType,

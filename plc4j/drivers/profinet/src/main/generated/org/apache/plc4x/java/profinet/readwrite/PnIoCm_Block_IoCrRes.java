@@ -169,7 +169,7 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_IoCrResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_IoCrRes");
     PositionAware positionAware = readBuffer;
@@ -216,24 +216,23 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_IoCrRes");
     // Create the instance
-    return new PnIoCm_Block_IoCrResBuilder(
+    return new PnIoCm_Block_IoCrResBuilderImpl(
         blockVersionHigh, blockVersionLow, ioCrType, ioCrReference, frameId);
   }
 
-  public static class PnIoCm_Block_IoCrResBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_IoCrResBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final PnIoCm_IoCrType ioCrType;
     private final int ioCrReference;
     private final int frameId;
 
-    public PnIoCm_Block_IoCrResBuilder(
+    public PnIoCm_Block_IoCrResBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         PnIoCm_IoCrType ioCrType,
         int ioCrReference,
         int frameId) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.ioCrType = ioCrType;

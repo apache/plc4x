@@ -83,8 +83,8 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     return lengthInBits;
   }
 
-  public static TlvOrgSpecificProfibusBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TlvOrganizationSpecificUnitBuilder staticParseTlvOrganizationSpecificUnitBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificProfibus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +98,14 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
 
     readBuffer.closeContext("TlvOrgSpecificProfibus");
     // Create the instance
-    return new TlvOrgSpecificProfibusBuilder(specificUnit);
+    return new TlvOrgSpecificProfibusBuilderImpl(specificUnit);
   }
 
-  public static class TlvOrgSpecificProfibusBuilder
+  public static class TlvOrgSpecificProfibusBuilderImpl
       implements TlvOrganizationSpecificUnit.TlvOrganizationSpecificUnitBuilder {
     private final TlvOrgSpecificProfibusUnit specificUnit;
 
-    public TlvOrgSpecificProfibusBuilder(TlvOrgSpecificProfibusUnit specificUnit) {
-
+    public TlvOrgSpecificProfibusBuilderImpl(TlvOrgSpecificProfibusUnit specificUnit) {
       this.specificUnit = specificUnit;
     }
 

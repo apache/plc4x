@@ -108,9 +108,11 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrgSpecificProfibusUnitBuilder builder = null;
     if (EvaluationHelper.equals(subType, TlvProfibusSubType.PORT_STATUS)) {
-      builder = TlvProfibusSubTypePortStatus.staticParseBuilder(readBuffer);
+      builder =
+          TlvProfibusSubTypePortStatus.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(subType, TlvProfibusSubType.CHASSIS_MAC)) {
-      builder = TlvProfibusSubTypeChassisMac.staticParseBuilder(readBuffer);
+      builder =
+          TlvProfibusSubTypeChassisMac.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -123,7 +125,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
     return _tlvOrgSpecificProfibusUnit;
   }
 
-  public static interface TlvOrgSpecificProfibusUnitBuilder {
+  public interface TlvOrgSpecificProfibusUnitBuilder {
     TlvOrgSpecificProfibusUnit build();
   }
 

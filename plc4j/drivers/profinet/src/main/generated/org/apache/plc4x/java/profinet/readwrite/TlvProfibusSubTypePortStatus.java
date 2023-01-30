@@ -47,6 +47,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
   protected final boolean preample;
   protected final boolean fragmentation;
   protected final byte rtClass3PortStatus;
+
   // Reserved Fields
   private Byte reservedField0;
   private Integer reservedField1;
@@ -141,8 +142,8 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
     return lengthInBits;
   }
 
-  public static TlvProfibusSubTypePortStatusBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TlvOrgSpecificProfibusUnitBuilder staticParseTlvOrgSpecificProfibusUnitBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypePortStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -165,7 +166,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
 
     readBuffer.closeContext("TlvProfibusSubTypePortStatus");
     // Create the instance
-    return new TlvProfibusSubTypePortStatusBuilder(
+    return new TlvProfibusSubTypePortStatusBuilderImpl(
         rtClass2PortStatus,
         preample,
         fragmentation,
@@ -174,7 +175,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
         reservedField1);
   }
 
-  public static class TlvProfibusSubTypePortStatusBuilder
+  public static class TlvProfibusSubTypePortStatusBuilderImpl
       implements TlvOrgSpecificProfibusUnit.TlvOrgSpecificProfibusUnitBuilder {
     private final int rtClass2PortStatus;
     private final boolean preample;
@@ -183,7 +184,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
     private final Byte reservedField0;
     private final Integer reservedField1;
 
-    public TlvProfibusSubTypePortStatusBuilder(
+    public TlvProfibusSubTypePortStatusBuilderImpl(
         int rtClass2PortStatus,
         boolean preample,
         boolean fragmentation,

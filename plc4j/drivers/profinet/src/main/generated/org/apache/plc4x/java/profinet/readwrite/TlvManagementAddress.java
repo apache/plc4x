@@ -152,7 +152,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvManagementAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvManagementAddress");
     PositionAware positionAware = readBuffer;
@@ -182,24 +182,23 @@ public class TlvManagementAddress extends LldpUnit implements Message {
 
     readBuffer.closeContext("TlvManagementAddress");
     // Create the instance
-    return new TlvManagementAddressBuilder(
+    return new TlvManagementAddressBuilderImpl(
         addressSubType, ipAddress, interfaceSubType, interfaceNumber, oidStringLength);
   }
 
-  public static class TlvManagementAddressBuilder implements LldpUnit.LldpUnitBuilder {
+  public static class TlvManagementAddressBuilderImpl implements LldpUnit.LldpUnitBuilder {
     private final ManagementAddressSubType addressSubType;
     private final IpAddress ipAddress;
     private final short interfaceSubType;
     private final long interfaceNumber;
     private final short oidStringLength;
 
-    public TlvManagementAddressBuilder(
+    public TlvManagementAddressBuilderImpl(
         ManagementAddressSubType addressSubType,
         IpAddress ipAddress,
         short interfaceSubType,
         long interfaceNumber,
         short oidStringLength) {
-
       this.addressSubType = addressSubType;
       this.ipAddress = ipAddress;
       this.interfaceSubType = interfaceSubType;

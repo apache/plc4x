@@ -82,7 +82,7 @@ public class TlvTimeToLive extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvTimeToLiveBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvTimeToLive");
     PositionAware positionAware = readBuffer;
@@ -93,14 +93,13 @@ public class TlvTimeToLive extends LldpUnit implements Message {
 
     readBuffer.closeContext("TlvTimeToLive");
     // Create the instance
-    return new TlvTimeToLiveBuilder(tlvTimeToLiveUnit);
+    return new TlvTimeToLiveBuilderImpl(tlvTimeToLiveUnit);
   }
 
-  public static class TlvTimeToLiveBuilder implements LldpUnit.LldpUnitBuilder {
+  public static class TlvTimeToLiveBuilderImpl implements LldpUnit.LldpUnitBuilder {
     private final int tlvTimeToLiveUnit;
 
-    public TlvTimeToLiveBuilder(int tlvTimeToLiveUnit) {
-
+    public TlvTimeToLiveBuilderImpl(int tlvTimeToLiveUnit) {
       this.tlvTimeToLiveUnit = tlvTimeToLiveUnit;
     }
 

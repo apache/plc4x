@@ -83,8 +83,8 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
     return lengthInBits;
   }
 
-  public static TlvProfibusSubTypeChassisMacBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TlvOrgSpecificProfibusUnitBuilder staticParseTlvOrgSpecificProfibusUnitBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypeChassisMac");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +97,14 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
 
     readBuffer.closeContext("TlvProfibusSubTypeChassisMac");
     // Create the instance
-    return new TlvProfibusSubTypeChassisMacBuilder(macAddress);
+    return new TlvProfibusSubTypeChassisMacBuilderImpl(macAddress);
   }
 
-  public static class TlvProfibusSubTypeChassisMacBuilder
+  public static class TlvProfibusSubTypeChassisMacBuilderImpl
       implements TlvOrgSpecificProfibusUnit.TlvOrgSpecificProfibusUnitBuilder {
     private final MacAddress macAddress;
 
-    public TlvProfibusSubTypeChassisMacBuilder(MacAddress macAddress) {
-
+    public TlvProfibusSubTypeChassisMacBuilderImpl(MacAddress macAddress) {
       this.macAddress = macAddress;
     }
 

@@ -140,7 +140,7 @@ public class PnIoCm_Packet_Req extends PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet_ReqBuilder staticParseBuilder(
+  public static PnIoCm_PacketBuilder staticParsePnIoCm_PacketBuilder(
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Req");
     PositionAware positionAware = readBuffer;
@@ -165,18 +165,17 @@ public class PnIoCm_Packet_Req extends PnIoCm_Packet implements Message {
 
     readBuffer.closeContext("PnIoCm_Packet_Req");
     // Create the instance
-    return new PnIoCm_Packet_ReqBuilder(argsMaximum, arrayMaximumCount, arrayOffset, blocks);
+    return new PnIoCm_Packet_ReqBuilderImpl(argsMaximum, arrayMaximumCount, arrayOffset, blocks);
   }
 
-  public static class PnIoCm_Packet_ReqBuilder implements PnIoCm_Packet.PnIoCm_PacketBuilder {
+  public static class PnIoCm_Packet_ReqBuilderImpl implements PnIoCm_Packet.PnIoCm_PacketBuilder {
     private final long argsMaximum;
     private final long arrayMaximumCount;
     private final long arrayOffset;
     private final List<PnIoCm_Block> blocks;
 
-    public PnIoCm_Packet_ReqBuilder(
+    public PnIoCm_Packet_ReqBuilderImpl(
         long argsMaximum, long arrayMaximumCount, long arrayOffset, List<PnIoCm_Block> blocks) {
-
       this.argsMaximum = argsMaximum;
       this.arrayMaximumCount = arrayMaximumCount;
       this.arrayOffset = arrayOffset;

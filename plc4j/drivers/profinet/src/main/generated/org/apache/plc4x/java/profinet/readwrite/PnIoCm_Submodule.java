@@ -47,6 +47,7 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean reduceOutputModuleDataLength;
   protected final boolean reduceInputModuleDataLength;
   protected final boolean sharedInput;
+
   // Reserved Fields
   private Integer reservedField0;
 
@@ -219,13 +220,13 @@ public abstract class PnIoCm_Submodule implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_SubmoduleBuilder builder = null;
     if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_DATA)) {
-      builder = PnIoCm_Submodule_InputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_InputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_OutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_OutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_InputAndOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_InputAndOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -250,7 +251,7 @@ public abstract class PnIoCm_Submodule implements Message {
     return _pnIoCm_Submodule;
   }
 
-  public static interface PnIoCm_SubmoduleBuilder {
+  public interface PnIoCm_SubmoduleBuilder {
     PnIoCm_Submodule build(
         int slotNumber,
         long submoduleIdentNumber,

@@ -49,6 +49,9 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
   // Properties.
   protected final MacAddress macAddress;
 
+  // Reserved Fields
+  private Integer reservedField0;
+
   public PnDcp_Block_IpMacAddress(MacAddress macAddress) {
     super();
     this.macAddress = macAddress;
@@ -65,7 +68,10 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     writeBuffer.pushContext("PnDcp_Block_IpMacAddress");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (macAddress)
     writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
@@ -109,19 +115,22 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
 
     readBuffer.closeContext("PnDcp_Block_IpMacAddress");
     // Create the instance
-    return new PnDcp_Block_IpMacAddressBuilderImpl(macAddress);
+    return new PnDcp_Block_IpMacAddressBuilderImpl(macAddress, reservedField0);
   }
 
   public static class PnDcp_Block_IpMacAddressBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final MacAddress macAddress;
+    private final Integer reservedField0;
 
-    public PnDcp_Block_IpMacAddressBuilderImpl(MacAddress macAddress) {
+    public PnDcp_Block_IpMacAddressBuilderImpl(MacAddress macAddress, Integer reservedField0) {
       this.macAddress = macAddress;
+      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_IpMacAddress build() {
       PnDcp_Block_IpMacAddress pnDcp_Block_IpMacAddress = new PnDcp_Block_IpMacAddress(macAddress);
+      pnDcp_Block_IpMacAddress.reservedField0 = reservedField0;
       return pnDcp_Block_IpMacAddress;
     }
   }

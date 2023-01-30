@@ -97,9 +97,9 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrganizationSpecificUnitBuilder builder = null;
     if (EvaluationHelper.equals(uniqueCode, (long) 0x000ECF)) {
-      builder = TlvOrgSpecificProfibus.staticParseBuilder(readBuffer);
+      builder = TlvOrgSpecificProfibus.staticParseTlvOrganizationSpecificUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(uniqueCode, (long) 0x00120F)) {
-      builder = TlvOrgSpecificIeee8023.staticParseBuilder(readBuffer);
+      builder = TlvOrgSpecificIeee8023.staticParseTlvOrganizationSpecificUnitBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -116,7 +116,7 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
     return _tlvOrganizationSpecificUnit;
   }
 
-  public static interface TlvOrganizationSpecificUnitBuilder {
+  public interface TlvOrganizationSpecificUnitBuilder {
     TlvOrganizationSpecificUnit build();
   }
 

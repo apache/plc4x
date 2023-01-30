@@ -749,7 +749,7 @@ public class ProfinetDevice implements PlcSubscriber{
                 id,
                 DceRpc_Operation.CONTROL,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
-                    List.of(
+                    Collections.singletonList(
                         new PnIoCm_Control_Request(
                             (short) 1,
                             (short) 0,
@@ -837,7 +837,7 @@ public class ProfinetDevice implements PlcSubscriber{
                     (short) 0,
                     ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
                     0,
-                    List.of(
+                    Collections.singletonList(
                         new PnIoCM_Block_Response(
                             (short) 1,
                             (short) 0,

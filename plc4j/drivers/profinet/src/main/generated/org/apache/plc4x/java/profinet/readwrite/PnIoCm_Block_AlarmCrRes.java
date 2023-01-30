@@ -171,7 +171,7 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_AlarmCrResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_AlarmCrRes");
     PositionAware positionAware = readBuffer;
@@ -218,24 +218,24 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_AlarmCrRes");
     // Create the instance
-    return new PnIoCm_Block_AlarmCrResBuilder(
+    return new PnIoCm_Block_AlarmCrResBuilderImpl(
         blockVersionHigh, blockVersionLow, alarmType, localAlarmReference, maxAlarmDataLength);
   }
 
-  public static class PnIoCm_Block_AlarmCrResBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_AlarmCrResBuilderImpl
+      implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final PnIoCm_AlarmCrType alarmType;
     private final int localAlarmReference;
     private final int maxAlarmDataLength;
 
-    public PnIoCm_Block_AlarmCrResBuilder(
+    public PnIoCm_Block_AlarmCrResBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         PnIoCm_AlarmCrType alarmType,
         int localAlarmReference,
         int maxAlarmDataLength) {
-
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.alarmType = alarmType;

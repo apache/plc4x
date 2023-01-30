@@ -119,17 +119,17 @@ public abstract class LldpUnit implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LldpUnitBuilder builder = null;
     if (EvaluationHelper.equals(tlvId, TlvType.END_OF_LLDP)) {
-      builder = EndOfLldp.staticParseBuilder(readBuffer);
+      builder = EndOfLldp.staticParseLldpUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(tlvId, TlvType.CHASSIS_ID)) {
-      builder = TlvChassisId.staticParseBuilder(readBuffer, tlvIdLength);
+      builder = TlvChassisId.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
     } else if (EvaluationHelper.equals(tlvId, TlvType.PORT_ID)) {
-      builder = TlvPortId.staticParseBuilder(readBuffer, tlvIdLength);
+      builder = TlvPortId.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
     } else if (EvaluationHelper.equals(tlvId, TlvType.TIME_TO_LIVE)) {
-      builder = TlvTimeToLive.staticParseBuilder(readBuffer);
+      builder = TlvTimeToLive.staticParseLldpUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(tlvId, TlvType.MANAGEMENT_ADDRESS)) {
-      builder = TlvManagementAddress.staticParseBuilder(readBuffer);
+      builder = TlvManagementAddress.staticParseLldpUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(tlvId, TlvType.ORGANIZATION_SPECIFIC)) {
-      builder = TlvOrganizationSpecific.staticParseBuilder(readBuffer);
+      builder = TlvOrganizationSpecific.staticParseLldpUnitBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -142,7 +142,7 @@ public abstract class LldpUnit implements Message {
     return _lldpUnit;
   }
 
-  public static interface LldpUnitBuilder {
+  public interface LldpUnitBuilder {
     LldpUnit build(int tlvIdLength);
   }
 

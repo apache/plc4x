@@ -49,6 +49,7 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
   protected final int sessionKey;
   protected final int controlCommand;
   protected final int controlBlockProperties;
+
   // Reserved Fields
   private Integer reservedField0;
   private Integer reservedField1;
@@ -207,7 +208,7 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCM_Block_ResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCM_Block_Response");
     PositionAware positionAware = readBuffer;
@@ -272,7 +273,7 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCM_Block_Response");
     // Create the instance
-    return new PnIoCM_Block_ResponseBuilder(
+    return new PnIoCM_Block_ResponseBuilderImpl(
         blockVersionHigh,
         blockVersionLow,
         arUuid,
@@ -283,7 +284,7 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
         reservedField1);
   }
 
-  public static class PnIoCM_Block_ResponseBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCM_Block_ResponseBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
     private final Uuid arUuid;
@@ -293,7 +294,7 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
     private final Integer reservedField0;
     private final Integer reservedField1;
 
-    public PnIoCM_Block_ResponseBuilder(
+    public PnIoCM_Block_ResponseBuilderImpl(
         short blockVersionHigh,
         short blockVersionLow,
         Uuid arUuid,
