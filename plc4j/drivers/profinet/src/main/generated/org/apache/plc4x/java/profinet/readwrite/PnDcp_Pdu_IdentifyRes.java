@@ -48,6 +48,11 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   protected final long xid;
   protected final List<PnDcp_Block> blocks;
 
+  // Reserved Fields
+  private Short reservedField0;
+  private Byte reservedField1;
+  private Integer reservedField2;
+
   public PnDcp_Pdu_IdentifyRes(
       int frameIdValue, boolean notSupported, long xid, List<PnDcp_Block> blocks) {
     super(frameIdValue);
@@ -86,13 +91,19 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     writeConstField("serviceId", SERVICEID, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (notSupported)
     writeSimpleField("notSupported", notSupported, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
+    writeReservedField(
+        "reserved",
+        reservedField1 != null ? reservedField1 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 1));
 
     // Const Field (response)
     writeConstField("response", RESPONSE, writeBoolean(writeBuffer));
@@ -101,7 +112,10 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     writeSimpleField("xid", xid, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField(
+        "reserved",
+        reservedField2 != null ? reservedField2 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16));
 
     // Implicit Field (dcpDataLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
@@ -195,24 +209,39 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_IdentifyRes");
     // Create the instance
-    return new PnDcp_Pdu_IdentifyResBuilderImpl(notSupported, xid, blocks);
+    return new PnDcp_Pdu_IdentifyResBuilderImpl(
+        notSupported, xid, blocks, reservedField0, reservedField1, reservedField2);
   }
 
   public static class PnDcp_Pdu_IdentifyResBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final boolean notSupported;
     private final long xid;
     private final List<PnDcp_Block> blocks;
+    private final Short reservedField0;
+    private final Byte reservedField1;
+    private final Integer reservedField2;
 
     public PnDcp_Pdu_IdentifyResBuilderImpl(
-        boolean notSupported, long xid, List<PnDcp_Block> blocks) {
+        boolean notSupported,
+        long xid,
+        List<PnDcp_Block> blocks,
+        Short reservedField0,
+        Byte reservedField1,
+        Integer reservedField2) {
       this.notSupported = notSupported;
       this.xid = xid;
       this.blocks = blocks;
+      this.reservedField0 = reservedField0;
+      this.reservedField1 = reservedField1;
+      this.reservedField2 = reservedField2;
     }
 
     public PnDcp_Pdu_IdentifyRes build(int frameIdValue) {
       PnDcp_Pdu_IdentifyRes pnDcp_Pdu_IdentifyRes =
           new PnDcp_Pdu_IdentifyRes(frameIdValue, notSupported, xid, blocks);
+      pnDcp_Pdu_IdentifyRes.reservedField0 = reservedField0;
+      pnDcp_Pdu_IdentifyRes.reservedField1 = reservedField1;
+      pnDcp_Pdu_IdentifyRes.reservedField2 = reservedField2;
       return pnDcp_Pdu_IdentifyRes;
     }
   }

@@ -18,23 +18,18 @@
  */
 package org.apache.plc4x.java.profinet.readwrite.utils;
 
-import org.apache.plc4x.java.profinet.readwrite.IpAddress;
-import org.apache.plc4x.java.profinet.readwrite.PnDcp_FrameId;
+import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.spi.generation.*;
+
+import java.util.List;
 
 public class StaticHelper {
-
-    public static int stringLength(String str) {
-        if (str == null) {
-            return 0;
-        }
-        return str.length();
-    }
 
     public static int arrayLength(byte[] arr) {
         return arr.length;
     }
 
-    public static int calculateIPv4Checksum(int totalLength, int identification, int timeToLive, IpAddress sourceAddress, IpAddress destinationAddress) {
+    public static short calculateIPv4Checksum(int totalLength, int identification, int timeToLive, IpAddress sourceAddress, IpAddress destinationAddress) {
         // https://en.wikipedia.org/wiki/Ones%27_complement
         // https://www.thegeekstuff.com/2012/05/ip-header-checksum/
         int[] words = new int[10];
@@ -43,7 +38,7 @@ public class StaticHelper {
         words[1] = totalLength;
         words[2] = identification;
         // Flags and fragment offset
-        words[3] = 0x0000;
+        words[3] = 0x4000;
         // Time to live and protocol
         words[4] = (timeToLive & 0xFF) << 8 | 0x11;
         // Checksum set to 0 for calculation
@@ -68,7 +63,69 @@ public class StaticHelper {
             }
         }
 
-        return cur;
+        return (short) ~((short) cur);
+    }
+
+    public static short calculateUdpChecksum(IpAddress sourceAddress, IpAddress destinationAddress, int sourcePort, int destPort, int packetLength, DceRpc_Packet payload) {
+        // https://en.wikipedia.org/wiki/Ones%27_complement
+        // https://www.thegeekstuff.com/2012/05/ip-header-checksum/
+        int[] words = new int[10];
+        byte[] data = sourceAddress.getData();
+        words[0] = ((((int) data[0]) & 0xFF) << 8) | ((int) data[1] & 0xFF);
+        words[1] = ((((int) data[2]) & 0xFF) << 8) | ((int) data[3] & 0xFF);
+        // Target address
+        data = destinationAddress.getData();
+        words[2] = ((((int) data[0]) & 0xFF) << 8) | ((int) data[1] & 0xFF);
+        words[3] = ((((int) data[2]) & 0xFF) << 8) | ((int) data[3] & 0xFF);
+        words[4] = 0x0011;
+        words[5] = packetLength;
+        words[6] = sourcePort;
+        words[7] = destPort;
+        words[8] = packetLength;
+        words[9] = 0x0000;
+
+
+        int cur = 0;
+        for(int i = 0; i < 10; i++) {
+            cur = cur + words[i];
+            // The sum can result in max one bit above 0xFFFF.
+            // Not sure if it could cascade in a second round, let's stay on the safe side.
+            while(cur > 0xFFFF) {
+                cur = cur & 0xFFFF;
+                cur += 1;
+            }
+        }
+        WriteBufferByteBased buffer;
+        boolean evenSize = (payload.getLengthInBytes() % 2) == 0;
+        if (evenSize) {
+            buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.BIG_ENDIAN);
+        } else {
+            buffer = new WriteBufferByteBased(payload.getLengthInBytes() + 1, ByteOrder.BIG_ENDIAN);
+        }
+
+        try {
+            payload.serialize(buffer);
+            if (!evenSize) {
+                buffer.writeByte("Padding", (byte) 0x00);
+            }
+            byte[] byteBuffer = buffer.getBytes();
+
+            for(int i = 0; i < byteBuffer.length - 1; i += 2) {
+                int w =  ((((int) byteBuffer[i]) & 0xFF) << 8) | ((int) byteBuffer[i+1] & 0xFF);
+                cur = cur + w;
+                // The sum can result in max one bit above 0xFFFF.
+                // Not sure if it could cascade in a second round, let's stay on the safe side.
+
+                while (cur > 0xFFFF) {
+                    cur = cur & 0xFFFF;
+                    cur += 1;
+                }
+            }
+        } catch (SerializationException e) {
+            return 0x0000;
+        }
+
+        return (short) ~((short) cur);
     }
 
     public static void main(String[] args) {
@@ -151,6 +208,49 @@ public class StaticHelper {
         }
 
         return PnDcp_FrameId.RESERVED;
+    }
+
+    public static boolean isSysexEnd(ReadBuffer io) {
+        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[1] == (byte) 0x00;
+    }
+
+    public static LldpUnit parseSysexString(ReadBuffer io) {
+        try {
+            LldpUnit unit = LldpUnit.staticParse(io);
+            return unit;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static void serializeSysexString(WriteBuffer io, LldpUnit unit) {
+        try {
+            unit.serialize(io);
+        } catch (SerializationException e) {
+        }
+    }
+
+    public static int lengthSysexString(List<LldpUnit> data) {
+        int lengthInBytes = 0;
+        for (LldpUnit unit : data) {
+            lengthInBytes += unit.getLengthInBytes();
+        }
+        return lengthInBytes;
+    }
+
+    public static void writeDataUnit(WriteBuffer writeBuffer, PnIo_CyclicServiceDataUnit dataUnit) throws SerializationException {
+        dataUnit.serialize(writeBuffer);
+    }
+
+    public static PnIo_CyclicServiceDataUnit readDataUnit(ReadBuffer readBuffer) throws ParseException {
+        int NO_TRAILING_BYTES = 4;
+        int initialPos = readBuffer.getPos();
+        while (readBuffer.hasMore(8)) {
+            readBuffer.readByte();
+        }
+        int dataUnitLength = readBuffer.getPos() - initialPos - NO_TRAILING_BYTES;
+        readBuffer.reset(initialPos);
+        return PnIo_CyclicServiceDataUnit.staticParse(readBuffer, (short) dataUnitLength);
     }
 
 }

@@ -47,6 +47,11 @@
               <languageName>java</languageName>
               <outputFlavor>read-write</outputFlavor>
               <outputDir>src/main/generated</outputDir>
+              <options>
+                <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
+                <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
+                <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
+              </options>
             </configuration>
           </execution>
         </executions>
@@ -150,10 +155,6 @@
       <artifactId>netty-buffer</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
@@ -217,6 +218,14 @@
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
     </dependency>
   </dependencies>
 

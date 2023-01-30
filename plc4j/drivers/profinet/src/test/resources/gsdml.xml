@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<ISO15745Profile xmlns="http://www.profibus.com/GSDML/2003/11/DeviceProfile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.profibus.com/GSDML/2003/11/DeviceProfile ..\xsd\GSDML-DeviceProfile-V2.4.xsd">
+   <!-- ProfileHeader definition as defined in ISO 15745-1. Please do not change the content. -->
+   <ProfileHeader>
+      <ProfileIdentification>PROFINET Device Profile</ProfileIdentification>
+      <ProfileRevision>1.00</ProfileRevision>
+      <ProfileName>Device Profile for PROFINET Devices</ProfileName>
+      <ProfileSource>PROFIBUS Nutzerorganisation e. V. (PNO)</ProfileSource>
+      <ProfileClassID>Device</ProfileClassID>
+      <ISO15745Reference>
+         <ISO15745Part>4</ISO15745Part>
+         <ISO15745Edition>1</ISO15745Edition>
+         <ProfileTechnology>GSDML</ProfileTechnology>
+      </ISO15745Reference>
+   </ProfileHeader>
+   <ProfileBody>
+      <DeviceIdentity VendorID="0xCAFE" DeviceID="0x0001">
+         <InfoText TextId="PLC4X_Device"/>
+         <VendorName Value="Apache PLC4X"/>º
+      </DeviceIdentity>
+      <DeviceFunction>
+         <Family MainFamily="I/O" ProductFamily="Apache PLC4X Dummy IO Device"/>
+      </DeviceFunction>
+      <ApplicationProcess>
+         <DeviceAccessPointList>
+            <DeviceAccessPointItem ID="PLC4X_1" PNIO_Version="V2.4" PhysicalSlots="0..32" ModuleIdentNumber="0x00000001" MinDeviceInterval="32" DNS_CompatibleName="plc4x" FixedInSlots="0" ObjectUUID_LocalIndex="1" DeviceAccessSupported="false" MultipleWriteSupported="true" CheckDeviceID_Allowed="true" NameOfStationNotTransferable="false" LLDP_NoD_Supported="true" ResetToFactoryModes="1..2">
+               <ModuleInfo>
+                  <Name TextId="PLC4X_Module"/>
+                  <InfoText TextId="PLC4X_Info"/>
+                  <VendorName Value="PLC4X"/>
+                  <OrderNumber Value="000000"/>
+                  <HardwareRelease Value="0.11"/>
+                  <SoftwareRelease Value="0.11"/>
+               </ModuleInfo>
+               <CertificationInfo ConformanceClass="B" ApplicationClass="" NetloadClass="I"/>
+               <IOConfigData MaxInputLength="40" MaxOutputLength="40"/>
+               <UseableModules>
+                  <ModuleItemRef ModuleItemTarget="PLC4X_DUMMY_MODULE" AllowedInSlots="1..4"/>
+               </UseableModules>
+               <VirtualSubmoduleList>
+                  <VirtualSubmoduleItem ID="PLC4X_1_V0" SubmoduleIdentNumber="0x00000001" Writeable_IM_Records="1 2 3" MayIssueProcessAlarm="false">
+                     <IOData/>
+                     <ModuleInfo>
+                        <Name TextId="Virtual_PLC4X_Module"/>
+                        <InfoText TextId="Virtual_PLC4X_Info"/>
+                     </ModuleInfo>
+                  </VirtualSubmoduleItem>
+               </VirtualSubmoduleList>
+               <SystemDefinedSubmoduleList>
+                  <InterfaceSubmoduleItem ID="PLC4X_1_S0" SubmoduleIdentNumber="0x00000001" SubslotNumber="32768" TextId="PLC4X_Module_System_0" SupportedRT_Classes="RT_CLASS_1" SupportedProtocols="SNMP;LLDP" NetworkComponentDiagnosisSupported="false" PTP_BoundarySupported="true" DCP_BoundarySupported="true">
+                     <ApplicationRelations StartupMode="Advanced">
+                        <TimingProperties SendClock="32" ReductionRatio="1 2 4 8 16 32 64 128 256 512"/>
+                     </ApplicationRelations>
+                  </InterfaceSubmoduleItem>
+                  <PortSubmoduleItem ID="PLC4X_1_S1" SubmoduleIdentNumber="0x00000002" SubslotNumber="32769" TextId="PLC4X_Module_System_1" MaxPortRxDelay="100" MaxPortTxDelay="30">
+                     <MAUTypeList>
+                        <MAUTypeItem Value="1"/>
+                        <MAUTypeItem Value="2"/>
+                        <MAUTypeItem Value="3"/>
+                     </MAUTypeList>
+                  </PortSubmoduleItem>
+               </SystemDefinedSubmoduleList>
+               <Graphics>
+                  <GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="PLC4X-Icon"/>
+               </Graphics>
+            </DeviceAccessPointItem>
+         </DeviceAccessPointList>
+         <ModuleList>
+            <ModuleItem ID="PLC4X_DUMMY_MODULE" ModuleIdentNumber="0x00000003">
+               <ModuleInfo>
+                  <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
+                  <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>
+                  <HardwareRelease Value="0.11"/>
+                  <SoftwareRelease Value="0.11"/>
+               </ModuleInfo>
+               <VirtualSubmoduleList>
+                  <VirtualSubmoduleItem ID="PLC4X_DUMMY_MODULE_V0" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="true">
+                     <IOData>
+                        <Input Consistency="None">
+                           <DataItem DataType="Unsigned8" TextId="PLC4X_INPUT_MODULE_INFO_32" UseAsBits="true">
+                              <BitDataItem BitOffset="0" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="1" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="2" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="3" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="4" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="5" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                              <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                           </DataItem>
+                           <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                        </Input>
+                     </IOData>
+                     <ModuleInfo>
+                        <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>
+                        <InfoText TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO"/>
+                     </ModuleInfo>
+                  </VirtualSubmoduleItem>
+               </VirtualSubmoduleList>
+            </ModuleItem>
+         </ModuleList>
+         <LogBookEntryList>
+            <LogBookEntryItem Status="1">
+            </LogBookEntryItem>
+         </LogBookEntryList>
+         <GraphicsList>
+            <GraphicItem ID="PLC4X-Icon" GraphicFile="PLC4X-Icon"/>
+         </GraphicsList>
+         <ExternalTextList>
+            <PrimaryLanguage>
+               <Text TextId="PLC4X_Device" Value="https://plc4x.apache.org"/>
+               <Text TextId="PLC4X_Module" Value="Sample"/>
+               <Text TextId="PLC4X_Info" Value="Profinet Sample for Testing"/>
+               <Text TextId="Virtual_PLC4X_Module" Value="Virtual Sample"/>
+               <Text TextId="Virtual_PLC4X_Info" Value="Virtual Profinet Sample for Testing"/>
+               <Text TextId="IDT_CUSTOM_DIAG_1" Value="Custom diagnosis in USI format"/>
+               <Text TextId="IDT_CUSTOM_DIAG_1_VALUE" Value="Custom diagnosis value"/>
+               <Text TextId="IDT_CUSTOM_LOGBOOK_1" Value="Custom Logbook entry"/>
+               <Text TextId="PLC4X_Module_System_0" Value="0"/>
+               <Text TextId="PLC4X_Module_System_1" Value="1"/>
+               <Text TextId="PLC4X_INPUT_MODULE_NAME" Value="32 Digital Input"/>
+               <Text TextId="PLC4X_INPUT_MODULE_INFO" Value="32 Bits"/>
+               <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME" Value="Virtual 32 Digital Input"/>
+               <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO" Value="Virtual 32 Bits"/>
+               <Text TextId="PLC4X_INPUT_MODULE_INFO_32" Value="32 Bits"/>
+               <Text TextId="PLC4X_INPUT_MODULE_INFO_FLOAT" Value="32 Bits"/>
+            </PrimaryLanguage>
+         </ExternalTextList>
+      </ApplicationProcess>
+   </ProfileBody>
+</ISO15745Profile>

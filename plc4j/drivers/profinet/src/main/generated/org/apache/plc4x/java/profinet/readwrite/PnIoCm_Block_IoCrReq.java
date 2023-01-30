@@ -43,6 +43,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final PnIoCm_IoCrType ioCrType;
   protected final int ioCrReference;
   protected final int lt;
@@ -63,6 +65,10 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   protected final int ioCrTagHeader;
   protected final MacAddress ioCrMulticastMacAdr;
   protected final List<PnIoCm_IoCrBlockReqApi> apis;
+
+  // Reserved Fields
+  private Long reservedField0;
+  private Short reservedField1;
 
   public PnIoCm_Block_IoCrReq(
       short blockVersionHigh,
@@ -87,7 +93,9 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
       int ioCrTagHeader,
       MacAddress ioCrMulticastMacAdr,
       List<PnIoCm_IoCrBlockReqApi> apis) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.ioCrType = ioCrType;
     this.ioCrReference = ioCrReference;
     this.lt = lt;
@@ -108,6 +116,14 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     this.ioCrTagHeader = ioCrTagHeader;
     this.ioCrMulticastMacAdr = ioCrMulticastMacAdr;
     this.apis = apis;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
   }
 
   public PnIoCm_IoCrType getIoCrType() {
@@ -196,6 +212,29 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_IoCrReq");
 
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
     // Simple Field (ioCrType)
     writeSimpleEnumField(
         "ioCrType",
@@ -243,7 +282,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (long) 0x0000,
+        reservedField0 != null ? reservedField0 : (long) 0x0000,
         writeUnsignedLong(writeBuffer, 17),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -257,7 +296,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (short) 0x00,
+        reservedField1 != null ? reservedField1 : (short) 0x00,
         writeUnsignedShort(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -373,6 +412,15 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_IoCrReq _value = this;
 
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
+
     // Simple field (ioCrType)
     lengthInBits += 16;
 
@@ -457,6 +505,24 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_IoCrType ioCrType =
         readEnumField(
@@ -605,6 +671,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     readBuffer.closeContext("PnIoCm_Block_IoCrReq");
     // Create the instance
     return new PnIoCm_Block_IoCrReqBuilderImpl(
+        blockVersionHigh,
+        blockVersionLow,
         ioCrType,
         ioCrReference,
         lt,
@@ -624,10 +692,14 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         dataHoldFactor,
         ioCrTagHeader,
         ioCrMulticastMacAdr,
-        apis);
+        apis,
+        reservedField0,
+        reservedField1);
   }
 
   public static class PnIoCm_Block_IoCrReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final PnIoCm_IoCrType ioCrType;
     private final int ioCrReference;
     private final int lt;
@@ -648,8 +720,12 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     private final int ioCrTagHeader;
     private final MacAddress ioCrMulticastMacAdr;
     private final List<PnIoCm_IoCrBlockReqApi> apis;
+    private final Long reservedField0;
+    private final Short reservedField1;
 
     public PnIoCm_Block_IoCrReqBuilderImpl(
+        short blockVersionHigh,
+        short blockVersionLow,
         PnIoCm_IoCrType ioCrType,
         int ioCrReference,
         int lt,
@@ -669,7 +745,11 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         int dataHoldFactor,
         int ioCrTagHeader,
         MacAddress ioCrMulticastMacAdr,
-        List<PnIoCm_IoCrBlockReqApi> apis) {
+        List<PnIoCm_IoCrBlockReqApi> apis,
+        Long reservedField0,
+        Short reservedField1) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.ioCrType = ioCrType;
       this.ioCrReference = ioCrReference;
       this.lt = lt;
@@ -690,9 +770,11 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
       this.ioCrTagHeader = ioCrTagHeader;
       this.ioCrMulticastMacAdr = ioCrMulticastMacAdr;
       this.apis = apis;
+      this.reservedField0 = reservedField0;
+      this.reservedField1 = reservedField1;
     }
 
-    public PnIoCm_Block_IoCrReq build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_IoCrReq build() {
       PnIoCm_Block_IoCrReq pnIoCm_Block_IoCrReq =
           new PnIoCm_Block_IoCrReq(
               blockVersionHigh,
@@ -717,6 +799,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
               ioCrTagHeader,
               ioCrMulticastMacAdr,
               apis);
+      pnIoCm_Block_IoCrReq.reservedField0 = reservedField0;
+      pnIoCm_Block_IoCrReq.reservedField1 = reservedField1;
       return pnIoCm_Block_IoCrReq;
     }
   }
@@ -730,7 +814,9 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_IoCrReq that = (PnIoCm_Block_IoCrReq) o;
-    return (getIoCrType() == that.getIoCrType())
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getIoCrType() == that.getIoCrType())
         && (getIoCrReference() == that.getIoCrReference())
         && (getLt() == that.getLt())
         && (getFullSubFrameStructure() == that.getFullSubFrameStructure())
@@ -758,6 +844,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
+        getBlockVersionHigh(),
+        getBlockVersionLow(),
         getIoCrType(),
         getIoCrReference(),
         getLt(),

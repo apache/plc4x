@@ -25,6 +25,8 @@ import java.util.Map;
 
 public enum PnIoCm_SubmoduleType {
   NO_INPUT_NO_OUTPUT_DATA((byte) 0x0),
+  INPUT_DATA((byte) 0x1),
+  OUTPUT_DATA((byte) 0x2),
   INPUT_AND_OUTPUT_DATA((byte) 0x3);
   private static final Map<Byte, PnIoCm_SubmoduleType> map;
 

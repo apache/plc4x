@@ -16,10 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.profinet.context;
 
-import org.apache.plc4x.java.spi.context.DriverContext;
+package org.apache.plc4x.java.profinet.gsdml;
 
-public class ProfinetDiscoveryContext implements DriverContext {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonRootName("Graphics")
+public class ProfinetGraphics {
+
+    @JacksonXmlProperty(localName="GraphicItemRef")
+    private ProfinetGraphicsItemRef GraphicItemRef;
+
+    public ProfinetGraphicsItemRef getGraphicItemRef() {
+        return GraphicItemRef;
+    }
 }

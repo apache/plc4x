@@ -49,9 +49,15 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
   // Properties.
   protected final byte[] nameOfStation;
 
-  public PnDcp_Block_DevicePropertiesNameOfStation(byte[] nameOfStation) {
+  // Arguments.
+  protected final Integer blockLength;
+  // Reserved Fields
+  private Integer reservedField0;
+
+  public PnDcp_Block_DevicePropertiesNameOfStation(byte[] nameOfStation, Integer blockLength) {
     super();
     this.nameOfStation = nameOfStation;
+    this.blockLength = blockLength;
   }
 
   public byte[] getNameOfStation() {
@@ -65,7 +71,10 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesNameOfStation");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (nameOfStation)
     writeByteArrayField("nameOfStation", nameOfStation, writeByteArray(writeBuffer, 8));
@@ -136,20 +145,27 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesNameOfStation");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(nameOfStation);
+    return new PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(
+        nameOfStation, blockLength, reservedField0);
   }
 
   public static class PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] nameOfStation;
+    private final Integer blockLength;
+    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(byte[] nameOfStation) {
+    public PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(
+        byte[] nameOfStation, Integer blockLength, Integer reservedField0) {
       this.nameOfStation = nameOfStation;
+      this.blockLength = blockLength;
+      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesNameOfStation build() {
       PnDcp_Block_DevicePropertiesNameOfStation pnDcp_Block_DevicePropertiesNameOfStation =
-          new PnDcp_Block_DevicePropertiesNameOfStation(nameOfStation);
+          new PnDcp_Block_DevicePropertiesNameOfStation(nameOfStation, blockLength);
+      pnDcp_Block_DevicePropertiesNameOfStation.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesNameOfStation;
     }
   }
