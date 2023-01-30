@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,10 +76,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 	
     public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size")
         .displayName("Schema Cache Size")
-		.description("Size of schema cache. Can improve performance when addresses change dynamically.")
+		.description("Maximum number of entries in the cache. Can improve performance when addresses change dynamically.")
 		.defaultValue("1")
 		.required(true)
-		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
 
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
@@ -151,7 +150,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-        schemaCache.setCacheSize(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
+        schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
     }
 
     @Override

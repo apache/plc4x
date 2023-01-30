@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 public class SchemaCache {
     private ConcurrentMap<String, SchemaContainer> schemaMap = new ConcurrentHashMap<>();
     private AtomicReferenceArray<String> schemaAppendOrder = new AtomicReferenceArray<>(0);
-    private final AtomicInteger lastSchemaPosition = new AtomicInteger(0);
+    private final AtomicInteger nextSchemaPosition = new AtomicInteger(0);
     private final AtomicInteger cacheSize = new AtomicInteger(0);
 
     /** Creates a schema cache with first-in-first-out replacement policy. Stores PlcTags and RecordSchema used for PlcResponse serialization
@@ -46,11 +46,11 @@ public class SchemaCache {
     /** Empties and restart the cache with the given size
      * @param cacheSize size of schema cache
      */
-    public void setCacheSize(int cacheSize) {
+    public void restartCache(int cacheSize) {
         this.cacheSize.set(cacheSize);
         this.schemaAppendOrder = new AtomicReferenceArray<>(cacheSize);
         this.schemaMap = new ConcurrentHashMap<>();
-        this.lastSchemaPosition.set(0);
+        this.nextSchemaPosition.set(0);
     }
 
 
@@ -62,18 +62,18 @@ public class SchemaCache {
      */
     public void addSchema(final Map<String,String> schemaIdentifier, final LinkedHashSet<String> tagsNames, final List<PlcTag> tagsList,  final RecordSchema schema) {        
         if (!schemaMap.containsKey(schemaIdentifier.toString())){
-            if (lastSchemaPosition.get() == cacheSize.get()){
-                lastSchemaPosition.set(0);
+            if (nextSchemaPosition.get() == cacheSize.get()){
+                nextSchemaPosition.set(0);
             }
-            removeSchema(schemaAppendOrder.get(lastSchemaPosition.get()));
+            removeSchema(schemaAppendOrder.get(nextSchemaPosition.get()));
 
             Map<String, PlcTag> tags = new HashMap<>();
             for (int i=0; i<tagsNames.size(); i++){
                 tags.put(tagsNames.toArray(new String[]{})[i], tagsList.get(i));
             }
             schemaMap.put(schemaIdentifier.toString(), new SchemaContainer(tags, schema));
-            schemaAppendOrder.set(lastSchemaPosition.get(), schemaIdentifier.toString());
-            lastSchemaPosition.getAndAdd(1);
+            schemaAppendOrder.set(nextSchemaPosition.get(), schemaIdentifier.toString());
+            nextSchemaPosition.getAndAdd(1);
         }    
     }
 
@@ -111,8 +111,8 @@ public class SchemaCache {
         return null;
     }
 
-    protected int getLastSchemaPosition() {
-        return lastSchemaPosition.get();
+    protected int getNextSchemaPosition() {
+        return nextSchemaPosition.get();
     }
 
     protected int getCacheSize() {

@@ -107,9 +107,9 @@ public class SchemaCacheTest {
     // Cache size set to 4 < number of schemas: to check schema override.
     @BeforeEach
     public void testCacheSize() {
-        schemaCache.setCacheSize(4);
+        schemaCache.restartCache(4);
         assert schemaCache.getCacheSize() == 4;
-        assert schemaCache.getLastSchemaPosition() == 0;
+        assert schemaCache.getNextSchemaPosition() == 0;
     }
 
     // In this test we add 4 schemas and try to add schema 0 again. It should not be added.
@@ -117,11 +117,11 @@ public class SchemaCacheTest {
     public void testAddSchema() {
         for (int i = 0; i < 4; i++) {
             schemaCache.addSchema(addresses.get(i), tagNames.get(i), tags.get(i), schemas.get(i));
-            assert schemaCache.getLastSchemaPosition() == i + 1;
+            assert schemaCache.getNextSchemaPosition() == i + 1;
         }
-        int prev = schemaCache.getLastSchemaPosition();
+        int prev = schemaCache.getNextSchemaPosition();
         schemaCache.addSchema(addresses.get(0), tagNames.get(0), tags.get(0), schemas.get(0));
-        assert prev == schemaCache.getLastSchemaPosition();
+        assert prev == schemaCache.getNextSchemaPosition();
     }
 
     // In this test check schema overriding
@@ -129,11 +129,11 @@ public class SchemaCacheTest {
     public void testSchemaOverride() {
         for (int i = 0; i < 4; i++) {
             schemaCache.addSchema(addresses.get(i), tagNames.get(i), tags.get(i), schemas.get(i));
-            assert schemaCache.getLastSchemaPosition() == i + 1;
+            assert schemaCache.getNextSchemaPosition() == i + 1;
         }
         // Override first schema
         schemaCache.addSchema(addresses.get(4), tagNames.get(4), tags.get(4), schemas.get(4));
-        assert schemaCache.getLastSchemaPosition() == 1;
+        assert schemaCache.getNextSchemaPosition() == 1;
 
         // First schema should not be present in the cache
         assert schemaCache.retrieveSchema(addresses.get(0)) == null;
