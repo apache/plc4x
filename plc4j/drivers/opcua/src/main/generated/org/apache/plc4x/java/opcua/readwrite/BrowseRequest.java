@@ -87,6 +87,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowseRequest");
 
@@ -120,6 +121,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowseRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -137,7 +139,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     if (nodesToBrowse != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToBrowse) {
-        boolean last = ++i >= nodesToBrowse.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToBrowse.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -151,6 +153,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

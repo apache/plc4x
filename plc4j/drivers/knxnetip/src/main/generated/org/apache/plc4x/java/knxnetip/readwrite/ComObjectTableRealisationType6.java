@@ -59,6 +59,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
   protected void serializeComObjectTableChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComObjectTableRealisationType6");
 
@@ -78,6 +79,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ComObjectTableRealisationType6 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (comObjectDescriptors)
     lengthInBits += comObjectDescriptors.getLengthInBits();
@@ -91,6 +93,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     GroupObjectDescriptorRealisationType6 comObjectDescriptors =
         readSimpleField(

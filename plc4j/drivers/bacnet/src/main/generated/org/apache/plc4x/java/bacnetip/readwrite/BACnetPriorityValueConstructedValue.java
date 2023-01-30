@@ -62,6 +62,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueConstructedValue");
 
@@ -81,6 +82,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueConstructedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (constructedValue)
     lengthInBits += constructedValue.getLengthInBits();
@@ -94,6 +96,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData constructedValue =
         readSimpleField(

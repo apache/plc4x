@@ -85,6 +85,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandOutputUnitSummary");
 
@@ -117,6 +118,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandOutputUnitSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unitFlags)
     lengthInBits += unitFlags.getLengthInBits();
@@ -143,6 +145,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     IdentifyReplyCommandUnitSummary unitFlags =
         readSimpleField(

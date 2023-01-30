@@ -57,6 +57,7 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
   @Override
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetIpDeviceManagement");
 
@@ -75,6 +76,7 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxNetIpDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (version)
     lengthInBits += 8;
@@ -88,6 +90,7 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));
 

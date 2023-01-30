@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyMode");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLifeSafetyMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lifeSafetyMode)
     lengthInBits += lifeSafetyMode.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyModeTagged lifeSafetyMode =
         readSimpleField(

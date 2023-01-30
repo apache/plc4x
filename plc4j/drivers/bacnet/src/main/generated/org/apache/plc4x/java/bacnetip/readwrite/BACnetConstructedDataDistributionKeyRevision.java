@@ -79,6 +79,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDistributionKeyRevision");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDistributionKeyRevision _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (distributionKeyRevision)
     lengthInBits += distributionKeyRevision.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger distributionKeyRevision =
         readSimpleField(

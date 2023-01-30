@@ -100,6 +100,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
   protected void serializeMeasurementDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeasurementDataChannelMeasurementData");
 
@@ -148,6 +149,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeasurementDataChannelMeasurementData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceId)
     lengthInBits += 8;
@@ -180,6 +182,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short deviceId = readSimpleField("deviceId", readUnsignedShort(readBuffer, 8));
 

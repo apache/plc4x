@@ -79,6 +79,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_IdentifyRes");
 
@@ -123,6 +124,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_IdentifyRes _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (serviceId)
     lengthInBits += 8;
@@ -164,6 +166,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short serviceId =
         readConstField(

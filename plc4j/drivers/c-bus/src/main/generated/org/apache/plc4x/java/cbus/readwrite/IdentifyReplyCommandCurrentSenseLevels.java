@@ -63,6 +63,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandCurrentSenseLevels");
 
@@ -81,6 +82,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandCurrentSenseLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (currentSenseLevels != null) {
@@ -96,6 +98,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] currentSenseLevels =
         readBuffer.readByteArray("currentSenseLevels", Math.toIntExact(numBytes));

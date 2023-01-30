@@ -78,6 +78,7 @@ public class BACnetConstructedDataIPv6DHCPServer extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DHCPServer");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIPv6DHCPServer extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6DHCPServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dhcpServer)
     lengthInBits += dhcpServer.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIPv6DHCPServer extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString dhcpServer =
         readSimpleField(

@@ -199,6 +199,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandExtendedDiagnosticSummary");
 
@@ -307,6 +308,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandExtendedDiagnosticSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowApplication)
     lengthInBits += 8;
@@ -385,6 +387,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer lowApplication =
         readEnumField(

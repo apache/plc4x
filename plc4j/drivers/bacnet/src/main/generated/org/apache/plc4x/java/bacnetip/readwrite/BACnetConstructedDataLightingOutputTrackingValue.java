@@ -79,6 +79,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLightingOutputTrackingValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLightingOutputTrackingValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trackingValue)
     lengthInBits += trackingValue.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal trackingValue =
         readSimpleField(

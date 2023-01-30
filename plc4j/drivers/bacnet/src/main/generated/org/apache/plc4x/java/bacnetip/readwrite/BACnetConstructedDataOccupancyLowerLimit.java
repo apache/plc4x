@@ -79,6 +79,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyLowerLimit");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOccupancyLowerLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (occupancyLowerLimit)
     lengthInBits += occupancyLowerLimit.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger occupancyLowerLimit =
         readSimpleField(

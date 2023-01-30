@@ -67,6 +67,7 @@ public abstract class S7PayloadUserDataItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItem");
 
@@ -110,6 +111,7 @@ public abstract class S7PayloadUserDataItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7PayloadUserDataItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (returnCode)
     lengthInBits += 8;
@@ -161,6 +163,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataTransportErrorCode returnCode =
         readEnumField(

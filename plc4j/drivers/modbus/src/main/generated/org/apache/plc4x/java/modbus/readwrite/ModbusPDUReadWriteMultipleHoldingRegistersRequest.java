@@ -95,6 +95,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest");
 
@@ -131,6 +132,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadWriteMultipleHoldingRegistersRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (readStartingAddress)
     lengthInBits += 16;
@@ -161,6 +163,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int readStartingAddress =
         readSimpleField("readStartingAddress", readUnsignedInt(readBuffer, 16));

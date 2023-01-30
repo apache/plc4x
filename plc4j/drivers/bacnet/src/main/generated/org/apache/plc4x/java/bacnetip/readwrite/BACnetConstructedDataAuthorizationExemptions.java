@@ -75,6 +75,7 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAuthorizationExemptions");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAuthorizationExemptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (authorizationExemption != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAuthorizationExemptionTagged> authorizationExemption =
         readTerminatedArrayField(

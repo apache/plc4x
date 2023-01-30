@@ -56,6 +56,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueDouble");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(

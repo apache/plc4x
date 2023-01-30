@@ -70,6 +70,7 @@ public abstract class OpenProtocolMessageDisableTool extends OpenProtocolMessage
   protected void serializeOpenProtocolMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageDisableTool");
 
@@ -88,6 +89,7 @@ public abstract class OpenProtocolMessageDisableTool extends OpenProtocolMessage
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageDisableTool _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,6 +102,7 @@ public abstract class OpenProtocolMessageDisableTool extends OpenProtocolMessage
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageDisableToolBuilder builder = null;

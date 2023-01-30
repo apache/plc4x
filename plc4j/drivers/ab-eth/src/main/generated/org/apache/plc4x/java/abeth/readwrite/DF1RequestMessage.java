@@ -76,6 +76,7 @@ public abstract class DF1RequestMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1RequestMessage");
 
@@ -112,6 +113,7 @@ public abstract class DF1RequestMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DF1RequestMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (destinationAddress)
     lengthInBits += 8;
@@ -147,6 +149,7 @@ public abstract class DF1RequestMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short destinationAddress =
         readSimpleField("destinationAddress", readUnsignedShort(readBuffer, 8));

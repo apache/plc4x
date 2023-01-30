@@ -87,6 +87,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkRequest");
 
@@ -118,6 +119,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FindServersOnNetworkRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -135,7 +137,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     if (serverCapabilityFilter != null) {
       int i = 0;
       for (PascalString element : serverCapabilityFilter) {
-        boolean last = ++i >= serverCapabilityFilter.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverCapabilityFilter.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,6 +151,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

@@ -55,6 +55,7 @@ public class ApplicationAddress1 implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApplicationAddress1");
 
@@ -77,6 +78,7 @@ public class ApplicationAddress1 implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ApplicationAddress1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 8;
@@ -97,6 +99,7 @@ public class ApplicationAddress1 implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte address = readSimpleField("address", readByte(readBuffer, 8));
     boolean isWildcard = readVirtualField("isWildcard", boolean.class, (address) == (0xFF));

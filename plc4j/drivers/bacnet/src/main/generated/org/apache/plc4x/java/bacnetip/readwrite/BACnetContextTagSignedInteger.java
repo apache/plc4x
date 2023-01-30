@@ -70,6 +70,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagSignedInteger");
 
@@ -92,6 +93,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagSignedInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -111,6 +113,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadSignedInteger payload =
         readSimpleField(

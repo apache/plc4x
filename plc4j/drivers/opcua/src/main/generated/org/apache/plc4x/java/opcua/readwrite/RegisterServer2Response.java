@@ -87,6 +87,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServer2Response");
 
@@ -118,6 +119,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServer2Response _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -129,7 +131,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     if (configurationResults != null) {
       int i = 0;
       for (StatusCode element : configurationResults) {
-        boolean last = ++i >= configurationResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= configurationResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,7 +143,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -155,6 +157,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

@@ -65,6 +65,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
   protected void serializeBACnetFaultParameterFaultOutOfRangeMinNormalValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble");
 
@@ -83,6 +84,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -97,6 +99,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(

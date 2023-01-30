@@ -122,6 +122,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisteredServer");
 
@@ -177,6 +178,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisteredServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverUri)
     lengthInBits += serverUri.getLengthInBits();
@@ -191,7 +193,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     if (serverNames != null) {
       int i = 0;
       for (LocalizedText element : serverNames) {
-        boolean last = ++i >= serverNames.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverNames.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -209,7 +211,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     if (discoveryUrls != null) {
       int i = 0;
       for (PascalString element : discoveryUrls) {
-        boolean last = ++i >= discoveryUrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryUrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -232,6 +234,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverUri =
         readSimpleField(

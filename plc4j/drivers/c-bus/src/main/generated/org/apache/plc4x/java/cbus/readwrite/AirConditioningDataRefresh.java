@@ -56,6 +56,7 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataRefresh");
 
@@ -74,6 +75,7 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataRefresh _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -87,6 +89,7 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 

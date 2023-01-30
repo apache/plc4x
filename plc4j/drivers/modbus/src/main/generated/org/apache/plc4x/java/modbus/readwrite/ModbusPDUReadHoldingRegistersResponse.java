@@ -65,6 +65,7 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadHoldingRegistersResponse");
 
@@ -88,6 +89,7 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadHoldingRegistersResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -106,6 +108,7 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 

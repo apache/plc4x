@@ -118,6 +118,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
   protected void serializeErrorReportingDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingDataGeneric");
 
@@ -176,6 +177,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingDataGeneric _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (systemCategory)
     lengthInBits += systemCategory.getLengthInBits();
@@ -216,6 +218,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategory systemCategory =
         readSimpleField(

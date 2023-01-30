@@ -64,6 +64,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions1PowerUpSettings");
 
@@ -82,6 +83,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueInterfaceOptions1PowerUpSettings _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -95,6 +97,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("InterfaceOptions1PowerUpSettings has exactly one byte");

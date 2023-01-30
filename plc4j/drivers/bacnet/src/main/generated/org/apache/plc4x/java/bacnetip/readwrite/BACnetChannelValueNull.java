@@ -56,6 +56,7 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueNull");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(

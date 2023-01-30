@@ -80,6 +80,7 @@ public class BACnetAccessRule implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAccessRule");
 
@@ -120,6 +121,7 @@ public class BACnetAccessRule implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetAccessRule _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeRangeSpecifier)
     lengthInBits += timeRangeSpecifier.getLengthInBits();
@@ -154,6 +156,7 @@ public class BACnetAccessRule implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessRuleTimeRangeSpecifierTagged timeRangeSpecifier =
         readSimpleField(

@@ -51,6 +51,7 @@ public class ZoneStatus implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ZoneStatus");
 
@@ -74,6 +75,7 @@ public class ZoneStatus implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ZoneStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 2;
@@ -92,6 +94,7 @@ public class ZoneStatus implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ZoneStatusTemp value =
         readEnumField(

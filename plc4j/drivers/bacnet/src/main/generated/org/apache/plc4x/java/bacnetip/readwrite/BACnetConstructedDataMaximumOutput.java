@@ -78,6 +78,7 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaximumOutput");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaximumOutput _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maximumOutput)
     lengthInBits += maximumOutput.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal maximumOutput =
         readSimpleField(

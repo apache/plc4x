@@ -79,6 +79,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogLogDeviceObjectProperty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (logDeviceObjectProperty)
     lengthInBits += logDeviceObjectProperty.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectPropertyReference logDeviceObjectProperty =
         readSimpleField(

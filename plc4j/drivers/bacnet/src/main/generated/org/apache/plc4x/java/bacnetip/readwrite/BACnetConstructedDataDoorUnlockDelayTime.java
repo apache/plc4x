@@ -79,6 +79,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoorUnlockDelayTime");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDoorUnlockDelayTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorUnlockDelayTime)
     lengthInBits += doorUnlockDelayTime.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger doorUnlockDelayTime =
         readSimpleField(

@@ -79,6 +79,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHas");
 
@@ -110,6 +111,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWhoHas _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (deviceInstanceRangeLowLimit)
     if (deviceInstanceRangeLowLimit != null) {
@@ -134,6 +136,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit =
         readOptionalField(

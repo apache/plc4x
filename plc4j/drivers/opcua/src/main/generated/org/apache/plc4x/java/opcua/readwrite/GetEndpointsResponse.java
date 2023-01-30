@@ -73,6 +73,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetEndpointsResponse");
 
@@ -97,6 +98,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GetEndpointsResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     if (endpoints != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : endpoints) {
-        boolean last = ++i >= endpoints.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= endpoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -122,6 +124,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

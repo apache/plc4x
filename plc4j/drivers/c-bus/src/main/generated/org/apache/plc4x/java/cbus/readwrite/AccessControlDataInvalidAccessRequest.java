@@ -66,6 +66,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataInvalidAccessRequest");
 
@@ -94,6 +95,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataInvalidAccessRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessControlDirection)
     lengthInBits += 8;
@@ -113,6 +115,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlDirection accessControlDirection =
         readEnumField(

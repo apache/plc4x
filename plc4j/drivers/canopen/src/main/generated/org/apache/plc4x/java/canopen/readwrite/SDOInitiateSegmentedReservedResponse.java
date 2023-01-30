@@ -55,6 +55,7 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
   protected void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateSegmentedReservedResponse");
 
@@ -73,6 +74,7 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateSegmentedReservedResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 32;
@@ -88,6 +90,7 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField("reserved", readSignedInt(readBuffer, 32), (int) 0x00);

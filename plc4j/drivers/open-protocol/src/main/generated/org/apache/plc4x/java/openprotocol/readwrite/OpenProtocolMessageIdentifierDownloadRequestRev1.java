@@ -74,6 +74,7 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
   protected void serializeOpenProtocolMessageIdentifierDownloadRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageIdentifierDownloadRequestRev1");
 
@@ -96,6 +97,7 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageIdentifierDownloadRequestRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (identifierData)
     lengthInBits += 800;
@@ -110,6 +112,7 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String identifierData =
         readSimpleField(

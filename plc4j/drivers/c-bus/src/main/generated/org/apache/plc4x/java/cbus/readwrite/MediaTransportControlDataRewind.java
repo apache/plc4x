@@ -94,6 +94,7 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataRewind");
 
@@ -144,6 +145,7 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataRewind _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -173,6 +175,7 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isCeaseRewind = readVirtualField("isCeaseRewind", boolean.class, (operation) == (0x00));

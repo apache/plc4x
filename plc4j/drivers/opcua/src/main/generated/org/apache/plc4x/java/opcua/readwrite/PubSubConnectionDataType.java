@@ -136,6 +136,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubConnectionDataType");
 
@@ -193,6 +194,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubConnectionDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -219,7 +221,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (connectionProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : connectionProperties) {
-        boolean last = ++i >= connectionProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= connectionProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -234,7 +236,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (writerGroups != null) {
       int i = 0;
       for (PubSubGroupDataType element : writerGroups) {
-        boolean last = ++i >= writerGroups.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= writerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -246,7 +248,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (readerGroups != null) {
       int i = 0;
       for (PubSubGroupDataType element : readerGroups) {
-        boolean last = ++i >= readerGroups.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= readerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -260,6 +262,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesReliability");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesReliability _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reliability)
     lengthInBits += reliability.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetReliabilityTagged reliability =
         readSimpleField(

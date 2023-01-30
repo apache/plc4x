@@ -63,6 +63,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagOctetString");
 
@@ -81,6 +82,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -98,6 +100,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadOctetString payload =
         readSimpleField(

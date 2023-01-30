@@ -73,6 +73,7 @@ public class CBusHeader implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusHeader");
 
@@ -112,6 +113,7 @@ public class CBusHeader implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CBusHeader _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (priorityClass)
     lengthInBits += 2;
@@ -139,6 +141,7 @@ public class CBusHeader implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PriorityClass priorityClass =
         readEnumField(

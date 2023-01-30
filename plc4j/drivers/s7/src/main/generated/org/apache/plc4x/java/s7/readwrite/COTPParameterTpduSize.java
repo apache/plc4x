@@ -58,6 +58,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
   protected void serializeCOTPParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterTpduSize");
 
@@ -81,6 +82,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     COTPParameterTpduSize _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tpduSize)
     lengthInBits += 8;
@@ -94,6 +96,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     COTPTpduSize tpduSize =
         readEnumField(

@@ -64,6 +64,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdditionalParametersType");
 
@@ -85,6 +86,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdditionalParametersType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfParameters)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     if (parameters != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : parameters) {
-        boolean last = ++i >= parameters.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= parameters.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfParameters = readSimpleField("noOfParameters", readSignedInt(readBuffer, 32));
 

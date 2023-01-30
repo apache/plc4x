@@ -79,6 +79,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupFailureTimeout");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBackupFailureTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupFailureTimeout)
     lengthInBits += backupFailureTimeout.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger backupFailureTimeout =
         readSimpleField(

@@ -55,6 +55,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataDisplayMessage");
 
@@ -76,6 +77,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataDisplayMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (message)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -90,6 +92,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String message =
         readSimpleField(

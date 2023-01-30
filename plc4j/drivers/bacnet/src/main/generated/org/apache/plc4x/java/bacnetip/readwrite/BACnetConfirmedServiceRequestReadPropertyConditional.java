@@ -66,6 +66,7 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadPropertyConditional");
 
@@ -85,6 +86,7 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestReadPropertyConditional _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bytesOfRemovedService != null) {
@@ -102,6 +104,7 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =
         readBuffer.readByteArray(

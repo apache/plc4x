@@ -78,6 +78,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckConfirmedPrivateTransfer");
 
@@ -102,6 +103,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckConfirmedPrivateTransfer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorId)
     lengthInBits += vendorId.getLengthInBits();
@@ -123,6 +125,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(

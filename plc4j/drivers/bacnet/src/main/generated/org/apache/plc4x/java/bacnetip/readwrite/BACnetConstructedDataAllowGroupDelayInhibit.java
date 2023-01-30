@@ -79,6 +79,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAllowGroupDelayInhibit");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAllowGroupDelayInhibit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (allowGroupDelayInhibit)
     lengthInBits += allowGroupDelayInhibit.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean allowGroupDelayInhibit =
         readSimpleField(

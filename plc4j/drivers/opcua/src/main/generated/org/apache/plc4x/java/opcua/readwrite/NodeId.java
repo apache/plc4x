@@ -55,6 +55,7 @@ public class NodeId implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeId");
 
@@ -80,6 +81,7 @@ public class NodeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     NodeId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 2;
@@ -102,6 +104,7 @@ public class NodeId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 2), (byte) 0x00);
 

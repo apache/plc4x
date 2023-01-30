@@ -136,6 +136,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateSessionResponse");
 
@@ -195,6 +196,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateSessionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -221,7 +223,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     if (serverEndpoints != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : serverEndpoints) {
-        boolean last = ++i >= serverEndpoints.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverEndpoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -233,7 +235,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     if (serverSoftwareCertificates != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : serverSoftwareCertificates) {
-        boolean last = ++i >= serverSoftwareCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -253,6 +255,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

@@ -75,6 +75,7 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGroupPresentValue");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGroupPresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (presentValue != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetReadAccessResult> presentValue =
         readTerminatedArrayField(

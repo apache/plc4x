@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryEnumeratedValue");
 
@@ -76,6 +77,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryEnumeratedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagEnumerated enumeratedValue =
         readSimpleField(

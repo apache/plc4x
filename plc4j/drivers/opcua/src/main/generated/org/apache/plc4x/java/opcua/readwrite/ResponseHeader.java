@@ -101,6 +101,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ResponseHeader");
 
@@ -139,6 +140,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ResponseHeader _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timestamp)
     lengthInBits += 64;
@@ -159,7 +161,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     if (stringTable != null) {
       int i = 0;
       for (PascalString element : stringTable) {
-        boolean last = ++i >= stringTable.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= stringTable.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -176,6 +178,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 

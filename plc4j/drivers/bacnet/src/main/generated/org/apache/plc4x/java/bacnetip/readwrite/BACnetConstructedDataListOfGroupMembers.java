@@ -75,6 +75,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataListOfGroupMembers");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataListOfGroupMembers _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (listOfGroupMembers != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetReadAccessSpecification> listOfGroupMembers =
         readTerminatedArrayField(

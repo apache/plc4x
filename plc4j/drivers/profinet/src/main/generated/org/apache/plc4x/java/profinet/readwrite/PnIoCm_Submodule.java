@@ -93,6 +93,7 @@ public abstract class PnIoCm_Submodule implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule");
 
@@ -145,6 +146,7 @@ public abstract class PnIoCm_Submodule implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_Submodule _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (slotNumber)
     lengthInBits += 16;
@@ -186,6 +188,7 @@ public abstract class PnIoCm_Submodule implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
 

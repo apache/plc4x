@@ -55,6 +55,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterNone");
 
@@ -73,6 +74,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterNone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (none)
     lengthInBits += none.getLengthInBits();
@@ -86,6 +88,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =
         readSimpleField(

@@ -94,6 +94,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddReferencesItem");
 
@@ -137,6 +138,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AddReferencesItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sourceNodeId)
     lengthInBits += sourceNodeId.getLengthInBits();
@@ -168,6 +170,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sourceNodeId =
         readSimpleField(

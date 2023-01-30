@@ -93,6 +93,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicWriteFile");
 
@@ -125,6 +126,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestAtomicWriteFile _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceIdentifier)
     lengthInBits += deviceIdentifier.getLengthInBits();
@@ -155,6 +157,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(

@@ -79,6 +79,7 @@ public class BACnetConstructedDataLargeAnalogValueLowLimit extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueLowLimit");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataLargeAnalogValueLowLimit extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLargeAnalogValueLowLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowLimit)
     lengthInBits += lowLimit.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataLargeAnalogValueLowLimit extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble lowLimit =
         readSimpleField(

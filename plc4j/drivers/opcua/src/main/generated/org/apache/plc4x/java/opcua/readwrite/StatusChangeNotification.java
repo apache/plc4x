@@ -64,6 +64,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusChangeNotification");
 
@@ -90,6 +91,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusChangeNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (notificationLength)
     lengthInBits += 32;
@@ -109,6 +111,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
 

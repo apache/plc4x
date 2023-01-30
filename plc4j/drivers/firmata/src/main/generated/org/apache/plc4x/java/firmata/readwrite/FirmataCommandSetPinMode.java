@@ -64,6 +64,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
   protected void serializeFirmataCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandSetPinMode");
 
@@ -90,6 +91,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataCommandSetPinMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -106,6 +108,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 

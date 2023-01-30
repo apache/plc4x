@@ -57,6 +57,7 @@ public class ApduDataExtAuthorizeResponse extends ApduDataExt implements Message
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtAuthorizeResponse");
 
@@ -75,6 +76,7 @@ public class ApduDataExtAuthorizeResponse extends ApduDataExt implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtAuthorizeResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (level)
     lengthInBits += 8;
@@ -88,6 +90,7 @@ public class ApduDataExtAuthorizeResponse extends ApduDataExt implements Message
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short level = readSimpleField("level", readUnsignedShort(readBuffer, 8));
 

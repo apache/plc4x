@@ -71,6 +71,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventCounterResponse");
 
@@ -92,6 +93,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUGetComEventCounterResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (status)
     lengthInBits += 16;
@@ -108,6 +110,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int status = readSimpleField("status", readUnsignedInt(readBuffer, 16));
 

@@ -65,6 +65,7 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckReadPropertyConditional");
 
@@ -84,6 +85,7 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckReadPropertyConditional _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bytesOfRemovedService != null) {
@@ -100,6 +102,7 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =
         readBuffer.readByteArray("bytesOfRemovedService", Math.toIntExact(serviceAckPayloadLength));

@@ -79,6 +79,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBBMDAcceptFDRegistrations _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bbmdAcceptFDRegistrations)
     lengthInBits += bbmdAcceptFDRegistrations.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean bbmdAcceptFDRegistrations =
         readSimpleField(

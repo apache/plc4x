@@ -93,6 +93,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple");
 
@@ -132,6 +133,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subscriberProcessIdentifier)
     lengthInBits += subscriberProcessIdentifier.getLengthInBits();
@@ -160,6 +162,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(

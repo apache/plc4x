@@ -79,6 +79,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupPreparationTime");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBackupPreparationTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupPreparationTime)
     lengthInBits += backupPreparationTime.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger backupPreparationTime =
         readSimpleField(

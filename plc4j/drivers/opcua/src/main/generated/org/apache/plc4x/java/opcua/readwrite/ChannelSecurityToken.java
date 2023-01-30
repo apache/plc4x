@@ -76,6 +76,7 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChannelSecurityToken");
 
@@ -103,6 +104,7 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ChannelSecurityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channelId)
     lengthInBits += 32;
@@ -125,6 +127,7 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long channelId = readSimpleField("channelId", readUnsignedLong(readBuffer, 32));
 

@@ -80,6 +80,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowseNextRequest");
 
@@ -112,6 +113,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowseNextRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -129,7 +131,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     if (continuationPoints != null) {
       int i = 0;
       for (PascalByteString element : continuationPoints) {
-        boolean last = ++i >= continuationPoints.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= continuationPoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -143,6 +145,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

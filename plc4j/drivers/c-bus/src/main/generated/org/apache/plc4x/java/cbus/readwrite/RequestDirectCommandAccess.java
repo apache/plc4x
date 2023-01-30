@@ -83,6 +83,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestDirectCommandAccess");
 
@@ -116,6 +117,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestDirectCommandAccess _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (at)
     lengthInBits += 8;
@@ -139,6 +141,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte at = readConstField("at", readByte(readBuffer, 8), RequestDirectCommandAccess.AT);
 

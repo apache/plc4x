@@ -57,6 +57,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkNumberQuality");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNetworkNumberQuality _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkNumberQuality)
     lengthInBits += networkNumberQuality.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkNumberQualityTagged networkNumberQuality =
         readSimpleField(

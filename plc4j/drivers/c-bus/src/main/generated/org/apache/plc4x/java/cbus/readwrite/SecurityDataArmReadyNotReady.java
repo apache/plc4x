@@ -55,6 +55,7 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataArmReadyNotReady");
 
@@ -73,6 +74,7 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataArmReadyNotReady _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneNumber)
     lengthInBits += 8;
@@ -86,6 +88,7 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));
 

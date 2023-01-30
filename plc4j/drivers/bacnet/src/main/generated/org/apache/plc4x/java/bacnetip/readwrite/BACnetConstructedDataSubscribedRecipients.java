@@ -75,6 +75,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSubscribedRecipients");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSubscribedRecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (subscribedRecipients != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEventNotificationSubscription> subscribedRecipients =
         readTerminatedArrayField(

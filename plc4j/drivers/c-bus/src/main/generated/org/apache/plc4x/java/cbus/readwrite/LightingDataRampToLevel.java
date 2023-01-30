@@ -61,6 +61,7 @@ public class LightingDataRampToLevel extends LightingData implements Message {
   @Override
   protected void serializeLightingDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LightingDataRampToLevel");
 
@@ -82,6 +83,7 @@ public class LightingDataRampToLevel extends LightingData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LightingDataRampToLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (group)
     lengthInBits += 8;
@@ -98,6 +100,7 @@ public class LightingDataRampToLevel extends LightingData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte group = readSimpleField("group", readByte(readBuffer, 8));
 

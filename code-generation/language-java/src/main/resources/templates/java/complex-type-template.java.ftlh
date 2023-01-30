@@ -253,6 +253,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#if helper.hasFieldOfType("unknown")>
             throw new SerializationException("Unknown field not serializable");
         <#else>
+            boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
             int startPos = positionAware.getPos();
             writeBuffer.pushContext("${type.name}");
             <#assign reservedFieldIndex=0>
@@ -403,7 +404,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     public int getLengthInBits() {
         int lengthInBits = <#if type.parentType.isPresent()>super.getLengthInBits()<#else>0</#if>;
         ${type.name} _value  = this;
-<#list type.fields as field>
+        boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
@@ -418,7 +420,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             int i=0;
             <#assign nonSimpleTypeReference = arrayElementTypeReference.asNonSimpleTypeReference().orElseThrow()>
             for(${nonSimpleTypeReference.name} element : ${arrayField.name}) {
-                boolean last = ++i >= ${arrayField.name}.size();
+                ThreadLocalHelper.lastItemThreadLocal.set(++i >= ${arrayField.name}.size());
                 lengthInBits += element.getLengthInBits();
             }
         <#else>
@@ -610,6 +612,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         PositionAware positionAware = readBuffer;
         int startPos = positionAware.getPos();
         int curPos;
+        boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     <#assign reservedFieldIndex=0>
     <#list type.fields as field>
         <#switch field.typeName>

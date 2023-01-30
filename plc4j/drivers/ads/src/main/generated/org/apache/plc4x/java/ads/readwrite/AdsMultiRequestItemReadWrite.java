@@ -77,6 +77,7 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
   protected void serializeAdsMultiRequestItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItemReadWrite");
 
@@ -104,6 +105,7 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsMultiRequestItemReadWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemIndexGroup)
     lengthInBits += 32;
@@ -126,6 +128,7 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long itemIndexGroup = readSimpleField("itemIndexGroup", readUnsignedLong(readBuffer, 32));
 

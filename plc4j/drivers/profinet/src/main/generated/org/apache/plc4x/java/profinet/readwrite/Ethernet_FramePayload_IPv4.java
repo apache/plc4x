@@ -138,6 +138,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   protected void serializeEthernet_FramePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_IPv4");
 
@@ -224,6 +225,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Ethernet_FramePayload_IPv4 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (version)
     lengthInBits += 4;
@@ -285,6 +287,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte version =
         readConstField(

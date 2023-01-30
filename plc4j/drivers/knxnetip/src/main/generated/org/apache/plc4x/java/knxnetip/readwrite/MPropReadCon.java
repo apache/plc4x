@@ -93,6 +93,7 @@ public class MPropReadCon extends CEMI implements Message {
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MPropReadCon");
 
@@ -126,6 +127,7 @@ public class MPropReadCon extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MPropReadCon _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (interfaceObjectType)
     lengthInBits += 16;
@@ -154,6 +156,7 @@ public class MPropReadCon extends CEMI implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int interfaceObjectType =
         readSimpleField("interfaceObjectType", readUnsignedInt(readBuffer, 16));

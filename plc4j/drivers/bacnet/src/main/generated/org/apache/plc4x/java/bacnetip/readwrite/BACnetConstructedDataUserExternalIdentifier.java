@@ -79,6 +79,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUserExternalIdentifier");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUserExternalIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (userExternalIdentifier)
     lengthInBits += userExternalIdentifier.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString userExternalIdentifier =
         readSimpleField(

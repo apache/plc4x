@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryNullValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryNullValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull nullValue =
         readSimpleField(

@@ -57,6 +57,7 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
   @Override
   protected void serializePlc4xMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xConnectRequest");
 
@@ -88,6 +89,7 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Plc4xConnectRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (connectionStringLen)
     lengthInBits += 8;
@@ -104,6 +106,7 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short connectionStringLen =
         readImplicitField(

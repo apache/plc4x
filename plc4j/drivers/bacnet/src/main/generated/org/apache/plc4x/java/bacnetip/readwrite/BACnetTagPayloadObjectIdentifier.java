@@ -68,6 +68,7 @@ public class BACnetTagPayloadObjectIdentifier implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadObjectIdentifier");
 
@@ -106,6 +107,7 @@ public class BACnetTagPayloadObjectIdentifier implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTagPayloadObjectIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Field (objectType)
     lengthInBits += 10;
@@ -133,6 +135,7 @@ public class BACnetTagPayloadObjectIdentifier implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectType objectType =
         readManualField(

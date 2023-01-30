@@ -78,6 +78,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
@@ -105,6 +106,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     int lengthInBits = 0;
     BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences _value =
         this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -151,6 +153,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(

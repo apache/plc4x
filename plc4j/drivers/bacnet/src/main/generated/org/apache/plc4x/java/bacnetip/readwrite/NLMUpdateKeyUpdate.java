@@ -133,6 +133,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMUpdateKeyUpdate");
 
@@ -213,6 +214,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMUpdateKeyUpdate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (controlFlags)
     lengthInBits += controlFlags.getLengthInBits();
@@ -241,7 +243,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     if (set1Keys != null) {
       int i = 0;
       for (NLMUpdateKeyUpdateKeyEntry element : set1Keys) {
-        boolean last = ++i >= set1Keys.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= set1Keys.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -270,7 +272,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     if (set2Keys != null) {
       int i = 0;
       for (NLMUpdateKeyUpdateKeyEntry element : set2Keys) {
-        boolean last = ++i >= set2Keys.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= set2Keys.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -284,6 +286,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NLMUpdateKeyUpdateControlFlags controlFlags =
         readSimpleField(

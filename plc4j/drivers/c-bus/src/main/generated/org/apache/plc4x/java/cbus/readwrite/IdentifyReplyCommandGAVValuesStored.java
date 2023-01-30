@@ -62,6 +62,7 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandGAVValuesStored");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandGAVValuesStored _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (values != null) {
@@ -95,6 +97,7 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] values = readBuffer.readByteArray("values", Math.toIntExact(numBytes));
 

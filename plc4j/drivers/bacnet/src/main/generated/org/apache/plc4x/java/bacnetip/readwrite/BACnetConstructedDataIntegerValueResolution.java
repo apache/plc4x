@@ -79,6 +79,7 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueResolution");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIntegerValueResolution _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (resolution)
     lengthInBits += resolution.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger resolution =
         readSimpleField(

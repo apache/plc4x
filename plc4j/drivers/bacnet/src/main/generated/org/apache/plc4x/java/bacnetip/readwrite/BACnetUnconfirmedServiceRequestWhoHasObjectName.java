@@ -57,6 +57,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
   protected void serializeBACnetUnconfirmedServiceRequestWhoHasObjectChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
 
@@ -75,6 +76,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWhoHasObjectName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectName)
     lengthInBits += objectName.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString objectName =
         readSimpleField(

@@ -62,6 +62,7 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandType");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unitType)
     lengthInBits += 64;
@@ -93,6 +95,7 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String unitType = readSimpleField("unitType", readString(readBuffer, 64));
 

@@ -63,6 +63,7 @@ public class PanicStatus implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PanicStatus");
 
@@ -93,6 +94,7 @@ public class PanicStatus implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PanicStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (status)
     lengthInBits += 8;
@@ -117,6 +119,7 @@ public class PanicStatus implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
     boolean isNoPanic = readVirtualField("isNoPanic", boolean.class, (status) == (0x00));

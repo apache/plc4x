@@ -58,6 +58,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenHeartbeatPayload");
 
@@ -81,6 +82,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenHeartbeatPayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (state)
     lengthInBits += 8;
@@ -94,6 +96,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NMTState state =
         readEnumField(

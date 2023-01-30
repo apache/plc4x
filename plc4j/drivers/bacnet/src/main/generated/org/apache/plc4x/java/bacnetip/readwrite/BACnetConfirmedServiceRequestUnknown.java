@@ -66,6 +66,7 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestUnknown");
 
@@ -84,6 +85,7 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestUnknown _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (unknownBytes != null) {
@@ -101,6 +103,7 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] unknownBytes =
         readBuffer.readByteArray("unknownBytes", Math.toIntExact(serviceRequestPayloadLength));

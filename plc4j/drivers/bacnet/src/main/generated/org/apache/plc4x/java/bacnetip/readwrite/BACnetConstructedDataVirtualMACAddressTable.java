@@ -75,6 +75,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVirtualMACAddressTable");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVirtualMACAddressTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (virtualMacAddressTable != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVMACEntry> virtualMacAddressTable =
         readTerminatedArrayField(

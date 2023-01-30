@@ -74,6 +74,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLandingCalls");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLandingCalls _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (landingCallStatus != null) {
@@ -114,6 +116,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLandingCallStatus> landingCallStatus =
         readTerminatedArrayField(

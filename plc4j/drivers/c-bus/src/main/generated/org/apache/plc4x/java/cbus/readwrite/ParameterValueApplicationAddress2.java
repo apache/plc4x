@@ -68,6 +68,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueApplicationAddress2");
 
@@ -89,6 +90,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueApplicationAddress2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -107,6 +109,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("ApplicationAddress2 has exactly one byte");

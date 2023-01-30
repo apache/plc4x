@@ -66,6 +66,7 @@ public class BACnetGroupChannelValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetGroupChannelValue");
 
@@ -91,6 +92,7 @@ public class BACnetGroupChannelValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetGroupChannelValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channel)
     lengthInBits += channel.getLengthInBits();
@@ -117,6 +119,7 @@ public class BACnetGroupChannelValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger channel =
         readSimpleField(

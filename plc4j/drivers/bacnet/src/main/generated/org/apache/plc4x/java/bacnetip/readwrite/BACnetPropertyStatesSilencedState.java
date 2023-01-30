@@ -56,6 +56,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesSilencedState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesSilencedState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (silencedState)
     lengthInBits += silencedState.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSilencedStateTagged silencedState =
         readSimpleField(

@@ -111,6 +111,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadDiagnosticMessage");
 
@@ -147,6 +148,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadDiagnosticMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (EventId)
     lengthInBits += 16;
@@ -178,6 +180,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int EventId = readSimpleField("EventId", readUnsignedInt(readBuffer, 16));
 

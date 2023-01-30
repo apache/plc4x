@@ -73,6 +73,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequest");
 
@@ -109,6 +110,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiDiscoveryEndpoint)
     lengthInBits += hpaiDiscoveryEndpoint.getLengthInBits();
@@ -128,6 +130,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint =
         readSimpleField(

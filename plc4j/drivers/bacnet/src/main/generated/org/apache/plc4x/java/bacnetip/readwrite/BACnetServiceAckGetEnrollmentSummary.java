@@ -92,6 +92,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckGetEnrollmentSummary");
 
@@ -124,6 +125,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckGetEnrollmentSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -151,6 +153,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(

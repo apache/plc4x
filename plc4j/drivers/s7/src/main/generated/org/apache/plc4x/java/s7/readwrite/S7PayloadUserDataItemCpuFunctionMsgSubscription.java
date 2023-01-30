@@ -91,6 +91,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
 
@@ -127,6 +128,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionMsgSubscription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (Subscription)
     lengthInBits += 8;
@@ -156,6 +158,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short Subscription = readSimpleField("Subscription", readUnsignedShort(readBuffer, 8));
 

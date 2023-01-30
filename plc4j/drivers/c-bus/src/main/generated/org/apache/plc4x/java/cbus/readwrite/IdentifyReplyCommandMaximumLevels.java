@@ -62,6 +62,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandMaximumLevels");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandMaximumLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (maximumLevels != null) {
@@ -95,6 +97,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] maximumLevels = readBuffer.readByteArray("maximumLevels", Math.toIntExact(numBytes));
 

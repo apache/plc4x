@@ -60,6 +60,7 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
   protected void serializeErrorReportingSystemCategoryTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeInputUnits");
 
@@ -85,6 +86,7 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingSystemCategoryTypeInputUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryForType)
     lengthInBits += 4;
@@ -101,6 +103,7 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForInputUnits categoryForType =
         readEnumField(

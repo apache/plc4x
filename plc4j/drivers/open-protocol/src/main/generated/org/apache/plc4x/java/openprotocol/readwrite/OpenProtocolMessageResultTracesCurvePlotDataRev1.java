@@ -88,6 +88,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
   protected void serializeOpenProtocolMessageResultTracesCurvePlotDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageResultTracesCurvePlotDataRev1");
 
@@ -127,6 +128,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageResultTracesCurvePlotDataRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (resultDataIdentifier)
     lengthInBits += 80;
@@ -141,7 +143,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     if (dataFields != null) {
       int i = 0;
       for (VariableDataField element : dataFields) {
-        boolean last = ++i >= dataFields.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataFields.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -156,6 +158,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String resultDataIdentifier =
         readSimpleField(

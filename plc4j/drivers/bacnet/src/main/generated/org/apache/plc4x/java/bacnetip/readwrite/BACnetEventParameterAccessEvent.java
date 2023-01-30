@@ -78,6 +78,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterAccessEvent");
 
@@ -109,6 +110,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterAccessEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -131,6 +133,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(

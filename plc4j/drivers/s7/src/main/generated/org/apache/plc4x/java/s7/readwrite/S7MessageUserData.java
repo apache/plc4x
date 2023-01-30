@@ -49,6 +49,7 @@ public class S7MessageUserData extends S7Message implements Message {
   @Override
   protected void serializeS7MessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageUserData");
 
@@ -64,6 +65,7 @@ public class S7MessageUserData extends S7Message implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7MessageUserData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class S7MessageUserData extends S7Message implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7MessageUserData");
     // Create the instance

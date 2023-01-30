@@ -214,6 +214,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev2
   protected void serializeOpenProtocolMessageParameterSetDataUploadReplyChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetDataUploadReplyRev2");
 
@@ -401,6 +402,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev2
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageParameterSetDataUploadReplyRev2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (blockIdParameterSetId)
     lengthInBits += 16;
@@ -484,6 +486,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev2
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdParameterSetId =
         readConstField(

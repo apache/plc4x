@@ -109,6 +109,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
   @Override
   protected void serializeMonitoredSALChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALLongFormSmartMode");
 
@@ -171,6 +172,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredSALLongFormSmartMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -214,6 +216,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x05);
 

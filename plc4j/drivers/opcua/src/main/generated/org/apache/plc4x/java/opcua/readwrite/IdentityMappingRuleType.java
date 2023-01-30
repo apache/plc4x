@@ -64,6 +64,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentityMappingRuleType");
 
@@ -92,6 +93,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentityMappingRuleType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (criteriaType)
     lengthInBits += 32;
@@ -108,6 +110,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     IdentityCriteriaType criteriaType =
         readEnumField(

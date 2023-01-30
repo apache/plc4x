@@ -87,6 +87,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateResult");
 
@@ -117,6 +118,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryUpdateResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -128,7 +130,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     if (operationResults != null) {
       int i = 0;
       for (StatusCode element : operationResults) {
-        boolean last = ++i >= operationResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operationResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -154,6 +156,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(

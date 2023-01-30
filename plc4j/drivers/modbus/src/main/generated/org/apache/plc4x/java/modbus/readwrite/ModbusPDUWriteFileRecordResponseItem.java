@@ -70,6 +70,7 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteFileRecordResponseItem");
 
@@ -102,6 +103,7 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ModbusPDUWriteFileRecordResponseItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceType)
     lengthInBits += 8;
@@ -135,6 +137,7 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short referenceType = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8));
 

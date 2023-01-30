@@ -56,6 +56,7 @@ public abstract class StatusRequest implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequest");
 
@@ -74,6 +75,7 @@ public abstract class StatusRequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     StatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -91,6 +93,7 @@ public abstract class StatusRequest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte statusType = readPeekField("statusType", readByte(readBuffer, 8));
 

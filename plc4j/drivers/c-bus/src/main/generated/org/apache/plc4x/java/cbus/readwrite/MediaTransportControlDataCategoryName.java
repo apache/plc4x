@@ -59,6 +59,7 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataCategoryName");
 
@@ -80,6 +81,7 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataCategoryName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryName)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -94,6 +96,7 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String categoryName =
         readSimpleField(

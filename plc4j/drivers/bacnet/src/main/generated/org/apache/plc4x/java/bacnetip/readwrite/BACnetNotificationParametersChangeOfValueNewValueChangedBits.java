@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
   protected void serializeBACnetNotificationParametersChangeOfValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits");
 
@@ -83,6 +84,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfValueNewValueChangedBits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (changedBits)
     lengthInBits += changedBits.getLengthInBits();
@@ -97,6 +99,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString changedBits =
         readSimpleField(

@@ -91,6 +91,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
 
@@ -123,6 +124,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionReadSzlResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (szlId)
     lengthInBits += szlId.getLengthInBits();
@@ -140,7 +142,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     if (items != null) {
       int i = 0;
       for (SzlDataTreeItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -154,6 +156,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlId szlId =
         readSimpleField(

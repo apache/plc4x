@@ -78,6 +78,7 @@ public class BACnetConstructedDataActualShedLevel extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActualShedLevel");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataActualShedLevel extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActualShedLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (actualShedLevel)
     lengthInBits += actualShedLevel.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataActualShedLevel extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetShedLevel actualShedLevel =
         readSimpleField(

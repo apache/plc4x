@@ -79,6 +79,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationInterval");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeSynchronizationInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeSynchronization)
     lengthInBits += timeSynchronization.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger timeSynchronization =
         readSimpleField(

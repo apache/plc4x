@@ -78,6 +78,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAPDUTimeout");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAPDUTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (apduTimeout)
     lengthInBits += apduTimeout.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger apduTimeout =
         readSimpleField(

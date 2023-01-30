@@ -64,6 +64,7 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RelativePath");
 
@@ -85,6 +86,7 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RelativePath _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfElements)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     if (elements != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : elements) {
-        boolean last = ++i >= elements.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elements.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfElements = readSimpleField("noOfElements", readSignedInt(readBuffer, 32));
 

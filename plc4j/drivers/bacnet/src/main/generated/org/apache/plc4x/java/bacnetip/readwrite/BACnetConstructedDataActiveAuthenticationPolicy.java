@@ -79,6 +79,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveAuthenticationPolicy");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActiveAuthenticationPolicy _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (activeAuthenticationPolicy)
     lengthInBits += activeAuthenticationPolicy.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy =
         readSimpleField(

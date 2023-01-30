@@ -79,6 +79,7 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarAssignedDirection");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCarAssignedDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (assignedDirection)
     lengthInBits += assignedDirection.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged assignedDirection =
         readSimpleField(

@@ -79,6 +79,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaintenanceRequired");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaintenanceRequired _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maintenanceRequired)
     lengthInBits += maintenanceRequired.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetMaintenanceTagged maintenanceRequired =
         readSimpleField(

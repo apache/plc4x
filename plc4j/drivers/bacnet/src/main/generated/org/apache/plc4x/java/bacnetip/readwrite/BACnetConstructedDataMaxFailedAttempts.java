@@ -79,6 +79,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxFailedAttempts");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaxFailedAttempts _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxFailedAttempts)
     lengthInBits += maxFailedAttempts.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxFailedAttempts =
         readSimpleField(

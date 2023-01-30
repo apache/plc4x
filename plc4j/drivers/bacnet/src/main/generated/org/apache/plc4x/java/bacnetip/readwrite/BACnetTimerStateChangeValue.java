@@ -69,6 +69,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValue");
 
@@ -95,6 +96,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTimerStateChangeValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -132,6 +134,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(

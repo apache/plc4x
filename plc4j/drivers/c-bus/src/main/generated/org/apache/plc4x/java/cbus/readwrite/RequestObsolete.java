@@ -76,6 +76,7 @@ public class RequestObsolete extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestObsolete");
 
@@ -106,6 +107,7 @@ public class RequestObsolete extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestObsolete _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Field (calData)
     lengthInBits += (((calData.getLengthInBytes()) * (2))) * (8);
@@ -126,6 +128,7 @@ public class RequestObsolete extends Request implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CALData calData =
         readManualField(

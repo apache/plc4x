@@ -56,6 +56,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
   protected void serializeBACnetOptionalREALChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalREALNull");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalREALNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(

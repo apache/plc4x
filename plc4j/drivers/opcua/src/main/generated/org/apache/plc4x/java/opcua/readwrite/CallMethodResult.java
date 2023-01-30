@@ -101,6 +101,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallMethodResult");
 
@@ -142,6 +143,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CallMethodResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -153,7 +155,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     if (inputArgumentResults != null) {
       int i = 0;
       for (StatusCode element : inputArgumentResults) {
-        boolean last = ++i >= inputArgumentResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= inputArgumentResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -165,7 +167,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     if (inputArgumentDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : inputArgumentDiagnosticInfos) {
-        boolean last = ++i >= inputArgumentDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= inputArgumentDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -177,7 +179,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     if (outputArguments != null) {
       int i = 0;
       for (Variant element : outputArguments) {
-        boolean last = ++i >= outputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= outputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -191,6 +193,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(

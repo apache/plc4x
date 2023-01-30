@@ -65,6 +65,7 @@ public class OpenProtocolMessageEnableToolRev1 extends OpenProtocolMessageEnable
   protected void serializeOpenProtocolMessageEnableToolChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageEnableToolRev1");
 
@@ -80,6 +81,7 @@ public class OpenProtocolMessageEnableToolRev1 extends OpenProtocolMessageEnable
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageEnableToolRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -91,6 +93,7 @@ public class OpenProtocolMessageEnableToolRev1 extends OpenProtocolMessageEnable
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageEnableToolRev1");
     // Create the instance

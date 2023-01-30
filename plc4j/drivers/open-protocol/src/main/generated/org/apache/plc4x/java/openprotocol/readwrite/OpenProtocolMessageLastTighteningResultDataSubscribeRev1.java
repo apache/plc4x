@@ -65,6 +65,7 @@ public class OpenProtocolMessageLastTighteningResultDataSubscribeRev1
   protected void serializeOpenProtocolMessageLastTighteningResultDataSubscribeChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLastTighteningResultDataSubscribeRev1");
 
@@ -80,6 +81,7 @@ public class OpenProtocolMessageLastTighteningResultDataSubscribeRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageLastTighteningResultDataSubscribeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -91,6 +93,7 @@ public class OpenProtocolMessageLastTighteningResultDataSubscribeRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageLastTighteningResultDataSubscribeRev1");
     // Create the instance

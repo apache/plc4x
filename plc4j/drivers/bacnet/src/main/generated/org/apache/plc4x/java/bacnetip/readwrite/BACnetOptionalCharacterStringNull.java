@@ -57,6 +57,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
   protected void serializeBACnetOptionalCharacterStringChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalCharacterStringNull");
 
@@ -75,6 +76,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalCharacterStringNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(

@@ -65,6 +65,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckRequestKey");
 
@@ -84,6 +85,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckRequestKey _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bytesOfRemovedService != null) {
@@ -100,6 +102,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =
         readBuffer.readByteArray("bytesOfRemovedService", Math.toIntExact(serviceAckPayloadLength));

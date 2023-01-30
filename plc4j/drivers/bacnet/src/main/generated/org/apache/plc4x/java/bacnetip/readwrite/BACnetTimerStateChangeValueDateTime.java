@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueDateTime");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueDateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateTimeValue)
     lengthInBits += dateTimeValue.getLengthInBits();
@@ -94,6 +96,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(

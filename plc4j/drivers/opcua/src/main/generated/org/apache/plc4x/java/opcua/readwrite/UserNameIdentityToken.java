@@ -71,6 +71,7 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
   protected void serializeUserIdentityTokenDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserNameIdentityToken");
 
@@ -96,6 +97,7 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UserNameIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (userName)
     lengthInBits += userName.getLengthInBits();
@@ -115,6 +117,7 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString userName =
         readSimpleField(

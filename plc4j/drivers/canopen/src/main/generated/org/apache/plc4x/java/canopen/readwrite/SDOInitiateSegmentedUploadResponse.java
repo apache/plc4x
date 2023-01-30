@@ -63,6 +63,7 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
   protected void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateSegmentedUploadResponse");
 
@@ -81,6 +82,7 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateSegmentedUploadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bytes)
     lengthInBits += 32;
@@ -96,6 +98,7 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long bytes = readSimpleField("bytes", readUnsignedLong(readBuffer, 32));
 

@@ -65,6 +65,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleError");
 
@@ -89,6 +90,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscribeCOVPropertyMultipleError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -105,6 +107,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(

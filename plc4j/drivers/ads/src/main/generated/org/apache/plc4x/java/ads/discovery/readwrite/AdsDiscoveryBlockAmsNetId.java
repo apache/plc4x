@@ -65,6 +65,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockAmsNetId");
 
@@ -86,6 +87,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockAmsNetId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (amsNetIdLength)
     lengthInBits += 16;
@@ -102,6 +104,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int amsNetIdLength =
         readConstField(

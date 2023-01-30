@@ -49,6 +49,7 @@ public abstract class CEMIAdditionalInformation implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMIAdditionalInformation");
 
@@ -73,6 +74,7 @@ public abstract class CEMIAdditionalInformation implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CEMIAdditionalInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (additionalInformationType)
     lengthInBits += 8;
@@ -93,6 +95,7 @@ public abstract class CEMIAdditionalInformation implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short additionalInformationType =
         readDiscriminatorField("additionalInformationType", readUnsignedShort(readBuffer, 8));

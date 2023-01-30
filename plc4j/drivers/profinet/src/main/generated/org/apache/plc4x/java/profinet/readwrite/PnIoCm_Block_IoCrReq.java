@@ -193,6 +193,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_IoCrReq");
 
@@ -372,6 +373,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_IoCrReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ioCrType)
     lengthInBits += 16;
@@ -443,7 +445,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     if (apis != null) {
       int i = 0;
       for (PnIoCm_IoCrBlockReqApi element : apis) {
-        boolean last = ++i >= apis.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= apis.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -457,6 +459,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnIoCm_IoCrType ioCrType =
         readEnumField(

@@ -56,6 +56,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
   protected void serializeBACnetOptionalREALChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalREALValue");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalREALValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(

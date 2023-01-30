@@ -79,6 +79,7 @@ public class ReplyEncodedReply extends Reply implements Message {
   @Override
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyEncodedReply");
 
@@ -118,6 +119,7 @@ public class ReplyEncodedReply extends Reply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReplyEncodedReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Field (encodedReply)
     lengthInBits += (((encodedReply.getLengthInBytes()) * (2))) * (8);
@@ -139,6 +141,7 @@ public class ReplyEncodedReply extends Reply implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     EncodedReply encodedReply =
         readManualField(

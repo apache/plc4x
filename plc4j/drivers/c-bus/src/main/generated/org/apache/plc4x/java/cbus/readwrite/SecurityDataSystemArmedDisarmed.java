@@ -57,6 +57,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataSystemArmedDisarmed");
 
@@ -75,6 +76,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataSystemArmedDisarmed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (armCodeType)
     lengthInBits += armCodeType.getLengthInBits();
@@ -88,6 +90,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityArmCode armCodeType =
         readSimpleField(

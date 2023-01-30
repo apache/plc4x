@@ -78,6 +78,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInstanceOf");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInstanceOf _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (instanceOf)
     lengthInBits += instanceOf.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString instanceOf =
         readSimpleField(

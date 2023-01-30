@@ -74,6 +74,7 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
   protected void serializeOpenProtocolMessageProgramPsetSelectionInDynamicJobChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1");
 
@@ -96,6 +97,7 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parameterSetId)
     lengthInBits += 24;
@@ -110,6 +112,7 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =
         readSimpleField(

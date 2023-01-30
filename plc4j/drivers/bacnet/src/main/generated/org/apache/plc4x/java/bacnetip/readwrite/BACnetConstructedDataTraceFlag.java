@@ -78,6 +78,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTraceFlag");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTraceFlag _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (traceFlag)
     lengthInBits += traceFlag.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean traceFlag =
         readSimpleField(

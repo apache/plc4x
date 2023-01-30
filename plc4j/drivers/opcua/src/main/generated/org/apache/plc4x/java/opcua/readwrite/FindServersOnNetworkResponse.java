@@ -80,6 +80,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkResponse");
 
@@ -108,6 +109,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FindServersOnNetworkResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -122,7 +124,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     if (servers != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : servers) {
-        boolean last = ++i >= servers.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= servers.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -136,6 +138,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

@@ -75,6 +75,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZoneFaultValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLifeSafetyZoneFaultValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultValues != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLifeSafetyStateTagged> faultValues =
         readTerminatedArrayField(

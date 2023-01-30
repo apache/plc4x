@@ -94,6 +94,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryReadRequest");
 
@@ -139,6 +140,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -162,7 +164,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     if (nodesToRead != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToRead) {
-        boolean last = ++i >= nodesToRead.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToRead.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -176,6 +178,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

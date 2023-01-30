@@ -75,6 +75,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSupportedSecurityAlgorithms");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSupportedSecurityAlgorithms _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (supportedSecurityAlgorithms != null) {
@@ -116,6 +118,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms =
         readTerminatedArrayField(

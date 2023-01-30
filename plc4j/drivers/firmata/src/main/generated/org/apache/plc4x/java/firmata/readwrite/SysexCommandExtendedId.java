@@ -61,6 +61,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandExtendedId");
 
@@ -79,6 +80,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandExtendedId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (id != null) {
@@ -94,6 +96,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Byte> id = readCountArrayField("id", readSignedByte(readBuffer, 8), 2);
 

@@ -102,6 +102,7 @@ public class LDataExtended extends LDataFrame implements Message {
   @Override
   protected void serializeLDataFrameChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataExtended");
 
@@ -140,6 +141,7 @@ public class LDataExtended extends LDataFrame implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LDataExtended _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupAddress)
     lengthInBits += 1;
@@ -173,6 +175,7 @@ public class LDataExtended extends LDataFrame implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean groupAddress = readSimpleField("groupAddress", readBoolean(readBuffer));
 

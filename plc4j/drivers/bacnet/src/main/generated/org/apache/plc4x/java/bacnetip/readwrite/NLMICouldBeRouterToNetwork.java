@@ -68,6 +68,7 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMICouldBeRouterToNetwork");
 
@@ -90,6 +91,7 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMICouldBeRouterToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (destinationNetworkAddress)
     lengthInBits += 16;
@@ -106,6 +108,7 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int destinationNetworkAddress =
         readSimpleField("destinationNetworkAddress", readUnsignedInt(readBuffer, 16));
