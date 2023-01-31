@@ -17,14 +17,18 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== Profinet
+== Profinet (In Development)
+
+The PROFINET driver implements a class 3 real time controller. Which is able to communicate with multiple devices
+on the same network segment.
+
 === Connection String Options
 
-On linux as the Java execuatble won't have permission to capture raw packets, this needs to be enabled via:-
+On linux as the Java executable won't have permission to capture raw packets, this needs to be enabled via:-
 ----
 sudo setcap cap_net_raw,cap_net_admin=eip /usr/lib/jvm/jdk-19/bin/java
 ----
-The executable will change based on your jdk you are using.
+The executable will change based on the jdk and OS you are using.
 
 
 [cols="2,2a,5a"]
@@ -81,7 +85,7 @@ For each available slot specified in the GSD file a submodule needs to be in the
 
 If there is no submodule configured.
 
-|| `gsddirectory`  |   The directory that is used to store any GSD files. This is used to lookup the GSD for device found.
+|| `gsddirectory`  |   The directory that is used to store any GSD files. This is used to look up the GSD for device found.
 || `sendclockfactor`  |   (Default 32) This is used to scale the frequency in which cyclic packets are sent. Increasing this slows down communication
 || `reductionratio`  |   (Default 4) Is also used to scale the frequency. The formula to calculate the overall cycle time is Cycle Time = SendClockFactor * Reduction Ratio * 31.23us
 || `watchdogfactor`  |   Used to specify the maximum number of cycles that is allowed to be missed by a device. An alarm is generated if this is exceeded
