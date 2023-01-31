@@ -553,8 +553,7 @@
             [array    byte        deviceVendorValue count 'blockLength-2'             ]
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", deviceVendorValue) % 2']
         ]
-        ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 blockLength)
-            [reserved uint 16     '0x0000'                                            ]
+        ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 blockLength)                                                      ]
             [array    byte        nameOfStation count 'blockLength-2'                 ]
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", nameOfStation) % 2']
         ]

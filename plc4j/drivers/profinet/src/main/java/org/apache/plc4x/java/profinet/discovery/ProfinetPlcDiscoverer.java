@@ -308,7 +308,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                     Collections.singletonList(
                                         new PnDcp_Block_ALLSelector()
                                     )))));
-                    WriteBufferByteBased buffer = new WriteBufferByteBased(34);
+                    WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
                     try {
                         identificationRequest.serialize(buffer);
                     } catch (SerializationException e) {
@@ -316,15 +316,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     }
                     Packet packet = null;
                     try {
-                        packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
+                        packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                     } catch (IllegalRawDataException e) {
                         throw new RuntimeException(e);
                     }
                     try {
                         handle.sendPacket(packet);
-                    } catch (PcapNativeException e) {
-                        throw new RuntimeException(e);
-                    } catch (NotOpenException e) {
+                    } catch (PcapNativeException | NotOpenException e) {
                         throw new RuntimeException(e);
                     }
                     return null;
