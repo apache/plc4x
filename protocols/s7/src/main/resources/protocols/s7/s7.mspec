@@ -240,7 +240,6 @@
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 //@param hasNext In the serialization process, if you have multiple write
 //               requests the last element does not require padding.
-
 [type S7VarPayloadDataItem(bit  'hasNext')
     [simple   DataTransportErrorCode returnCode]
     [simple   DataTransportSize      transportSize]

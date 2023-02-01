@@ -104,7 +104,10 @@ public class S7VarPayloadDataItem implements Message {
 
     // Padding Field (padding)
     writePaddingField(
-        "padding", (int) (((COUNT(data)) % (2))), (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+        "padding",
+        (int) (((PADCOUNT(data, hasNext)) % (2))),
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7VarPayloadDataItem");
   }
@@ -134,7 +137,7 @@ public class S7VarPayloadDataItem implements Message {
     }
 
     // Padding Field (padding)
-    int _timesPadding = (int) (((COUNT(data)) % (2)));
+    int _timesPadding = (int) (((PADCOUNT(data, hasNext)) % (2)));
     while (_timesPadding-- > 0) {
       lengthInBits += 8;
     }
