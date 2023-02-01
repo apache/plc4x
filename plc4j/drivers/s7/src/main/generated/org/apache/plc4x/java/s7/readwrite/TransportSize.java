@@ -281,7 +281,7 @@ public enum TransportSize {
       (short) 4,
       (boolean) true,
       (boolean) true,
-      (short) 'X',
+      (short) 'D',
       (boolean) true,
       null,
       (String) "IEC61131_TIME",

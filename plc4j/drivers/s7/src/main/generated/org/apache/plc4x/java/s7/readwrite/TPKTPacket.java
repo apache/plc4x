@@ -43,6 +43,9 @@ public class TPKTPacket implements Message {
   // Properties.
   protected final COTPPacket payload;
 
+  // Reserved Fields
+  private Short reservedField0;
+
   public TPKTPacket(COTPPacket payload) {
     super();
     this.payload = payload;
@@ -71,7 +74,7 @@ public class TPKTPacket implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (short) 0x00,
+        reservedField0 != null ? reservedField0 : (short) 0x00,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -160,6 +163,7 @@ public class TPKTPacket implements Message {
     // Create the instance
     TPKTPacket _tPKTPacket;
     _tPKTPacket = new TPKTPacket(payload);
+    _tPKTPacket.reservedField0 = reservedField0;
     return _tPKTPacket;
   }
 

@@ -47,16 +47,21 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
   protected final int sourceReference;
   protected final COTPProtocolClass protocolClass;
 
+  // Arguments.
+  protected final Integer cotpLen;
+
   public COTPPacketConnectionResponse(
       List<COTPParameter> parameters,
       S7Message payload,
       int destinationReference,
       int sourceReference,
-      COTPProtocolClass protocolClass) {
-    super(parameters, payload);
+      COTPProtocolClass protocolClass,
+      Integer cotpLen) {
+    super(parameters, payload, cotpLen);
     this.destinationReference = destinationReference;
     this.sourceReference = sourceReference;
     this.protocolClass = protocolClass;
+    this.cotpLen = cotpLen;
   }
 
   public int getDestinationReference() {
@@ -141,7 +146,7 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
     readBuffer.closeContext("COTPPacketConnectionResponse");
     // Create the instance
     return new COTPPacketConnectionResponseBuilderImpl(
-        destinationReference, sourceReference, protocolClass);
+        destinationReference, sourceReference, protocolClass, cotpLen);
   }
 
   public static class COTPPacketConnectionResponseBuilderImpl
@@ -149,18 +154,24 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
     private final int destinationReference;
     private final int sourceReference;
     private final COTPProtocolClass protocolClass;
+    private final Integer cotpLen;
 
     public COTPPacketConnectionResponseBuilderImpl(
-        int destinationReference, int sourceReference, COTPProtocolClass protocolClass) {
+        int destinationReference,
+        int sourceReference,
+        COTPProtocolClass protocolClass,
+        Integer cotpLen) {
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
       this.protocolClass = protocolClass;
+      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketConnectionResponse build(List<COTPParameter> parameters, S7Message payload) {
+    public COTPPacketConnectionResponse build(
+        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
       COTPPacketConnectionResponse cOTPPacketConnectionResponse =
           new COTPPacketConnectionResponse(
-              parameters, payload, destinationReference, sourceReference, protocolClass);
+              parameters, payload, destinationReference, sourceReference, protocolClass, cotpLen);
       return cOTPPacketConnectionResponse;
     }
   }

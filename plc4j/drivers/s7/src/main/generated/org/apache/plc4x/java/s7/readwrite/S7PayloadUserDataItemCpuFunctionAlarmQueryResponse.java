@@ -59,6 +59,9 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
   protected final DataTransportErrorCode pudicfReturnCode;
   protected final DataTransportSize pudicftransportSize;
 
+  // Reserved Fields
+  private Short reservedField0;
+
   public S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
@@ -119,7 +122,10 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
             writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
   }
@@ -191,18 +197,22 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     // Create the instance
     return new S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
-        pudicfReturnCode, pudicftransportSize);
+        pudicfReturnCode, pudicftransportSize, reservedField0);
   }
 
   public static class S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final DataTransportErrorCode pudicfReturnCode;
     private final DataTransportSize pudicftransportSize;
+    private final Short reservedField0;
 
     public S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
-        DataTransportErrorCode pudicfReturnCode, DataTransportSize pudicftransportSize) {
+        DataTransportErrorCode pudicfReturnCode,
+        DataTransportSize pudicftransportSize,
+        Short reservedField0) {
       this.pudicfReturnCode = pudicfReturnCode;
       this.pudicftransportSize = pudicftransportSize;
+      this.reservedField0 = reservedField0;
     }
 
     public S7PayloadUserDataItemCpuFunctionAlarmQueryResponse build(
@@ -211,6 +221,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
           s7PayloadUserDataItemCpuFunctionAlarmQueryResponse =
               new S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(
                   returnCode, transportSize, pudicfReturnCode, pudicftransportSize);
+      s7PayloadUserDataItemCpuFunctionAlarmQueryResponse.reservedField0 = reservedField0;
       return s7PayloadUserDataItemCpuFunctionAlarmQueryResponse;
     }
   }

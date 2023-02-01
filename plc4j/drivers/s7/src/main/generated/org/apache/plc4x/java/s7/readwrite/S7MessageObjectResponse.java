@@ -46,6 +46,9 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
   protected final DataTransportErrorCode returnCode;
   protected final DataTransportSize transportSize;
 
+  // Reserved Fields
+  private Short reservedField0;
+
   public S7MessageObjectResponse(
       DataTransportErrorCode returnCode, DataTransportSize transportSize) {
     super();
@@ -89,7 +92,10 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
             writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7MessageObjectResponse");
   }
@@ -142,23 +148,26 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
 
     readBuffer.closeContext("S7MessageObjectResponse");
     // Create the instance
-    return new S7MessageObjectResponseBuilderImpl(returnCode, transportSize);
+    return new S7MessageObjectResponseBuilderImpl(returnCode, transportSize, reservedField0);
   }
 
   public static class S7MessageObjectResponseBuilderImpl
       implements S7DataAlarmMessage.S7DataAlarmMessageBuilder {
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize transportSize;
+    private final Short reservedField0;
 
     public S7MessageObjectResponseBuilderImpl(
-        DataTransportErrorCode returnCode, DataTransportSize transportSize) {
+        DataTransportErrorCode returnCode, DataTransportSize transportSize, Short reservedField0) {
       this.returnCode = returnCode;
       this.transportSize = transportSize;
+      this.reservedField0 = reservedField0;
     }
 
     public S7MessageObjectResponse build() {
       S7MessageObjectResponse s7MessageObjectResponse =
           new S7MessageObjectResponse(returnCode, transportSize);
+      s7MessageObjectResponse.reservedField0 = reservedField0;
       return s7MessageObjectResponse;
     }
   }

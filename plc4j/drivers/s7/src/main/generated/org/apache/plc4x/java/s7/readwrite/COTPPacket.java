@@ -44,10 +44,14 @@ public abstract class COTPPacket implements Message {
   protected final List<COTPParameter> parameters;
   protected final S7Message payload;
 
-  public COTPPacket(List<COTPParameter> parameters, S7Message payload) {
+  // Arguments.
+  protected final Integer cotpLen;
+
+  public COTPPacket(List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
     super();
     this.parameters = parameters;
     this.payload = payload;
+    this.cotpLen = cotpLen;
   }
 
   public List<COTPParameter> getParameters() {
@@ -85,7 +89,11 @@ public abstract class COTPPacket implements Message {
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField(
+        "payload",
+        payload,
+        new DataWriterComplexDefault<>(writeBuffer),
+        ((positionAware.getPos() - startPos)) < (cotpLen));
 
     writeBuffer.popContext("COTPPacket");
   }
@@ -197,12 +205,12 @@ public abstract class COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacket");
     // Create the instance
-    COTPPacket _cOTPPacket = builder.build(parameters, payload);
+    COTPPacket _cOTPPacket = builder.build(parameters, payload, cotpLen);
     return _cOTPPacket;
   }
 
   public interface COTPPacketBuilder {
-    COTPPacket build(List<COTPParameter> parameters, S7Message payload);
+    COTPPacket build(List<COTPParameter> parameters, S7Message payload, Integer cotpLen);
   }
 
   @Override

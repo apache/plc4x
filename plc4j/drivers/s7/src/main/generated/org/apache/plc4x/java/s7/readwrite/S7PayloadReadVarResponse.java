@@ -49,9 +49,13 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadDataItem> items;
 
-  public S7PayloadReadVarResponse(List<S7VarPayloadDataItem> items) {
-    super();
+  // Arguments.
+  protected final S7Parameter parameter;
+
+  public S7PayloadReadVarResponse(List<S7VarPayloadDataItem> items, S7Parameter parameter) {
+    super(parameter);
     this.items = items;
+    this.parameter = parameter;
   }
 
   public List<S7VarPayloadDataItem> getItems() {
@@ -103,23 +107,28 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
         readCountArrayField(
             "items",
             new DataReaderComplexDefault<>(
-                () -> S7VarPayloadDataItem.staticParse(readBuffer), readBuffer),
+                () -> S7VarPayloadDataItem.staticParse(readBuffer, (boolean) (true)), readBuffer),
             CAST(parameter, S7ParameterReadVarResponse.class).getNumItems());
 
     readBuffer.closeContext("S7PayloadReadVarResponse");
     // Create the instance
-    return new S7PayloadReadVarResponseBuilderImpl(items);
+    return new S7PayloadReadVarResponseBuilderImpl(items, parameter);
   }
 
   public static class S7PayloadReadVarResponseBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadDataItem> items;
+    private final S7Parameter parameter;
 
-    public S7PayloadReadVarResponseBuilderImpl(List<S7VarPayloadDataItem> items) {
+    public S7PayloadReadVarResponseBuilderImpl(
+        List<S7VarPayloadDataItem> items, S7Parameter parameter) {
       this.items = items;
+      this.parameter = parameter;
     }
 
-    public S7PayloadReadVarResponse build() {
-      S7PayloadReadVarResponse s7PayloadReadVarResponse = new S7PayloadReadVarResponse(items);
+    public S7PayloadReadVarResponse build(S7Parameter parameter) {
+
+      S7PayloadReadVarResponse s7PayloadReadVarResponse =
+          new S7PayloadReadVarResponse(items, parameter);
       return s7PayloadReadVarResponse;
     }
   }

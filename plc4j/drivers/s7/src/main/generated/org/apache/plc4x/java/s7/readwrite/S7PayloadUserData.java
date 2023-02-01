@@ -49,9 +49,13 @@ public class S7PayloadUserData extends S7Payload implements Message {
   // Properties.
   protected final List<S7PayloadUserDataItem> items;
 
-  public S7PayloadUserData(List<S7PayloadUserDataItem> items) {
-    super();
+  // Arguments.
+  protected final S7Parameter parameter;
+
+  public S7PayloadUserData(List<S7PayloadUserDataItem> items, S7Parameter parameter) {
+    super(parameter);
     this.items = items;
+    this.parameter = parameter;
   }
 
   public List<S7PayloadUserDataItem> getItems() {
@@ -121,18 +125,21 @@ public class S7PayloadUserData extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadUserData");
     // Create the instance
-    return new S7PayloadUserDataBuilderImpl(items);
+    return new S7PayloadUserDataBuilderImpl(items, parameter);
   }
 
   public static class S7PayloadUserDataBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7PayloadUserDataItem> items;
+    private final S7Parameter parameter;
 
-    public S7PayloadUserDataBuilderImpl(List<S7PayloadUserDataItem> items) {
+    public S7PayloadUserDataBuilderImpl(List<S7PayloadUserDataItem> items, S7Parameter parameter) {
       this.items = items;
+      this.parameter = parameter;
     }
 
-    public S7PayloadUserData build() {
-      S7PayloadUserData s7PayloadUserData = new S7PayloadUserData(items);
+    public S7PayloadUserData build(S7Parameter parameter) {
+
+      S7PayloadUserData s7PayloadUserData = new S7PayloadUserData(items, parameter);
       return s7PayloadUserData;
     }
   }

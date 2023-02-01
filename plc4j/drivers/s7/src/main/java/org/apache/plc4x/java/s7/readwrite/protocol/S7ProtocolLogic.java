@@ -298,7 +298,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Create a new Request with correct tpuId (is not known before)
         S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
 
-        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, s7MessageRequest, true, (short) tpduId));
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, s7MessageRequest, true, (short) tpduId, 9999));
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
@@ -358,10 +358,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 null,
                 new S7MessageRequest(tpduId,
                     new S7ParameterWriteVarRequest(parameterItems),
-                    new S7PayloadWriteVarRequest(payloadItems)
+                    new S7PayloadWriteVarRequest(payloadItems, null)
                 ),
                 true,
-                (short) tpduId
+                (short) tpduId, 9999
             )
         );
         
@@ -434,8 +434,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageUserData(tpduId,
                 new S7ParameterUserData(parameterItems),
-                new S7PayloadUserData(payloadItems)),
-            true, (short) tpduId));
+                new S7PayloadUserData(payloadItems, null)),
+            true, (short) tpduId, 9999));
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -734,8 +734,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
         )), new S7PayloadUserData(Collections.singletonList(
             new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-        )));
-        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
+        ), null));
+        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2, 9999);
         return new TPKTPacket(cotpPacketData);
     }
 
@@ -763,18 +763,19 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7ParameterSetupCommunication(
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
-            null);
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+            null);       
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1, 9999);
+
         return new TPKTPacket(cotpPacketData);
     }
 
     private COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
         return new COTPPacketConnectionRequest(
             Arrays.asList(
-                new COTPParameterCallingTsap(callingTsapId),
-                new COTPParameterCalledTsap(calledTsapId),
-                new COTPParameterTpduSize(cotpTpduSize)
-            ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
+                new COTPParameterCallingTsap(callingTsapId,(short) 0),
+                new COTPParameterCalledTsap(calledTsapId, (short) 0),
+                new COTPParameterTpduSize(cotpTpduSize, (short) 0)
+            ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0, 0);
     }
 
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
@@ -931,7 +932,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
             if (byteBuffer != null) {
                 byte[] data = byteBuffer.array();
-                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data/*, hasNext*/);
+                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data, hasNext);
             }
         } catch (SerializationException e) {
             logger.warn("Error serializing tag item of type: '{}'", tag.getDataType().name(), e);

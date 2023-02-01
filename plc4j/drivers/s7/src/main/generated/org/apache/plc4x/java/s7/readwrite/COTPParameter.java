@@ -40,8 +40,12 @@ public abstract class COTPParameter implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getParameterType();
 
-  public COTPParameter() {
+  // Arguments.
+  protected final Short rest;
+
+  public COTPParameter(Short rest) {
     super();
+    this.rest = rest;
   }
 
   protected abstract void serializeCOTPParameterChild(WriteBuffer writeBuffer)
@@ -144,12 +148,13 @@ public abstract class COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameter");
     // Create the instance
-    COTPParameter _cOTPParameter = builder.build();
+    COTPParameter _cOTPParameter = builder.build(rest);
+
     return _cOTPParameter;
   }
 
   public interface COTPParameterBuilder {
-    COTPParameter build();
+    COTPParameter build(Short rest);
   }
 
   @Override

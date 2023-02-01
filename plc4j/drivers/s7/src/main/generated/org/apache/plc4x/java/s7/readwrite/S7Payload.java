@@ -42,8 +42,12 @@ public abstract class S7Payload implements Message {
 
   public abstract Short getParameterParameterType();
 
-  public S7Payload() {
+  // Arguments.
+  protected final S7Parameter parameter;
+
+  public S7Payload(S7Parameter parameter) {
     super();
+    this.parameter = parameter;
   }
 
   protected abstract void serializeS7PayloadChild(WriteBuffer writeBuffer)
@@ -141,12 +145,13 @@ public abstract class S7Payload implements Message {
 
     readBuffer.closeContext("S7Payload");
     // Create the instance
-    S7Payload _s7Payload = builder.build();
+    S7Payload _s7Payload = builder.build(parameter);
+
     return _s7Payload;
   }
 
   public interface S7PayloadBuilder {
-    S7Payload build();
+    S7Payload build(S7Parameter parameter);
   }
 
   @Override

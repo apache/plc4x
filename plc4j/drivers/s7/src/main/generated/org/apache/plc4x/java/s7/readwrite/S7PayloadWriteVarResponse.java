@@ -49,9 +49,13 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadStatusItem> items;
 
-  public S7PayloadWriteVarResponse(List<S7VarPayloadStatusItem> items) {
-    super();
+  // Arguments.
+  protected final S7Parameter parameter;
+
+  public S7PayloadWriteVarResponse(List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
+    super(parameter);
     this.items = items;
+    this.parameter = parameter;
   }
 
   public List<S7VarPayloadStatusItem> getItems() {
@@ -108,18 +112,23 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadWriteVarResponse");
     // Create the instance
-    return new S7PayloadWriteVarResponseBuilderImpl(items);
+    return new S7PayloadWriteVarResponseBuilderImpl(items, parameter);
   }
 
   public static class S7PayloadWriteVarResponseBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadStatusItem> items;
+    private final S7Parameter parameter;
 
-    public S7PayloadWriteVarResponseBuilderImpl(List<S7VarPayloadStatusItem> items) {
+    public S7PayloadWriteVarResponseBuilderImpl(
+        List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
       this.items = items;
+      this.parameter = parameter;
     }
 
-    public S7PayloadWriteVarResponse build() {
-      S7PayloadWriteVarResponse s7PayloadWriteVarResponse = new S7PayloadWriteVarResponse(items);
+    public S7PayloadWriteVarResponse build(S7Parameter parameter) {
+
+      S7PayloadWriteVarResponse s7PayloadWriteVarResponse =
+          new S7PayloadWriteVarResponse(items, parameter);
       return s7PayloadWriteVarResponse;
     }
   }

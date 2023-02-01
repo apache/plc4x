@@ -100,11 +100,11 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
                     // Prepare a response and send it back to the remote.
                     List<COTPParameter> parameters = new ArrayList<>();
-                    parameters.add(new COTPParameterCalledTsap(remoteTsapId));
-                    parameters.add(new COTPParameterCallingTsap(localTsapId));
-                    parameters.add(new COTPParameterTpduSize(tpduSize));
+                    parameters.add(new COTPParameterCalledTsap(remoteTsapId, (short) 0));
+                    parameters.add(new COTPParameterCallingTsap(localTsapId, (short) 0));
+                    parameters.add(new COTPParameterTpduSize(tpduSize, (short) 0));
                     COTPPacketConnectionResponse response = new COTPPacketConnectionResponse(
-                        parameters, null, remoteReference, localReference, protocolClass
+                        parameters, null, remoteReference, localReference, protocolClass, 0
                     );
                     ctx.writeAndFlush(new TPKTPacket(response));
 
@@ -143,7 +143,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                     // TODO should send S7MessageResponseData
                     S7MessageResponseData s7MessageResponse = new S7MessageResponseData(
                         s7TpduReference, s7ParameterSetupCommunicationResponse, null, (short) 0, (short) 0);
-                    ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef)));
+                    ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef, 0)));
 
                     state = State.S7_CONNECTED;
                     break;
@@ -204,11 +204,11 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                 List<S7PayloadUserDataItem> responsePayloadItems = new ArrayList<>();
                                                 responsePayloadItems.add(readSzlResponsePayload);
                                                 S7PayloadUserData responsePayloadUserData =
-                                                    new S7PayloadUserData(responsePayloadItems);
+                                                    new S7PayloadUserData(responsePayloadItems, null);
 
                                                 S7Message s7ResponseMessage = new S7MessageUserData(s7TpduReference,
                                                     responseParameterUserData, responsePayloadUserData);
-                                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef)));
+                                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef, 0)));
                                             } else {
                                                 LOGGER.error("Not able to respond to the given request Read SZL with SZL type class " +
                                                     szlId.getTypeClass().name() + " and SZL sublist " + szlId.getSublistList().name());
@@ -254,7 +254,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                     final byte bitAddress = addressAny.getBitAddress();
                                                     switch (addressAny.getTransportSize()) {
                                                         case BOOL:
-                                                            payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BIT, new byte[]{1}));
+                                                        payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BIT, new byte[]{1}, true));
                                                             break;
                                                         case INT:
                                                         case UINT: {
@@ -264,7 +264,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                             byte[] data = new byte[2];
                                                             data[1] = (byte) (shortValue & 0xff);
                                                             data[0] = (byte) ((shortValue >> 8) & 0xff);
-                                                            payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data));
+                                                            payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data, true));
                                                             break;
                                                         }
                                                         default: {
@@ -280,7 +280,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                         addressAny.getNumberOfElements() : addressAny.getTransportSize().getSizeInBytes() * 8;
                                                     final BitSet bitSet = toBitSet(context.getDigitalInputs(), ioNumber, numElements);
                                                     final byte[] data = Arrays.copyOf(bitSet.toByteArray(), (numElements + 7) / 8);
-                                                    payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data));
+                                                    payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data, true));
                                                     break;
                                                 }
                                             }
@@ -288,10 +288,10 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                     }
                                 }
                                 S7ParameterReadVarResponse readVarResponseParameter = new S7ParameterReadVarResponse((short) items.size());
-                                S7PayloadReadVarResponse readVarResponsePayload = new S7PayloadReadVarResponse(payloadItems);
+                                S7PayloadReadVarResponse readVarResponsePayload = new S7PayloadReadVarResponse(payloadItems, null);
                                 S7MessageResponseData response = new S7MessageResponseData(request.getTpduReference(),
                                     readVarResponseParameter, readVarResponsePayload, (short) 0x00, (short) 0x00);
-                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, response, true, cotpTpduRef)));
+                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, response, true, cotpTpduRef, 0)));
                             } else if (request.getParameter() instanceof S7ParameterWriteVarRequest) {
                                 S7ParameterWriteVarRequest writeVarRequestParameter =
                                     (S7ParameterWriteVarRequest) request.getParameter();

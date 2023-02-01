@@ -49,9 +49,13 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadDataItem> items;
 
-  public S7PayloadWriteVarRequest(List<S7VarPayloadDataItem> items) {
-    super();
+  // Arguments.
+  protected final S7Parameter parameter;
+
+  public S7PayloadWriteVarRequest(List<S7VarPayloadDataItem> items, S7Parameter parameter) {
+    super(parameter);
     this.items = items;
+    this.parameter = parameter;
   }
 
   public List<S7VarPayloadDataItem> getItems() {
@@ -103,23 +107,28 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
         readCountArrayField(
             "items",
             new DataReaderComplexDefault<>(
-                () -> S7VarPayloadDataItem.staticParse(readBuffer), readBuffer),
+                () -> S7VarPayloadDataItem.staticParse(readBuffer, (boolean) (true)), readBuffer),
             COUNT(CAST(parameter, S7ParameterWriteVarRequest.class).getItems()));
 
     readBuffer.closeContext("S7PayloadWriteVarRequest");
     // Create the instance
-    return new S7PayloadWriteVarRequestBuilderImpl(items);
+    return new S7PayloadWriteVarRequestBuilderImpl(items, parameter);
   }
 
   public static class S7PayloadWriteVarRequestBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadDataItem> items;
+    private final S7Parameter parameter;
 
-    public S7PayloadWriteVarRequestBuilderImpl(List<S7VarPayloadDataItem> items) {
+    public S7PayloadWriteVarRequestBuilderImpl(
+        List<S7VarPayloadDataItem> items, S7Parameter parameter) {
       this.items = items;
+      this.parameter = parameter;
     }
 
-    public S7PayloadWriteVarRequest build() {
-      S7PayloadWriteVarRequest s7PayloadWriteVarRequest = new S7PayloadWriteVarRequest(items);
+    public S7PayloadWriteVarRequest build(S7Parameter parameter) {
+
+      S7PayloadWriteVarRequest s7PayloadWriteVarRequest =
+          new S7PayloadWriteVarRequest(items, parameter);
       return s7PayloadWriteVarRequest;
     }
   }

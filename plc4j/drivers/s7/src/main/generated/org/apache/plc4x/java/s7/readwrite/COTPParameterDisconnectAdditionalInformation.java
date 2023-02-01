@@ -45,9 +45,13 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
   // Properties.
   protected final byte[] data;
 
-  public COTPParameterDisconnectAdditionalInformation(byte[] data) {
-    super();
+  // Arguments.
+  protected final Short rest;
+
+  public COTPParameterDisconnectAdditionalInformation(byte[] data, Short rest) {
+    super(rest);
     this.data = data;
+    this.rest = rest;
   }
 
   public byte[] getData() {
@@ -96,20 +100,23 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
 
     readBuffer.closeContext("COTPParameterDisconnectAdditionalInformation");
     // Create the instance
-    return new COTPParameterDisconnectAdditionalInformationBuilderImpl(data);
+    return new COTPParameterDisconnectAdditionalInformationBuilderImpl(data, rest);
   }
 
   public static class COTPParameterDisconnectAdditionalInformationBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final byte[] data;
+    private final Short rest;
 
-    public COTPParameterDisconnectAdditionalInformationBuilderImpl(byte[] data) {
+    public COTPParameterDisconnectAdditionalInformationBuilderImpl(byte[] data, Short rest) {
       this.data = data;
+      this.rest = rest;
     }
 
-    public COTPParameterDisconnectAdditionalInformation build() {
+    public COTPParameterDisconnectAdditionalInformation build(Short rest) {
+
       COTPParameterDisconnectAdditionalInformation cOTPParameterDisconnectAdditionalInformation =
-          new COTPParameterDisconnectAdditionalInformation(data);
+          new COTPParameterDisconnectAdditionalInformation(data, rest);
       return cOTPParameterDisconnectAdditionalInformation;
     }
   }

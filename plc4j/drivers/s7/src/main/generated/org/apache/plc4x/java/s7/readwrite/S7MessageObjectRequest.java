@@ -51,6 +51,10 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
   protected final QueryType queryType;
   protected final AlarmType alarmType;
 
+  // Reserved Fields
+  private Short reservedField0;
+  private Short reservedField1;
+
   public S7MessageObjectRequest(SyntaxIdType syntaxId, QueryType queryType, AlarmType alarmType) {
     super();
     this.syntaxId = syntaxId;
@@ -100,7 +104,10 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
             SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (queryType)
     writeSimpleEnumField(
@@ -111,7 +118,10 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
             QueryType::getValue, QueryType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x34, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField1 != null ? reservedField1 : (short) 0x34,
+        writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (alarmType)
     writeSimpleEnumField(
@@ -199,7 +209,8 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
 
     readBuffer.closeContext("S7MessageObjectRequest");
     // Create the instance
-    return new S7MessageObjectRequestBuilderImpl(syntaxId, queryType, alarmType);
+    return new S7MessageObjectRequestBuilderImpl(
+        syntaxId, queryType, alarmType, reservedField0, reservedField1);
   }
 
   public static class S7MessageObjectRequestBuilderImpl
@@ -207,17 +218,27 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
     private final SyntaxIdType syntaxId;
     private final QueryType queryType;
     private final AlarmType alarmType;
+    private final Short reservedField0;
+    private final Short reservedField1;
 
     public S7MessageObjectRequestBuilderImpl(
-        SyntaxIdType syntaxId, QueryType queryType, AlarmType alarmType) {
+        SyntaxIdType syntaxId,
+        QueryType queryType,
+        AlarmType alarmType,
+        Short reservedField0,
+        Short reservedField1) {
       this.syntaxId = syntaxId;
       this.queryType = queryType;
       this.alarmType = alarmType;
+      this.reservedField0 = reservedField0;
+      this.reservedField1 = reservedField1;
     }
 
     public S7MessageObjectRequest build() {
       S7MessageObjectRequest s7MessageObjectRequest =
           new S7MessageObjectRequest(syntaxId, queryType, alarmType);
+      s7MessageObjectRequest.reservedField0 = reservedField0;
+      s7MessageObjectRequest.reservedField1 = reservedField1;
       return s7MessageObjectRequest;
     }
   }

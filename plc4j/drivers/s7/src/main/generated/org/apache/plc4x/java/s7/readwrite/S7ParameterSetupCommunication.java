@@ -51,6 +51,9 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   protected final int maxAmqCallee;
   protected final int pduLength;
 
+  // Reserved Fields
+  private Short reservedField0;
+
   public S7ParameterSetupCommunication(int maxAmqCaller, int maxAmqCallee, int pduLength) {
     super();
     this.maxAmqCaller = maxAmqCaller;
@@ -77,7 +80,10 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     writeBuffer.pushContext("S7ParameterSetupCommunication");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (maxAmqCaller)
     writeSimpleField("maxAmqCaller", maxAmqCaller, writeUnsignedInt(writeBuffer, 16));
@@ -134,7 +140,8 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
 
     readBuffer.closeContext("S7ParameterSetupCommunication");
     // Create the instance
-    return new S7ParameterSetupCommunicationBuilderImpl(maxAmqCaller, maxAmqCallee, pduLength);
+    return new S7ParameterSetupCommunicationBuilderImpl(
+        maxAmqCaller, maxAmqCallee, pduLength, reservedField0);
   }
 
   public static class S7ParameterSetupCommunicationBuilderImpl
@@ -142,17 +149,20 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     private final int maxAmqCaller;
     private final int maxAmqCallee;
     private final int pduLength;
+    private final Short reservedField0;
 
     public S7ParameterSetupCommunicationBuilderImpl(
-        int maxAmqCaller, int maxAmqCallee, int pduLength) {
+        int maxAmqCaller, int maxAmqCallee, int pduLength, Short reservedField0) {
       this.maxAmqCaller = maxAmqCaller;
       this.maxAmqCallee = maxAmqCallee;
       this.pduLength = pduLength;
+      this.reservedField0 = reservedField0;
     }
 
     public S7ParameterSetupCommunication build() {
       S7ParameterSetupCommunication s7ParameterSetupCommunication =
           new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduLength);
+      s7ParameterSetupCommunication.reservedField0 = reservedField0;
       return s7ParameterSetupCommunication;
     }
   }
