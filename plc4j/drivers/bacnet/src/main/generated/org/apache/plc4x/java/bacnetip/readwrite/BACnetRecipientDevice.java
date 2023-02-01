@@ -110,7 +110,6 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
     private final BACnetContextTagObjectIdentifier deviceValue;
 
     public BACnetRecipientDeviceBuilderImpl(BACnetContextTagObjectIdentifier deviceValue) {
-
       this.deviceValue = deviceValue;
     }
 

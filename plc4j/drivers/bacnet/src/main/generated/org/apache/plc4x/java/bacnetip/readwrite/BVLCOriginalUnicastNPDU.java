@@ -114,7 +114,6 @@ public class BVLCOriginalUnicastNPDU extends BVLC implements Message {
     private final Integer bvlcPayloadLength;
 
     public BVLCOriginalUnicastNPDUBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
-
       this.npdu = npdu;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

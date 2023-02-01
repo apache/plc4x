@@ -120,7 +120,6 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
 
     public BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.serviceRequestLength = serviceRequestLength;
     }

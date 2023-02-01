@@ -151,7 +151,6 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger occupancyLowerLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyLowerLimit = occupancyLowerLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

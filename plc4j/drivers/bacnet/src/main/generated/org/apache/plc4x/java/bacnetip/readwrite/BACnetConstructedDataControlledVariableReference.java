@@ -150,7 +150,6 @@ public class BACnetConstructedDataControlledVariableReference extends BACnetCons
         BACnetObjectPropertyReference controlledVariableReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.controlledVariableReference = controlledVariableReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

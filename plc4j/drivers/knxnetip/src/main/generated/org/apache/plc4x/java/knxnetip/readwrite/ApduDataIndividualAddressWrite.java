@@ -42,12 +42,8 @@ public class ApduDataIndividualAddressWrite extends ApduData implements Message 
     return (byte) 0x3;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataIndividualAddressWrite(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataIndividualAddressWrite() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataIndividualAddressWrite extends ApduData implements Message 
 
     readBuffer.closeContext("ApduDataIndividualAddressWrite");
     // Create the instance
-    return new ApduDataIndividualAddressWriteBuilderImpl(dataLength);
+    return new ApduDataIndividualAddressWriteBuilderImpl();
   }
 
   public static class ApduDataIndividualAddressWriteBuilderImpl
       implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
 
-    public ApduDataIndividualAddressWriteBuilderImpl(Short dataLength) {
+    public ApduDataIndividualAddressWriteBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataIndividualAddressWrite build(Short dataLength) {
-
+    public ApduDataIndividualAddressWrite build() {
       ApduDataIndividualAddressWrite apduDataIndividualAddressWrite =
-          new ApduDataIndividualAddressWrite(dataLength);
+          new ApduDataIndividualAddressWrite();
       return apduDataIndividualAddressWrite;
     }
   }

@@ -113,7 +113,6 @@ public class BACnetConstructedDataEventLogAll extends BACnetConstructedData impl
 
     public BACnetConstructedDataEventLogAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

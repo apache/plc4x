@@ -149,7 +149,6 @@ public class BACnetConstructedDataAccumulatorHighLimit extends BACnetConstructed
         BACnetApplicationTagUnsignedInteger highLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.highLimit = highLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

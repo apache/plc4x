@@ -122,7 +122,6 @@ public class CancelRequest extends ExtensionObjectDefinition implements Message 
     private final long requestHandle;
 
     public CancelRequestBuilderImpl(ExtensionObjectDefinition requestHeader, long requestHandle) {
-
       this.requestHeader = requestHeader;
       this.requestHandle = requestHandle;
     }

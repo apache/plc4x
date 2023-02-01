@@ -204,7 +204,6 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
         BACnetEventParameterChangeOfTimerAlarmValue alarmValues,
         BACnetDeviceObjectPropertyReferenceEnclosed updateTimeReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.alarmValues = alarmValues;

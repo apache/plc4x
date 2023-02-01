@@ -132,7 +132,6 @@ public class VTCloseError extends BACnetError implements Message {
     public VTCloseErrorBuilderImpl(
         ErrorEnclosed errorType,
         VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers) {
-
       this.errorType = errorType;
       this.listOfVtSessionIdentifiers = listOfVtSessionIdentifiers;
     }

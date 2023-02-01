@@ -153,7 +153,6 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
         BACnetApplicationTagUnsignedInteger recordsSinceNotifications,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.recordsSinceNotifications = recordsSinceNotifications;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

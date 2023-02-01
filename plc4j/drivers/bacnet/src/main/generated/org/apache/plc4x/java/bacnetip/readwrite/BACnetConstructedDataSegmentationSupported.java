@@ -152,7 +152,6 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
         BACnetSegmentationTagged segmentationSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.segmentationSupported = segmentationSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

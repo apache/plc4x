@@ -110,7 +110,6 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     private final HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint;
 
     public SearchRequestBuilderImpl(HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint) {
-
       this.hpaiIDiscoveryEndpoint = hpaiIDiscoveryEndpoint;
     }
 

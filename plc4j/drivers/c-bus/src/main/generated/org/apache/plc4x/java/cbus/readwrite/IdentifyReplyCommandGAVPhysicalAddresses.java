@@ -110,7 +110,6 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
     private final Short numBytes;
 
     public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Short numBytes) {
-
       this.values = values;
       this.numBytes = numBytes;
     }

@@ -145,7 +145,6 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
         BACnetApplicationTagBoolean archive,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.archive = archive;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

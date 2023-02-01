@@ -151,7 +151,6 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
         BACnetPriorityArray priorityArray,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.priorityArray = priorityArray;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -133,7 +133,6 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
     public ParameterValueApplicationAddress2BuilderImpl(
         ApplicationAddress2 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

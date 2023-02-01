@@ -125,7 +125,6 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
     private final PascalByteString validBits;
 
     public OptionSetBuilderImpl(PascalByteString value, PascalByteString validBits) {
-
       this.value = value;
       this.validBits = validBits;
     }

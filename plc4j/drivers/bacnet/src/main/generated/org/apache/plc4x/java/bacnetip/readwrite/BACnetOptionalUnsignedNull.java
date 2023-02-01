@@ -105,7 +105,6 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetOptionalUnsignedNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

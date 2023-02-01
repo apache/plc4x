@@ -153,7 +153,6 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
         BACnetApplicationTagUnsignedInteger limitMonitoringInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.limitMonitoringInterval = limitMonitoringInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

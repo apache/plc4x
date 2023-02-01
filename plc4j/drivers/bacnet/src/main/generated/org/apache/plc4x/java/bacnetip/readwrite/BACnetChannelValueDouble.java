@@ -105,7 +105,6 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
     private final BACnetApplicationTagDouble doubleValue;
 
     public BACnetChannelValueDoubleBuilderImpl(BACnetApplicationTagDouble doubleValue) {
-
       this.doubleValue = doubleValue;
     }
 

@@ -147,7 +147,6 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
         BACnetNetworkPortCommandTagged command,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.command = command;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

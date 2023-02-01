@@ -169,7 +169,6 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
         BACnetApplicationTagOctetString vtNewData,
         BACnetApplicationTagUnsignedInteger vtDataFlag,
         Long serviceRequestLength) {
-
       this.vtSessionIdentifier = vtSessionIdentifier;
       this.vtNewData = vtNewData;
       this.vtDataFlag = vtDataFlag;

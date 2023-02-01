@@ -147,7 +147,6 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
         BACnetApplicationTagBoolean blinkWarnEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.blinkWarnEnable = blinkWarnEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

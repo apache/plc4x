@@ -213,7 +213,6 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
         BACnetLifeSafetyOperationTagged request,
         BACnetContextTagObjectIdentifier objectIdentifier,
         Long serviceRequestLength) {
-
       this.requestingProcessIdentifier = requestingProcessIdentifier;
       this.requestingSource = requestingSource;
       this.request = request;

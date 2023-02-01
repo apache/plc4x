@@ -151,7 +151,6 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
         PascalString serverUri,
         int noOfNetworkPaths,
         List<ExtensionObjectDefinition> networkPaths) {
-
       this.serverUri = serverUri;
       this.noOfNetworkPaths = noOfNetworkPaths;
       this.networkPaths = networkPaths;

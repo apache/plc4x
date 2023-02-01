@@ -134,7 +134,6 @@ public class ChangeListRemoveError extends BACnetError implements Message {
 
     public ChangeListRemoveErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

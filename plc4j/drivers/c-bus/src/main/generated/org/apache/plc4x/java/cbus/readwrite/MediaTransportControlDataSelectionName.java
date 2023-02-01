@@ -110,7 +110,6 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
     private final String selectionName;
 
     public MediaTransportControlDataSelectionNameBuilderImpl(String selectionName) {
-
       this.selectionName = selectionName;
     }
 

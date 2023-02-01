@@ -135,7 +135,6 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
 
     public DescriptionResponseBuilderImpl(
         DIBDeviceInfo dibDeviceInfo, DIBSuppSvcFamilies dibSuppSvcFamilies) {
-
       this.dibDeviceInfo = dibDeviceInfo;
       this.dibSuppSvcFamilies = dibSuppSvcFamilies;
     }

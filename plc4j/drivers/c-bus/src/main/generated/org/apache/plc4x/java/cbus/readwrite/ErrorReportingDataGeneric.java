@@ -284,7 +284,6 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         short deviceId,
         short errorData1,
         short errorData2) {
-
       this.systemCategory = systemCategory;
       this.mostRecent = mostRecent;
       this.acknowledge = acknowledge;

@@ -124,7 +124,6 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
     private final Short tagNumberArgument;
 
     public BACnetContextTagRealBuilderImpl(BACnetTagPayloadReal payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

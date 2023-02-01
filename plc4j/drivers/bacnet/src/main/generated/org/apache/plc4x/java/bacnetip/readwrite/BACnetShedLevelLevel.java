@@ -110,7 +110,6 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
     private final BACnetContextTagUnsignedInteger level;
 
     public BACnetShedLevelLevelBuilderImpl(BACnetContextTagUnsignedInteger level) {
-
       this.level = level;
     }
 

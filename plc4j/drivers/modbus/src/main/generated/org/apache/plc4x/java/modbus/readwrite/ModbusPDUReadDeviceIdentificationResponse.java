@@ -275,7 +275,6 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         ModbusDeviceInformationMoreFollows moreFollows,
         short nextObjectId,
         List<ModbusDeviceInformationObject> objects) {
-
       this.level = level;
       this.individualAccess = individualAccess;
       this.conformityLevel = conformityLevel;

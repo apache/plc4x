@@ -133,7 +133,6 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     private final List<PnIoCm_ModuleDiffBlockApi> apis;
 
     public PnIoCm_Block_ModuleDiffBuilderImpl(List<PnIoCm_ModuleDiffBlockApi> apis) {
-
       this.apis = apis;
     }
 

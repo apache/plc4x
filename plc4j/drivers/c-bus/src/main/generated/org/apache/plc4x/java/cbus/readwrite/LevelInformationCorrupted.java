@@ -154,7 +154,6 @@ public class LevelInformationCorrupted extends LevelInformation implements Messa
         byte corruptedNibble2,
         byte corruptedNibble3,
         byte corruptedNibble4) {
-
       this.corruptedNibble1 = corruptedNibble1;
       this.corruptedNibble2 = corruptedNibble2;
       this.corruptedNibble3 = corruptedNibble3;

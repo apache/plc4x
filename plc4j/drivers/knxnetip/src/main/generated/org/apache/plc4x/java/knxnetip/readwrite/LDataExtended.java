@@ -217,7 +217,6 @@ public class LDataExtended extends LDataFrame implements Message {
         KnxAddress sourceAddress,
         byte[] destinationAddress,
         Apdu apdu) {
-
       this.groupAddress = groupAddress;
       this.hopCount = hopCount;
       this.extendedFrameFormat = extendedFrameFormat;

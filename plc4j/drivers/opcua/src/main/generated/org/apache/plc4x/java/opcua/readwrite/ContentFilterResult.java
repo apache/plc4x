@@ -181,7 +181,6 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> elementResults,
         int noOfElementDiagnosticInfos,
         List<DiagnosticInfo> elementDiagnosticInfos) {
-
       this.noOfElementResults = noOfElementResults;
       this.elementResults = elementResults;
       this.noOfElementDiagnosticInfos = noOfElementDiagnosticInfos;

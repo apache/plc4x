@@ -219,7 +219,6 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
         BACnetApplicationTagUnsignedInteger priority,
         BACnetApplicationTagUnsignedInteger notificationClass,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.eventType = eventType;
       this.eventState = eventState;

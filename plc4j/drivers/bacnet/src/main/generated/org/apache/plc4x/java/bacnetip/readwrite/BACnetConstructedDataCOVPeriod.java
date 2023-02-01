@@ -147,7 +147,6 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
         BACnetApplicationTagUnsignedInteger covPeriod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covPeriod = covPeriod;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

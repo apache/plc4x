@@ -202,7 +202,6 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         TimestampsToReturn timestampsToReturn,
         int noOfNodesToRead,
         List<ExtensionObjectDefinition> nodesToRead) {
-
       this.requestHeader = requestHeader;
       this.maxAge = maxAge;
       this.timestampsToReturn = timestampsToReturn;

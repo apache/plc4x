@@ -130,7 +130,6 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
 
     public AdditionalParametersTypeBuilderImpl(
         int noOfParameters, List<ExtensionObjectDefinition> parameters) {
-
       this.noOfParameters = noOfParameters;
       this.parameters = parameters;
     }

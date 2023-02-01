@@ -125,7 +125,6 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
     private final byte state;
 
     public MediaTransportControlDataShuffleOnOffBuilderImpl(byte state) {
-
       this.state = state;
     }
 

@@ -46,14 +46,10 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
   protected final byte dataFirstByte;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataGroupValueResponse(byte dataFirstByte, byte[] data, Short dataLength) {
-    super(dataLength);
+  public ApduDataGroupValueResponse(byte dataFirstByte, byte[] data) {
+    super();
     this.dataFirstByte = dataFirstByte;
     this.data = data;
-    this.dataLength = dataLength;
   }
 
   public byte getDataFirstByte() {
@@ -115,26 +111,21 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataGroupValueResponse");
     // Create the instance
-    return new ApduDataGroupValueResponseBuilderImpl(dataFirstByte, data, dataLength);
+    return new ApduDataGroupValueResponseBuilderImpl(dataFirstByte, data);
   }
 
   public static class ApduDataGroupValueResponseBuilderImpl implements ApduData.ApduDataBuilder {
     private final byte dataFirstByte;
     private final byte[] data;
-    private final Short dataLength;
 
-    public ApduDataGroupValueResponseBuilderImpl(
-        byte dataFirstByte, byte[] data, Short dataLength) {
-
+    public ApduDataGroupValueResponseBuilderImpl(byte dataFirstByte, byte[] data) {
       this.dataFirstByte = dataFirstByte;
       this.data = data;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataGroupValueResponse build(Short dataLength) {
-
+    public ApduDataGroupValueResponse build() {
       ApduDataGroupValueResponse apduDataGroupValueResponse =
-          new ApduDataGroupValueResponse(dataFirstByte, data, dataLength);
+          new ApduDataGroupValueResponse(dataFirstByte, data);
       return apduDataGroupValueResponse;
     }
   }

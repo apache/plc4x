@@ -257,7 +257,6 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
         HVACHumidity level,
         HVACRawLevels rawLevel,
         HVACAuxiliaryLevel auxLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.humidityModeAndFlags = humidityModeAndFlags;

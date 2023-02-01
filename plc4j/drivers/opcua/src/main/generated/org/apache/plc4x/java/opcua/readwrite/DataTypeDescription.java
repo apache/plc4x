@@ -124,7 +124,6 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
     private final QualifiedName name;
 
     public DataTypeDescriptionBuilderImpl(NodeId dataTypeId, QualifiedName name) {
-
       this.dataTypeId = dataTypeId;
       this.name = name;
     }

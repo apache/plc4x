@@ -193,7 +193,6 @@ public class BACnetConstructedDataPriority extends BACnetConstructedData impleme
         List<BACnetApplicationTagUnsignedInteger> priority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.priority = priority;
       this.tagNumber = tagNumber;

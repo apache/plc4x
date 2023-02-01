@@ -112,7 +112,6 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
 
     public BACnetPropertyStatesNetworkNumberQualityBuilderImpl(
         BACnetNetworkNumberQualityTagged networkNumberQuality) {
-
       this.networkNumberQuality = networkNumberQuality;
     }
 

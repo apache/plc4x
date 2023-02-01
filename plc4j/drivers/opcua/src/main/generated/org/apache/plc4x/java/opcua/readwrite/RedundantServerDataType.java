@@ -147,7 +147,6 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
 
     public RedundantServerDataTypeBuilderImpl(
         PascalString serverId, short serviceLevel, ServerState serverState) {
-
       this.serverId = serverId;
       this.serviceLevel = serviceLevel;
       this.serverState = serverState;

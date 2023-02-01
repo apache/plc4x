@@ -160,7 +160,6 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
         ExtensionObjectDefinition itemToMonitor,
         MonitoringMode monitoringMode,
         ExtensionObjectDefinition requestedParameters) {
-
       this.itemToMonitor = itemToMonitor;
       this.monitoringMode = monitoringMode;
       this.requestedParameters = requestedParameters;

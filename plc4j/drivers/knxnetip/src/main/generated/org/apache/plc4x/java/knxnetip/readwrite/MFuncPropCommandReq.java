@@ -42,12 +42,8 @@ public class MFuncPropCommandReq extends CEMI implements Message {
     return (short) 0xF8;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MFuncPropCommandReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MFuncPropCommandReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class MFuncPropCommandReq extends CEMI implements Message {
 
     readBuffer.closeContext("MFuncPropCommandReq");
     // Create the instance
-    return new MFuncPropCommandReqBuilderImpl(size);
+    return new MFuncPropCommandReqBuilderImpl();
   }
 
   public static class MFuncPropCommandReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public MFuncPropCommandReqBuilderImpl(Integer size) {
+    public MFuncPropCommandReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MFuncPropCommandReq build(Integer size) {
-
-      MFuncPropCommandReq mFuncPropCommandReq = new MFuncPropCommandReq(size);
-
+    public MFuncPropCommandReq build() {
+      MFuncPropCommandReq mFuncPropCommandReq = new MFuncPropCommandReq();
       return mFuncPropCommandReq;
     }
   }

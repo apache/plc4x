@@ -148,7 +148,6 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
 
     public CBusPointToPointToMultiPointCommandNormalBuilderImpl(
         ApplicationIdContainer application, SALData salData, CBusOptions cBusOptions) {
-
       this.application = application;
       this.salData = salData;
       this.cBusOptions = cBusOptions;

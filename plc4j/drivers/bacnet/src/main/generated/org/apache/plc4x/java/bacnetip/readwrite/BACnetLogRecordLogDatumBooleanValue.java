@@ -119,7 +119,6 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
 
     public BACnetLogRecordLogDatumBooleanValueBuilderImpl(
         BACnetContextTagBoolean booleanValue, Short tagNumber) {
-
       this.booleanValue = booleanValue;
       this.tagNumber = tagNumber;
     }

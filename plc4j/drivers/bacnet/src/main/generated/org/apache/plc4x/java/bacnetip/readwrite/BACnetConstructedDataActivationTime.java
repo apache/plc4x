@@ -145,7 +145,6 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
         BACnetDateTime activationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activationTime = activationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

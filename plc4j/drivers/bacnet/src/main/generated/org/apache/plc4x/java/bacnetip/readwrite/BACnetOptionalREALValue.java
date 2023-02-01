@@ -105,7 +105,6 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     private final BACnetApplicationTagReal realValue;
 
     public BACnetOptionalREALValueBuilderImpl(BACnetApplicationTagReal realValue) {
-
       this.realValue = realValue;
     }
 

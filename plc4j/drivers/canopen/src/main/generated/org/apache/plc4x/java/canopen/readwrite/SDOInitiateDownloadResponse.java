@@ -44,9 +44,6 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
 
   // Properties.
   protected final IndexAddress address;
-  // Reserved Fields
-  private Short reservedField0;
-  private Integer reservedField1;
 
   public SDOInitiateDownloadResponse(IndexAddress address) {
     super();
@@ -64,19 +61,13 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     writeBuffer.pushContext("SDOInitiateDownloadResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (address)
     writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x00,
-        writeSignedInt(writeBuffer, 32));
+    writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("SDOInitiateDownloadResponse");
   }
@@ -123,27 +114,20 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
 
     readBuffer.closeContext("SDOInitiateDownloadResponse");
     // Create the instance
-    return new SDOInitiateDownloadResponseBuilderImpl(address, reservedField0, reservedField1);
+    return new SDOInitiateDownloadResponseBuilderImpl(address);
   }
 
   public static class SDOInitiateDownloadResponseBuilderImpl
       implements SDOResponse.SDOResponseBuilder {
     private final IndexAddress address;
-    private final Short reservedField0;
-    private final Integer reservedField1;
 
-    public SDOInitiateDownloadResponseBuilderImpl(
-        IndexAddress address, Short reservedField0, Integer reservedField1) {
+    public SDOInitiateDownloadResponseBuilderImpl(IndexAddress address) {
       this.address = address;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public SDOInitiateDownloadResponse build() {
       SDOInitiateDownloadResponse sDOInitiateDownloadResponse =
           new SDOInitiateDownloadResponse(address);
-      sDOInitiateDownloadResponse.reservedField0 = reservedField0;
-      sDOInitiateDownloadResponse.reservedField1 = reservedField1;
       return sDOInitiateDownloadResponse;
     }
   }

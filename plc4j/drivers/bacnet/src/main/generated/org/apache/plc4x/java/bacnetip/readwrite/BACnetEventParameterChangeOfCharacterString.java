@@ -181,7 +181,6 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfCharacterStringListOfAlarmValues listOfAlarmValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfAlarmValues = listOfAlarmValues;

@@ -145,7 +145,6 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
         BACnetApplicationTagBoolean readOnly,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.readOnly = readOnly;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

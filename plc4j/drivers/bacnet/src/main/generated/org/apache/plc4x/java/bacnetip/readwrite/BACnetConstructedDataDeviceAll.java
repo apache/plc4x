@@ -113,7 +113,6 @@ public class BACnetConstructedDataDeviceAll extends BACnetConstructedData implem
 
     public BACnetConstructedDataDeviceAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

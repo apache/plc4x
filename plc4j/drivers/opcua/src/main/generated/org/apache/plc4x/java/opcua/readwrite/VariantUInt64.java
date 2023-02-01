@@ -74,8 +74,7 @@ public class VariantUInt64 extends Variant implements Message {
     writeBuffer.pushContext("VariantUInt64");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeUnsignedBigInteger(writeBuffer, 64));
@@ -132,7 +131,6 @@ public class VariantUInt64 extends Variant implements Message {
     private final List<BigInteger> value;
 
     public VariantUInt64BuilderImpl(Integer arrayLength, List<BigInteger> value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

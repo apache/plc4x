@@ -183,7 +183,6 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
         LocalizedText description,
         long writeMask,
         long userWriteMask) {
-
       this.specifiedAttributes = specifiedAttributes;
       this.displayName = displayName;
       this.description = description;

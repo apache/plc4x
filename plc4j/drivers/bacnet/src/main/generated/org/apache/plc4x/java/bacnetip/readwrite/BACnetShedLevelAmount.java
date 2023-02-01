@@ -107,7 +107,6 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     private final BACnetContextTagReal amount;
 
     public BACnetShedLevelAmountBuilderImpl(BACnetContextTagReal amount) {
-
       this.amount = amount;
     }
 

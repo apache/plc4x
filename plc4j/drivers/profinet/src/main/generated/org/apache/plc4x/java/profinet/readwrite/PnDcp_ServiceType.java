@@ -40,9 +40,6 @@ public class PnDcp_ServiceType implements Message {
   // Properties.
   protected final boolean notSupported;
   protected final boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-  private Byte reservedField1;
 
   public PnDcp_ServiceType(boolean notSupported, boolean response) {
     super();
@@ -64,19 +61,13 @@ public class PnDcp_ServiceType implements Message {
     writeBuffer.pushContext("PnDcp_ServiceType");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (notSupported)
     writeSimpleField("notSupported", notSupported, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (response)
     writeSimpleField("response", response, writeBoolean(writeBuffer));
@@ -135,8 +126,6 @@ public class PnDcp_ServiceType implements Message {
     // Create the instance
     PnDcp_ServiceType _pnDcp_ServiceType;
     _pnDcp_ServiceType = new PnDcp_ServiceType(notSupported, response);
-    _pnDcp_ServiceType.reservedField0 = reservedField0;
-    _pnDcp_ServiceType.reservedField1 = reservedField1;
     return _pnDcp_ServiceType;
   }
 

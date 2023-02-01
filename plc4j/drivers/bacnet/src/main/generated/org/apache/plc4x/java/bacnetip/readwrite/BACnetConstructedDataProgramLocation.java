@@ -149,7 +149,6 @@ public class BACnetConstructedDataProgramLocation extends BACnetConstructedData 
         BACnetApplicationTagCharacterString programLocation,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programLocation = programLocation;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

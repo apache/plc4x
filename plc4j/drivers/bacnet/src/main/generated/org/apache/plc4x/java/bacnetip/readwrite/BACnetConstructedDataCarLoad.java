@@ -145,7 +145,6 @@ public class BACnetConstructedDataCarLoad extends BACnetConstructedData implemen
         BACnetApplicationTagReal carLoad,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carLoad = carLoad;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -133,7 +133,6 @@ public class S7PayloadUserData extends S7Payload implements Message {
     private final S7Parameter parameter;
 
     public S7PayloadUserDataBuilderImpl(List<S7PayloadUserDataItem> items, S7Parameter parameter) {
-
       this.items = items;
       this.parameter = parameter;
     }

@@ -109,7 +109,6 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
     private final BACnetLockStatusTagged lockStatus;
 
     public BACnetPropertyStatesLockStatusBuilderImpl(BACnetLockStatusTagged lockStatus) {
-
       this.lockStatus = lockStatus;
     }
 

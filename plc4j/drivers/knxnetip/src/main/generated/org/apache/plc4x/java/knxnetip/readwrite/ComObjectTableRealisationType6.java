@@ -109,7 +109,6 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
 
     public ComObjectTableRealisationType6BuilderImpl(
         GroupObjectDescriptorRealisationType6 comObjectDescriptors) {
-
       this.comObjectDescriptors = comObjectDescriptors;
     }
 

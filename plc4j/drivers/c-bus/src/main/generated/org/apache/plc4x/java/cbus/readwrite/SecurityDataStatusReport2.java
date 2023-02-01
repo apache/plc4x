@@ -111,7 +111,6 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
     private final List<ZoneStatus> zoneStatus;
 
     public SecurityDataStatusReport2BuilderImpl(List<ZoneStatus> zoneStatus) {
-
       this.zoneStatus = zoneStatus;
     }
 

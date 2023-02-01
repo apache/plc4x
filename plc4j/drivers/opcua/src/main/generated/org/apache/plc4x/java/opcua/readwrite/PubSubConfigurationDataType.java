@@ -48,8 +48,6 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   protected final int noOfConnections;
   protected final List<ExtensionObjectDefinition> connections;
   protected final boolean enabled;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PubSubConfigurationDataType(
       int noOfPublishedDataSets,
@@ -106,10 +104,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     writeComplexTypeArrayField("connections", connections, writeBuffer);
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -196,12 +191,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     readBuffer.closeContext("PubSubConfigurationDataType");
     // Create the instance
     return new PubSubConfigurationDataTypeBuilderImpl(
-        noOfPublishedDataSets,
-        publishedDataSets,
-        noOfConnections,
-        connections,
-        enabled,
-        reservedField0);
+        noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
   }
 
   public static class PubSubConfigurationDataTypeBuilderImpl
@@ -211,28 +201,24 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     private final int noOfConnections;
     private final List<ExtensionObjectDefinition> connections;
     private final boolean enabled;
-    private final Short reservedField0;
 
     public PubSubConfigurationDataTypeBuilderImpl(
         int noOfPublishedDataSets,
         List<ExtensionObjectDefinition> publishedDataSets,
         int noOfConnections,
         List<ExtensionObjectDefinition> connections,
-        boolean enabled,
-        Short reservedField0) {
+        boolean enabled) {
       this.noOfPublishedDataSets = noOfPublishedDataSets;
       this.publishedDataSets = publishedDataSets;
       this.noOfConnections = noOfConnections;
       this.connections = connections;
       this.enabled = enabled;
-      this.reservedField0 = reservedField0;
     }
 
     public PubSubConfigurationDataType build() {
       PubSubConfigurationDataType pubSubConfigurationDataType =
           new PubSubConfigurationDataType(
               noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
-      pubSubConfigurationDataType.reservedField0 = reservedField0;
       return pubSubConfigurationDataType;
     }
   }

@@ -185,7 +185,6 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
         BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
         BACnetUnconfirmedServiceRequestWhoHasObject object,
         Integer serviceRequestLength) {
-
       this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;
       this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;
       this.object = object;

@@ -100,7 +100,6 @@ public class KnxNetIpTunneling extends ServiceId implements Message {
     private final short version;
 
     public KnxNetIpTunnelingBuilderImpl(short version) {
-
       this.version = version;
     }
 

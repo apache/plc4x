@@ -230,7 +230,6 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         MessageSecurityMode securityMode,
         PascalByteString clientNonce,
         long requestedLifetime) {
-
       this.requestHeader = requestHeader;
       this.clientProtocolVersion = clientProtocolVersion;
       this.requestType = requestType;

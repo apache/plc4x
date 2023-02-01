@@ -132,7 +132,6 @@ public class CALDataAcknowledge extends CALData implements Message {
 
     public CALDataAcknowledgeBuilderImpl(
         Parameter paramNo, short code, RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.code = code;
       this.requestContext = requestContext;

@@ -126,7 +126,6 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
     private final byte state;
 
     public MediaTransportControlDataSourcePowerControlBuilderImpl(byte state) {
-
       this.state = state;
     }
 

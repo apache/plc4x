@@ -134,7 +134,6 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     private final DiagnosticInfo diagnosticInfo;
 
     public StatusChangeNotificationBuilderImpl(StatusCode status, DiagnosticInfo diagnosticInfo) {
-
       this.status = status;
       this.diagnosticInfo = diagnosticInfo;
     }

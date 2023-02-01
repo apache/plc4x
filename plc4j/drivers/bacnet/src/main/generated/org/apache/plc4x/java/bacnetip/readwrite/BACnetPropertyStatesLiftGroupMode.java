@@ -109,7 +109,6 @@ public class BACnetPropertyStatesLiftGroupMode extends BACnetPropertyStates impl
     private final BACnetLiftGroupModeTagged liftGroupMode;
 
     public BACnetPropertyStatesLiftGroupModeBuilderImpl(BACnetLiftGroupModeTagged liftGroupMode) {
-
       this.liftGroupMode = liftGroupMode;
     }
 

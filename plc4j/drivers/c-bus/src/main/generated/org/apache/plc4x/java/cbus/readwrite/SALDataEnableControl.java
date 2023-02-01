@@ -105,7 +105,6 @@ public class SALDataEnableControl extends SALData implements Message {
     private final EnableControlData enableControlData;
 
     public SALDataEnableControlBuilderImpl(EnableControlData enableControlData) {
-
       this.enableControlData = enableControlData;
     }
 

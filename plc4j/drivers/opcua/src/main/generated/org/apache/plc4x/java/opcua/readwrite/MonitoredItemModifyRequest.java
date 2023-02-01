@@ -125,7 +125,6 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
 
     public MonitoredItemModifyRequestBuilderImpl(
         long monitoredItemId, ExtensionObjectDefinition requestedParameters) {
-
       this.monitoredItemId = monitoredItemId;
       this.requestedParameters = requestedParameters;
     }

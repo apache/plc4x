@@ -145,7 +145,6 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
         BACnetApplicationTagReal bias,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bias = bias;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

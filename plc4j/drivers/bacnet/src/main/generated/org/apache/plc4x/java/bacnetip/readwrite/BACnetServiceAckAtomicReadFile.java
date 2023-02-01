@@ -138,7 +138,6 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
         BACnetApplicationTagBoolean endOfFile,
         BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod,
         Long serviceAckLength) {
-
       this.endOfFile = endOfFile;
       this.accessMethod = accessMethod;
       this.serviceAckLength = serviceAckLength;

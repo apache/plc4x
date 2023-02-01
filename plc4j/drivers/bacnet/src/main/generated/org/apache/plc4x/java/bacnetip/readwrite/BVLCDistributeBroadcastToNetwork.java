@@ -114,7 +114,6 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
     private final Integer bvlcPayloadLength;
 
     public BVLCDistributeBroadcastToNetworkBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
-
       this.npdu = npdu;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

@@ -105,7 +105,6 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
     private final CANOpenTime timeOfDay;
 
     public CANOpenTimeSynchronizationBuilderImpl(CANOpenTime timeOfDay) {
-
       this.timeOfDay = timeOfDay;
     }
 

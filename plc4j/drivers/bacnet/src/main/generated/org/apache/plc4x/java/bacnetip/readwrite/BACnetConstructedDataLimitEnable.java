@@ -148,7 +148,6 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
         BACnetLimitEnableTagged limitEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.limitEnable = limitEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -109,7 +109,6 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
     private final Short rest;
 
     public COTPParameterDisconnectAdditionalInformationBuilderImpl(byte[] data, Short rest) {
-
       this.data = data;
       this.rest = rest;
     }

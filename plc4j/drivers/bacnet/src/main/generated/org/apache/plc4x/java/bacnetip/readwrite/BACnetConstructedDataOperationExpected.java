@@ -151,7 +151,6 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
         BACnetLifeSafetyOperationTagged lifeSafetyOperations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lifeSafetyOperations = lifeSafetyOperations;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -103,7 +103,6 @@ public class SALDataMetering extends SALData implements Message {
     private final MeteringData meteringData;
 
     public SALDataMeteringBuilderImpl(MeteringData meteringData) {
-
       this.meteringData = meteringData;
     }
 

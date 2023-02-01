@@ -105,7 +105,6 @@ public class AdsDiscoveryBlockUserName extends AdsDiscoveryBlock implements Mess
     private final AmsString userName;
 
     public AdsDiscoveryBlockUserNameBuilderImpl(AmsString userName) {
-
       this.userName = userName;
     }
 

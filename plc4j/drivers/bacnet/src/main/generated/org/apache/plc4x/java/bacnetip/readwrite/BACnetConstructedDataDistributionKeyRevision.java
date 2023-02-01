@@ -153,7 +153,6 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
         BACnetApplicationTagUnsignedInteger distributionKeyRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.distributionKeyRevision = distributionKeyRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

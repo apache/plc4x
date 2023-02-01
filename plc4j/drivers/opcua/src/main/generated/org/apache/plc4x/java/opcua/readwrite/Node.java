@@ -401,7 +401,6 @@ public class Node extends ExtensionObjectDefinition implements Message {
         int accessRestrictions,
         int noOfReferences,
         List<ExtensionObjectDefinition> references) {
-
       this.nodeId = nodeId;
       this.nodeClass = nodeClass;
       this.browseName = browseName;

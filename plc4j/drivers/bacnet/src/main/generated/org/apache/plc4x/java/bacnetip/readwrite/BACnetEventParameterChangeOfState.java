@@ -179,7 +179,6 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfStateListOfValues listOfValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfValues = listOfValues;

@@ -47,8 +47,6 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   protected final boolean includeSubTypes;
   protected final int noOfDataToReturn;
   protected final List<ExtensionObjectDefinition> dataToReturn;
-  // Reserved Fields
-  private Short reservedField0;
 
   public NodeTypeDescription(
       ExpandedNodeId typeDefinitionNode,
@@ -90,10 +88,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
         "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (includeSubTypes)
     writeSimpleField("includeSubTypes", includeSubTypes, writeBoolean(writeBuffer));
@@ -172,7 +167,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     readBuffer.closeContext("NodeTypeDescription");
     // Create the instance
     return new NodeTypeDescriptionBuilderImpl(
-        typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn, reservedField0);
+        typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
   }
 
   public static class NodeTypeDescriptionBuilderImpl
@@ -181,26 +176,22 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     private final boolean includeSubTypes;
     private final int noOfDataToReturn;
     private final List<ExtensionObjectDefinition> dataToReturn;
-    private final Short reservedField0;
 
     public NodeTypeDescriptionBuilderImpl(
         ExpandedNodeId typeDefinitionNode,
         boolean includeSubTypes,
         int noOfDataToReturn,
-        List<ExtensionObjectDefinition> dataToReturn,
-        Short reservedField0) {
+        List<ExtensionObjectDefinition> dataToReturn) {
       this.typeDefinitionNode = typeDefinitionNode;
       this.includeSubTypes = includeSubTypes;
       this.noOfDataToReturn = noOfDataToReturn;
       this.dataToReturn = dataToReturn;
-      this.reservedField0 = reservedField0;
     }
 
     public NodeTypeDescription build() {
       NodeTypeDescription nodeTypeDescription =
           new NodeTypeDescription(
               typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
-      nodeTypeDescription.reservedField0 = reservedField0;
       return nodeTypeDescription;
     }
   }

@@ -145,7 +145,6 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
         BACnetApplicationTagBoolean lockout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockout = lockout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

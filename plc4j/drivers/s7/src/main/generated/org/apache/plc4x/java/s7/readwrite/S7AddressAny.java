@@ -49,6 +49,7 @@ public class S7AddressAny extends S7Address implements Message {
   protected final MemoryArea area;
   protected final int byteAddress;
   protected final byte bitAddress;
+
   // Reserved Fields
   private Short reservedField0;
 

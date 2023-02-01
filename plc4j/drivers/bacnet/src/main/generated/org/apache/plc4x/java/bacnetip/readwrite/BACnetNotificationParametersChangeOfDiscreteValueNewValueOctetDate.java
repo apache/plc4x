@@ -119,7 +119,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilderImpl(
         BACnetApplicationTagDate dateValue, Short tagNumber) {
-
       this.dateValue = dateValue;
       this.tagNumber = tagNumber;
     }

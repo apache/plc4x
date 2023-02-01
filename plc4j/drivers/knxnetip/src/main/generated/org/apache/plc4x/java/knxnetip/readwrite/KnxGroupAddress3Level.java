@@ -132,7 +132,6 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
     private final short subGroup;
 
     public KnxGroupAddress3LevelBuilderImpl(short mainGroup, byte middleGroup, short subGroup) {
-
       this.mainGroup = mainGroup;
       this.middleGroup = middleGroup;
       this.subGroup = subGroup;

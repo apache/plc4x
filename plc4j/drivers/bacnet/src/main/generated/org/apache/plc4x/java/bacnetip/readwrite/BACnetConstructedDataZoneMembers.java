@@ -140,7 +140,6 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
         List<BACnetDeviceObjectReference> members,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.members = members;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

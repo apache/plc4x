@@ -107,7 +107,6 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
     private final BACnetContextTagNull none;
 
     public BACnetFaultParameterNoneBuilderImpl(BACnetContextTagNull none) {
-
       this.none = none;
     }
 

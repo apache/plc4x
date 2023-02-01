@@ -209,7 +209,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,
         BACnetContextTagCharacterString message,
         Long serviceRequestLength) {
-
       this.textMessageSourceDevice = textMessageSourceDevice;
       this.messageClass = messageClass;
       this.messagePriority = messagePriority;

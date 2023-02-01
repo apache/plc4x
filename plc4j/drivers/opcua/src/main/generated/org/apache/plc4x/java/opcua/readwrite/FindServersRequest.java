@@ -218,7 +218,6 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
         List<PascalString> localeIds,
         int noOfServerUris,
         List<PascalString> serverUris) {
-
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
       this.noOfLocaleIds = noOfLocaleIds;

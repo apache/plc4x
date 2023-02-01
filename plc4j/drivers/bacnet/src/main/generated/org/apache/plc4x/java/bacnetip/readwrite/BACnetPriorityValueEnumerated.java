@@ -114,7 +114,6 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
 
     public BACnetPriorityValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
-
       this.enumeratedValue = enumeratedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

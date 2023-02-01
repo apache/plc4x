@@ -236,7 +236,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         int noOfStringTable,
         List<PascalString> stringTable,
         ExtensionObject additionalHeader) {
-
       this.timestamp = timestamp;
       this.requestHandle = requestHandle;
       this.serviceResult = serviceResult;

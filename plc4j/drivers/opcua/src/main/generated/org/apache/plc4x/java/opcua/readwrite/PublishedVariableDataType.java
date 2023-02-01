@@ -273,7 +273,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         Variant substituteValue,
         int noOfMetaDataProperties,
         List<QualifiedName> metaDataProperties) {
-
       this.publishedVariable = publishedVariable;
       this.attributeId = attributeId;
       this.samplingIntervalHint = samplingIntervalHint;

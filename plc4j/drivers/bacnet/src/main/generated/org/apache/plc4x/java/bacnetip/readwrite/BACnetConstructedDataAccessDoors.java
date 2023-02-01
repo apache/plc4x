@@ -186,7 +186,6 @@ public class BACnetConstructedDataAccessDoors extends BACnetConstructedData impl
         List<BACnetDeviceObjectReference> accessDoors,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.accessDoors = accessDoors;
       this.tagNumber = tagNumber;

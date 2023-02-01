@@ -117,7 +117,6 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     private final AlarmMessageAckPushType alarmMessage;
 
     public S7PayloadAlarmAckIndBuilderImpl(AlarmMessageAckPushType alarmMessage) {
-
       this.alarmMessage = alarmMessage;
     }
 

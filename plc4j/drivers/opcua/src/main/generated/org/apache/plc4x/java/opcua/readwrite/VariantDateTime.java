@@ -73,8 +73,7 @@ public class VariantDateTime extends Variant implements Message {
     writeBuffer.pushContext("VariantDateTime");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeSignedLong(writeBuffer, 64));
@@ -129,7 +128,6 @@ public class VariantDateTime extends Variant implements Message {
     private final List<Long> value;
 
     public VariantDateTimeBuilderImpl(Integer arrayLength, List<Long> value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

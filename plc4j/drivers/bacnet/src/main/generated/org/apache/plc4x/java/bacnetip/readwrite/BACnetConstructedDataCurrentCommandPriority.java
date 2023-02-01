@@ -149,7 +149,6 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
         BACnetOptionalUnsigned currentCommandPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.currentCommandPriority = currentCommandPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

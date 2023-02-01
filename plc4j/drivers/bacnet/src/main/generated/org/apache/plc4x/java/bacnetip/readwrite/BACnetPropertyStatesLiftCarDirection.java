@@ -111,7 +111,6 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
 
     public BACnetPropertyStatesLiftCarDirectionBuilderImpl(
         BACnetLiftCarDirectionTagged liftCarDirection) {
-
       this.liftCarDirection = liftCarDirection;
     }
 

@@ -189,7 +189,6 @@ public class BACnetConstructedDataBitText extends BACnetConstructedData implemen
         List<BACnetApplicationTagCharacterString> bitText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.bitText = bitText;
       this.tagNumber = tagNumber;

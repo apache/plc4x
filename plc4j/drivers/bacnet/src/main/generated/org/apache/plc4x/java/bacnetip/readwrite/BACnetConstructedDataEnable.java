@@ -145,7 +145,6 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
         BACnetApplicationTagBoolean enable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.enable = enable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -107,7 +107,6 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     private final BACnetContextTagTime timeValue;
 
     public BACnetTimeStampTimeBuilderImpl(BACnetContextTagTime timeValue) {
-
       this.timeValue = timeValue;
     }
 

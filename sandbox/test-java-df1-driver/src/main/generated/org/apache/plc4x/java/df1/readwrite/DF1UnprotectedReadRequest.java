@@ -115,7 +115,6 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
     private final short size;
 
     public DF1UnprotectedReadRequestBuilderImpl(int address, short size) {
-
       this.address = address;
       this.size = size;
     }

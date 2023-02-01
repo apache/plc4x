@@ -148,7 +148,6 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger windowInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.windowInterval = windowInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

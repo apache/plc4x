@@ -98,7 +98,6 @@ public class SecurityDataZoneOpen extends SecurityData implements Message {
     private final short zoneNumber;
 
     public SecurityDataZoneOpenBuilderImpl(short zoneNumber) {
-
       this.zoneNumber = zoneNumber;
     }
 

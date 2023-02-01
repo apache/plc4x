@@ -148,7 +148,6 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger intervalOffset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.intervalOffset = intervalOffset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

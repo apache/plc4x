@@ -53,8 +53,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected final List<ExtensionObjectDefinition> dataSetWriterProperties;
   protected final ExtensionObject transportSettings;
   protected final ExtensionObject messageSettings;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DataSetWriterDataType(
       PascalString name,
@@ -131,10 +129,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -298,8 +293,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         noOfDataSetWriterProperties,
         dataSetWriterProperties,
         transportSettings,
-        messageSettings,
-        reservedField0);
+        messageSettings);
   }
 
   public static class DataSetWriterDataTypeBuilderImpl
@@ -314,7 +308,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     private final List<ExtensionObjectDefinition> dataSetWriterProperties;
     private final ExtensionObject transportSettings;
     private final ExtensionObject messageSettings;
-    private final Short reservedField0;
 
     public DataSetWriterDataTypeBuilderImpl(
         PascalString name,
@@ -326,8 +319,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         int noOfDataSetWriterProperties,
         List<ExtensionObjectDefinition> dataSetWriterProperties,
         ExtensionObject transportSettings,
-        ExtensionObject messageSettings,
-        Short reservedField0) {
+        ExtensionObject messageSettings) {
       this.name = name;
       this.enabled = enabled;
       this.dataSetWriterId = dataSetWriterId;
@@ -338,7 +330,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       this.dataSetWriterProperties = dataSetWriterProperties;
       this.transportSettings = transportSettings;
       this.messageSettings = messageSettings;
-      this.reservedField0 = reservedField0;
     }
 
     public DataSetWriterDataType build() {
@@ -354,7 +345,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
               dataSetWriterProperties,
               transportSettings,
               messageSettings);
-      dataSetWriterDataType.reservedField0 = reservedField0;
       return dataSetWriterDataType;
     }
   }

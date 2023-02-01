@@ -139,7 +139,6 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
     private final long notificationHandle;
 
     public AdsAddDeviceNotificationResponseBuilderImpl(ReturnCode result, long notificationHandle) {
-
       this.result = result;
       this.notificationHandle = notificationHandle;
     }

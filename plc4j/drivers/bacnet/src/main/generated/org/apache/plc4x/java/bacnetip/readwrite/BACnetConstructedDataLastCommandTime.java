@@ -146,7 +146,6 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
         BACnetTimeStamp lastCommandTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCommandTime = lastCommandTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

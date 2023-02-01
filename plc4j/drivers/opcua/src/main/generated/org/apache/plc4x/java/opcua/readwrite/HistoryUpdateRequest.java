@@ -157,7 +157,6 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
         ExtensionObjectDefinition requestHeader,
         int noOfHistoryUpdateDetails,
         List<ExtensionObject> historyUpdateDetails) {
-
       this.requestHeader = requestHeader;
       this.noOfHistoryUpdateDetails = noOfHistoryUpdateDetails;
       this.historyUpdateDetails = historyUpdateDetails;

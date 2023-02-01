@@ -46,14 +46,10 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
   protected final short pin;
   protected final PinMode mode;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataCommandSetPinMode(short pin, PinMode mode, Boolean response) {
-    super(response);
+  public FirmataCommandSetPinMode(short pin, PinMode mode) {
+    super();
     this.pin = pin;
     this.mode = mode;
-    this.response = response;
   }
 
   public short getPin() {
@@ -121,26 +117,21 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
 
     readBuffer.closeContext("FirmataCommandSetPinMode");
     // Create the instance
-    return new FirmataCommandSetPinModeBuilderImpl(pin, mode, response);
+    return new FirmataCommandSetPinModeBuilderImpl(pin, mode);
   }
 
   public static class FirmataCommandSetPinModeBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final PinMode mode;
-    private final Boolean response;
 
-    public FirmataCommandSetPinModeBuilderImpl(short pin, PinMode mode, Boolean response) {
-
+    public FirmataCommandSetPinModeBuilderImpl(short pin, PinMode mode) {
       this.pin = pin;
       this.mode = mode;
-      this.response = response;
     }
 
-    public FirmataCommandSetPinMode build(Boolean response) {
-
-      FirmataCommandSetPinMode firmataCommandSetPinMode =
-          new FirmataCommandSetPinMode(pin, mode, response);
+    public FirmataCommandSetPinMode build() {
+      FirmataCommandSetPinMode firmataCommandSetPinMode = new FirmataCommandSetPinMode(pin, mode);
       return firmataCommandSetPinMode;
     }
   }

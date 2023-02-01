@@ -148,7 +148,6 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
         BACnetDoorSecuredStatusTagged securedStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.securedStatus = securedStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

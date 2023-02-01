@@ -117,7 +117,6 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
 
     public BACnetTimerStateChangeValueNoValueBuilderImpl(
         BACnetContextTagNull noValue, BACnetObjectType objectTypeArgument) {
-
       this.noValue = noValue;
       this.objectTypeArgument = objectTypeArgument;
     }

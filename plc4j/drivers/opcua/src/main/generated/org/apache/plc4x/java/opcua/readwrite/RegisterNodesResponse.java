@@ -156,7 +156,6 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
         ExtensionObjectDefinition responseHeader,
         int noOfRegisteredNodeIds,
         List<NodeId> registeredNodeIds) {
-
       this.responseHeader = responseHeader;
       this.noOfRegisteredNodeIds = noOfRegisteredNodeIds;
       this.registeredNodeIds = registeredNodeIds;

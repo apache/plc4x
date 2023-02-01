@@ -299,7 +299,6 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos,
         ExtensionObjectDefinition filterResult) {
-
       this.responseHeader = responseHeader;
       this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;

@@ -167,7 +167,6 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
         double revisedPublishingInterval,
         long revisedLifetimeCount,
         long revisedMaxKeepAliveCount) {
-
       this.responseHeader = responseHeader;
       this.revisedPublishingInterval = revisedPublishingInterval;
       this.revisedLifetimeCount = revisedLifetimeCount;

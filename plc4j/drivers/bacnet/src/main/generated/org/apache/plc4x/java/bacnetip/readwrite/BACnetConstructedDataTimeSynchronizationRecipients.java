@@ -143,7 +143,6 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
         List<BACnetRecipient> timeSynchronizationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeSynchronizationRecipients = timeSynchronizationRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

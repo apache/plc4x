@@ -148,7 +148,6 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
         BACnetApplicationTagBoolean extendedTimeEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.extendedTimeEnable = extendedTimeEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

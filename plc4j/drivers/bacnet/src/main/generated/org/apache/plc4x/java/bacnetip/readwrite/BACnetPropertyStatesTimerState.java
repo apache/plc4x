@@ -109,7 +109,6 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     private final BACnetTimerStateTagged timerState;
 
     public BACnetPropertyStatesTimerStateBuilderImpl(BACnetTimerStateTagged timerState) {
-
       this.timerState = timerState;
     }
 

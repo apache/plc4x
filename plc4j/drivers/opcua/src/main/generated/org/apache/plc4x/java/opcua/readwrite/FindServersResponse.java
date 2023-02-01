@@ -155,7 +155,6 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
         ExtensionObjectDefinition responseHeader,
         int noOfServers,
         List<ExtensionObjectDefinition> servers) {
-
       this.responseHeader = responseHeader;
       this.noOfServers = noOfServers;
       this.servers = servers;

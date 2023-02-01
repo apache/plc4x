@@ -345,7 +345,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         GuidValue dataSetFieldId,
         int noOfProperties,
         List<ExtensionObjectDefinition> properties) {
-
       this.name = name;
       this.description = description;
       this.fieldFlags = fieldFlags;

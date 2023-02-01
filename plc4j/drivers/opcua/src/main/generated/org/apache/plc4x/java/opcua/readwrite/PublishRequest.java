@@ -161,7 +161,6 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionAcknowledgements,
         List<ExtensionObjectDefinition> subscriptionAcknowledgements) {
-
       this.requestHeader = requestHeader;
       this.noOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements;
       this.subscriptionAcknowledgements = subscriptionAcknowledgements;

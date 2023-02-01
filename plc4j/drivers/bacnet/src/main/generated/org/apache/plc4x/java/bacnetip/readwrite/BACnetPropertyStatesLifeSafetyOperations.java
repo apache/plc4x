@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
 
     public BACnetPropertyStatesLifeSafetyOperationsBuilderImpl(
         BACnetLifeSafetyOperationTagged lifeSafetyOperations) {
-
       this.lifeSafetyOperations = lifeSafetyOperations;
     }
 

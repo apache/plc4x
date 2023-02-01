@@ -109,7 +109,6 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
     private final Short numBytes;
 
     public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Short numBytes) {
-
       this.minimumLevels = minimumLevels;
       this.numBytes = numBytes;
     }

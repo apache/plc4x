@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
 
     public BACnetPropertyStatesLightningOperationBuilderImpl(
         BACnetLightingOperationTagged lightningOperation) {
-
       this.lightningOperation = lightningOperation;
     }
 

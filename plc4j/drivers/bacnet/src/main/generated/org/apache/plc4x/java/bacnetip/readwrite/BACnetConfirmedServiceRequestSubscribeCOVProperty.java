@@ -274,7 +274,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
         BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier,
         BACnetContextTagReal covIncrement,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;

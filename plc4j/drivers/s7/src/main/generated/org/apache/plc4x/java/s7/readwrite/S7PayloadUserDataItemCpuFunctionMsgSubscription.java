@@ -56,6 +56,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   protected final String magicKey;
   protected final AlarmStateType Alarmtype;
   protected final Short Reserve;
+
   // Reserved Fields
   private Short reservedField0;
 

@@ -121,7 +121,6 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
     private final byte[] value;
 
     public ModbusPDUReadHoldingRegistersResponseBuilderImpl(byte[] value) {
-
       this.value = value;
     }
 

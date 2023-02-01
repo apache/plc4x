@@ -128,7 +128,6 @@ public class NodeIdNumeric extends NodeIdTypeDefinition implements Message {
     private final long id;
 
     public NodeIdNumericBuilderImpl(int namespaceIndex, long id) {
-
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

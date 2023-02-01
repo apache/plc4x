@@ -151,7 +151,6 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
         BACnetApplicationTagCharacterString firmwareRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.firmwareRevision = firmwareRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -203,7 +203,6 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
         List<StatusCode> dataStatusCodes,
         int noOfDataDiagnosticInfos,
         List<DiagnosticInfo> dataDiagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfDataStatusCodes = noOfDataStatusCodes;
       this.dataStatusCodes = dataStatusCodes;

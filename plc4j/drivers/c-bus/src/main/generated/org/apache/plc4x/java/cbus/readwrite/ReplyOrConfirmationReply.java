@@ -143,7 +143,6 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
         ResponseTermination termination,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.reply = reply;
       this.termination = termination;
       this.cBusOptions = cBusOptions;

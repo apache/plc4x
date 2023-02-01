@@ -98,7 +98,6 @@ public class LightingDataTerminateRamp extends LightingData implements Message {
     private final byte group;
 
     public LightingDataTerminateRampBuilderImpl(byte group) {
-
       this.group = group;
     }
 

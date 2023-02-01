@@ -53,9 +53,6 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
   protected final byte[] ipAddress;
   protected final byte[] subnetMask;
   protected final byte[] standardGateway;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
 
   public PnDcp_Block_IpParameter(
       boolean ipConflictDetected,
@@ -104,19 +101,13 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     writeBuffer.pushContext("PnDcp_Block_IpParameter");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (ipConflictDetected)
     writeSimpleField("ipConflictDetected", ipConflictDetected, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (setViaDhcp)
     writeSimpleField("setViaDhcp", setViaDhcp, writeBoolean(writeBuffer));
@@ -207,14 +198,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     readBuffer.closeContext("PnDcp_Block_IpParameter");
     // Create the instance
     return new PnDcp_Block_IpParameterBuilderImpl(
-        ipConflictDetected,
-        setViaDhcp,
-        setManually,
-        ipAddress,
-        subnetMask,
-        standardGateway,
-        reservedField0,
-        reservedField1);
+        ipConflictDetected, setViaDhcp, setManually, ipAddress, subnetMask, standardGateway);
   }
 
   public static class PnDcp_Block_IpParameterBuilderImpl implements PnDcp_Block.PnDcp_BlockBuilder {
@@ -224,8 +208,6 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     private final byte[] ipAddress;
     private final byte[] subnetMask;
     private final byte[] standardGateway;
-    private final Short reservedField0;
-    private final Short reservedField1;
 
     public PnDcp_Block_IpParameterBuilderImpl(
         boolean ipConflictDetected,
@@ -233,25 +215,19 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
         boolean setManually,
         byte[] ipAddress,
         byte[] subnetMask,
-        byte[] standardGateway,
-        Short reservedField0,
-        Short reservedField1) {
+        byte[] standardGateway) {
       this.ipConflictDetected = ipConflictDetected;
       this.setViaDhcp = setViaDhcp;
       this.setManually = setManually;
       this.ipAddress = ipAddress;
       this.subnetMask = subnetMask;
       this.standardGateway = standardGateway;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public PnDcp_Block_IpParameter build() {
       PnDcp_Block_IpParameter pnDcp_Block_IpParameter =
           new PnDcp_Block_IpParameter(
               ipConflictDetected, setViaDhcp, setManually, ipAddress, subnetMask, standardGateway);
-      pnDcp_Block_IpParameter.reservedField0 = reservedField0;
-      pnDcp_Block_IpParameter.reservedField1 = reservedField1;
       return pnDcp_Block_IpParameter;
     }
   }

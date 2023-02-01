@@ -139,7 +139,6 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
     private final byte repeatType;
 
     public MediaTransportControlDataRepeatOnOffBuilderImpl(byte repeatType) {
-
       this.repeatType = repeatType;
     }
 

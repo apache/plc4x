@@ -107,7 +107,6 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     private final BACnetWeekNDayTagged weekNDay;
 
     public BACnetCalendarEntryWeekNDayBuilderImpl(BACnetWeekNDayTagged weekNDay) {
-
       this.weekNDay = weekNDay;
     }
 

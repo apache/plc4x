@@ -206,7 +206,6 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
         int sequenceNumber,
         int requestId,
         ExtensionObject message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.secureTokenId = secureTokenId;

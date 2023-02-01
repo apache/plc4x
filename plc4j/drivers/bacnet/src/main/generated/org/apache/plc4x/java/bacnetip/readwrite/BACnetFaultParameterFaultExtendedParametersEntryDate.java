@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
 
     public BACnetFaultParameterFaultExtendedParametersEntryDateBuilderImpl(
         BACnetApplicationTagDate dateValue) {
-
       this.dateValue = dateValue;
     }
 

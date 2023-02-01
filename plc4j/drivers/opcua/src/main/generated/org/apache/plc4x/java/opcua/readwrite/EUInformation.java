@@ -163,7 +163,6 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
         int unitId,
         LocalizedText displayName,
         LocalizedText description) {
-
       this.namespaceUri = namespaceUri;
       this.unitId = unitId;
       this.displayName = displayName;

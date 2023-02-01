@@ -138,7 +138,6 @@ public class NLMRequestMasterKey extends NLM implements Message {
         short numberOfSupportedKeyAlgorithms,
         byte[] encryptionAndSignatureAlgorithms,
         Integer apduLength) {
-
       this.numberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms;
       this.encryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms;
       this.apduLength = apduLength;

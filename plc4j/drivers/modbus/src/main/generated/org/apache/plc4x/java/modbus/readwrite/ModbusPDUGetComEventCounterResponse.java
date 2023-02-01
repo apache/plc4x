@@ -124,7 +124,6 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
     private final int eventCount;
 
     public ModbusPDUGetComEventCounterResponseBuilderImpl(int status, int eventCount) {
-
       this.status = status;
       this.eventCount = eventCount;
     }

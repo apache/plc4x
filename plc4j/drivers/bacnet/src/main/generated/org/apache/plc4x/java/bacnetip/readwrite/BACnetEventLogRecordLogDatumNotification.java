@@ -161,7 +161,6 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
         ConfirmedEventNotificationRequest notification,
         BACnetClosingTag innerClosingTag,
         Short tagNumber) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.notification = notification;
       this.innerClosingTag = innerClosingTag;

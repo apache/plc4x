@@ -45,6 +45,7 @@ public class HVACHumidityStatusFlags implements Message {
   protected final boolean fanActive;
   protected final boolean dehumidifyingPlant;
   protected final boolean humidifyingPlant;
+
   // Reserved Fields
   private Boolean reservedField0;
 

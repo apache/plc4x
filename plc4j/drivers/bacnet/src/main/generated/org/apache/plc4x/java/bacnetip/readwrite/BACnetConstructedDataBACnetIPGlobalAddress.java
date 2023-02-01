@@ -149,7 +149,6 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
         BACnetHostNPort bacnetIpGlobalAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bacnetIpGlobalAddress = bacnetIpGlobalAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

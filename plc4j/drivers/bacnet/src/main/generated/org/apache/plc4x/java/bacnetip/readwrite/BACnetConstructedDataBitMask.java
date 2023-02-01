@@ -145,7 +145,6 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
         BACnetApplicationTagBitString bitString,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bitString = bitString;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

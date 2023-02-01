@@ -122,7 +122,6 @@ public class NLMSecurityPayload extends NLM implements Message {
     private final Integer apduLength;
 
     public NLMSecurityPayloadBuilderImpl(int payloadLength, byte[] payload, Integer apduLength) {
-
       this.payloadLength = payloadLength;
       this.payload = payload;
       this.apduLength = apduLength;

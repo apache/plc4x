@@ -109,7 +109,6 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
     private final BACnetNetworkTypeTagged networkType;
 
     public BACnetPropertyStatesNetworkTypeBuilderImpl(BACnetNetworkTypeTagged networkType) {
-
       this.networkType = networkType;
     }
 

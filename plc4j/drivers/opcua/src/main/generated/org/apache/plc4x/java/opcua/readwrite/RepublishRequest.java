@@ -143,7 +143,6 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         long retransmitSequenceNumber) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.retransmitSequenceNumber = retransmitSequenceNumber;

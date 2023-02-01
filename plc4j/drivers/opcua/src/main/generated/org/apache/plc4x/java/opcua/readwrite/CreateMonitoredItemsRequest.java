@@ -202,7 +202,6 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
         TimestampsToReturn timestampsToReturn,
         int noOfItemsToCreate,
         List<ExtensionObjectDefinition> itemsToCreate) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.timestampsToReturn = timestampsToReturn;

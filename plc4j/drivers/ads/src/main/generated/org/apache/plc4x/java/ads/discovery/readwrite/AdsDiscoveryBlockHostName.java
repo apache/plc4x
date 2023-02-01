@@ -105,7 +105,6 @@ public class AdsDiscoveryBlockHostName extends AdsDiscoveryBlock implements Mess
     private final AmsString hostName;
 
     public AdsDiscoveryBlockHostNameBuilderImpl(AmsString hostName) {
-
       this.hostName = hostName;
     }
 

@@ -142,7 +142,6 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
         List<BACnetAddressBinding> deviceAddressBinding,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deviceAddressBinding = deviceAddressBinding;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

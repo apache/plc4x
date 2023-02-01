@@ -147,7 +147,6 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
         BACnetApplicationTagUnsignedInteger setting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setting = setting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

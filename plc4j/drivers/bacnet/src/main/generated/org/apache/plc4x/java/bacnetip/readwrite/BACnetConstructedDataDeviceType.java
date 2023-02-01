@@ -148,7 +148,6 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
         BACnetApplicationTagCharacterString deviceType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deviceType = deviceType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

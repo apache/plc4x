@@ -107,7 +107,6 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
     private final ExtensionObjectDefinition responseHeader;
 
     public CloseSessionResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
-
       this.responseHeader = responseHeader;
     }
 

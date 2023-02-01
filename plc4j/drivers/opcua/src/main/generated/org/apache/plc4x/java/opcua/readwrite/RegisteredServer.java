@@ -53,8 +53,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   protected final List<PascalString> discoveryUrls;
   protected final PascalString semaphoreFilePath;
   protected final boolean isOnline;
-  // Reserved Fields
-  private Short reservedField0;
 
   public RegisteredServer(
       PascalString serverUri,
@@ -162,10 +160,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isOnline)
     writeSimpleField("isOnline", isOnline, writeBoolean(writeBuffer));
@@ -298,8 +293,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         noOfDiscoveryUrls,
         discoveryUrls,
         semaphoreFilePath,
-        isOnline,
-        reservedField0);
+        isOnline);
   }
 
   public static class RegisteredServerBuilderImpl
@@ -314,7 +308,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     private final List<PascalString> discoveryUrls;
     private final PascalString semaphoreFilePath;
     private final boolean isOnline;
-    private final Short reservedField0;
 
     public RegisteredServerBuilderImpl(
         PascalString serverUri,
@@ -326,8 +319,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls,
         PascalString semaphoreFilePath,
-        boolean isOnline,
-        Short reservedField0) {
+        boolean isOnline) {
       this.serverUri = serverUri;
       this.productUri = productUri;
       this.noOfServerNames = noOfServerNames;
@@ -338,7 +330,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
       this.discoveryUrls = discoveryUrls;
       this.semaphoreFilePath = semaphoreFilePath;
       this.isOnline = isOnline;
-      this.reservedField0 = reservedField0;
     }
 
     public RegisteredServer build() {
@@ -354,7 +345,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
               discoveryUrls,
               semaphoreFilePath,
               isOnline);
-      registeredServer.reservedField0 = reservedField0;
       return registeredServer;
     }
   }

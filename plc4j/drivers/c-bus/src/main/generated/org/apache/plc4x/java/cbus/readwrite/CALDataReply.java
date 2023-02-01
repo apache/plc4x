@@ -107,8 +107,8 @@ public class CALDataReply extends CALData implements Message {
 
   public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataReply");
     PositionAware positionAware = readBuffer;
@@ -144,7 +144,6 @@ public class CALDataReply extends CALData implements Message {
 
     public CALDataReplyBuilderImpl(
         Parameter paramNo, ParameterValue parameterValue, RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.parameterValue = parameterValue;
       this.requestContext = requestContext;

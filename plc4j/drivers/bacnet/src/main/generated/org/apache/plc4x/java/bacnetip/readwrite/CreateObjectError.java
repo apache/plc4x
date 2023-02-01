@@ -134,7 +134,6 @@ public class CreateObjectError extends BACnetError implements Message {
 
     public CreateObjectErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

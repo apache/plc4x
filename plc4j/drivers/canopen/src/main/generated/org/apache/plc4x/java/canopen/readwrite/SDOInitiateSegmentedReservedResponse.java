@@ -47,14 +47,8 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     return (boolean) false;
   }
 
-  // Arguments.
-  protected final Byte size;
-  // Reserved Fields
-  private Integer reservedField0;
-
-  public SDOInitiateSegmentedReservedResponse(Byte size) {
-    super(size);
-    this.size = size;
+  public SDOInitiateSegmentedReservedResponse() {
+    super();
   }
 
   @Override
@@ -65,10 +59,7 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     writeBuffer.pushContext("SDOInitiateSegmentedReservedResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x00,
-        writeSignedInt(writeBuffer, 32));
+    writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("SDOInitiateSegmentedReservedResponse");
   }
@@ -103,24 +94,17 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
 
     readBuffer.closeContext("SDOInitiateSegmentedReservedResponse");
     // Create the instance
-    return new SDOInitiateSegmentedReservedResponseBuilderImpl(size, reservedField0);
+    return new SDOInitiateSegmentedReservedResponseBuilderImpl();
   }
 
   public static class SDOInitiateSegmentedReservedResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
-    private final Byte size;
-    private final Integer reservedField0;
 
-    public SDOInitiateSegmentedReservedResponseBuilderImpl(Byte size, Integer reservedField0) {
-      this.size = size;
-      this.reservedField0 = reservedField0;
-    }
+    public SDOInitiateSegmentedReservedResponseBuilderImpl() {}
 
-    public SDOInitiateSegmentedReservedResponse build(Byte size) {
-
+    public SDOInitiateSegmentedReservedResponse build() {
       SDOInitiateSegmentedReservedResponse sDOInitiateSegmentedReservedResponse =
-          new SDOInitiateSegmentedReservedResponse(size);
-      sDOInitiateSegmentedReservedResponse.reservedField0 = reservedField0;
+          new SDOInitiateSegmentedReservedResponse();
       return sDOInitiateSegmentedReservedResponse;
     }
   }

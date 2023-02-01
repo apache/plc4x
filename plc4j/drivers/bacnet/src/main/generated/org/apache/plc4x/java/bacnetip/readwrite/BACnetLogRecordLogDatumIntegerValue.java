@@ -121,7 +121,6 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
 
     public BACnetLogRecordLogDatumIntegerValueBuilderImpl(
         BACnetContextTagSignedInteger integerValue, Short tagNumber) {
-
       this.integerValue = integerValue;
       this.tagNumber = tagNumber;
     }

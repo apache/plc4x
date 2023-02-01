@@ -134,7 +134,6 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     public SubscribeCOVPropertyMultipleErrorBuilderImpl(
         ErrorEnclosed errorType,
         SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription) {
-
       this.errorType = errorType;
       this.firstFailedSubscription = firstFailedSubscription;
     }

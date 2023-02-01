@@ -188,7 +188,6 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
         List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.networkAccessSecurityPolicies = networkAccessSecurityPolicies;
       this.tagNumber = tagNumber;

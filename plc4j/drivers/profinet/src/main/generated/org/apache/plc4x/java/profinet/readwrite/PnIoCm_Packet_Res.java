@@ -256,7 +256,6 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
         long arrayOffset,
         long arrayActualCount,
         List<PnIoCm_Block> blocks) {
-
       this.errorCode2 = errorCode2;
       this.errorCode1 = errorCode1;
       this.errorDecode = errorDecode;

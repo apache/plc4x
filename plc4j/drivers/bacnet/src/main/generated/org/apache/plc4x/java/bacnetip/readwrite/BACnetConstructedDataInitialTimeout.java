@@ -148,7 +148,6 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger initialTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.initialTimeout = initialTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,6 +42,7 @@ public class TPKTPacket implements Message {
 
   // Properties.
   protected final COTPPacket payload;
+
   // Reserved Fields
   private Short reservedField0;
 

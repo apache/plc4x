@@ -107,7 +107,6 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
 
     public BACnetSpecialEventPeriodCalendarEntryBuilderImpl(
         BACnetCalendarEntryEnclosed calendarEntry) {
-
       this.calendarEntry = calendarEntry;
     }
 

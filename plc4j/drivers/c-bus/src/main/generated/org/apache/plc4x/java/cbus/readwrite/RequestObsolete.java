@@ -153,7 +153,6 @@ public class RequestObsolete extends Request implements Message {
     private final CBusOptions cBusOptions;
 
     public RequestObsoleteBuilderImpl(CALData calData, Alpha alpha, CBusOptions cBusOptions) {
-
       this.calData = calData;
       this.alpha = alpha;
       this.cBusOptions = cBusOptions;

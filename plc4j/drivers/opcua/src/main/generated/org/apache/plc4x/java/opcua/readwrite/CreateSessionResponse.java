@@ -362,7 +362,6 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         List<ExtensionObjectDefinition> serverSoftwareCertificates,
         ExtensionObjectDefinition serverSignature,
         long maxRequestMessageSize) {
-
       this.responseHeader = responseHeader;
       this.sessionId = sessionId;
       this.authenticationToken = authenticationToken;

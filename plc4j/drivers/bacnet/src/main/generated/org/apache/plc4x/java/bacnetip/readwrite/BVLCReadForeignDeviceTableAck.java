@@ -118,7 +118,6 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
 
     public BVLCReadForeignDeviceTableAckBuilderImpl(
         List<BVLCForeignDeviceTableEntry> table, Integer bvlcPayloadLength) {
-
       this.table = table;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

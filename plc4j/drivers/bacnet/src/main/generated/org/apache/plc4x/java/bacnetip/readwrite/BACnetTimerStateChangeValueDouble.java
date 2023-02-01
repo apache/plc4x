@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
 
     public BACnetTimerStateChangeValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, BACnetObjectType objectTypeArgument) {
-
       this.doubleValue = doubleValue;
       this.objectTypeArgument = objectTypeArgument;
     }

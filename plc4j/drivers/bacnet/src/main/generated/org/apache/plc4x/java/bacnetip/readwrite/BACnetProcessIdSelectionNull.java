@@ -105,7 +105,6 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetProcessIdSelectionNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

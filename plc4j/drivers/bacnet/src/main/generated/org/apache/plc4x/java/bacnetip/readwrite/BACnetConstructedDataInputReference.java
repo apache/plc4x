@@ -145,7 +145,6 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
         BACnetObjectPropertyReference inputReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inputReference = inputReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

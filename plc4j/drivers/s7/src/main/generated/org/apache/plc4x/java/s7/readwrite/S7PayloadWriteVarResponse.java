@@ -121,7 +121,6 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
 
     public S7PayloadWriteVarResponseBuilderImpl(
         List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
-
       this.items = items;
       this.parameter = parameter;
     }

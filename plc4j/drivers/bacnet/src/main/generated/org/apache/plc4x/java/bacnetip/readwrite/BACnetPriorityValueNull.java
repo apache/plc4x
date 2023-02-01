@@ -113,7 +113,6 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
 
     public BACnetPriorityValueNullBuilderImpl(
         BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
-
       this.nullValue = nullValue;
       this.objectTypeArgument = objectTypeArgument;
     }

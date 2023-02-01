@@ -73,8 +73,7 @@ public class VariantUInt16 extends Variant implements Message {
     writeBuffer.pushContext("VariantUInt16");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeUnsignedInt(writeBuffer, 16));
@@ -131,7 +130,6 @@ public class VariantUInt16 extends Variant implements Message {
     private final List<Integer> value;
 
     public VariantUInt16BuilderImpl(Integer arrayLength, List<Integer> value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

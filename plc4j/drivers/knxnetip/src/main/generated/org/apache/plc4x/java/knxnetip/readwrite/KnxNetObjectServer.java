@@ -100,7 +100,6 @@ public class KnxNetObjectServer extends ServiceId implements Message {
     private final short version;
 
     public KnxNetObjectServerBuilderImpl(short version) {
-
       this.version = version;
     }
 

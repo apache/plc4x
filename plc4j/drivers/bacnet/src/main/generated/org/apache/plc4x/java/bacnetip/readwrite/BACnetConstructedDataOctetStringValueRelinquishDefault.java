@@ -150,7 +150,6 @@ public class BACnetConstructedDataOctetStringValueRelinquishDefault extends BACn
         BACnetApplicationTagSignedInteger relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

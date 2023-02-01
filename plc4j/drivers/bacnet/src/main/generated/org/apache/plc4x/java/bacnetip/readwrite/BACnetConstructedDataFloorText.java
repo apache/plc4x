@@ -189,7 +189,6 @@ public class BACnetConstructedDataFloorText extends BACnetConstructedData implem
         List<BACnetApplicationTagCharacterString> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.floorText = floorText;
       this.tagNumber = tagNumber;

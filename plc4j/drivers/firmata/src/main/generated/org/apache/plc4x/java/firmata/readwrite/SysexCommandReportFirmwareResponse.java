@@ -155,7 +155,6 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
 
     public SysexCommandReportFirmwareResponseBuilderImpl(
         short majorVersion, short minorVersion, byte[] fileName) {
-
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
       this.fileName = fileName;

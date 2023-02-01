@@ -142,7 +142,6 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
         List<BACnetVMACEntry> virtualMacAddressTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.virtualMacAddressTable = virtualMacAddressTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

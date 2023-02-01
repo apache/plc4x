@@ -189,7 +189,6 @@ public class BACnetConstructedDataStateText extends BACnetConstructedData implem
         List<BACnetApplicationTagCharacterString> stateText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.stateText = stateText;
       this.tagNumber = tagNumber;

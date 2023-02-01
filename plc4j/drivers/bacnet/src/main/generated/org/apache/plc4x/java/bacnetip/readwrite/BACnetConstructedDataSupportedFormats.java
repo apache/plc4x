@@ -187,7 +187,6 @@ public class BACnetConstructedDataSupportedFormats extends BACnetConstructedData
         List<BACnetAuthenticationFactorFormat> supportedFormats,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.supportedFormats = supportedFormats;
       this.tagNumber = tagNumber;

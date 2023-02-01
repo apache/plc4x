@@ -124,7 +124,6 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
     private final int value;
 
     public ModbusPDUWriteSingleCoilRequestBuilderImpl(int address, int value) {
-
       this.address = address;
       this.value = value;
     }

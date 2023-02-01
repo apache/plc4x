@@ -107,7 +107,6 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     private final BACnetBinaryPVTagged binaryPv;
 
     public BACnetOptionalBinaryPVValueBuilderImpl(BACnetBinaryPVTagged binaryPv) {
-
       this.binaryPv = binaryPv;
     }
 

@@ -107,7 +107,6 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
     private final Short numBytes;
 
     public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName, Short numBytes) {
-
       this.manufacturerName = manufacturerName;
       this.numBytes = numBytes;
     }

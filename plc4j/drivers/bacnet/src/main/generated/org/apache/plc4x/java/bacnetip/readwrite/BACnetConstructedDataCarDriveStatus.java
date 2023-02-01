@@ -148,7 +148,6 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
         BACnetLiftCarDriveStatusTagged carDriveStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carDriveStatus = carDriveStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

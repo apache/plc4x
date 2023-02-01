@@ -97,7 +97,6 @@ public class LightingDataOn extends LightingData implements Message {
     private final byte group;
 
     public LightingDataOnBuilderImpl(byte group) {
-
       this.group = group;
     }
 

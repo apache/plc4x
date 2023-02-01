@@ -202,7 +202,6 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

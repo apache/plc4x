@@ -148,7 +148,6 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
         BACnetApplicationTagReal instantaneousPower,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.instantaneousPower = instantaneousPower;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

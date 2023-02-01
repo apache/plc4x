@@ -147,7 +147,6 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
         BACnetApplicationTagOctetString ipv6Address,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6Address = ipv6Address;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

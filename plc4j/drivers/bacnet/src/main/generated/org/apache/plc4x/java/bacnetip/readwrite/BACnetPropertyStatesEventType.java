@@ -109,7 +109,6 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     private final BACnetEventTypeTagged eventType;
 
     public BACnetPropertyStatesEventTypeBuilderImpl(BACnetEventTypeTagged eventType) {
-
       this.eventType = eventType;
     }
 

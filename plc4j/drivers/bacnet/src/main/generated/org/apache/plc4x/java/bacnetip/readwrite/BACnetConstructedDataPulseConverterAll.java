@@ -114,7 +114,6 @@ public class BACnetConstructedDataPulseConverterAll extends BACnetConstructedDat
 
     public BACnetConstructedDataPulseConverterAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

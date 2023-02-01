@@ -199,7 +199,6 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
         long requestedMaxReferencesPerNode,
         int noOfNodesToBrowse,
         List<ExtensionObjectDefinition> nodesToBrowse) {
-
       this.requestHeader = requestHeader;
       this.view = view;
       this.requestedMaxReferencesPerNode = requestedMaxReferencesPerNode;

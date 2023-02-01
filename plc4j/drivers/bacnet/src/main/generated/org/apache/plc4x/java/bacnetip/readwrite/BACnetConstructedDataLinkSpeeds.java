@@ -187,7 +187,6 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
         List<BACnetApplicationTagReal> linkSpeeds,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.linkSpeeds = linkSpeeds;
       this.tagNumber = tagNumber;

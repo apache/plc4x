@@ -262,7 +262,6 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
         Short dataUnitReferenceNumber,
         Short lastDataUnit,
         Integer errorCode) {
-
       this.method = method;
       this.cpuFunctionType = cpuFunctionType;
       this.cpuFunctionGroup = cpuFunctionGroup;

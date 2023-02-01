@@ -148,7 +148,6 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
         BACnetApplicationTagReal defaultStepIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultStepIncrement = defaultStepIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

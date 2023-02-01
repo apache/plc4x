@@ -107,7 +107,6 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
 
     public BACnetChannelValueLightingCommandBuilderImpl(
         BACnetLightingCommandEnclosed ligthingCommandValue) {
-
       this.ligthingCommandValue = ligthingCommandValue;
     }
 

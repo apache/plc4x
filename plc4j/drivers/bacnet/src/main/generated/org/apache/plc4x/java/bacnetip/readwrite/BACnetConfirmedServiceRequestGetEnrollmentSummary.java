@@ -279,7 +279,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter,
         BACnetContextTagUnsignedInteger notificationClassFilter,
         Long serviceRequestLength) {
-
       this.acknowledgmentFilter = acknowledgmentFilter;
       this.enrollmentFilter = enrollmentFilter;
       this.eventStateFilter = eventStateFilter;

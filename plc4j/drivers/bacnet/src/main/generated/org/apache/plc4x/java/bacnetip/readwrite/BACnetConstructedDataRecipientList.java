@@ -141,7 +141,6 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
         List<BACnetDestination> recipientList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.recipientList = recipientList;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -146,7 +146,6 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
         BACnetApplicationTagBoolean carDoorZone,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carDoorZone = carDoorZone;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

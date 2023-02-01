@@ -63,9 +63,6 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   protected final int ioCrTagHeader;
   protected final MacAddress ioCrMulticastMacAdr;
   protected final List<PnIoCm_IoCrBlockReqApi> apis;
-  // Reserved Fields
-  private Long reservedField0;
-  private Short reservedField1;
 
   public PnIoCm_Block_IoCrReq(
       short blockVersionHigh,
@@ -246,7 +243,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x0000,
+        (long) 0x0000,
         writeUnsignedLong(writeBuffer, 17),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -260,7 +257,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
+        (short) 0x00,
         writeUnsignedShort(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -627,9 +624,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         dataHoldFactor,
         ioCrTagHeader,
         ioCrMulticastMacAdr,
-        apis,
-        reservedField0,
-        reservedField1);
+        apis);
   }
 
   public static class PnIoCm_Block_IoCrReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
@@ -653,8 +648,6 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     private final int ioCrTagHeader;
     private final MacAddress ioCrMulticastMacAdr;
     private final List<PnIoCm_IoCrBlockReqApi> apis;
-    private final Long reservedField0;
-    private final Short reservedField1;
 
     public PnIoCm_Block_IoCrReqBuilderImpl(
         PnIoCm_IoCrType ioCrType,
@@ -676,9 +669,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         int dataHoldFactor,
         int ioCrTagHeader,
         MacAddress ioCrMulticastMacAdr,
-        List<PnIoCm_IoCrBlockReqApi> apis,
-        Long reservedField0,
-        Short reservedField1) {
+        List<PnIoCm_IoCrBlockReqApi> apis) {
       this.ioCrType = ioCrType;
       this.ioCrReference = ioCrReference;
       this.lt = lt;
@@ -699,8 +690,6 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
       this.ioCrTagHeader = ioCrTagHeader;
       this.ioCrMulticastMacAdr = ioCrMulticastMacAdr;
       this.apis = apis;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public PnIoCm_Block_IoCrReq build(short blockVersionHigh, short blockVersionLow) {
@@ -728,8 +717,6 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
               ioCrTagHeader,
               ioCrMulticastMacAdr,
               apis);
-      pnIoCm_Block_IoCrReq.reservedField0 = reservedField0;
-      pnIoCm_Block_IoCrReq.reservedField1 = reservedField1;
       return pnIoCm_Block_IoCrReq;
     }
   }

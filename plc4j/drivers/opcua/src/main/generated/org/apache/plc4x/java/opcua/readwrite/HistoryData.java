@@ -127,7 +127,6 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     private final List<DataValue> dataValues;
 
     public HistoryDataBuilderImpl(int noOfDataValues, List<DataValue> dataValues) {
-
       this.noOfDataValues = noOfDataValues;
       this.dataValues = dataValues;
     }

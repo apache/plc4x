@@ -148,7 +148,6 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
         BACnetNotifyTypeTagged notifyType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.notifyType = notifyType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

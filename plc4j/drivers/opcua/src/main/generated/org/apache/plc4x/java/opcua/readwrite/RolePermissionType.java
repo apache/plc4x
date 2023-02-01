@@ -130,7 +130,6 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     private final PermissionType permissions;
 
     public RolePermissionTypeBuilderImpl(NodeId roleId, PermissionType permissions) {
-
       this.roleId = roleId;
       this.permissions = permissions;
     }

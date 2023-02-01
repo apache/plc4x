@@ -191,7 +191,6 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData errorParameters) {
-
       this.errorType = errorType;
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;

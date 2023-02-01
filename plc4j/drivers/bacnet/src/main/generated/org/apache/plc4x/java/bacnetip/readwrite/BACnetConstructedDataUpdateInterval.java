@@ -148,7 +148,6 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger updateInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateInterval = updateInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

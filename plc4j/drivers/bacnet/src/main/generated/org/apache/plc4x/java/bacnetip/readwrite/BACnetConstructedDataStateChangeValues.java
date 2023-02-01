@@ -194,7 +194,6 @@ public class BACnetConstructedDataStateChangeValues extends BACnetConstructedDat
         List<BACnetTimerStateChangeValue> stateChangeValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.stateChangeValues = stateChangeValues;
       this.tagNumber = tagNumber;

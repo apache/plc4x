@@ -187,7 +187,6 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
 
     public MediaTransportControlDataEnumerationsSizeBuilderImpl(
         byte sizeType, short start, short size) {
-
       this.sizeType = sizeType;
       this.start = start;
       this.size = size;

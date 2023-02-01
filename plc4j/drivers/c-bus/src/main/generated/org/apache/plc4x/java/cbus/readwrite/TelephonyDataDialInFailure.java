@@ -114,7 +114,6 @@ public class TelephonyDataDialInFailure extends TelephonyData implements Message
     private final DialInFailureReason reason;
 
     public TelephonyDataDialInFailureBuilderImpl(DialInFailureReason reason) {
-
       this.reason = reason;
     }
 

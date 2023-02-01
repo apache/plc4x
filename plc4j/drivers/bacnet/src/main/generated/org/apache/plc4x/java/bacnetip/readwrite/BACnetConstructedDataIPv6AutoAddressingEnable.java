@@ -148,7 +148,6 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
         BACnetApplicationTagBoolean autoAddressingEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.autoAddressingEnable = autoAddressingEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

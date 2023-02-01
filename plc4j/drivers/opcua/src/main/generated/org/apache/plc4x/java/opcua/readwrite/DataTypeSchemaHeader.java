@@ -285,7 +285,6 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
         List<DataTypeDescription> enumDataTypes,
         int noOfSimpleDataTypes,
         List<DataTypeDescription> simpleDataTypes) {
-
       this.noOfNamespaces = noOfNamespaces;
       this.namespaces = namespaces;
       this.noOfStructureDataTypes = noOfStructureDataTypes;

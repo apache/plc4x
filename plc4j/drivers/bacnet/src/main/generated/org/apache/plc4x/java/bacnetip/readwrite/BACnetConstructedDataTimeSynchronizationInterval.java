@@ -151,7 +151,6 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
         BACnetApplicationTagUnsignedInteger timeSynchronization,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeSynchronization = timeSynchronization;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

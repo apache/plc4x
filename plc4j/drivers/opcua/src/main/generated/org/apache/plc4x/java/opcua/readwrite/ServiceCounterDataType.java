@@ -117,7 +117,6 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
     private final long errorCount;
 
     public ServiceCounterDataTypeBuilderImpl(long totalCount, long errorCount) {
-
       this.totalCount = totalCount;
       this.errorCount = errorCount;
     }

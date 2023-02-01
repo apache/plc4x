@@ -123,7 +123,6 @@ public class BACnetTimerStateChangeValueConstructedValue extends BACnetTimerStat
 
     public BACnetTimerStateChangeValueConstructedValueBuilderImpl(
         BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
-
       this.constructedValue = constructedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

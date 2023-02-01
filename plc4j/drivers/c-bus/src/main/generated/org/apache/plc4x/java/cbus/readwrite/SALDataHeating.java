@@ -103,7 +103,6 @@ public class SALDataHeating extends SALData implements Message {
     private final LightingData heatingData;
 
     public SALDataHeatingBuilderImpl(LightingData heatingData) {
-
       this.heatingData = heatingData;
     }
 

@@ -123,7 +123,6 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     private final NodeId affectedType;
 
     public SemanticChangeStructureDataTypeBuilderImpl(NodeId affected, NodeId affectedType) {
-
       this.affected = affected;
       this.affectedType = affectedType;
     }

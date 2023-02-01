@@ -126,7 +126,6 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
 
     public IdentifyReplyCommandDelaysBuilderImpl(
         byte[] terminalLevels, byte reStrikeDelay, Short numBytes) {
-
       this.terminalLevels = terminalLevels;
       this.reStrikeDelay = reStrikeDelay;
       this.numBytes = numBytes;

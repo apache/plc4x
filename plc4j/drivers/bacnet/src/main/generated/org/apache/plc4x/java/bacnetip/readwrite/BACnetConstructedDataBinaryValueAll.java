@@ -113,7 +113,6 @@ public class BACnetConstructedDataBinaryValueAll extends BACnetConstructedData i
 
     public BACnetConstructedDataBinaryValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

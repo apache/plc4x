@@ -191,7 +191,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
         PascalString discoveryUrl,
         int noOfServerCapabilities,
         List<PascalString> serverCapabilities) {
-
       this.recordId = recordId;
       this.serverName = serverName;
       this.discoveryUrl = discoveryUrl;

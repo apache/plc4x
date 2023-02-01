@@ -172,7 +172,6 @@ public class AirConditioningDataZoneHumidity extends AirConditioningData impleme
         HVACZoneList zoneList,
         HVACHumidity humidity,
         HVACSensorStatus sensorStatus) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.humidity = humidity;

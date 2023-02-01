@@ -114,7 +114,6 @@ public class LightingDataRampToLevel extends LightingData implements Message {
     private final byte level;
 
     public LightingDataRampToLevelBuilderImpl(byte group, byte level) {
-
       this.group = group;
       this.level = level;
     }

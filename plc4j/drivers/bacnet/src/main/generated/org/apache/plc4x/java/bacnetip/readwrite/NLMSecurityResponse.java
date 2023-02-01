@@ -177,7 +177,6 @@ public class NLMSecurityResponse extends NLM implements Message {
         long originalTimestamp,
         byte[] variableParameters,
         Integer apduLength) {
-
       this.responseCode = responseCode;
       this.originalMessageId = originalMessageId;
       this.originalTimestamp = originalTimestamp;

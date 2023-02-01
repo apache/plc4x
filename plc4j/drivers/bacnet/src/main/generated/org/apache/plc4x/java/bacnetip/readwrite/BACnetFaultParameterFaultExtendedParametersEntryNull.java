@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryNull
 
     public BACnetFaultParameterFaultExtendedParametersEntryNullBuilderImpl(
         BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

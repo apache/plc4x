@@ -191,7 +191,6 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
         List<BACnetTimeStamp> commandTimeArray,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.commandTimeArray = commandTimeArray;
       this.tagNumber = tagNumber;

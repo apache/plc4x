@@ -147,7 +147,6 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
         BACnetApplicationTagSignedInteger utcOffset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.utcOffset = utcOffset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

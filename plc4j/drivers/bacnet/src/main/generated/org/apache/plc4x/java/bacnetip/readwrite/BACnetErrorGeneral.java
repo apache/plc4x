@@ -103,7 +103,6 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     private final Error error;
 
     public BACnetErrorGeneralBuilderImpl(Error error) {
-
       this.error = error;
     }
 

@@ -60,9 +60,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   protected final int cmInitiatorActivityTimeoutFactor;
   protected final int cmInitiatorUdpRtPort;
   protected final String cmInitiatorStationName;
-  // Reserved Fields
-  private Long reservedField0;
-  private Byte reservedField1;
 
   public PnIoCm_Block_ArReq(
       short blockVersionHigh,
@@ -239,7 +236,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000,
+        (long) 0x00000,
         writeUnsignedLong(writeBuffer, 17),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -271,7 +268,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (byte) 0x0,
+        (byte) 0x0,
         writeUnsignedByte(writeBuffer, 3),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -556,9 +553,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         state,
         cmInitiatorActivityTimeoutFactor,
         cmInitiatorUdpRtPort,
-        cmInitiatorStationName,
-        reservedField0,
-        reservedField1);
+        cmInitiatorStationName);
   }
 
   public static class PnIoCm_Block_ArReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
@@ -579,8 +574,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     private final int cmInitiatorActivityTimeoutFactor;
     private final int cmInitiatorUdpRtPort;
     private final String cmInitiatorStationName;
-    private final Long reservedField0;
-    private final Byte reservedField1;
 
     public PnIoCm_Block_ArReqBuilderImpl(
         PnIoCm_ArType arType,
@@ -599,9 +592,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         PnIoCm_State state,
         int cmInitiatorActivityTimeoutFactor,
         int cmInitiatorUdpRtPort,
-        String cmInitiatorStationName,
-        Long reservedField0,
-        Byte reservedField1) {
+        String cmInitiatorStationName) {
       this.arType = arType;
       this.arUuid = arUuid;
       this.sessionKey = sessionKey;
@@ -619,8 +610,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       this.cmInitiatorActivityTimeoutFactor = cmInitiatorActivityTimeoutFactor;
       this.cmInitiatorUdpRtPort = cmInitiatorUdpRtPort;
       this.cmInitiatorStationName = cmInitiatorStationName;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public PnIoCm_Block_ArReq build(short blockVersionHigh, short blockVersionLow) {
@@ -645,8 +634,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
               cmInitiatorActivityTimeoutFactor,
               cmInitiatorUdpRtPort,
               cmInitiatorStationName);
-      pnIoCm_Block_ArReq.reservedField0 = reservedField0;
-      pnIoCm_Block_ArReq.reservedField1 = reservedField1;
       return pnIoCm_Block_ArReq;
     }
   }

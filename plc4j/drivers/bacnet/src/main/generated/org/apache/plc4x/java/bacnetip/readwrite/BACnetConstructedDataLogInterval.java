@@ -148,7 +148,6 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
         BACnetApplicationTagUnsignedInteger logInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.logInterval = logInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

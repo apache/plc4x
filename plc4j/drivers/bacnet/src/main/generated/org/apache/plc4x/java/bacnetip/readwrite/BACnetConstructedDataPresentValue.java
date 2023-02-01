@@ -148,7 +148,6 @@ public class BACnetConstructedDataPresentValue extends BACnetConstructedData imp
         BACnetApplicationTagUnsignedInteger presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

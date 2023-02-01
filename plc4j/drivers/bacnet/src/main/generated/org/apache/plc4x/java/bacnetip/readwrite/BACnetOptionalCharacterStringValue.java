@@ -110,7 +110,6 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
 
     public BACnetOptionalCharacterStringValueBuilderImpl(
         BACnetApplicationTagCharacterString characterstring) {
-
       this.characterstring = characterstring;
     }
 

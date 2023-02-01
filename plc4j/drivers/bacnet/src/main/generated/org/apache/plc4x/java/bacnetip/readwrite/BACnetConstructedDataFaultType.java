@@ -147,7 +147,6 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
         BACnetFaultTypeTagged faultType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultType = faultType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -323,7 +323,6 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
         PascalByteString clientCertificate) {
-
       this.sessionId = sessionId;
       this.clientUserIdOfSession = clientUserIdOfSession;
       this.noOfClientUserIdHistory = noOfClientUserIdHistory;

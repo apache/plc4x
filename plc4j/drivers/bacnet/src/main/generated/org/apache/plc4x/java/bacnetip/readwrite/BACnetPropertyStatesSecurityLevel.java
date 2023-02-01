@@ -109,7 +109,6 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     private final BACnetSecurityLevelTagged securityLevel;
 
     public BACnetPropertyStatesSecurityLevelBuilderImpl(BACnetSecurityLevelTagged securityLevel) {
-
       this.securityLevel = securityLevel;
     }
 

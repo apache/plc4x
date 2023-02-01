@@ -180,7 +180,6 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
         BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues,
         BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.modePropertyReference = modePropertyReference;

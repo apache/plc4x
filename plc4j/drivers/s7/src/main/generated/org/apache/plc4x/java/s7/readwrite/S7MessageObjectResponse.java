@@ -45,6 +45,7 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
   // Properties.
   protected final DataTransportErrorCode returnCode;
   protected final DataTransportSize transportSize;
+
   // Reserved Fields
   private Short reservedField0;
 

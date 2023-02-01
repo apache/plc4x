@@ -113,7 +113,6 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
 
     public BACnetPriorityValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
-
       this.booleanValue = booleanValue;
       this.objectTypeArgument = objectTypeArgument;
     }

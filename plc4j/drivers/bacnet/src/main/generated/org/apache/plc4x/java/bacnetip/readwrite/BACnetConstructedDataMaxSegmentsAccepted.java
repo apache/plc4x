@@ -151,7 +151,6 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger maxSegmentsAccepted,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxSegmentsAccepted = maxSegmentsAccepted;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

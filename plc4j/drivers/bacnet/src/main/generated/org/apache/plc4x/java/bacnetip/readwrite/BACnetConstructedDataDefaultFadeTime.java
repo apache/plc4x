@@ -149,7 +149,6 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
         BACnetApplicationTagUnsignedInteger defaultFadeTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultFadeTime = defaultFadeTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

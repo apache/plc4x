@@ -105,7 +105,6 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
     private final BACnetApplicationTagBoolean booleanValue;
 
     public BACnetChannelValueBooleanBuilderImpl(BACnetApplicationTagBoolean booleanValue) {
-
       this.booleanValue = booleanValue;
     }
 

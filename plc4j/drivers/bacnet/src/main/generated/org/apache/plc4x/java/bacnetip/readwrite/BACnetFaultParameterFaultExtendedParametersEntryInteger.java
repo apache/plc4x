@@ -111,7 +111,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
 
     public BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

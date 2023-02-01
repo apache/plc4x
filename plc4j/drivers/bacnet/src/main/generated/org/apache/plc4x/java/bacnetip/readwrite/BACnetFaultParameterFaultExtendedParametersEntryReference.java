@@ -111,7 +111,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference
 
     public BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilderImpl(
         BACnetDeviceObjectPropertyReferenceEnclosed reference) {
-
       this.reference = reference;
     }
 

@@ -42,12 +42,8 @@ public class MPropWriteReq extends CEMI implements Message {
     return (short) 0xF6;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MPropWriteReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MPropWriteReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class MPropWriteReq extends CEMI implements Message {
 
     readBuffer.closeContext("MPropWriteReq");
     // Create the instance
-    return new MPropWriteReqBuilderImpl(size);
+    return new MPropWriteReqBuilderImpl();
   }
 
   public static class MPropWriteReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public MPropWriteReqBuilderImpl(Integer size) {
+    public MPropWriteReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MPropWriteReq build(Integer size) {
-
-      MPropWriteReq mPropWriteReq = new MPropWriteReq(size);
-
+    public MPropWriteReq build() {
+      MPropWriteReq mPropWriteReq = new MPropWriteReq();
       return mPropWriteReq;
     }
   }

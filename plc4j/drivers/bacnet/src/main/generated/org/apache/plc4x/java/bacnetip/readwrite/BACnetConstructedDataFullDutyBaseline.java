@@ -148,7 +148,6 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
         BACnetApplicationTagReal fullDutyBaseLine,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fullDutyBaseLine = fullDutyBaseLine;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

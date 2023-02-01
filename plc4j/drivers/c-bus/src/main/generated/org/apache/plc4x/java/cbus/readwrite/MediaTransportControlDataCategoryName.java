@@ -110,7 +110,6 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
     private final String categoryName;
 
     public MediaTransportControlDataCategoryNameBuilderImpl(String categoryName) {
-
       this.categoryName = categoryName;
     }
 

@@ -220,7 +220,6 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
         int Info1,
         long Info2,
         DateAndTime TimeStamp) {
-
       this.EventId = EventId;
       this.PriorityClass = PriorityClass;
       this.ObNumber = ObNumber;

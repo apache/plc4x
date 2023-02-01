@@ -40,12 +40,8 @@ public abstract class FirmataCommand implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getCommandCode();
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataCommand(Boolean response) {
+  public FirmataCommand() {
     super();
-    this.response = response;
   }
 
   protected abstract void serializeFirmataCommandChild(WriteBuffer writeBuffer)
@@ -138,13 +134,12 @@ public abstract class FirmataCommand implements Message {
 
     readBuffer.closeContext("FirmataCommand");
     // Create the instance
-    FirmataCommand _firmataCommand = builder.build(response);
-
+    FirmataCommand _firmataCommand = builder.build();
     return _firmataCommand;
   }
 
   public interface FirmataCommandBuilder {
-    FirmataCommand build(Boolean response);
+    FirmataCommand build();
   }
 
   @Override

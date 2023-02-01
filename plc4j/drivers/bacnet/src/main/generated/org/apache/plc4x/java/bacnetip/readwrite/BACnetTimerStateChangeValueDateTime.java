@@ -113,7 +113,6 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
 
     public BACnetTimerStateChangeValueDateTimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
-
       this.dateTimeValue = dateTimeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -145,7 +145,6 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
         List<BACnetLifeSafetyStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

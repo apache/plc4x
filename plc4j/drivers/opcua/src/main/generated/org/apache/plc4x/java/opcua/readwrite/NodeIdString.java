@@ -131,7 +131,6 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     private final PascalString id;
 
     public NodeIdStringBuilderImpl(int namespaceIndex, PascalString id) {
-
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

@@ -117,7 +117,6 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
     private final long denominator;
 
     public UnsignedRationalNumberBuilderImpl(long numerator, long denominator) {
-
       this.numerator = numerator;
       this.denominator = denominator;
     }

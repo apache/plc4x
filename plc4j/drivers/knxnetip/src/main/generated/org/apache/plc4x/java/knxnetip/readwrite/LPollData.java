@@ -50,8 +50,6 @@ public class LPollData extends LDataFrame implements Message {
   protected final KnxAddress sourceAddress;
   protected final byte[] targetAddress;
   protected final short numberExpectedPollData;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public LPollData(
       boolean frameType,
@@ -93,10 +91,7 @@ public class LPollData extends LDataFrame implements Message {
     writeByteArrayField("targetAddress", targetAddress, writeByteArray(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (numberExpectedPollData)
     writeSimpleField(
@@ -154,25 +149,19 @@ public class LPollData extends LDataFrame implements Message {
 
     readBuffer.closeContext("LPollData");
     // Create the instance
-    return new LPollDataBuilderImpl(
-        sourceAddress, targetAddress, numberExpectedPollData, reservedField0);
+    return new LPollDataBuilderImpl(sourceAddress, targetAddress, numberExpectedPollData);
   }
 
   public static class LPollDataBuilderImpl implements LDataFrame.LDataFrameBuilder {
     private final KnxAddress sourceAddress;
     private final byte[] targetAddress;
     private final short numberExpectedPollData;
-    private final Byte reservedField0;
 
     public LPollDataBuilderImpl(
-        KnxAddress sourceAddress,
-        byte[] targetAddress,
-        short numberExpectedPollData,
-        Byte reservedField0) {
+        KnxAddress sourceAddress, byte[] targetAddress, short numberExpectedPollData) {
       this.sourceAddress = sourceAddress;
       this.targetAddress = targetAddress;
       this.numberExpectedPollData = numberExpectedPollData;
-      this.reservedField0 = reservedField0;
     }
 
     public LPollData build(
@@ -191,7 +180,6 @@ public class LPollData extends LDataFrame implements Message {
               sourceAddress,
               targetAddress,
               numberExpectedPollData);
-      lPollData.reservedField0 = reservedField0;
       return lPollData;
     }
   }

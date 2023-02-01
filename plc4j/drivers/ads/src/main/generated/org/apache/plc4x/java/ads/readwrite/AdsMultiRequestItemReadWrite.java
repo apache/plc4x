@@ -150,7 +150,6 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
 
     public AdsMultiRequestItemReadWriteBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemReadLength, long itemWriteLength) {
-
       this.itemIndexGroup = itemIndexGroup;
       this.itemIndexOffset = itemIndexOffset;
       this.itemReadLength = itemReadLength;

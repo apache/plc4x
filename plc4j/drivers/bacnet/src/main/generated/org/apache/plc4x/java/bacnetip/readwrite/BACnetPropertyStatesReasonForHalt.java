@@ -109,7 +109,6 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     private final BACnetProgramErrorTagged reasonForHalt;
 
     public BACnetPropertyStatesReasonForHaltBuilderImpl(BACnetProgramErrorTagged reasonForHalt) {
-
       this.reasonForHalt = reasonForHalt;
     }
 

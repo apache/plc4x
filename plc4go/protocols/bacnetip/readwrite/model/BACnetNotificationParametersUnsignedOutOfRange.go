@@ -179,11 +179,11 @@ func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersUnsignedOutOfRangeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersUnsignedOutOfRange, error) {
-	return BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, peekedTagNumber)
+func BACnetNotificationParametersUnsignedOutOfRangeParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersUnsignedOutOfRange, error) {
+	return BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersUnsignedOutOfRange, error) {
+func BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersUnsignedOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnsignedOutOfRange"); pullErr != nil {

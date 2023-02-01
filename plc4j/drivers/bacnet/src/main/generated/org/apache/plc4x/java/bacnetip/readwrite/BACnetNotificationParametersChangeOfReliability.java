@@ -149,9 +149,9 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfReliability");
     PositionAware positionAware = readBuffer;
@@ -229,7 +229,6 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.reliability = reliability;
       this.statusFlags = statusFlags;

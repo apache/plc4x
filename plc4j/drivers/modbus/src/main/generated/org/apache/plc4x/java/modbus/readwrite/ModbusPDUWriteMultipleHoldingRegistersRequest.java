@@ -154,7 +154,6 @@ public class ModbusPDUWriteMultipleHoldingRegistersRequest extends ModbusPDU imp
 
     public ModbusPDUWriteMultipleHoldingRegistersRequestBuilderImpl(
         int startingAddress, int quantity, byte[] value) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
       this.value = value;

@@ -109,7 +109,6 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     private final BACnetContextTagNull nullValue;
 
     public BACnetLogDataLogDataEntryNullValueBuilderImpl(BACnetContextTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

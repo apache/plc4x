@@ -151,7 +151,6 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger attemptedSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.attemptedSamples = attemptedSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

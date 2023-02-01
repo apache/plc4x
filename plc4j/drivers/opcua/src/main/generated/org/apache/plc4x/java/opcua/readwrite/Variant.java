@@ -96,11 +96,7 @@ public abstract class Variant implements Message {
     serializeVariantChild(writeBuffer);
 
     // Optional Field (noOfArrayDimensions) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "noOfArrayDimensions",
-        noOfArrayDimensions,
-        writeSignedInt(writeBuffer, 32),
-        getArrayDimensionsSpecified());
+    writeOptionalField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (arrayDimensions)
     writeSimpleTypeArrayField("arrayDimensions", arrayDimensions, writeBoolean(writeBuffer));

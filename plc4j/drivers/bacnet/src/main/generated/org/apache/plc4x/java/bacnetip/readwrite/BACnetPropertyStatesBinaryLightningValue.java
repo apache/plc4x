@@ -112,7 +112,6 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
 
     public BACnetPropertyStatesBinaryLightningValueBuilderImpl(
         BACnetBinaryLightingPVTagged binaryLightningValue) {
-
       this.binaryLightningValue = binaryLightningValue;
     }
 

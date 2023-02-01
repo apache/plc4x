@@ -147,7 +147,6 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
         BACnetLiftCarModeTagged carMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carMode = carMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

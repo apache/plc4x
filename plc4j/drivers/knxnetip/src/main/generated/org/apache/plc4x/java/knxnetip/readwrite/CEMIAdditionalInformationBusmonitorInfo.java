@@ -208,7 +208,6 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
         boolean unknownFlag,
         boolean lostFlag,
         byte sequenceNumber) {
-
       this.frameErrorFlag = frameErrorFlag;
       this.bitErrorFlag = bitErrorFlag;
       this.parityErrorFlag = parityErrorFlag;

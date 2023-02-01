@@ -195,7 +195,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
         long maxRecordsToReturn,
         int noOfServerCapabilityFilter,
         List<PascalString> serverCapabilityFilter) {
-
       this.requestHeader = requestHeader;
       this.startingRecordId = startingRecordId;
       this.maxRecordsToReturn = maxRecordsToReturn;

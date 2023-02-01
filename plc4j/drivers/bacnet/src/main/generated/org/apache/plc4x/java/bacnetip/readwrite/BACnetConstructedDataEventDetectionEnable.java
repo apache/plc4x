@@ -148,7 +148,6 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
         BACnetApplicationTagBoolean eventDetectionEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventDetectionEnable = eventDetectionEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

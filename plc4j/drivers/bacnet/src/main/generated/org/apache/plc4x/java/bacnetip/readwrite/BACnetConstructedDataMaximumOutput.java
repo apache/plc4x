@@ -146,7 +146,6 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
         BACnetApplicationTagReal maximumOutput,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maximumOutput = maximumOutput;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

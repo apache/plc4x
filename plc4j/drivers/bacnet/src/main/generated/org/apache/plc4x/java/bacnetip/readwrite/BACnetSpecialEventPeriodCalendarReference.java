@@ -113,7 +113,6 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
 
     public BACnetSpecialEventPeriodCalendarReferenceBuilderImpl(
         BACnetContextTagObjectIdentifier calendarReference) {
-
       this.calendarReference = calendarReference;
     }
 

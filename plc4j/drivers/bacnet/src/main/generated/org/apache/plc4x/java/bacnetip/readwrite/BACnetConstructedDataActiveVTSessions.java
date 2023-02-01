@@ -142,7 +142,6 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
         List<BACnetVTSession> activeVTSession,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeVTSession = activeVTSession;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,12 +42,8 @@ public class ApduDataIndividualAddressRead extends ApduData implements Message {
     return (byte) 0x4;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataIndividualAddressRead(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataIndividualAddressRead() {
+    super();
   }
 
   @Override
@@ -81,21 +77,16 @@ public class ApduDataIndividualAddressRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataIndividualAddressRead");
     // Create the instance
-    return new ApduDataIndividualAddressReadBuilderImpl(dataLength);
+    return new ApduDataIndividualAddressReadBuilderImpl();
   }
 
   public static class ApduDataIndividualAddressReadBuilderImpl implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
 
-    public ApduDataIndividualAddressReadBuilderImpl(Short dataLength) {
+    public ApduDataIndividualAddressReadBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataIndividualAddressRead build(Short dataLength) {
-
+    public ApduDataIndividualAddressRead build() {
       ApduDataIndividualAddressRead apduDataIndividualAddressRead =
-          new ApduDataIndividualAddressRead(dataLength);
+          new ApduDataIndividualAddressRead();
       return apduDataIndividualAddressRead;
     }
   }

@@ -147,7 +147,6 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
         BACnetApplicationTagReal feedbackValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.feedbackValue = feedbackValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

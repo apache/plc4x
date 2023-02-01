@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
 
     public BACnetPropertyStatesLiftCarDriveStatusBuilderImpl(
         BACnetLiftCarDriveStatusTagged liftCarDriveStatus) {
-
       this.liftCarDriveStatus = liftCarDriveStatus;
     }
 

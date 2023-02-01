@@ -153,7 +153,6 @@ public class BACnetConstructedDataRestorePreparationTime extends BACnetConstruct
         BACnetApplicationTagUnsignedInteger restorePreparationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.restorePreparationTime = restorePreparationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

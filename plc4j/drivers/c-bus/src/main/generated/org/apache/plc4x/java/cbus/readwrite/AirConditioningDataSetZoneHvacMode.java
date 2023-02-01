@@ -254,7 +254,6 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
         HVACTemperature level,
         HVACRawLevels rawLevel,
         HVACAuxiliaryLevel auxLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.hvacModeAndFlags = hvacModeAndFlags;

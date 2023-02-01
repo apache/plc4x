@@ -120,7 +120,6 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
     public BACnetPriorityValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.objectTypeArgument = objectTypeArgument;
     }

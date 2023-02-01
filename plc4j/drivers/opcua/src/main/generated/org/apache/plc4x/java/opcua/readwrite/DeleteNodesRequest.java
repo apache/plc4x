@@ -155,7 +155,6 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToDelete,
         List<ExtensionObjectDefinition> nodesToDelete) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToDelete = noOfNodesToDelete;
       this.nodesToDelete = nodesToDelete;

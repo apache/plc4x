@@ -90,9 +90,9 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagBitString");
     PositionAware positionAware = readBuffer;
@@ -120,7 +120,6 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
 
     public BACnetContextTagBitStringBuilderImpl(
         BACnetTagPayloadBitString payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -125,7 +125,6 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
 
     public BACnetContextTagDoubleBuilderImpl(
         BACnetTagPayloadDouble payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

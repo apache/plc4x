@@ -114,7 +114,6 @@ public class NLMRouterAvailableToNetwork extends NLM implements Message {
 
     public NLMRouterAvailableToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

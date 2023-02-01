@@ -171,7 +171,6 @@ public class BACnetServiceAckAtomicReadFileRecord
         BACnetApplicationTagSignedInteger fileStartRecord,
         BACnetApplicationTagUnsignedInteger returnedRecordCount,
         List<BACnetApplicationTagOctetString> fileRecordData) {
-
       this.fileStartRecord = fileStartRecord;
       this.returnedRecordCount = returnedRecordCount;
       this.fileRecordData = fileRecordData;

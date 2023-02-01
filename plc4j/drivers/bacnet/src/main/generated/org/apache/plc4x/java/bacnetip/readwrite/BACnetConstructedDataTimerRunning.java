@@ -146,7 +146,6 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
         BACnetApplicationTagBoolean timerRunning,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timerRunning = timerRunning;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

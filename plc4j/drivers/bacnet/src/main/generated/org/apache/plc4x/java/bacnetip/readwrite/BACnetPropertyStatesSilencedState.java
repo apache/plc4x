@@ -109,7 +109,6 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     private final BACnetSilencedStateTagged silencedState;
 
     public BACnetPropertyStatesSilencedStateBuilderImpl(BACnetSilencedStateTagged silencedState) {
-
       this.silencedState = silencedState;
     }
 

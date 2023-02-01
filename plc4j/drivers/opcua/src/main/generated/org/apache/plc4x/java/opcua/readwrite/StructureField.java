@@ -51,8 +51,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   protected final List<Long> arrayDimensions;
   protected final long maxStringLength;
   protected final boolean isOptional;
-  // Reserved Fields
-  private Short reservedField0;
 
   public StructureField(
       PascalString name,
@@ -136,10 +134,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     writeSimpleField("maxStringLength", maxStringLength, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isOptional)
     writeSimpleField("isOptional", isOptional, writeBoolean(writeBuffer));
@@ -237,8 +232,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         noOfArrayDimensions,
         arrayDimensions,
         maxStringLength,
-        isOptional,
-        reservedField0);
+        isOptional);
   }
 
   public static class StructureFieldBuilderImpl
@@ -251,7 +245,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     private final List<Long> arrayDimensions;
     private final long maxStringLength;
     private final boolean isOptional;
-    private final Short reservedField0;
 
     public StructureFieldBuilderImpl(
         PascalString name,
@@ -261,8 +254,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         int noOfArrayDimensions,
         List<Long> arrayDimensions,
         long maxStringLength,
-        boolean isOptional,
-        Short reservedField0) {
+        boolean isOptional) {
       this.name = name;
       this.description = description;
       this.dataType = dataType;
@@ -271,7 +263,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
       this.arrayDimensions = arrayDimensions;
       this.maxStringLength = maxStringLength;
       this.isOptional = isOptional;
-      this.reservedField0 = reservedField0;
     }
 
     public StructureField build() {
@@ -285,7 +276,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
               arrayDimensions,
               maxStringLength,
               isOptional);
-      structureField.reservedField0 = reservedField0;
       return structureField;
     }
   }

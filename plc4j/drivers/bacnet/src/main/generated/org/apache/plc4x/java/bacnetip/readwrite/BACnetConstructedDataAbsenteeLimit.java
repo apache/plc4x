@@ -148,7 +148,6 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
         BACnetApplicationTagUnsignedInteger absenteeLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.absenteeLimit = absenteeLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

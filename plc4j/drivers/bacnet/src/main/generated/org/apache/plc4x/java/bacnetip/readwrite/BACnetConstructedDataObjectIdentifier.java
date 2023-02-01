@@ -151,7 +151,6 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectIdentifier = objectIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

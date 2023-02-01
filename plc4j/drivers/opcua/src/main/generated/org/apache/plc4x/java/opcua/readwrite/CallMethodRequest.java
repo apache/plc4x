@@ -165,7 +165,6 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
     public CallMethodRequestBuilderImpl(
         NodeId objectId, NodeId methodId, int noOfInputArguments, List<Variant> inputArguments) {
-
       this.objectId = objectId;
       this.methodId = methodId;
       this.noOfInputArguments = noOfInputArguments;

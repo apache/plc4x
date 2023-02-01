@@ -49,8 +49,6 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   protected final PascalString targetServerUri;
   protected final ExpandedNodeId targetNodeId;
   protected final NodeClass targetNodeClass;
-  // Reserved Fields
-  private Short reservedField0;
 
   public AddReferencesItem(
       NodeId sourceNodeId,
@@ -107,10 +105,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -209,13 +204,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("AddReferencesItem");
     // Create the instance
     return new AddReferencesItemBuilderImpl(
-        sourceNodeId,
-        referenceTypeId,
-        isForward,
-        targetServerUri,
-        targetNodeId,
-        targetNodeClass,
-        reservedField0);
+        sourceNodeId, referenceTypeId, isForward, targetServerUri, targetNodeId, targetNodeClass);
   }
 
   public static class AddReferencesItemBuilderImpl
@@ -226,7 +215,6 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     private final PascalString targetServerUri;
     private final ExpandedNodeId targetNodeId;
     private final NodeClass targetNodeClass;
-    private final Short reservedField0;
 
     public AddReferencesItemBuilderImpl(
         NodeId sourceNodeId,
@@ -234,15 +222,13 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         boolean isForward,
         PascalString targetServerUri,
         ExpandedNodeId targetNodeId,
-        NodeClass targetNodeClass,
-        Short reservedField0) {
+        NodeClass targetNodeClass) {
       this.sourceNodeId = sourceNodeId;
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
       this.targetServerUri = targetServerUri;
       this.targetNodeId = targetNodeId;
       this.targetNodeClass = targetNodeClass;
-      this.reservedField0 = reservedField0;
     }
 
     public AddReferencesItem build() {
@@ -254,7 +240,6 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
               targetServerUri,
               targetNodeId,
               targetNodeClass);
-      addReferencesItem.reservedField0 = reservedField0;
       return addReferencesItem;
     }
   }

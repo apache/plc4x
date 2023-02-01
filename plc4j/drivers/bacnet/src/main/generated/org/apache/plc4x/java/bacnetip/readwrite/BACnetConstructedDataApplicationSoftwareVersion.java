@@ -153,7 +153,6 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
         BACnetApplicationTagCharacterString applicationSoftwareVersion,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.applicationSoftwareVersion = applicationSoftwareVersion;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

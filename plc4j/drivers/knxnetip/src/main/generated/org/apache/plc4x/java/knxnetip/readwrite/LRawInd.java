@@ -42,12 +42,8 @@ public class LRawInd extends CEMI implements Message {
     return (short) 0x2D;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawInd(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawInd() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class LRawInd extends CEMI implements Message {
 
     readBuffer.closeContext("LRawInd");
     // Create the instance
-    return new LRawIndBuilderImpl(size);
+    return new LRawIndBuilderImpl();
   }
 
   public static class LRawIndBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public LRawIndBuilderImpl(Integer size) {
+    public LRawIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawInd build(Integer size) {
-
-      LRawInd lRawInd = new LRawInd(size);
-
+    public LRawInd build() {
+      LRawInd lRawInd = new LRawInd();
       return lRawInd;
     }
   }

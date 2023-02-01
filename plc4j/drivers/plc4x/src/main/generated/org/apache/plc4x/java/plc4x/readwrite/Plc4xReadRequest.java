@@ -154,7 +154,6 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     private final List<Plc4xTagRequest> tags;
 
     public Plc4xReadRequestBuilderImpl(int connectionId, List<Plc4xTagRequest> tags) {
-
       this.connectionId = connectionId;
       this.tags = tags;
     }

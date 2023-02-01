@@ -147,7 +147,6 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
         BACnetAccessUserTypeTagged userType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userType = userType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

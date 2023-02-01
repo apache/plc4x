@@ -130,7 +130,6 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
 
     public RepublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader, ExtensionObjectDefinition notificationMessage) {
-
       this.responseHeader = responseHeader;
       this.notificationMessage = notificationMessage;
     }

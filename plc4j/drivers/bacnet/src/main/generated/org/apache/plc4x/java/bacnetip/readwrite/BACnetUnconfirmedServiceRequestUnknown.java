@@ -117,7 +117,6 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
 
     public BACnetUnconfirmedServiceRequestUnknownBuilderImpl(
         byte[] unknownBytes, Integer serviceRequestLength) {
-
       this.unknownBytes = unknownBytes;
       this.serviceRequestLength = serviceRequestLength;
     }

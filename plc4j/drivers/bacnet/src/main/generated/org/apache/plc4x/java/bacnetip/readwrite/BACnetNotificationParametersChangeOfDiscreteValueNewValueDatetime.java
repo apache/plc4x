@@ -118,7 +118,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, Short tagNumber) {
-
       this.dateTimeValue = dateTimeValue;
       this.tagNumber = tagNumber;
     }

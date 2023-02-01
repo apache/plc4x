@@ -121,7 +121,6 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     public BACnetTimerStateChangeValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -153,7 +153,6 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger doorExtendedPulseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorExtendedPulseTime = doorExtendedPulseTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -255,7 +255,6 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
         HVACStartTime startTime,
         HVACHumidity level,
         HVACRawLevels rawLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.entry = entry;

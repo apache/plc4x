@@ -107,7 +107,6 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
     private final RequestContext requestContext;
 
     public ServerErrorReplyBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

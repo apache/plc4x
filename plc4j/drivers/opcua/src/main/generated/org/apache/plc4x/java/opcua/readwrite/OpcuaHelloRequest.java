@@ -222,7 +222,6 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
         int maxMessageSize,
         int maxChunkCount,
         PascalString endpoint) {
-
       this.chunk = chunk;
       this.version = version;
       this.receiveBufferSize = receiveBufferSize;

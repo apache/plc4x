@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
     return (short) 0x2E;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberWrite() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberWriteBuilderImpl(length);
+    return new ApduDataExtDomainAddressSerialNumberWriteBuilderImpl();
   }
 
   public static class ApduDataExtDomainAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberWriteBuilderImpl(Short length) {
+    public ApduDataExtDomainAddressSerialNumberWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberWrite build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberWrite build() {
       ApduDataExtDomainAddressSerialNumberWrite apduDataExtDomainAddressSerialNumberWrite =
-          new ApduDataExtDomainAddressSerialNumberWrite(length);
+          new ApduDataExtDomainAddressSerialNumberWrite();
       return apduDataExtDomainAddressSerialNumberWrite;
     }
   }

@@ -104,7 +104,6 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     private final BACnetAddressEnclosed addressValue;
 
     public BACnetRecipientAddressBuilderImpl(BACnetAddressEnclosed addressValue) {
-
       this.addressValue = addressValue;
     }
 

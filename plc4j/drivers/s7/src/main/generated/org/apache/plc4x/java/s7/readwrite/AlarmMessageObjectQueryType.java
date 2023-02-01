@@ -49,6 +49,7 @@ public class AlarmMessageObjectQueryType implements Message {
   protected final AssociatedValueType valueComing;
   protected final DateAndTime timeGoing;
   protected final AssociatedValueType valueGoing;
+
   // Reserved Fields
   private Integer reservedField0;
 

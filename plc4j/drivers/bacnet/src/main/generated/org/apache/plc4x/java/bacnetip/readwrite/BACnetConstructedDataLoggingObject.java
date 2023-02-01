@@ -148,7 +148,6 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
         BACnetApplicationTagObjectIdentifier loggingObject,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.loggingObject = loggingObject;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

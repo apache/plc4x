@@ -44,6 +44,7 @@ public class InterfaceOptions1 implements Message {
   protected final boolean srchk;
   protected final boolean xonXoff;
   protected final boolean connect;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

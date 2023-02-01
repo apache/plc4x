@@ -118,7 +118,6 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
 
     public ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(
         InterfaceOptions1PowerUpSettings value, Short numBytes) {
-
       this.value = value;
       this.numBytes = numBytes;
     }

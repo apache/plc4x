@@ -111,7 +111,6 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     private final Short numBytes;
 
     public ParameterValueCustomManufacturerBuilderImpl(CustomManufacturer value, Short numBytes) {
-
       this.value = value;
       this.numBytes = numBytes;
     }

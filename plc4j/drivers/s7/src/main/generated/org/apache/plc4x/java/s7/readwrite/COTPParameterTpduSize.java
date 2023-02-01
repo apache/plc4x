@@ -117,7 +117,6 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
     private final Short rest;
 
     public COTPParameterTpduSizeBuilderImpl(COTPTpduSize tpduSize, Short rest) {
-
       this.tpduSize = tpduSize;
       this.rest = rest;
     }

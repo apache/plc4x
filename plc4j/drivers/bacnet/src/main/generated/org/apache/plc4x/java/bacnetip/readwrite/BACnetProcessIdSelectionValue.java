@@ -109,7 +109,6 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
 
     public BACnetProcessIdSelectionValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger processIdentifier) {
-
       this.processIdentifier = processIdentifier;
     }
 

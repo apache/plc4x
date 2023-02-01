@@ -149,7 +149,6 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
         BACnetDeviceObjectReference accessEventCredential,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventCredential = accessEventCredential;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

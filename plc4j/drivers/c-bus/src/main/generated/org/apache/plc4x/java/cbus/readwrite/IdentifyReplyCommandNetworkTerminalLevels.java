@@ -114,7 +114,6 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
 
     public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
         byte[] networkTerminalLevels, Short numBytes) {
-
       this.networkTerminalLevels = networkTerminalLevels;
       this.numBytes = numBytes;
     }

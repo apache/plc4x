@@ -145,7 +145,6 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
         BACnetHostNPort fDBBMDAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fDBBMDAddress = fDBBMDAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

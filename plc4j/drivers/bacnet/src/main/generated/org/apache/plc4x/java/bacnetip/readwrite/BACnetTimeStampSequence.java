@@ -110,7 +110,6 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
     private final BACnetContextTagUnsignedInteger sequenceNumber;
 
     public BACnetTimeStampSequenceBuilderImpl(BACnetContextTagUnsignedInteger sequenceNumber) {
-
       this.sequenceNumber = sequenceNumber;
     }
 

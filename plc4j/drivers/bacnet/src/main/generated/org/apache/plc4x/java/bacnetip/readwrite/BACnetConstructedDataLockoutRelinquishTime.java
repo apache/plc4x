@@ -153,7 +153,6 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger lockoutRelinquishTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockoutRelinquishTime = lockoutRelinquishTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

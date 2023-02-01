@@ -120,7 +120,6 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
 
     public BACnetServiceAckAtomicWriteFileBuilderImpl(
         BACnetContextTagSignedInteger fileStartPosition, Long serviceAckLength) {
-
       this.fileStartPosition = fileStartPosition;
       this.serviceAckLength = serviceAckLength;
     }

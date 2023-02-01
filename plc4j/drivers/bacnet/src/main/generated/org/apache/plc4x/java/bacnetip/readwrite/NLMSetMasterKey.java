@@ -109,7 +109,6 @@ public class NLMSetMasterKey extends NLM implements Message {
     private final Integer apduLength;
 
     public NLMSetMasterKeyBuilderImpl(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
       this.key = key;
       this.apduLength = apduLength;
     }

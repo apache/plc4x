@@ -42,12 +42,8 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
   public abstract Boolean getIndicated();
 
-  // Arguments.
-  protected final Byte size;
-
-  public SDOInitiateUploadResponsePayload(Byte size) {
+  public SDOInitiateUploadResponsePayload() {
     super();
-    this.size = size;
   }
 
   protected abstract void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
@@ -159,13 +155,12 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadResponsePayload");
     // Create the instance
-    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build(size);
-
+    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build();
     return _sDOInitiateUploadResponsePayload;
   }
 
   public interface SDOInitiateUploadResponsePayloadBuilder {
-    SDOInitiateUploadResponsePayload build(Byte size);
+    SDOInitiateUploadResponsePayload build();
   }
 
   @Override

@@ -148,7 +148,6 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
         BACnetDoorAlarmStateTagged doorAlarmState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorAlarmState = doorAlarmState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -111,7 +111,6 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
 
     public BACnetPropertyStatesTimerTransitionBuilderImpl(
         BACnetTimerTransitionTagged timerTransition) {
-
       this.timerTransition = timerTransition;
     }
 

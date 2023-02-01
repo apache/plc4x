@@ -111,7 +111,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 
     public BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

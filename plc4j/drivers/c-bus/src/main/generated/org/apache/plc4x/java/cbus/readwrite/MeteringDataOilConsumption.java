@@ -99,7 +99,6 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
     private final long L;
 
     public MeteringDataOilConsumptionBuilderImpl(long L) {
-
       this.L = L;
     }
 

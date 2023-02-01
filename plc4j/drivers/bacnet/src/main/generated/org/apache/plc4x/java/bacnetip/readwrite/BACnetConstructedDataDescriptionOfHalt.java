@@ -151,7 +151,6 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
         BACnetApplicationTagCharacterString descriptionForHalt,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.descriptionForHalt = descriptionForHalt;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

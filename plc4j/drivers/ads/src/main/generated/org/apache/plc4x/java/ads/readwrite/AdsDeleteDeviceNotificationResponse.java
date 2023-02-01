@@ -122,7 +122,6 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
     private final ReturnCode result;
 
     public AdsDeleteDeviceNotificationResponseBuilderImpl(ReturnCode result) {
-
       this.result = result;
     }
 

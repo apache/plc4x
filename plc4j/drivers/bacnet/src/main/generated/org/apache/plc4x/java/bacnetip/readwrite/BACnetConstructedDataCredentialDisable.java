@@ -151,7 +151,6 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
         BACnetAccessCredentialDisableTagged credentialDisable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentialDisable = credentialDisable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

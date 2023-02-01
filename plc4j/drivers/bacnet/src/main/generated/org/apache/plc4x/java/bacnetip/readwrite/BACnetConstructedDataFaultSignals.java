@@ -144,7 +144,6 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
         List<BACnetLiftFaultTagged> faultSignals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultSignals = faultSignals;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

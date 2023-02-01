@@ -161,7 +161,6 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
         int sourceReference,
         COTPProtocolClass protocolClass,
         Integer cotpLen) {
-
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
       this.protocolClass = protocolClass;

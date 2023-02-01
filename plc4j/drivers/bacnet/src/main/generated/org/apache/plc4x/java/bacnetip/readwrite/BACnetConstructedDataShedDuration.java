@@ -148,7 +148,6 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
         BACnetApplicationTagUnsignedInteger shedDuration,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.shedDuration = shedDuration;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

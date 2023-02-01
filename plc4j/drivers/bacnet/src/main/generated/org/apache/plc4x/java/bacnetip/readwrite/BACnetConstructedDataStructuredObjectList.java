@@ -190,7 +190,6 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
         List<BACnetApplicationTagObjectIdentifier> structuredObjectList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.structuredObjectList = structuredObjectList;
       this.tagNumber = tagNumber;

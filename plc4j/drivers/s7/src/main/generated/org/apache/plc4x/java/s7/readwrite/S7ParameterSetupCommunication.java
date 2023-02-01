@@ -50,6 +50,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   protected final int maxAmqCaller;
   protected final int maxAmqCallee;
   protected final int pduLength;
+
   // Reserved Fields
   private Short reservedField0;
 

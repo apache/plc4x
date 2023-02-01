@@ -149,7 +149,6 @@ public class BACnetConstructedDataTimeOfStrikeCountReset extends BACnetConstruct
         BACnetDateTime timeOfStrikeCountReset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeOfStrikeCountReset = timeOfStrikeCountReset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

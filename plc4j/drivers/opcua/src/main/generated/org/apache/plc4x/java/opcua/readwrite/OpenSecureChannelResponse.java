@@ -172,7 +172,6 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
         long serverProtocolVersion,
         ExtensionObjectDefinition securityToken,
         PascalByteString serverNonce) {
-
       this.responseHeader = responseHeader;
       this.serverProtocolVersion = serverProtocolVersion;
       this.securityToken = securityToken;

@@ -129,7 +129,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
         BACnetContextTagCharacterString characterValue, Short tagNumber) {
-
       this.characterValue = characterValue;
       this.tagNumber = tagNumber;
     }

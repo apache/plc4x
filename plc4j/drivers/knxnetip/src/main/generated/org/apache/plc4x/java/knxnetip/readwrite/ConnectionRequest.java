@@ -166,7 +166,6 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
         HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint,
         HPAIDataEndpoint hpaiDataEndpoint,
         ConnectionRequestInformation connectionRequestInformation) {
-
       this.hpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint;
       this.hpaiDataEndpoint = hpaiDataEndpoint;
       this.connectionRequestInformation = connectionRequestInformation;

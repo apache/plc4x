@@ -120,7 +120,6 @@ public class S7MessageResponse extends S7Message implements Message {
     private final short errorCode;
 
     public S7MessageResponseBuilderImpl(short errorClass, short errorCode) {
-
       this.errorClass = errorClass;
       this.errorCode = errorCode;
     }

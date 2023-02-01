@@ -119,7 +119,6 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
 
     public BACnetServiceAckVTOpenBuilderImpl(
         BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier, Long serviceAckLength) {
-
       this.remoteVtSessionIdentifier = remoteVtSessionIdentifier;
       this.serviceAckLength = serviceAckLength;
     }

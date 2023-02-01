@@ -144,7 +144,6 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
         BACnetDeviceObjectReference zoneTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.zoneTo = zoneTo;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
 
     public BACnetTimerStateChangeValueBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
-
       this.bitStringValue = bitStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

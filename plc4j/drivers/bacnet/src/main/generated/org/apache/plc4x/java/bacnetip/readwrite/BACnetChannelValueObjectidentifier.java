@@ -111,7 +111,6 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
 
     public BACnetChannelValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

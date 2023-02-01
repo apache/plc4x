@@ -113,7 +113,6 @@ public class BACnetConstructedDataNetworkPortAll extends BACnetConstructedData i
 
     public BACnetConstructedDataNetworkPortAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

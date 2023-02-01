@@ -149,7 +149,6 @@ public class BACnetConstructedDataLoadControlPresentValue extends BACnetConstruc
         BACnetShedStateTagged presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

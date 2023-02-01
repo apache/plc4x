@@ -113,7 +113,6 @@ public class BACnetConstructedDataAnalogOutputAll extends BACnetConstructedData 
 
     public BACnetConstructedDataAnalogOutputAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

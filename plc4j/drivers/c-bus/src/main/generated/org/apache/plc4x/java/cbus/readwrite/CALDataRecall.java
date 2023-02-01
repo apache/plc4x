@@ -131,7 +131,6 @@ public class CALDataRecall extends CALData implements Message {
     private final RequestContext requestContext;
 
     public CALDataRecallBuilderImpl(Parameter paramNo, short count, RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.count = count;
       this.requestContext = requestContext;

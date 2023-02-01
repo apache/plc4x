@@ -156,7 +156,6 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
 
     public CurrencyUnitTypeBuilderImpl(
         short numericCode, byte exponent, PascalString alphabeticCode, LocalizedText currency) {
-
       this.numericCode = numericCode;
       this.exponent = exponent;
       this.alphabeticCode = alphabeticCode;

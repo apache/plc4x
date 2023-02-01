@@ -105,7 +105,6 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
     private final short pin;
 
     public SysexCommandAnalogMappingQueryResponseBuilderImpl(short pin) {
-
       this.pin = pin;
     }
 

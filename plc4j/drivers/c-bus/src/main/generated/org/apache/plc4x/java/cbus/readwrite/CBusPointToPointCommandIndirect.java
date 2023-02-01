@@ -155,7 +155,6 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
         NetworkRoute networkRoute,
         UnitAddress unitAddress,
         CBusOptions cBusOptions) {
-
       this.bridgeAddress = bridgeAddress;
       this.networkRoute = networkRoute;
       this.unitAddress = unitAddress;

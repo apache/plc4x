@@ -149,7 +149,6 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
 
     public AliasNameDataTypeBuilderImpl(
         QualifiedName aliasName, int noOfReferencedNodes, List<ExpandedNodeId> referencedNodes) {
-
       this.aliasName = aliasName;
       this.noOfReferencedNodes = noOfReferencedNodes;
       this.referencedNodes = referencedNodes;

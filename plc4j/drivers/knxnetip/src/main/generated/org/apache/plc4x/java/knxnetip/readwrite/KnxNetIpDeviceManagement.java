@@ -100,7 +100,6 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
     private final short version;
 
     public KnxNetIpDeviceManagementBuilderImpl(short version) {
-
       this.version = version;
     }
 

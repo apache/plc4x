@@ -125,7 +125,6 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
 
     public NLMEstablishConnectionToNetworkBuilderImpl(
         int destinationNetworkAddress, short terminationTime, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.terminationTime = terminationTime;
       this.apduLength = apduLength;

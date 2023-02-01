@@ -155,7 +155,6 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
         ExtensionObjectDefinition responseHeader,
         int noOfEndpoints,
         List<ExtensionObjectDefinition> endpoints) {
-
       this.responseHeader = responseHeader;
       this.noOfEndpoints = noOfEndpoints;
       this.endpoints = endpoints;

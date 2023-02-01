@@ -143,7 +143,6 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
         BACnetPrescale prescale,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.prescale = prescale;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

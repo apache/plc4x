@@ -187,7 +187,6 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
         List<BACnetLiftCarCallList> registeredCarCall,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.registeredCarCall = registeredCarCall;
       this.tagNumber = tagNumber;

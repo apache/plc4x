@@ -111,7 +111,6 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
     private final DF1RequestCommand command;
 
     public DF1CommandRequestMessageBuilderImpl(DF1RequestCommand command) {
-
       this.command = command;
     }
 

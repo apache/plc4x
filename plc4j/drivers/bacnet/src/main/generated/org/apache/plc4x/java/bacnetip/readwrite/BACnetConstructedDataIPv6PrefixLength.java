@@ -151,7 +151,6 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger ipv6PrefixLength,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6PrefixLength = ipv6PrefixLength;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

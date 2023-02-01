@@ -109,7 +109,6 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
     private final Short numBytes;
 
     public IdentifyReplyCommandGAVValuesCurrentBuilderImpl(byte[] values, Short numBytes) {
-
       this.values = values;
       this.numBytes = numBytes;
     }

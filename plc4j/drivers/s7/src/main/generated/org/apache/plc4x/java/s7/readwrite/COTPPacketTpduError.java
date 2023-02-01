@@ -128,7 +128,6 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
 
     public COTPPacketTpduErrorBuilderImpl(
         int destinationReference, short rejectCause, Integer cotpLen) {
-
       this.destinationReference = destinationReference;
       this.rejectCause = rejectCause;
       this.cotpLen = cotpLen;

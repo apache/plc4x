@@ -109,7 +109,6 @@ public class SALDataTemperatureBroadcast extends SALData implements Message {
 
     public SALDataTemperatureBroadcastBuilderImpl(
         TemperatureBroadcastData temperatureBroadcastData) {
-
       this.temperatureBroadcastData = temperatureBroadcastData;
     }
 

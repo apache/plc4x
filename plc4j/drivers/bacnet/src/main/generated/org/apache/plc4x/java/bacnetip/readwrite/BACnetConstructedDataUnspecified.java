@@ -192,7 +192,6 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
         List<BACnetConstructedDataElement> data,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.data = data;
       this.tagNumber = tagNumber;

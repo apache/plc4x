@@ -103,9 +103,9 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagSignedInteger");
     PositionAware positionAware = readBuffer;
@@ -135,7 +135,6 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
 
     public BACnetContextTagSignedIntegerBuilderImpl(
         BACnetTagPayloadSignedInteger payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -296,7 +296,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> userIdentityTokens,
         PascalString transportProfileUri,
         short securityLevel) {
-
       this.endpointUrl = endpointUrl;
       this.server = server;
       this.serverCertificate = serverCertificate;

@@ -115,7 +115,6 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
     private final BACnetConstructedData anyValue;
 
     public BACnetLogDataLogDataEntryAnyValueBuilderImpl(BACnetConstructedData anyValue) {
-
       this.anyValue = anyValue;
     }
 

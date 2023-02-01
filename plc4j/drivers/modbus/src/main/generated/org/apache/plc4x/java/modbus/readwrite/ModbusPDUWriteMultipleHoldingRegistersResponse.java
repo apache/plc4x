@@ -125,7 +125,6 @@ public class ModbusPDUWriteMultipleHoldingRegistersResponse extends ModbusPDU im
 
     public ModbusPDUWriteMultipleHoldingRegistersResponseBuilderImpl(
         int startingAddress, int quantity) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

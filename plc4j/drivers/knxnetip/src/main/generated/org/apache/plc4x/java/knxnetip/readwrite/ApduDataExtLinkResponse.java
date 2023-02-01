@@ -42,12 +42,8 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
     return (short) 0x26;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtLinkResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtLinkResponse() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtLinkResponse");
     // Create the instance
-    return new ApduDataExtLinkResponseBuilderImpl(length);
+    return new ApduDataExtLinkResponseBuilderImpl();
   }
 
   public static class ApduDataExtLinkResponseBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtLinkResponseBuilderImpl(Short length) {
+    public ApduDataExtLinkResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtLinkResponse build(Short length) {
-
-      ApduDataExtLinkResponse apduDataExtLinkResponse = new ApduDataExtLinkResponse(length);
-
+    public ApduDataExtLinkResponse build() {
+      ApduDataExtLinkResponse apduDataExtLinkResponse = new ApduDataExtLinkResponse();
       return apduDataExtLinkResponse;
     }
   }

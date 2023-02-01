@@ -47,6 +47,7 @@ public abstract class S7Message implements Message {
   protected final int tpduReference;
   protected final S7Parameter parameter;
   protected final S7Payload payload;
+
   // Reserved Fields
   private Integer reservedField0;
 

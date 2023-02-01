@@ -73,8 +73,7 @@ public class VariantSByte extends Variant implements Message {
     writeBuffer.pushContext("VariantSByte");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeByteArrayField("value", value, writeByteArray(writeBuffer, 8));
@@ -129,7 +128,6 @@ public class VariantSByte extends Variant implements Message {
     private final byte[] value;
 
     public VariantSByteBuilderImpl(Integer arrayLength, byte[] value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

@@ -101,7 +101,6 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
     private final long status;
 
     public PnIoCm_Packet_RejBuilderImpl(long status) {
-
       this.status = status;
     }
 

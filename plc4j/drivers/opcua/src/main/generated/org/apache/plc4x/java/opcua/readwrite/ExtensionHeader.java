@@ -40,8 +40,6 @@ public class ExtensionHeader implements Message {
   // Properties.
   protected final boolean xmlbody;
   protected final boolean binaryBody;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public ExtensionHeader(boolean xmlbody, boolean binaryBody) {
     super();
@@ -63,10 +61,7 @@ public class ExtensionHeader implements Message {
     writeBuffer.pushContext("ExtensionHeader");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 5));
 
     // Simple Field (xmlbody)
     writeSimpleField("xmlbody", xmlbody, writeBoolean(writeBuffer));
@@ -121,7 +116,6 @@ public class ExtensionHeader implements Message {
     // Create the instance
     ExtensionHeader _extensionHeader;
     _extensionHeader = new ExtensionHeader(xmlbody, binaryBody);
-    _extensionHeader.reservedField0 = reservedField0;
     return _extensionHeader;
   }
 

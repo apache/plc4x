@@ -152,7 +152,6 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
 
     public ModbusPDUWriteMultipleCoilsRequestBuilderImpl(
         int startingAddress, int quantity, byte[] value) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
       this.value = value;

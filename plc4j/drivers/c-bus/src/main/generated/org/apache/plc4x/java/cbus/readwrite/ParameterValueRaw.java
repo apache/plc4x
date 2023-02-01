@@ -108,7 +108,6 @@ public class ParameterValueRaw extends ParameterValue implements Message {
     private final Short numBytes;
 
     public ParameterValueRawBuilderImpl(byte[] data, Short numBytes) {
-
       this.data = data;
       this.numBytes = numBytes;
     }

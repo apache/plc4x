@@ -187,7 +187,6 @@ public class BACnetConstructedDataAssignedAccessRights extends BACnetConstructed
         List<BACnetAssignedAccessRights> assignedAccessRights,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.assignedAccessRights = assignedAccessRights;
       this.tagNumber = tagNumber;

@@ -145,7 +145,6 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
         List<BACnetTimerStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

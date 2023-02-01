@@ -151,7 +151,6 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger doorUnlockDelayTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorUnlockDelayTime = doorUnlockDelayTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

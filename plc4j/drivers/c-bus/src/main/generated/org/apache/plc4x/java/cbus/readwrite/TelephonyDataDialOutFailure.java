@@ -114,7 +114,6 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
     private final DialOutFailureReason reason;
 
     public TelephonyDataDialOutFailureBuilderImpl(DialOutFailureReason reason) {
-
       this.reason = reason;
     }
 

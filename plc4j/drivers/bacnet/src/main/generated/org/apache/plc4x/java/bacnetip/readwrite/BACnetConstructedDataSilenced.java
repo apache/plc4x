@@ -147,7 +147,6 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
         BACnetSilencedStateTagged silenced,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.silenced = silenced;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

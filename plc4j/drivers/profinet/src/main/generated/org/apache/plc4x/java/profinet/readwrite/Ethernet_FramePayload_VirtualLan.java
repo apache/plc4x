@@ -165,7 +165,6 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
 
     public Ethernet_FramePayload_VirtualLanBuilderImpl(
         VirtualLanPriority priority, boolean ineligible, int id, Ethernet_FramePayload payload) {
-
       this.priority = priority;
       this.ineligible = ineligible;
       this.id = id;

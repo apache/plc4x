@@ -147,7 +147,6 @@ public class BACnetConstructedDataCount extends BACnetConstructedData implements
         BACnetApplicationTagUnsignedInteger count,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.count = count;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

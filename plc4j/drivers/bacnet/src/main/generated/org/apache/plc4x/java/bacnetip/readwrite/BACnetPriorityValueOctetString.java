@@ -115,7 +115,6 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
 
     public BACnetPriorityValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
-
       this.octetStringValue = octetStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

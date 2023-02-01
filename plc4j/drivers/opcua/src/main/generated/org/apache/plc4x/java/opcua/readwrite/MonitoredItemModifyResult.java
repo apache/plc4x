@@ -165,7 +165,6 @@ public class MonitoredItemModifyResult extends ExtensionObjectDefinition impleme
         double revisedSamplingInterval,
         long revisedQueueSize,
         ExtensionObject filterResult) {
-
       this.statusCode = statusCode;
       this.revisedSamplingInterval = revisedSamplingInterval;
       this.revisedQueueSize = revisedQueueSize;

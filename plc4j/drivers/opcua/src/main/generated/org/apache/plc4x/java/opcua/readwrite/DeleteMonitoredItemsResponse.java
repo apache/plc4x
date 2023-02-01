@@ -199,7 +199,6 @@ public class DeleteMonitoredItemsResponse extends ExtensionObjectDefinition impl
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

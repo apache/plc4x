@@ -105,7 +105,6 @@ public class SALDataErrorReporting extends SALData implements Message {
     private final ErrorReportingData errorReportingData;
 
     public SALDataErrorReportingBuilderImpl(ErrorReportingData errorReportingData) {
-
       this.errorReportingData = errorReportingData;
     }
 

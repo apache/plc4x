@@ -118,7 +118,6 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
 
     public BVLCReadBroadcastDistributionTableAckBuilderImpl(
         List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
-
       this.table = table;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

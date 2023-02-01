@@ -42,12 +42,8 @@ public class MResetReq extends CEMI implements Message {
     return (short) 0xF1;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MResetReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MResetReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class MResetReq extends CEMI implements Message {
 
     readBuffer.closeContext("MResetReq");
     // Create the instance
-    return new MResetReqBuilderImpl(size);
+    return new MResetReqBuilderImpl();
   }
 
   public static class MResetReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public MResetReqBuilderImpl(Integer size) {
+    public MResetReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MResetReq build(Integer size) {
-
-      MResetReq mResetReq = new MResetReq(size);
-
+    public MResetReq build() {
+      MResetReq mResetReq = new MResetReq();
       return mResetReq;
     }
   }

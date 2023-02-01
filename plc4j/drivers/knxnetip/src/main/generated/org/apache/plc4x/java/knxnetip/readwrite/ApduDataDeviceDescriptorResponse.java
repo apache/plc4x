@@ -46,14 +46,10 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
   protected final short descriptorType;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataDeviceDescriptorResponse(short descriptorType, byte[] data, Short dataLength) {
-    super(dataLength);
+  public ApduDataDeviceDescriptorResponse(short descriptorType, byte[] data) {
+    super();
     this.descriptorType = descriptorType;
     this.data = data;
-    this.dataLength = dataLength;
   }
 
   public short getDescriptorType() {
@@ -115,27 +111,22 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
 
     readBuffer.closeContext("ApduDataDeviceDescriptorResponse");
     // Create the instance
-    return new ApduDataDeviceDescriptorResponseBuilderImpl(descriptorType, data, dataLength);
+    return new ApduDataDeviceDescriptorResponseBuilderImpl(descriptorType, data);
   }
 
   public static class ApduDataDeviceDescriptorResponseBuilderImpl
       implements ApduData.ApduDataBuilder {
     private final short descriptorType;
     private final byte[] data;
-    private final Short dataLength;
 
-    public ApduDataDeviceDescriptorResponseBuilderImpl(
-        short descriptorType, byte[] data, Short dataLength) {
-
+    public ApduDataDeviceDescriptorResponseBuilderImpl(short descriptorType, byte[] data) {
       this.descriptorType = descriptorType;
       this.data = data;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataDeviceDescriptorResponse build(Short dataLength) {
-
+    public ApduDataDeviceDescriptorResponse build() {
       ApduDataDeviceDescriptorResponse apduDataDeviceDescriptorResponse =
-          new ApduDataDeviceDescriptorResponse(descriptorType, data, dataLength);
+          new ApduDataDeviceDescriptorResponse(descriptorType, data);
       return apduDataDeviceDescriptorResponse;
     }
   }

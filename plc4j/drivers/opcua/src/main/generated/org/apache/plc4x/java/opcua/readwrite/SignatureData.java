@@ -124,7 +124,6 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     private final PascalByteString signature;
 
     public SignatureDataBuilderImpl(PascalString algorithm, PascalByteString signature) {
-
       this.algorithm = algorithm;
       this.signature = signature;
     }

@@ -150,7 +150,6 @@ public class BACnetConstructedDataBinaryOutputRelinquishDefault extends BACnetCo
         BACnetBinaryPVTagged relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

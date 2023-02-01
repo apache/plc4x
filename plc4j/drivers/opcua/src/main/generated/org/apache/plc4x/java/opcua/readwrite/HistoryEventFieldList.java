@@ -127,7 +127,6 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     private final List<Variant> eventFields;
 
     public HistoryEventFieldListBuilderImpl(int noOfEventFields, List<Variant> eventFields) {
-
       this.noOfEventFields = noOfEventFields;
       this.eventFields = eventFields;
     }

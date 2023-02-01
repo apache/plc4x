@@ -147,7 +147,6 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
         BACnetApplicationTagCharacterString fileType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileType = fileType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

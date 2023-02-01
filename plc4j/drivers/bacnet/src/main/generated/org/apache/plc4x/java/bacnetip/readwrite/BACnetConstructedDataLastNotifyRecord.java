@@ -151,7 +151,6 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger lastNotifyRecord,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastNotifyRecord = lastNotifyRecord;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

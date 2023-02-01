@@ -41,6 +41,7 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
 
   // Properties.
   protected final String number;
+
   // Reserved Fields
   private Byte reservedField0;
 

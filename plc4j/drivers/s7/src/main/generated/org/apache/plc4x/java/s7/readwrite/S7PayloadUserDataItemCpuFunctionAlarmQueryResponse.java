@@ -58,6 +58,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
   // Properties.
   protected final DataTransportErrorCode pudicfReturnCode;
   protected final DataTransportSize pudicftransportSize;
+
   // Reserved Fields
   private Short reservedField0;
 

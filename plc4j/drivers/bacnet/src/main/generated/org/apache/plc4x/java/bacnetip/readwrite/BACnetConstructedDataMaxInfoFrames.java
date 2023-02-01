@@ -148,7 +148,6 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
         BACnetApplicationTagUnsignedInteger maxInfoFrames,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxInfoFrames = maxInfoFrames;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

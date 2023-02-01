@@ -132,7 +132,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl(
         short result, short reserved01) {
-
       this.result = result;
       this.reserved01 = reserved01;
     }

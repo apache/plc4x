@@ -132,7 +132,6 @@ public class CALDataGetStatus extends CALData implements Message {
 
     public CALDataGetStatusBuilderImpl(
         Parameter paramNo, short count, RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.count = count;
       this.requestContext = requestContext;

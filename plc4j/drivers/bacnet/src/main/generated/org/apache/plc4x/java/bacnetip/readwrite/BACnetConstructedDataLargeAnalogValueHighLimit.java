@@ -147,7 +147,6 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
         BACnetApplicationTagDouble highLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.highLimit = highLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

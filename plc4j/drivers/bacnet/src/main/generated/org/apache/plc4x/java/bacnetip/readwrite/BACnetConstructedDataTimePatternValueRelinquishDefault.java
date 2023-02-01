@@ -148,7 +148,6 @@ public class BACnetConstructedDataTimePatternValueRelinquishDefault extends BACn
         BACnetApplicationTagTime relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

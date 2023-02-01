@@ -179,7 +179,6 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
         ExtensionObjectDefinition server,
         int noOfDiscoveryConfiguration,
         List<ExtensionObject> discoveryConfiguration) {
-
       this.requestHeader = requestHeader;
       this.server = server;
       this.noOfDiscoveryConfiguration = noOfDiscoveryConfiguration;

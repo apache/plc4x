@@ -151,7 +151,6 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
         BACnetEscalatorOperationDirectionTagged operationDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.operationDirection = operationDirection;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

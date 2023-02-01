@@ -199,7 +199,6 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
         List<DataValue> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

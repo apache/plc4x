@@ -119,7 +119,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, Short tagNumber) {
-
       this.booleanValue = booleanValue;
       this.tagNumber = tagNumber;
     }

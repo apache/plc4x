@@ -103,7 +103,6 @@ public class SDOBlockResponse extends SDOResponse implements Message {
     private final SDOBlockData block;
 
     public SDOBlockResponseBuilderImpl(SDOBlockData block) {
-
       this.block = block;
     }
 

@@ -107,7 +107,6 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     private final ExtensionObjectDefinition responseHeader;
 
     public RegisterServerResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
-
       this.responseHeader = responseHeader;
     }
 

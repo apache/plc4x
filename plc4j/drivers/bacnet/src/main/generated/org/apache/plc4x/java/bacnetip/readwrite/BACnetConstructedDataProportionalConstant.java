@@ -148,7 +148,6 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
         BACnetApplicationTagReal proportionalConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.proportionalConstant = proportionalConstant;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

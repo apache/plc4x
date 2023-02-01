@@ -128,7 +128,6 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
     private final Status status;
 
     public AdsDiscoveryBlockStatusBuilderImpl(Status status) {
-
       this.status = status;
     }
 

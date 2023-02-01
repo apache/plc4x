@@ -111,7 +111,6 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
 
     public BACnetPropertyStatesLifeSafetyStateBuilderImpl(
         BACnetLifeSafetyStateTagged lifeSafetyState) {
-
       this.lifeSafetyState = lifeSafetyState;
     }
 

@@ -115,7 +115,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 
     public BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

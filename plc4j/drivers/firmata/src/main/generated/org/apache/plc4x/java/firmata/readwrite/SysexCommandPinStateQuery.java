@@ -105,7 +105,6 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
     private final short pin;
 
     public SysexCommandPinStateQueryBuilderImpl(short pin) {
-
       this.pin = pin;
     }
 

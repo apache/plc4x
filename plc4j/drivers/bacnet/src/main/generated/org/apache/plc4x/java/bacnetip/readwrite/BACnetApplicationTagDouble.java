@@ -114,7 +114,6 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
     private final BACnetTagPayloadDouble payload;
 
     public BACnetApplicationTagDoubleBuilderImpl(BACnetTagPayloadDouble payload) {
-
       this.payload = payload;
     }
 

@@ -53,8 +53,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
   protected final List<StatusCode> results;
   protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PublishResponse(
       ExtensionObjectDefinition responseHeader,
@@ -144,10 +142,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         "availableSequenceNumbers", availableSequenceNumbers, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (moreNotifications)
     writeSimpleField("moreNotifications", moreNotifications, writeBoolean(writeBuffer));
@@ -297,8 +292,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         noOfResults,
         results,
         noOfDiagnosticInfos,
-        diagnosticInfos,
-        reservedField0);
+        diagnosticInfos);
   }
 
   public static class PublishResponseBuilderImpl
@@ -313,7 +307,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     private final List<StatusCode> results;
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
-    private final Short reservedField0;
 
     public PublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
@@ -325,8 +318,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
-        List<DiagnosticInfo> diagnosticInfos,
-        Short reservedField0) {
+        List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
       this.subscriptionId = subscriptionId;
       this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
@@ -337,7 +329,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
       this.results = results;
       this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
-      this.reservedField0 = reservedField0;
     }
 
     public PublishResponse build() {
@@ -353,7 +344,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
               results,
               noOfDiagnosticInfos,
               diagnosticInfos);
-      publishResponse.reservedField0 = reservedField0;
       return publishResponse;
     }
   }

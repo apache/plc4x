@@ -143,7 +143,6 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
         List<BACnetBDTEntry> bbmdBroadcastDistributionTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -146,7 +146,6 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
         BACnetApplicationTagReal resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

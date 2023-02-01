@@ -99,7 +99,6 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
     private final short zoneNumber;
 
     public SecurityDataArmReadyNotReadyBuilderImpl(short zoneNumber) {
-
       this.zoneNumber = zoneNumber;
     }
 

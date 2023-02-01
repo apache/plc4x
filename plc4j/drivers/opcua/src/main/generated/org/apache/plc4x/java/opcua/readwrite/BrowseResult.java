@@ -175,7 +175,6 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
         PascalByteString continuationPoint,
         int noOfReferences,
         List<ExtensionObjectDefinition> references) {
-
       this.statusCode = statusCode;
       this.continuationPoint = continuationPoint;
       this.noOfReferences = noOfReferences;

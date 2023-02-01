@@ -39,8 +39,6 @@ public class DeviceStatus implements Message {
 
   // Properties.
   protected final boolean programMode;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DeviceStatus(boolean programMode) {
     super();
@@ -57,10 +55,7 @@ public class DeviceStatus implements Message {
     writeBuffer.pushContext("DeviceStatus");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (programMode)
     writeSimpleField("programMode", programMode, writeBoolean(writeBuffer));
@@ -108,7 +103,6 @@ public class DeviceStatus implements Message {
     // Create the instance
     DeviceStatus _deviceStatus;
     _deviceStatus = new DeviceStatus(programMode);
-    _deviceStatus.reservedField0 = reservedField0;
     return _deviceStatus;
   }
 

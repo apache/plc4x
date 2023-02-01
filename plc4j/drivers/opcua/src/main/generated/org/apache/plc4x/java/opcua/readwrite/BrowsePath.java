@@ -125,7 +125,6 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
     private final ExtensionObjectDefinition relativePath;
 
     public BrowsePathBuilderImpl(NodeId startingNode, ExtensionObjectDefinition relativePath) {
-
       this.startingNode = startingNode;
       this.relativePath = relativePath;
     }

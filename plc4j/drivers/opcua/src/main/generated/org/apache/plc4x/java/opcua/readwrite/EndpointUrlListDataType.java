@@ -128,7 +128,6 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
 
     public EndpointUrlListDataTypeBuilderImpl(
         int noOfEndpointUrlList, List<PascalString> endpointUrlList) {
-
       this.noOfEndpointUrlList = noOfEndpointUrlList;
       this.endpointUrlList = endpointUrlList;
     }

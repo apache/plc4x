@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
 
     public BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue) {
-
       this.bitStringValue = bitStringValue;
     }
 

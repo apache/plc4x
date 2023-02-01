@@ -145,7 +145,6 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
         BACnetApplicationTagBoolean powerMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.powerMode = powerMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

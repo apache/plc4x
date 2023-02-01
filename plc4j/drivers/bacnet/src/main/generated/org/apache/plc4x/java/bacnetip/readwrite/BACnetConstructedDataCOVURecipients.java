@@ -141,7 +141,6 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
         List<BACnetRecipient> covuRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covuRecipients = covuRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

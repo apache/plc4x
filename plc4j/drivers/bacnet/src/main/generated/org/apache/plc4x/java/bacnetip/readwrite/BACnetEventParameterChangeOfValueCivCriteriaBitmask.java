@@ -121,7 +121,6 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
 
     public BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(
         BACnetContextTagBitString bitmask, Short tagNumber) {
-
       this.bitmask = bitmask;
       this.tagNumber = tagNumber;
     }

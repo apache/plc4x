@@ -140,7 +140,6 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
         List<BACnetCalendarEntry> dateList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dateList = dateList;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

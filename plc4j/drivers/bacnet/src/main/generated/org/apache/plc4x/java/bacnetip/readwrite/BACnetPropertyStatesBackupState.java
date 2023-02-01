@@ -109,7 +109,6 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
     private final BACnetBackupStateTagged backupState;
 
     public BACnetPropertyStatesBackupStateBuilderImpl(BACnetBackupStateTagged backupState) {
-
       this.backupState = backupState;
     }
 

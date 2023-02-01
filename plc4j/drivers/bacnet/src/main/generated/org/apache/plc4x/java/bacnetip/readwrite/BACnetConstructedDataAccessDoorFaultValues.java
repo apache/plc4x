@@ -145,7 +145,6 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
         List<BACnetDoorAlarmStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

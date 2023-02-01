@@ -189,7 +189,6 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
         List<BACnetLiftCarDoorCommandTagged> carDoorCommand,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorCommand = carDoorCommand;
       this.tagNumber = tagNumber;

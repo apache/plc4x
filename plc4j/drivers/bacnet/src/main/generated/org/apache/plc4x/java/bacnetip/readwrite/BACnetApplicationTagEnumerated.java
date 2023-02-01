@@ -118,7 +118,6 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     private final BACnetTagPayloadEnumerated payload;
 
     public BACnetApplicationTagEnumeratedBuilderImpl(BACnetTagPayloadEnumerated payload) {
-
       this.payload = payload;
     }
 

@@ -151,7 +151,6 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
         BACnetApplicationTagBoolean reliabilityEvaluationInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.reliabilityEvaluationInhibit = reliabilityEvaluationInhibit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

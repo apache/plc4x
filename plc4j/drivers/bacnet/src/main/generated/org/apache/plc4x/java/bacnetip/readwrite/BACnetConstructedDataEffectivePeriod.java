@@ -144,7 +144,6 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
         BACnetDateRange dateRange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dateRange = dateRange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -137,7 +137,6 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
     private final Plc4xResponseCode responseCode;
 
     public Plc4xConnectResponseBuilderImpl(int connectionId, Plc4xResponseCode responseCode) {
-
       this.connectionId = connectionId;
       this.responseCode = responseCode;
     }

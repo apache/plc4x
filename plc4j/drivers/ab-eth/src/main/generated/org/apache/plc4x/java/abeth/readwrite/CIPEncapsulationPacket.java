@@ -45,8 +45,6 @@ public abstract class CIPEncapsulationPacket implements Message {
   protected final long status;
   protected final List<Short> senderContext;
   protected final long options;
-  // Reserved Fields
-  private Long reservedField0;
 
   public CIPEncapsulationPacket(
       long sessionHandle, long status, List<Short> senderContext, long options) {
@@ -128,7 +126,7 @@ public abstract class CIPEncapsulationPacket implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000000,
+        (long) 0x00000000,
         writeUnsignedLong(writeBuffer, 32),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -260,7 +258,6 @@ public abstract class CIPEncapsulationPacket implements Message {
     // Create the instance
     CIPEncapsulationPacket _cIPEncapsulationPacket =
         builder.build(sessionHandle, status, senderContext, options);
-    _cIPEncapsulationPacket.reservedField0 = reservedField0;
     return _cIPEncapsulationPacket;
   }
 

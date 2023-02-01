@@ -106,7 +106,6 @@ public class SALDataIrrigationControl extends SALData implements Message {
     private final LightingData irrigationControlData;
 
     public SALDataIrrigationControlBuilderImpl(LightingData irrigationControlData) {
-
       this.irrigationControlData = irrigationControlData;
     }
 

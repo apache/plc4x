@@ -207,25 +207,25 @@ func BACnetContextTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgum
 	var typeSwitchError error
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		_childTemp, typeSwitchError = BACnetContextTagNullParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagNullParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
-		_childTemp, typeSwitchError = BACnetContextTagBooleanParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagBooleanParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
-		_childTemp, typeSwitchError = BACnetContextTagUnsignedIntegerParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagUnsignedIntegerParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
-		_childTemp, typeSwitchError = BACnetContextTagSignedIntegerParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagSignedIntegerParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
 		_childTemp, typeSwitchError = BACnetContextTagRealParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
 		_childTemp, typeSwitchError = BACnetContextTagDoubleParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
-		_childTemp, typeSwitchError = BACnetContextTagOctetStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagOctetStringParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
-		_childTemp, typeSwitchError = BACnetContextTagCharacterStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagCharacterStringParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
-		_childTemp, typeSwitchError = BACnetContextTagBitStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagBitStringParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
-		_childTemp, typeSwitchError = BACnetContextTagEnumeratedParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagEnumeratedParseWithBuffer(readBuffer, header, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
 		_childTemp, typeSwitchError = BACnetContextTagDateParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
@@ -233,7 +233,7 @@ func BACnetContextTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgum
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
 		_childTemp, typeSwitchError = BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
-		_childTemp, typeSwitchError = BACnetContextTagUnknownParseWithBuffer(readBuffer, tagNumberArgument, dataType, actualLength)
+		_childTemp, typeSwitchError = BACnetContextTagUnknownParseWithBuffer(readBuffer, actualLength, tagNumberArgument, dataType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [dataType=%v]", dataType)
 	}

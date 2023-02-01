@@ -103,7 +103,6 @@ public class SALDataSecurity extends SALData implements Message {
     private final SecurityData securityData;
 
     public SALDataSecurityBuilderImpl(SecurityData securityData) {
-
       this.securityData = securityData;
     }
 

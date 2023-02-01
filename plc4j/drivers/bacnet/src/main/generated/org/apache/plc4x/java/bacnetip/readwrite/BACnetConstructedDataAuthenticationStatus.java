@@ -151,7 +151,6 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
         BACnetAuthenticationStatusTagged authenticationStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authenticationStatus = authenticationStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

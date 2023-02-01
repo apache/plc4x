@@ -109,7 +109,6 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     private final BACnetProgramStateTagged programState;
 
     public BACnetPropertyStatesProgramChangeBuilderImpl(BACnetProgramStateTagged programState) {
-
       this.programState = programState;
     }
 

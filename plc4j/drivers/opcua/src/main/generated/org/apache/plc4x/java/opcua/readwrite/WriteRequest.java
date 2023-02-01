@@ -155,7 +155,6 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToWrite,
         List<ExtensionObjectDefinition> nodesToWrite) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToWrite = noOfNodesToWrite;
       this.nodesToWrite = nodesToWrite;

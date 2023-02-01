@@ -108,7 +108,6 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
 
     public BACnetChannelValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue) {
-
       this.octetStringValue = octetStringValue;
     }
 

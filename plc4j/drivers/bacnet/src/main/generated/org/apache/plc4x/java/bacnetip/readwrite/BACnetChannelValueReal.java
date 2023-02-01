@@ -105,7 +105,6 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
     private final BACnetApplicationTagReal realValue;
 
     public BACnetChannelValueRealBuilderImpl(BACnetApplicationTagReal realValue) {
-
       this.realValue = realValue;
     }
 

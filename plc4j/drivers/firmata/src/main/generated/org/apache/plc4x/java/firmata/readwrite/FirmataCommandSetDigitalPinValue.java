@@ -46,16 +46,10 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
   protected final short pin;
   protected final boolean on;
 
-  // Arguments.
-  protected final Boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public FirmataCommandSetDigitalPinValue(short pin, boolean on, Boolean response) {
-    super(response);
+  public FirmataCommandSetDigitalPinValue(short pin, boolean on) {
+    super();
     this.pin = pin;
     this.on = on;
-    this.response = response;
   }
 
   public short getPin() {
@@ -77,10 +71,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
     writeSimpleField("pin", pin, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (on)
     writeSimpleField("on", on, writeBoolean(writeBuffer));
@@ -126,29 +117,22 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
 
     readBuffer.closeContext("FirmataCommandSetDigitalPinValue");
     // Create the instance
-    return new FirmataCommandSetDigitalPinValueBuilderImpl(pin, on, response, reservedField0);
+    return new FirmataCommandSetDigitalPinValueBuilderImpl(pin, on);
   }
 
   public static class FirmataCommandSetDigitalPinValueBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final boolean on;
-    private final Boolean response;
-    private final Short reservedField0;
 
-    public FirmataCommandSetDigitalPinValueBuilderImpl(
-        short pin, boolean on, Boolean response, Short reservedField0) {
+    public FirmataCommandSetDigitalPinValueBuilderImpl(short pin, boolean on) {
       this.pin = pin;
       this.on = on;
-      this.response = response;
-      this.reservedField0 = reservedField0;
     }
 
-    public FirmataCommandSetDigitalPinValue build(Boolean response) {
-
+    public FirmataCommandSetDigitalPinValue build() {
       FirmataCommandSetDigitalPinValue firmataCommandSetDigitalPinValue =
-          new FirmataCommandSetDigitalPinValue(pin, on, response);
-      firmataCommandSetDigitalPinValue.reservedField0 = reservedField0;
+          new FirmataCommandSetDigitalPinValue(pin, on);
       return firmataCommandSetDigitalPinValue;
     }
   }

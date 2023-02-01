@@ -69,7 +69,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     @Override
     public void onConnect(ConversationContext<FirmataMessage> context) {
         LOGGER.debug("Sending Firmata Reset Command");
-        FirmataMessageCommand resetCommandMessage = new FirmataMessageCommand(new FirmataCommandSystemReset(false), false);
+        FirmataMessageCommand resetCommandMessage = new FirmataMessageCommand(new FirmataCommandSystemReset());
         context.sendRequest(resetCommandMessage)
             .expectResponse(FirmataMessage.class, REQUEST_TIMEOUT)
             .only(FirmataMessageCommand.class)

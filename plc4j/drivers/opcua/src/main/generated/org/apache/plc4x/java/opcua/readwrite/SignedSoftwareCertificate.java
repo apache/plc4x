@@ -127,7 +127,6 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
 
     public SignedSoftwareCertificateBuilderImpl(
         PascalByteString certificateData, PascalByteString signature) {
-
       this.certificateData = certificateData;
       this.signature = signature;
     }

@@ -148,7 +148,6 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
         BACnetApplicationTagUnsignedInteger apduLength,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.apduLength = apduLength;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

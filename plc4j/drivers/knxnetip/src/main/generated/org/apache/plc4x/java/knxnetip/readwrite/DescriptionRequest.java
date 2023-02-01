@@ -111,7 +111,6 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     private final HPAIControlEndpoint hpaiControlEndpoint;
 
     public DescriptionRequestBuilderImpl(HPAIControlEndpoint hpaiControlEndpoint) {
-
       this.hpaiControlEndpoint = hpaiControlEndpoint;
     }
 

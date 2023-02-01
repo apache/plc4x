@@ -237,7 +237,6 @@ public class BACnetEventParameterUnsignedOutOfRange extends BACnetEventParameter
         BACnetContextTagUnsignedInteger highLimit,
         BACnetContextTagUnsignedInteger deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowLimit = lowLimit;

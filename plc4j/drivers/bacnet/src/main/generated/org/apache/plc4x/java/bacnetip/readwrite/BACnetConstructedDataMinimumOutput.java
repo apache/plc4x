@@ -146,7 +146,6 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
         BACnetApplicationTagReal minimumOutput,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumOutput = minimumOutput;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

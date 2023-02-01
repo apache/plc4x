@@ -112,7 +112,6 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
 
     public BACnetLogDataLogDataEntryIntegerValueBuilderImpl(
         BACnetContextTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

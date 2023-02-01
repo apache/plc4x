@@ -76,7 +76,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
             ModbusTag tag = (ModbusTag) request.getTag(tagName);
             final ModbusPDU requestPdu = getReadRequestPdu(tag);
 
-            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu, false);
+            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)
@@ -134,7 +134,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
             String tagName = request.getTagNames().iterator().next();
             PlcTag tag = request.getTag(tagName);
             final ModbusPDU requestPdu = getWriteRequestPdu(tag, writeRequest.getPlcValue(tagName));
-            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu, false);
+            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)

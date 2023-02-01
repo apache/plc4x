@@ -148,7 +148,6 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
         BACnetApplicationTagBoolean bacnetIPNATTraversal,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bacnetIPNATTraversal = bacnetIPNATTraversal;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

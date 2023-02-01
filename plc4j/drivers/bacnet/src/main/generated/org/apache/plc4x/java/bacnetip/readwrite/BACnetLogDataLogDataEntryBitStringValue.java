@@ -110,7 +110,6 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
 
     public BACnetLogDataLogDataEntryBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue) {
-
       this.bitStringValue = bitStringValue;
     }
 

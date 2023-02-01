@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
 
     public BACnetPropertyStatesLiftCarDoorCommandBuilderImpl(
         BACnetLiftCarDoorCommandTagged liftCarDoorCommand) {
-
       this.liftCarDoorCommand = liftCarDoorCommand;
     }
 

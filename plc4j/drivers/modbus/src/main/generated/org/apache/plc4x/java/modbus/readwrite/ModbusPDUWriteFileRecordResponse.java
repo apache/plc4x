@@ -129,7 +129,6 @@ public class ModbusPDUWriteFileRecordResponse extends ModbusPDU implements Messa
 
     public ModbusPDUWriteFileRecordResponseBuilderImpl(
         List<ModbusPDUWriteFileRecordResponseItem> items) {
-
       this.items = items;
     }
 

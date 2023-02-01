@@ -139,7 +139,6 @@ public class ModelChangeStructureDataType extends ExtensionObjectDefinition impl
 
     public ModelChangeStructureDataTypeBuilderImpl(
         NodeId affected, NodeId affectedType, short verb) {
-
       this.affected = affected;
       this.affectedType = affectedType;
       this.verb = verb;

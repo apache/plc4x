@@ -148,7 +148,6 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
         BACnetDeviceStatusTagged systemStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.systemStatus = systemStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

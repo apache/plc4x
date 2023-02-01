@@ -105,7 +105,6 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetOptionalBinaryPVNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

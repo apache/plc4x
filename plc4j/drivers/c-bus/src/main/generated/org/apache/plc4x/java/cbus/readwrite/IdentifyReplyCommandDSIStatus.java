@@ -366,7 +366,6 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         UnitStatus unitStatus,
         byte dimmingUCRevisionNumber,
         Short numBytes) {
-
       this.channelStatus1 = channelStatus1;
       this.channelStatus2 = channelStatus2;
       this.channelStatus3 = channelStatus3;

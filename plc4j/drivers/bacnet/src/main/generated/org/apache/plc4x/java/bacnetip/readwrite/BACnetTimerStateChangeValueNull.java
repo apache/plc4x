@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
 
     public BACnetTimerStateChangeValueNullBuilderImpl(
         BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
-
       this.nullValue = nullValue;
       this.objectTypeArgument = objectTypeArgument;
     }

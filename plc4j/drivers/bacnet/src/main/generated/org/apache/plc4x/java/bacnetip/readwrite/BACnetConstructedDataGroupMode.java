@@ -147,7 +147,6 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
         BACnetLiftGroupModeTagged groupMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.groupMode = groupMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

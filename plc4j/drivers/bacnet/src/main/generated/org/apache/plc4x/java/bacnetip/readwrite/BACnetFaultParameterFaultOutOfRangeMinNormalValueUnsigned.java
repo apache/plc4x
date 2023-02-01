@@ -121,7 +121,6 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

@@ -147,7 +147,6 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
         BACnetApplicationTagUnsignedInteger fileSize,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileSize = fileSize;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

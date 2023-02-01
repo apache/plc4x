@@ -42,12 +42,8 @@ public class ApduDataExtOpenRoutingTableRequest extends ApduDataExt implements M
     return (short) 0x00;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtOpenRoutingTableRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtOpenRoutingTableRequest() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtOpenRoutingTableRequest extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtOpenRoutingTableRequest");
     // Create the instance
-    return new ApduDataExtOpenRoutingTableRequestBuilderImpl(length);
+    return new ApduDataExtOpenRoutingTableRequestBuilderImpl();
   }
 
   public static class ApduDataExtOpenRoutingTableRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtOpenRoutingTableRequestBuilderImpl(Short length) {
+    public ApduDataExtOpenRoutingTableRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtOpenRoutingTableRequest build(Short length) {
-
+    public ApduDataExtOpenRoutingTableRequest build() {
       ApduDataExtOpenRoutingTableRequest apduDataExtOpenRoutingTableRequest =
-          new ApduDataExtOpenRoutingTableRequest(length);
+          new ApduDataExtOpenRoutingTableRequest();
       return apduDataExtOpenRoutingTableRequest;
     }
   }

@@ -222,7 +222,6 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
         byte multiplier,
         short msb,
         short lsb) {
-
       this.deviceId = deviceId;
       this.channel = channel;
       this.units = units;

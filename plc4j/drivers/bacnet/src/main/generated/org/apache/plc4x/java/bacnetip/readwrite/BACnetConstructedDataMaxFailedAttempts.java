@@ -151,7 +151,6 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger maxFailedAttempts,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxFailedAttempts = maxFailedAttempts;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

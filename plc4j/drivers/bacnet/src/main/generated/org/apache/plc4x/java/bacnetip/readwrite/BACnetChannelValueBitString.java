@@ -105,7 +105,6 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
     private final BACnetApplicationTagBitString bitStringValue;
 
     public BACnetChannelValueBitStringBuilderImpl(BACnetApplicationTagBitString bitStringValue) {
-
       this.bitStringValue = bitStringValue;
     }
 

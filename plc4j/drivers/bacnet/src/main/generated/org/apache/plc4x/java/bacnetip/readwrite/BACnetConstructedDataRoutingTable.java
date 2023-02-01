@@ -141,7 +141,6 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
         List<BACnetRouterEntry> routingTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.routingTable = routingTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -49,23 +49,18 @@ public class MPropReadReq extends CEMI implements Message {
   protected final byte numberOfElements;
   protected final int startIndex;
 
-  // Arguments.
-  protected final Integer size;
-
   public MPropReadReq(
       int interfaceObjectType,
       short objectInstance,
       short propertyId,
       byte numberOfElements,
-      int startIndex,
-      Integer size) {
-    super(size);
+      int startIndex) {
+    super();
     this.interfaceObjectType = interfaceObjectType;
     this.objectInstance = objectInstance;
     this.propertyId = propertyId;
     this.numberOfElements = numberOfElements;
     this.startIndex = startIndex;
-    this.size = size;
   }
 
   public int getInterfaceObjectType() {
@@ -161,7 +156,7 @@ public class MPropReadReq extends CEMI implements Message {
     readBuffer.closeContext("MPropReadReq");
     // Create the instance
     return new MPropReadReqBuilderImpl(
-        interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, size);
+        interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex);
   }
 
   public static class MPropReadReqBuilderImpl implements CEMI.CEMIBuilder {
@@ -170,29 +165,24 @@ public class MPropReadReq extends CEMI implements Message {
     private final short propertyId;
     private final byte numberOfElements;
     private final int startIndex;
-    private final Integer size;
 
     public MPropReadReqBuilderImpl(
         int interfaceObjectType,
         short objectInstance,
         short propertyId,
         byte numberOfElements,
-        int startIndex,
-        Integer size) {
-
+        int startIndex) {
       this.interfaceObjectType = interfaceObjectType;
       this.objectInstance = objectInstance;
       this.propertyId = propertyId;
       this.numberOfElements = numberOfElements;
       this.startIndex = startIndex;
-      this.size = size;
     }
 
-    public MPropReadReq build(Integer size) {
-
+    public MPropReadReq build() {
       MPropReadReq mPropReadReq =
           new MPropReadReq(
-              interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, size);
+              interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex);
       return mPropReadReq;
     }
   }

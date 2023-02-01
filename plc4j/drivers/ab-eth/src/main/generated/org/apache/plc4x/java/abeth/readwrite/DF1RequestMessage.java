@@ -45,8 +45,6 @@ public abstract class DF1RequestMessage implements Message {
   protected final short sourceAddress;
   protected final short status;
   protected final int transactionCounter;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public DF1RequestMessage(
       short destinationAddress, short sourceAddress, short status, int transactionCounter) {
@@ -88,10 +86,7 @@ public abstract class DF1RequestMessage implements Message {
     writeSimpleField("sourceAddress", sourceAddress, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Discriminator Field (commandCode) (Used as input to a switch field)
     writeDiscriminatorField("commandCode", getCommandCode(), writeUnsignedShort(writeBuffer, 8));
@@ -185,7 +180,6 @@ public abstract class DF1RequestMessage implements Message {
     // Create the instance
     DF1RequestMessage _dF1RequestMessage =
         builder.build(destinationAddress, sourceAddress, status, transactionCounter);
-    _dF1RequestMessage.reservedField0 = reservedField0;
     return _dF1RequestMessage;
   }
 

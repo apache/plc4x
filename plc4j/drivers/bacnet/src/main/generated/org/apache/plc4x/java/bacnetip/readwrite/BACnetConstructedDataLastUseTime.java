@@ -144,7 +144,6 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
         BACnetDateTime lastUseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastUseTime = lastUseTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -113,7 +113,6 @@ public class BACnetConstructedDataAccessUserAll extends BACnetConstructedData im
 
     public BACnetConstructedDataAccessUserAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

@@ -220,7 +220,6 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.serverNonce = serverNonce;
       this.noOfResults = noOfResults;

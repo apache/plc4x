@@ -125,7 +125,6 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     private final List<S7ParameterUserDataItem> items;
 
     public S7ParameterUserDataBuilderImpl(List<S7ParameterUserDataItem> items) {
-
       this.items = items;
     }
 

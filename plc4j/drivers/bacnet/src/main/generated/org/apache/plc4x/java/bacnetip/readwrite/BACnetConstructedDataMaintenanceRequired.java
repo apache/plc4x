@@ -150,7 +150,6 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
         BACnetMaintenanceTagged maintenanceRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maintenanceRequired = maintenanceRequired;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

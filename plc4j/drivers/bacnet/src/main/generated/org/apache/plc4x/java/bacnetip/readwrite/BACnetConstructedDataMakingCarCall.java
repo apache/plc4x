@@ -189,7 +189,6 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
         List<BACnetApplicationTagUnsignedInteger> makingCarCall,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.makingCarCall = makingCarCall;
       this.tagNumber = tagNumber;

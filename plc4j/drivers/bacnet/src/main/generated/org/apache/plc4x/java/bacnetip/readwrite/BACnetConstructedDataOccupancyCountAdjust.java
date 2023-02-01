@@ -148,7 +148,6 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
         BACnetApplicationTagBoolean occupancyCountAdjust,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyCountAdjust = occupancyCountAdjust;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -100,7 +100,6 @@ public class KnxNetIpCore extends ServiceId implements Message {
     private final short version;
 
     public KnxNetIpCoreBuilderImpl(short version) {
-
       this.version = version;
     }
 

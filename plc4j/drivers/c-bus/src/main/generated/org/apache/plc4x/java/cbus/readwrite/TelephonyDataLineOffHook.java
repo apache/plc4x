@@ -136,7 +136,6 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
     private final String number;
 
     public TelephonyDataLineOffHookBuilderImpl(LineOffHookReason reason, String number) {
-
       this.reason = reason;
       this.number = number;
     }

@@ -225,7 +225,6 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
         PascalString auditEntryId,
         long timeoutHint,
         ExtensionObject additionalHeader) {
-
       this.authenticationToken = authenticationToken;
       this.timestamp = timestamp;
       this.requestHandle = requestHandle;

@@ -146,7 +146,6 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
         BACnetApplicationTagBoolean egressActive,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressActive = egressActive;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

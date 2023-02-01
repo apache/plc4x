@@ -130,7 +130,6 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
 
     public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
         BACnetContextTagReal referencedPropertyIncrement, Short tagNumber) {
-
       this.referencedPropertyIncrement = referencedPropertyIncrement;
       this.tagNumber = tagNumber;
     }

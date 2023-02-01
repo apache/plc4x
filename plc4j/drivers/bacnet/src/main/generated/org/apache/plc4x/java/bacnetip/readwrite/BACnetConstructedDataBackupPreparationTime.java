@@ -153,7 +153,6 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger backupPreparationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupPreparationTime = backupPreparationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -187,7 +187,6 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
         List<BACnetSpecialEvent> exceptionSchedule,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.exceptionSchedule = exceptionSchedule;
       this.tagNumber = tagNumber;

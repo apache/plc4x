@@ -147,7 +147,6 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
         BACnetApplicationTagOctetString macAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.macAddress = macAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

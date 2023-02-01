@@ -141,7 +141,6 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
 
     public ParameterValueBaudRateSelectorBuilderImpl(
         BaudRateSelector value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

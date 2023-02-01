@@ -331,7 +331,7 @@ public class S7IoTest {
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
-                Collections.singletonList(new COTPParameterTpduSize(COTPTpduSize.SIZE_4096,(short)3)),
+                Collections.singletonList(new COTPParameterTpduSize(COTPTpduSize.SIZE_4096, (short) 0)),
                 new S7MessageResponseData(
                     11,
                     new S7ParameterReadVarResponse((short) 1),
@@ -343,14 +343,13 @@ public class S7IoTest {
                                 new byte[]{0x1},
                                     false
                             )
-                        ),new S7ParameterReadVarResponse((short) 1)
+                        ), null
                     ),
                     (short) 0,
                     (short) 0
                 ),
                 false,
-                (short) 13,
-                26
+                (short) 13, 0
             )
         );
         // To string

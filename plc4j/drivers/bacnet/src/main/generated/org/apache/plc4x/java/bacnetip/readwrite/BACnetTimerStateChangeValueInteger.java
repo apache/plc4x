@@ -116,7 +116,6 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
 
     public BACnetTimerStateChangeValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
-
       this.integerValue = integerValue;
       this.objectTypeArgument = objectTypeArgument;
     }

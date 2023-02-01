@@ -148,7 +148,6 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
         BACnetApplicationTagUnsignedInteger lastPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastPriority = lastPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

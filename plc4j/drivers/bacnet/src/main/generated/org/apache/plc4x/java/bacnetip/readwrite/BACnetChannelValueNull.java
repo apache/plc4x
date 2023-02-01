@@ -105,7 +105,6 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetChannelValueNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

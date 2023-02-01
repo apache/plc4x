@@ -48,6 +48,11 @@
               <languageName>java</languageName>
               <outputFlavor>read-write</outputFlavor>
               <outputDir>src/main/generated</outputDir>
+              <options>
+                  <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
+                  <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
+                  <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
+              </options>              
             </configuration>
           </execution>
         </executions>

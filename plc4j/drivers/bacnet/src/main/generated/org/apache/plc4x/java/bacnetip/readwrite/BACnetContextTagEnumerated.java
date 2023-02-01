@@ -100,9 +100,9 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagEnumerated");
     PositionAware positionAware = readBuffer;
@@ -131,7 +131,6 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
 
     public BACnetContextTagEnumeratedBuilderImpl(
         BACnetTagPayloadEnumerated payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

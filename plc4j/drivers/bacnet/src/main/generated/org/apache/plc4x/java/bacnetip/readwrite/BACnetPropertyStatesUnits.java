@@ -109,7 +109,6 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     private final BACnetEngineeringUnitsTagged units;
 
     public BACnetPropertyStatesUnitsBuilderImpl(BACnetEngineeringUnitsTagged units) {
-
       this.units = units;
     }
 

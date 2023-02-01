@@ -200,7 +200,6 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
     private final byte operation;
 
     public MediaTransportControlDataRewindBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

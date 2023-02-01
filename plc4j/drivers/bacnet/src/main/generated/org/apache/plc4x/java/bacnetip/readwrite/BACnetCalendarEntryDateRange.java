@@ -104,7 +104,6 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     private final BACnetDateRangeEnclosed dateRange;
 
     public BACnetCalendarEntryDateRangeBuilderImpl(BACnetDateRangeEnclosed dateRange) {
-
       this.dateRange = dateRange;
     }
 

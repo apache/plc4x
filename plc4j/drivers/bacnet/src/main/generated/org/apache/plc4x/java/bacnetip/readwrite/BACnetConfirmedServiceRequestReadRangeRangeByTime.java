@@ -134,7 +134,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
 
     public BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl(
         BACnetDateTime referenceTime, BACnetApplicationTagSignedInteger count) {
-
       this.referenceTime = referenceTime;
       this.count = count;
     }

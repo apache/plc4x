@@ -128,8 +128,8 @@ public class CALDataStatus extends CALData implements Message {
 
   public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataStatus");
     PositionAware positionAware = readBuffer;
@@ -167,7 +167,6 @@ public class CALDataStatus extends CALData implements Message {
         short blockStart,
         List<StatusByte> statusBytes,
         RequestContext requestContext) {
-
       this.application = application;
       this.blockStart = blockStart;
       this.statusBytes = statusBytes;

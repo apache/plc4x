@@ -147,7 +147,6 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
         BACnetNodeTypeTagged nodeType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.nodeType = nodeType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

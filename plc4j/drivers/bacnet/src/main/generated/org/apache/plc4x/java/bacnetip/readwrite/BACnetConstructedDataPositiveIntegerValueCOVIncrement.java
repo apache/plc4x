@@ -149,7 +149,6 @@ public class BACnetConstructedDataPositiveIntegerValueCOVIncrement extends BACne
         BACnetApplicationTagUnsignedInteger covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covIncrement = covIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

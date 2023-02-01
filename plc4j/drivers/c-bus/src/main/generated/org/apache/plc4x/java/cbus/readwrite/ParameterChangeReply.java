@@ -116,7 +116,6 @@ public class ParameterChangeReply extends Reply implements Message {
 
     public ParameterChangeReplyBuilderImpl(
         ParameterChange parameterChange, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.parameterChange = parameterChange;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

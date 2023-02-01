@@ -120,7 +120,6 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     private final Variant value;
 
     public GenericAttributeValueBuilderImpl(long attributeId, Variant value) {
-
       this.attributeId = attributeId;
       this.value = value;
     }

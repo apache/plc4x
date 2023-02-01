@@ -115,7 +115,6 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
 
     public EncodedReplyCALReplyBuilderImpl(
         CALReply calReply, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.calReply = calReply;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

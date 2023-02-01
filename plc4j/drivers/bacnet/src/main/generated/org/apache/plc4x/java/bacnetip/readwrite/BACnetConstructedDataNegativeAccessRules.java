@@ -187,7 +187,6 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
         List<BACnetAccessRule> negativeAccessRules,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.negativeAccessRules = negativeAccessRules;
       this.tagNumber = tagNumber;

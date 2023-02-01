@@ -149,7 +149,6 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
         BACnetApplicationTagOctetString ipv6DefaultGateway,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6DefaultGateway = ipv6DefaultGateway;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

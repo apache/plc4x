@@ -141,7 +141,6 @@ public class ModbusPDUMaskWriteHoldingRegisterRequest extends ModbusPDU implemen
 
     public ModbusPDUMaskWriteHoldingRegisterRequestBuilderImpl(
         int referenceAddress, int andMask, int orMask) {
-
       this.referenceAddress = referenceAddress;
       this.andMask = andMask;
       this.orMask = orMask;

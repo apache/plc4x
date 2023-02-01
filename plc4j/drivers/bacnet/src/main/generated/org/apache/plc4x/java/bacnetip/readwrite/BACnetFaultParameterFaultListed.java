@@ -153,7 +153,6 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
         BACnetOpeningTag openingTag,
         BACnetDeviceObjectPropertyReferenceEnclosed faultListReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.faultListReference = faultListReference;
       this.closingTag = closingTag;

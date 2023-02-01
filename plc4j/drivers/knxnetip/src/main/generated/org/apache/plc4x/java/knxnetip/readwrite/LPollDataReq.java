@@ -42,12 +42,8 @@ public class LPollDataReq extends CEMI implements Message {
     return (short) 0x13;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LPollDataReq(Integer size) {
-    super(size);
-    this.size = size;
+  public LPollDataReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class LPollDataReq extends CEMI implements Message {
 
     readBuffer.closeContext("LPollDataReq");
     // Create the instance
-    return new LPollDataReqBuilderImpl(size);
+    return new LPollDataReqBuilderImpl();
   }
 
   public static class LPollDataReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public LPollDataReqBuilderImpl(Integer size) {
+    public LPollDataReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LPollDataReq build(Integer size) {
-
-      LPollDataReq lPollDataReq = new LPollDataReq(size);
-
+    public LPollDataReq build() {
+      LPollDataReq lPollDataReq = new LPollDataReq();
       return lPollDataReq;
     }
   }

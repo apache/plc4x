@@ -105,7 +105,6 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     private final TelephonyData telephonyData;
 
     public SALDataTelephonyStatusAndControlBuilderImpl(TelephonyData telephonyData) {
-
       this.telephonyData = telephonyData;
     }
 

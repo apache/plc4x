@@ -125,7 +125,6 @@ public class COTPPacketData extends COTPPacket implements Message {
     private final Integer cotpLen;
 
     public COTPPacketDataBuilderImpl(boolean eot, short tpduRef, Integer cotpLen) {
-
       this.eot = eot;
       this.tpduRef = tpduRef;
       this.cotpLen = cotpLen;

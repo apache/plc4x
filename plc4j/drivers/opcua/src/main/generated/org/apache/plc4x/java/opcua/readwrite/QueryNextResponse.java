@@ -180,7 +180,6 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
         int noOfQueryDataSets,
         List<ExtensionObjectDefinition> queryDataSets,
         PascalByteString revisedContinuationPoint) {
-
       this.responseHeader = responseHeader;
       this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;

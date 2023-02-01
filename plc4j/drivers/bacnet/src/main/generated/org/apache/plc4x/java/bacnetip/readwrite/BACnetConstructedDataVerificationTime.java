@@ -150,7 +150,6 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
         BACnetApplicationTagSignedInteger verificationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.verificationTime = verificationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

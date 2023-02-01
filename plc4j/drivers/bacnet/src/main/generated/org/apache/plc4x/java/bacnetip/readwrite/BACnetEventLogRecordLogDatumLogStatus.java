@@ -118,7 +118,6 @@ public class BACnetEventLogRecordLogDatumLogStatus extends BACnetEventLogRecordL
 
     public BACnetEventLogRecordLogDatumLogStatusBuilderImpl(
         BACnetLogStatusTagged logStatus, Short tagNumber) {
-
       this.logStatus = logStatus;
       this.tagNumber = tagNumber;
     }

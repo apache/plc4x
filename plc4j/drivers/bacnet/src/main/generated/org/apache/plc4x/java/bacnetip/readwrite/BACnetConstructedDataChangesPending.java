@@ -146,7 +146,6 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
         BACnetApplicationTagBoolean changesPending,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changesPending = changesPending;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

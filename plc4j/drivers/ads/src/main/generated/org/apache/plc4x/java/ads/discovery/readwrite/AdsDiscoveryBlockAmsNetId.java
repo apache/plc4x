@@ -124,7 +124,6 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
     private final AmsNetId amsNetId;
 
     public AdsDiscoveryBlockAmsNetIdBuilderImpl(AmsNetId amsNetId) {
-
       this.amsNetId = amsNetId;
     }
 

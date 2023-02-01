@@ -103,9 +103,9 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnsignedInteger");
     PositionAware positionAware = readBuffer;
@@ -135,7 +135,6 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
 
     public BACnetContextTagUnsignedIntegerBuilderImpl(
         BACnetTagPayloadUnsignedInteger payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

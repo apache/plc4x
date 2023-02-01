@@ -127,7 +127,6 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
     private final byte operation;
 
     public MediaTransportControlDataNextPreviousCategoryBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

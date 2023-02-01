@@ -117,7 +117,6 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
     private final float imaginary;
 
     public ComplexNumberTypeBuilderImpl(float real, float imaginary) {
-
       this.real = real;
       this.imaginary = imaginary;
     }

@@ -61,6 +61,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   protected final SyntaxIdType syntaxId;
   protected final QueryType queryType;
   protected final AlarmType alarmType;
+
   // Reserved Fields
   private Short reservedField0;
   private Short reservedField1;

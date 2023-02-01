@@ -153,7 +153,6 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
         BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeAuthenticationPolicy = activeAuthenticationPolicy;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

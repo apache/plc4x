@@ -113,7 +113,6 @@ public class BACnetConstructedDataTrendLogAll extends BACnetConstructedData impl
 
     public BACnetConstructedDataTrendLogAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

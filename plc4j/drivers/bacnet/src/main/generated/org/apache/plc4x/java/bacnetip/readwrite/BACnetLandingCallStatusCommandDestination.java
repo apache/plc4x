@@ -113,7 +113,6 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
 
     public BACnetLandingCallStatusCommandDestinationBuilderImpl(
         BACnetContextTagUnsignedInteger destination) {
-
       this.destination = destination;
     }
 

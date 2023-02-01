@@ -129,7 +129,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue, Short tagNumber) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.tagNumber = tagNumber;
     }

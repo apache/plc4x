@@ -111,7 +111,6 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
 
     public BACnetPropertyStatesZoneOccupanyStateBuilderImpl(
         BACnetAccessZoneOccupancyStateTagged zoneOccupanyState) {
-
       this.zoneOccupanyState = zoneOccupanyState;
     }
 

@@ -109,7 +109,6 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
     private final BACnetDoorValueTagged doorValue;
 
     public BACnetPropertyStatesDoorValueBuilderImpl(BACnetDoorValueTagged doorValue) {
-
       this.doorValue = doorValue;
     }
 

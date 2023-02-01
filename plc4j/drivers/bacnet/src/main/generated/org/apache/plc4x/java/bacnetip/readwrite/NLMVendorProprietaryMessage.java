@@ -137,7 +137,6 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
 
     public NLMVendorProprietaryMessageBuilderImpl(
         BACnetVendorId vendorId, byte[] proprietaryMessage, Integer apduLength) {
-
       this.vendorId = vendorId;
       this.proprietaryMessage = proprietaryMessage;
       this.apduLength = apduLength;

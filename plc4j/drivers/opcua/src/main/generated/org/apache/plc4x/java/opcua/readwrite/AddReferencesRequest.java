@@ -155,7 +155,6 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
         ExtensionObjectDefinition requestHeader,
         int noOfReferencesToAdd,
         List<ExtensionObjectDefinition> referencesToAdd) {
-
       this.requestHeader = requestHeader;
       this.noOfReferencesToAdd = noOfReferencesToAdd;
       this.referencesToAdd = referencesToAdd;

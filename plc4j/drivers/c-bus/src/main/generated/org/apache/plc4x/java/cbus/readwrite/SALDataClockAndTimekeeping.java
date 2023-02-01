@@ -108,7 +108,6 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     private final ClockAndTimekeepingData clockAndTimekeepingData;
 
     public SALDataClockAndTimekeepingBuilderImpl(ClockAndTimekeepingData clockAndTimekeepingData) {
-
       this.clockAndTimekeepingData = clockAndTimekeepingData;
     }
 

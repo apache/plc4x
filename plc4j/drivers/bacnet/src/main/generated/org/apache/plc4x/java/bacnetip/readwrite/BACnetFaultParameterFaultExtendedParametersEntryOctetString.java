@@ -112,7 +112,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
 
     public BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue) {
-
       this.octetStringValue = octetStringValue;
     }
 

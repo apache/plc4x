@@ -115,7 +115,6 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
 
     public BACnetPropertyStatesAccessCredentialDisableBuilderImpl(
         BACnetAccessCredentialDisableTagged accessCredentialDisable) {
-
       this.accessCredentialDisable = accessCredentialDisable;
     }
 

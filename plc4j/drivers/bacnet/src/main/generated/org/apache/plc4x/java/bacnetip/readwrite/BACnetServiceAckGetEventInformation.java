@@ -142,7 +142,6 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
         BACnetEventSummariesList listOfEventSummaries,
         BACnetContextTagBoolean moreEvents,
         Long serviceAckLength) {
-
       this.listOfEventSummaries = listOfEventSummaries;
       this.moreEvents = moreEvents;
       this.serviceAckLength = serviceAckLength;

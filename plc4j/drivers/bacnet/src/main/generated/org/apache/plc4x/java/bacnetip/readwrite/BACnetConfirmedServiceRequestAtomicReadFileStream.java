@@ -141,7 +141,6 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     public BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagUnsignedInteger requestOctetCount) {
-
       this.fileStartPosition = fileStartPosition;
       this.requestOctetCount = requestOctetCount;
     }

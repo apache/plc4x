@@ -42,12 +42,8 @@ public class LRawCon extends CEMI implements Message {
     return (short) 0x2F;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawCon(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawCon() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class LRawCon extends CEMI implements Message {
 
     readBuffer.closeContext("LRawCon");
     // Create the instance
-    return new LRawConBuilderImpl(size);
+    return new LRawConBuilderImpl();
   }
 
   public static class LRawConBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public LRawConBuilderImpl(Integer size) {
+    public LRawConBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawCon build(Integer size) {
-
-      LRawCon lRawCon = new LRawCon(size);
-
+    public LRawCon build() {
+      LRawCon lRawCon = new LRawCon();
       return lRawCon;
     }
   }

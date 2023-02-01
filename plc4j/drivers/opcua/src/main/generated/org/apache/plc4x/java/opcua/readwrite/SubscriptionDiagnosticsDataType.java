@@ -74,8 +74,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   protected final long monitoringQueueOverflowCount;
   protected final long nextSequenceNumber;
   protected final long eventQueueOverFlowCount;
-  // Reserved Fields
-  private Short reservedField0;
 
   public SubscriptionDiagnosticsDataType(
       NodeId sessionId,
@@ -299,10 +297,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
@@ -648,8 +643,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         disabledMonitoredItemCount,
         monitoringQueueOverflowCount,
         nextSequenceNumber,
-        eventQueueOverFlowCount,
-        reservedField0);
+        eventQueueOverFlowCount);
   }
 
   public static class SubscriptionDiagnosticsDataTypeBuilderImpl
@@ -685,7 +679,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     private final long monitoringQueueOverflowCount;
     private final long nextSequenceNumber;
     private final long eventQueueOverFlowCount;
-    private final Short reservedField0;
 
     public SubscriptionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
@@ -718,8 +711,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         long disabledMonitoredItemCount,
         long monitoringQueueOverflowCount,
         long nextSequenceNumber,
-        long eventQueueOverFlowCount,
-        Short reservedField0) {
+        long eventQueueOverFlowCount) {
       this.sessionId = sessionId;
       this.subscriptionId = subscriptionId;
       this.priority = priority;
@@ -751,7 +743,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       this.monitoringQueueOverflowCount = monitoringQueueOverflowCount;
       this.nextSequenceNumber = nextSequenceNumber;
       this.eventQueueOverFlowCount = eventQueueOverFlowCount;
-      this.reservedField0 = reservedField0;
     }
 
     public SubscriptionDiagnosticsDataType build() {
@@ -788,7 +779,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
               monitoringQueueOverflowCount,
               nextSequenceNumber,
               eventQueueOverFlowCount);
-      subscriptionDiagnosticsDataType.reservedField0 = reservedField0;
       return subscriptionDiagnosticsDataType;
     }
   }

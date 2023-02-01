@@ -202,7 +202,6 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
         BACnetContextTagUnsignedInteger extendedEventType,
         BACnetEventParameterExtendedParameters parameters,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.vendorId = vendorId;
       this.extendedEventType = extendedEventType;

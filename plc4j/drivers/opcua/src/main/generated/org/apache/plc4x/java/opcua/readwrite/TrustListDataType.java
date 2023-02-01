@@ -297,7 +297,6 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
         List<PascalByteString> issuerCertificates,
         int noOfIssuerCrls,
         List<PascalByteString> issuerCrls) {
-
       this.specifiedLists = specifiedLists;
       this.noOfTrustedCertificates = noOfTrustedCertificates;
       this.trustedCertificates = trustedCertificates;

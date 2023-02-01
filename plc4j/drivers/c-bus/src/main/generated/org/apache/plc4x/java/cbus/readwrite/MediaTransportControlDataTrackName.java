@@ -110,7 +110,6 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
     private final String trackName;
 
     public MediaTransportControlDataTrackNameBuilderImpl(String trackName) {
-
       this.trackName = trackName;
     }
 

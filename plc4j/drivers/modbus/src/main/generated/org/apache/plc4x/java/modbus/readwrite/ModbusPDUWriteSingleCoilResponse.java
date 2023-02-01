@@ -124,7 +124,6 @@ public class ModbusPDUWriteSingleCoilResponse extends ModbusPDU implements Messa
     private final int value;
 
     public ModbusPDUWriteSingleCoilResponseBuilderImpl(int address, int value) {
-
       this.address = address;
       this.value = value;
     }

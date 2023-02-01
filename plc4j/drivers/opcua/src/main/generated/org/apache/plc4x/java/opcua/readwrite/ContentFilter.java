@@ -129,7 +129,6 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     private final List<ExtensionObjectDefinition> elements;
 
     public ContentFilterBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
-
       this.noOfElements = noOfElements;
       this.elements = elements;
     }

@@ -148,7 +148,6 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
         BACnetApplicationTagCharacterString serialNumber,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.serialNumber = serialNumber;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

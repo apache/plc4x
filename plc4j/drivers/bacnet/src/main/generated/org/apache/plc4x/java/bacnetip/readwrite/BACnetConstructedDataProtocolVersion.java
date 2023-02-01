@@ -149,7 +149,6 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
         BACnetApplicationTagUnsignedInteger protocolVersion,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolVersion = protocolVersion;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -150,7 +150,6 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
         BACnetApplicationTagReal controlledVariableValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.controlledVariableValue = controlledVariableValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

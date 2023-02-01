@@ -52,12 +52,6 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
   protected final AccessLevel readLevel;
   protected final AccessLevel writeLevel;
 
-  // Arguments.
-  protected final Short length;
-  // Reserved Fields
-  private Byte reservedField0;
-  private Byte reservedField1;
-
   public ApduDataExtPropertyDescriptionResponse(
       short objectIndex,
       short propertyId,
@@ -66,9 +60,8 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
       KnxPropertyDataType propertyDataType,
       int maxNrOfElements,
       AccessLevel readLevel,
-      AccessLevel writeLevel,
-      Short length) {
-    super(length);
+      AccessLevel writeLevel) {
+    super();
     this.objectIndex = objectIndex;
     this.propertyId = propertyId;
     this.index = index;
@@ -77,7 +70,6 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     this.maxNrOfElements = maxNrOfElements;
     this.readLevel = readLevel;
     this.writeLevel = writeLevel;
-    this.length = length;
   }
 
   public short getObjectIndex() {
@@ -131,10 +123,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     writeSimpleField("writeEnabled", writeEnabled, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x0,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x0, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (propertyDataType)
     writeSimpleEnumField(
@@ -147,10 +136,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
             writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (byte) 0x0,
-        writeUnsignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x0, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (maxNrOfElements)
     writeSimpleField("maxNrOfElements", maxNrOfElements, writeUnsignedInt(writeBuffer, 12));
@@ -271,10 +257,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         propertyDataType,
         maxNrOfElements,
         readLevel,
-        writeLevel,
-        length,
-        reservedField0,
-        reservedField1);
+        writeLevel);
   }
 
   public static class ApduDataExtPropertyDescriptionResponseBuilderImpl
@@ -287,9 +270,6 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     private final int maxNrOfElements;
     private final AccessLevel readLevel;
     private final AccessLevel writeLevel;
-    private final Short length;
-    private final Byte reservedField0;
-    private final Byte reservedField1;
 
     public ApduDataExtPropertyDescriptionResponseBuilderImpl(
         short objectIndex,
@@ -299,10 +279,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         KnxPropertyDataType propertyDataType,
         int maxNrOfElements,
         AccessLevel readLevel,
-        AccessLevel writeLevel,
-        Short length,
-        Byte reservedField0,
-        Byte reservedField1) {
+        AccessLevel writeLevel) {
       this.objectIndex = objectIndex;
       this.propertyId = propertyId;
       this.index = index;
@@ -311,13 +288,9 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
       this.maxNrOfElements = maxNrOfElements;
       this.readLevel = readLevel;
       this.writeLevel = writeLevel;
-      this.length = length;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
-    public ApduDataExtPropertyDescriptionResponse build(Short length) {
-
+    public ApduDataExtPropertyDescriptionResponse build() {
       ApduDataExtPropertyDescriptionResponse apduDataExtPropertyDescriptionResponse =
           new ApduDataExtPropertyDescriptionResponse(
               objectIndex,
@@ -327,10 +300,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
               propertyDataType,
               maxNrOfElements,
               readLevel,
-              writeLevel,
-              length);
-      apduDataExtPropertyDescriptionResponse.reservedField0 = reservedField0;
-      apduDataExtPropertyDescriptionResponse.reservedField1 = reservedField1;
+              writeLevel);
       return apduDataExtPropertyDescriptionResponse;
     }
   }

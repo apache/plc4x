@@ -145,7 +145,6 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
         BACnetAccessThreatLevel threatLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.threatLevel = threatLevel;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

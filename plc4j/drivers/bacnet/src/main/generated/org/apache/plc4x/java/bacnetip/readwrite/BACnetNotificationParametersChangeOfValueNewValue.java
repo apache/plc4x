@@ -169,12 +169,12 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
       builder =
           BACnetNotificationParametersChangeOfValueNewValueChangedBits
               .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
-                  readBuffer, tagNumber, peekedTagNumber);
+                  readBuffer, peekedTagNumber, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
           BACnetNotificationParametersChangeOfValueNewValueChangedValue
               .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
-                  readBuffer, tagNumber, peekedTagNumber);
+                  readBuffer, peekedTagNumber, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(

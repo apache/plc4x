@@ -47,19 +47,14 @@ public class LDataCon extends CEMI implements Message {
   protected final List<CEMIAdditionalInformation> additionalInformation;
   protected final LDataFrame dataFrame;
 
-  // Arguments.
-  protected final Integer size;
-
   public LDataCon(
       short additionalInformationLength,
       List<CEMIAdditionalInformation> additionalInformation,
-      LDataFrame dataFrame,
-      Integer size) {
-    super(size);
+      LDataFrame dataFrame) {
+    super();
     this.additionalInformationLength = additionalInformationLength;
     this.additionalInformation = additionalInformation;
     this.dataFrame = dataFrame;
-    this.size = size;
   }
 
   public short getAdditionalInformationLength() {
@@ -145,32 +140,26 @@ public class LDataCon extends CEMI implements Message {
 
     readBuffer.closeContext("LDataCon");
     // Create the instance
-    return new LDataConBuilderImpl(
-        additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataConBuilderImpl(additionalInformationLength, additionalInformation, dataFrame);
   }
 
   public static class LDataConBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
-    private final Integer size;
 
     public LDataConBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
-        LDataFrame dataFrame,
-        Integer size) {
-
+        LDataFrame dataFrame) {
       this.additionalInformationLength = additionalInformationLength;
       this.additionalInformation = additionalInformation;
       this.dataFrame = dataFrame;
-      this.size = size;
     }
 
-    public LDataCon build(Integer size) {
-
+    public LDataCon build() {
       LDataCon lDataCon =
-          new LDataCon(additionalInformationLength, additionalInformation, dataFrame, size);
+          new LDataCon(additionalInformationLength, additionalInformation, dataFrame);
       return lDataCon;
     }
   }

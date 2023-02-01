@@ -147,7 +147,6 @@ public class BACnetConstructedDataEventType extends BACnetConstructedData implem
         BACnetEventTypeTagged eventType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventType = eventType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

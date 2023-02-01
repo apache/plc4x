@@ -142,7 +142,6 @@ public class BACnetConstructedDataListOfObjectPropertyReferences extends BACnetC
         List<BACnetDeviceObjectPropertyReference> references,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.references = references;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

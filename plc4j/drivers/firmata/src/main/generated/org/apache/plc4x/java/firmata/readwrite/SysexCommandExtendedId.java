@@ -107,7 +107,6 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
     private final List<Byte> id;
 
     public SysexCommandExtendedIdBuilderImpl(List<Byte> id) {
-
       this.id = id;
     }
 

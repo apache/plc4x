@@ -149,7 +149,6 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger completionTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.completionTime = completionTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -146,7 +146,6 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
         BACnetApplicationTagReal maxActualValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxActualValue = maxActualValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

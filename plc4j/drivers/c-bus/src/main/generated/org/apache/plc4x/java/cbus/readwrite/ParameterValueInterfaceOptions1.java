@@ -133,7 +133,6 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
 
     public ParameterValueInterfaceOptions1BuilderImpl(
         InterfaceOptions1 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

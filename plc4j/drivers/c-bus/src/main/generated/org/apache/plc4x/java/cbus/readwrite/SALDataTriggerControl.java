@@ -105,7 +105,6 @@ public class SALDataTriggerControl extends SALData implements Message {
     private final TriggerControlData triggerControlData;
 
     public SALDataTriggerControlBuilderImpl(TriggerControlData triggerControlData) {
-
       this.triggerControlData = triggerControlData;
     }
 

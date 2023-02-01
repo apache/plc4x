@@ -46,14 +46,10 @@ public class ApduDataGroupValueWrite extends ApduData implements Message {
   protected final byte dataFirstByte;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataGroupValueWrite(byte dataFirstByte, byte[] data, Short dataLength) {
-    super(dataLength);
+  public ApduDataGroupValueWrite(byte dataFirstByte, byte[] data) {
+    super();
     this.dataFirstByte = dataFirstByte;
     this.data = data;
-    this.dataLength = dataLength;
   }
 
   public byte getDataFirstByte() {
@@ -115,25 +111,21 @@ public class ApduDataGroupValueWrite extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataGroupValueWrite");
     // Create the instance
-    return new ApduDataGroupValueWriteBuilderImpl(dataFirstByte, data, dataLength);
+    return new ApduDataGroupValueWriteBuilderImpl(dataFirstByte, data);
   }
 
   public static class ApduDataGroupValueWriteBuilderImpl implements ApduData.ApduDataBuilder {
     private final byte dataFirstByte;
     private final byte[] data;
-    private final Short dataLength;
 
-    public ApduDataGroupValueWriteBuilderImpl(byte dataFirstByte, byte[] data, Short dataLength) {
-
+    public ApduDataGroupValueWriteBuilderImpl(byte dataFirstByte, byte[] data) {
       this.dataFirstByte = dataFirstByte;
       this.data = data;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataGroupValueWrite build(Short dataLength) {
-
+    public ApduDataGroupValueWrite build() {
       ApduDataGroupValueWrite apduDataGroupValueWrite =
-          new ApduDataGroupValueWrite(dataFirstByte, data, dataLength);
+          new ApduDataGroupValueWrite(dataFirstByte, data);
       return apduDataGroupValueWrite;
     }
   }

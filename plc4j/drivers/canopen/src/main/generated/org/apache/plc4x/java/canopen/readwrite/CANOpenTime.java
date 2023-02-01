@@ -40,8 +40,6 @@ public class CANOpenTime implements Message {
   // Properties.
   protected final long millis;
   protected final int days;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public CANOpenTime(long millis, int days) {
     super();
@@ -66,10 +64,7 @@ public class CANOpenTime implements Message {
     writeSimpleField("millis", millis, writeUnsignedLong(writeBuffer, 28));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 4));
 
     // Simple Field (days)
     writeSimpleField("days", days, writeUnsignedInt(writeBuffer, 16));
@@ -121,7 +116,6 @@ public class CANOpenTime implements Message {
     // Create the instance
     CANOpenTime _cANOpenTime;
     _cANOpenTime = new CANOpenTime(millis, days);
-    _cANOpenTime.reservedField0 = reservedField0;
     return _cANOpenTime;
   }
 

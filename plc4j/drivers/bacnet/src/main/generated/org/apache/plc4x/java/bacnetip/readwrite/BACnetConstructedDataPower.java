@@ -145,7 +145,6 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
         BACnetApplicationTagReal power,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.power = power;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

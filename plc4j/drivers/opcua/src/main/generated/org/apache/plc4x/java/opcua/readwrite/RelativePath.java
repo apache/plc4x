@@ -129,7 +129,6 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     private final List<ExtensionObjectDefinition> elements;
 
     public RelativePathBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
-
       this.noOfElements = noOfElements;
       this.elements = elements;
     }

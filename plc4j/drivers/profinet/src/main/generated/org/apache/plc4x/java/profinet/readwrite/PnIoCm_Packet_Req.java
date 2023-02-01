@@ -197,7 +197,6 @@ public class PnIoCm_Packet_Req extends PnIoCm_Packet implements Message {
         long arrayOffset,
         long arrayActualCount,
         List<PnIoCm_Block> blocks) {
-
       this.argsMaximum = argsMaximum;
       this.argsLength = argsLength;
       this.arrayMaximumCount = arrayMaximumCount;

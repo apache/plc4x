@@ -130,7 +130,6 @@ public class COTPPacketDisconnectResponse extends COTPPacket implements Message 
 
     public COTPPacketDisconnectResponseBuilderImpl(
         int destinationReference, int sourceReference, Integer cotpLen) {
-
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
       this.cotpLen = cotpLen;

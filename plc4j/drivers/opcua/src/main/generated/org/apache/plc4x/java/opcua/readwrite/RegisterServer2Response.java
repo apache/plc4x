@@ -205,7 +205,6 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
         List<StatusCode> configurationResults,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfConfigurationResults = noOfConfigurationResults;
       this.configurationResults = configurationResults;

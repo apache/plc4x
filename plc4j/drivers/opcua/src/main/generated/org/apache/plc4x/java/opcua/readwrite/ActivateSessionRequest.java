@@ -280,7 +280,6 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
         List<PascalString> localeIds,
         ExtensionObject userIdentityToken,
         ExtensionObjectDefinition userTokenSignature) {
-
       this.requestHeader = requestHeader;
       this.clientSignature = clientSignature;
       this.noOfClientSoftwareCertificates = noOfClientSoftwareCertificates;

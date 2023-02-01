@@ -1114,7 +1114,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         ExtensionObjectDefinition queryNextCount,
         ExtensionObjectDefinition registerNodesCount,
         ExtensionObjectDefinition unregisterNodesCount) {
-
       this.sessionId = sessionId;
       this.sessionName = sessionName;
       this.clientDescription = clientDescription;

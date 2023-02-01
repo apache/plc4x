@@ -109,7 +109,6 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
     private final BACnetBinaryPVTagged binaryValue;
 
     public BACnetPropertyStatesBinaryValueBuilderImpl(BACnetBinaryPVTagged binaryValue) {
-
       this.binaryValue = binaryValue;
     }
 

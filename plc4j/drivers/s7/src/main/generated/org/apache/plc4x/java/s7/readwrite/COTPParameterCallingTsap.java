@@ -107,7 +107,6 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
     private final Short rest;
 
     public COTPParameterCallingTsapBuilderImpl(int tsapId, Short rest) {
-
       this.tsapId = tsapId;
       this.rest = rest;
     }

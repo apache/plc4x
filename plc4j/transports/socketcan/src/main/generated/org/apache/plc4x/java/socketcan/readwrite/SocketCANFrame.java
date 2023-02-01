@@ -40,10 +40,6 @@ public class SocketCANFrame implements Message {
   // Properties.
   protected final int rawId;
   protected final byte[] data;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
-  private Short reservedField2;
 
   public SocketCANFrame(int rawId, byte[] data) {
     super();
@@ -119,21 +115,21 @@ public class SocketCANFrame implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x0,
+        (short) 0x0,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x0,
+        (short) 0x0,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField2 != null ? reservedField2 : (short) 0x0,
+        (short) 0x0,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -284,9 +280,6 @@ public class SocketCANFrame implements Message {
     // Create the instance
     SocketCANFrame _socketCANFrame;
     _socketCANFrame = new SocketCANFrame(rawId, data);
-    _socketCANFrame.reservedField0 = reservedField0;
-    _socketCANFrame.reservedField1 = reservedField1;
-    _socketCANFrame.reservedField2 = reservedField2;
     return _socketCANFrame;
   }
 

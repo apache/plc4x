@@ -109,7 +109,6 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
     private final BACnetContextTagBoolean booleanValue;
 
     public BACnetLogDataLogDataEntryBooleanValueBuilderImpl(BACnetContextTagBoolean booleanValue) {
-
       this.booleanValue = booleanValue;
     }
 

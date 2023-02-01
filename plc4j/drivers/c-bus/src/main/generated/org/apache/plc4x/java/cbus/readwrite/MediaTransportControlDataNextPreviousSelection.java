@@ -127,7 +127,6 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
     private final byte operation;
 
     public MediaTransportControlDataNextPreviousSelectionBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

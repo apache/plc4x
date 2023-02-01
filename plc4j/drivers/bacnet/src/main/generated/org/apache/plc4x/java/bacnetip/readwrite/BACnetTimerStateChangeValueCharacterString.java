@@ -119,7 +119,6 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
     public BACnetTimerStateChangeValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue,
         BACnetObjectType objectTypeArgument) {
-
       this.characterStringValue = characterStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -112,7 +112,6 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
 
     public BACnetPriorityValueDateTimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
-
       this.dateTimeValue = dateTimeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

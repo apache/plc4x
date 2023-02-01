@@ -164,7 +164,6 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
 
     public BVLCForwardedNPDUBuilderImpl(
         List<Short> ip, int port, NPDU npdu, Integer bvlcPayloadLength) {
-
       this.ip = ip;
       this.port = port;
       this.npdu = npdu;

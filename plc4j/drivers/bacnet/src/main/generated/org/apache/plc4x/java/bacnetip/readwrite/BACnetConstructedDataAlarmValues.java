@@ -189,7 +189,6 @@ public class BACnetConstructedDataAlarmValues extends BACnetConstructedData impl
         List<BACnetLifeSafetyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;

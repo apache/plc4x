@@ -124,7 +124,6 @@ public class ModbusPDUWriteMultipleCoilsResponse extends ModbusPDU implements Me
     private final int quantity;
 
     public ModbusPDUWriteMultipleCoilsResponseBuilderImpl(int startingAddress, int quantity) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

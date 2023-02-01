@@ -148,7 +148,6 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
         BACnetApplicationTagBoolean allWritesSuccessful,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.allWritesSuccessful = allWritesSuccessful;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -50,6 +50,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
   protected final SyntaxIdType syntaxId;
   protected final QueryType queryType;
   protected final AlarmType alarmType;
+
   // Reserved Fields
   private Short reservedField0;
   private Short reservedField1;

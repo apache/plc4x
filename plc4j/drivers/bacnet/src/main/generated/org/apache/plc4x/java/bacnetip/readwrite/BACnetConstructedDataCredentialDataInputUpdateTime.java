@@ -146,7 +146,6 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
         BACnetTimeStamp updateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateTime = updateTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

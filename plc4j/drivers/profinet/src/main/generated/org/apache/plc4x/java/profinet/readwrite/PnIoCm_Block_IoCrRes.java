@@ -164,7 +164,6 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
 
     public PnIoCm_Block_IoCrResBuilderImpl(
         PnIoCm_IoCrType ioCrType, int ioCrReference, int frameId) {
-
       this.ioCrType = ioCrType;
       this.ioCrReference = ioCrReference;
       this.frameId = frameId;

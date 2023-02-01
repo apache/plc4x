@@ -116,7 +116,6 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
 
     public BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl(
         BACnetEscalatorOperationDirectionTagged escalatorOperationDirection) {
-
       this.escalatorOperationDirection = escalatorOperationDirection;
     }
 

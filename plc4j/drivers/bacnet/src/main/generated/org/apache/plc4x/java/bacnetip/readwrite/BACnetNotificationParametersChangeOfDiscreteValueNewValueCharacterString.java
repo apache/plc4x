@@ -127,7 +127,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue, Short tagNumber) {
-
       this.characterStringValue = characterStringValue;
       this.tagNumber = tagNumber;
     }

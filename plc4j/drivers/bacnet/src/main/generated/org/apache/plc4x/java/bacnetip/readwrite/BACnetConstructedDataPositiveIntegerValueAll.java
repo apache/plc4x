@@ -115,7 +115,6 @@ public class BACnetConstructedDataPositiveIntegerValueAll extends BACnetConstruc
 
     public BACnetConstructedDataPositiveIntegerValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

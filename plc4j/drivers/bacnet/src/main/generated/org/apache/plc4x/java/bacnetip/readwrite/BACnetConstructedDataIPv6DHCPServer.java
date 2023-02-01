@@ -147,7 +147,6 @@ public class BACnetConstructedDataIPv6DHCPServer extends BACnetConstructedData i
         BACnetApplicationTagOctetString dhcpServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dhcpServer = dhcpServer;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

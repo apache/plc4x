@@ -97,7 +97,6 @@ public class LightingDataOff extends LightingData implements Message {
     private final byte group;
 
     public LightingDataOffBuilderImpl(byte group) {
-
       this.group = group;
     }
 

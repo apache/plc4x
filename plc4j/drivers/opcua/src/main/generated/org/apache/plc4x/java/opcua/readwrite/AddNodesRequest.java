@@ -155,7 +155,6 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToAdd,
         List<ExtensionObjectDefinition> nodesToAdd) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToAdd = noOfNodesToAdd;
       this.nodesToAdd = nodesToAdd;

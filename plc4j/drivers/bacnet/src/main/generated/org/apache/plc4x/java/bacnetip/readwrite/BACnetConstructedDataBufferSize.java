@@ -148,7 +148,6 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
         BACnetApplicationTagUnsignedInteger bufferSize,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bufferSize = bufferSize;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

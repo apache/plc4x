@@ -145,7 +145,6 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
         BACnetDateTime expirationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.expirationTime = expirationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

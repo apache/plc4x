@@ -157,7 +157,6 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
 
     public WriteValueBuilderImpl(
         NodeId nodeId, long attributeId, PascalString indexRange, DataValue value) {
-
       this.nodeId = nodeId;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

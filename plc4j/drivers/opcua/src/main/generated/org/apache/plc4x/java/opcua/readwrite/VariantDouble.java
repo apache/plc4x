@@ -73,8 +73,7 @@ public class VariantDouble extends Variant implements Message {
     writeBuffer.pushContext("VariantDouble");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeDouble(writeBuffer, 64));
@@ -129,7 +128,6 @@ public class VariantDouble extends Variant implements Message {
     private final List<Double> value;
 
     public VariantDoubleBuilderImpl(Integer arrayLength, List<Double> value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

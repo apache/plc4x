@@ -111,7 +111,6 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
 
     public BACnetPropertyStatesExtendedValueBuilderImpl(
         BACnetContextTagUnsignedInteger extendedValue) {
-
       this.extendedValue = extendedValue;
     }
 

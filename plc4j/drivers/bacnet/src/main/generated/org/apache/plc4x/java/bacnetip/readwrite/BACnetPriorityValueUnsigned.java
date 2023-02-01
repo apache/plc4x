@@ -115,7 +115,6 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
 
     public BACnetPriorityValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
-
       this.unsignedValue = unsignedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

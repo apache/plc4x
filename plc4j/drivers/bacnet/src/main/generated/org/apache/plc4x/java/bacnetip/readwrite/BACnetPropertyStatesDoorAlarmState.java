@@ -110,7 +110,6 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
 
     public BACnetPropertyStatesDoorAlarmStateBuilderImpl(
         BACnetDoorAlarmStateTagged doorAlarmState) {
-
       this.doorAlarmState = doorAlarmState;
     }
 

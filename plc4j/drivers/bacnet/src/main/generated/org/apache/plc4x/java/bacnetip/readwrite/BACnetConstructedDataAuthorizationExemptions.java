@@ -145,7 +145,6 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
         List<BACnetAuthorizationExemptionTagged> authorizationExemption,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authorizationExemption = authorizationExemption;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

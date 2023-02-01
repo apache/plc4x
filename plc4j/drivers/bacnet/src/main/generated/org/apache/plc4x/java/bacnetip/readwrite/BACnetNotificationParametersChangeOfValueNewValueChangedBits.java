@@ -92,7 +92,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
 
   public static BACnetNotificationParametersChangeOfValueNewValueBuilder
       staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
-          ReadBuffer readBuffer, Short tagNumber, Short peekedTagNumber) throws ParseException {
+          ReadBuffer readBuffer, Short peekedTagNumber, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -122,7 +122,6 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
 
     public BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilderImpl(
         BACnetContextTagBitString changedBits, Short tagNumber) {
-
       this.changedBits = changedBits;
       this.tagNumber = tagNumber;
     }

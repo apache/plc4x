@@ -110,7 +110,6 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     private final BACnetContextTagOctetString ipAddress;
 
     public BACnetHostAddressIpAddressBuilderImpl(BACnetContextTagOctetString ipAddress) {
-
       this.ipAddress = ipAddress;
     }
 

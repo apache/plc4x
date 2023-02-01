@@ -103,7 +103,6 @@ public class SecurityDataEvent extends SecurityData implements Message {
     private final byte[] data;
 
     public SecurityDataEventBuilderImpl(byte[] data) {
-
       this.data = data;
     }
 

@@ -104,7 +104,6 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
     private final BACnetDateTimeEnclosed dateTimeValue;
 
     public BACnetTimeStampDateTimeBuilderImpl(BACnetDateTimeEnclosed dateTimeValue) {
-
       this.dateTimeValue = dateTimeValue;
     }
 

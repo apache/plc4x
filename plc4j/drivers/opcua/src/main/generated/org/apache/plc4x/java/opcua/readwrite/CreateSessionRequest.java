@@ -282,7 +282,6 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
         PascalByteString clientCertificate,
         double requestedSessionTimeout,
         long maxResponseMessageSize) {
-
       this.requestHeader = requestHeader;
       this.clientDescription = clientDescription;
       this.serverUri = serverUri;

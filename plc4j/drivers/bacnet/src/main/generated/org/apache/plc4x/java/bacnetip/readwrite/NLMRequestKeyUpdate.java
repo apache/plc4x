@@ -224,7 +224,6 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
         long set2ExpirationTime,
         byte distributionKeyRevision,
         Integer apduLength) {
-
       this.set1KeyRevision = set1KeyRevision;
       this.set1ActivationTime = set1ActivationTime;
       this.set1ExpirationTime = set1ExpirationTime;

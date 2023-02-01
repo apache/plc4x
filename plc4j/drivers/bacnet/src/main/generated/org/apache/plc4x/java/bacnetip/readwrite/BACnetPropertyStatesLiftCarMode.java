@@ -109,7 +109,6 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
     private final BACnetLiftCarModeTagged liftCarMode;
 
     public BACnetPropertyStatesLiftCarModeBuilderImpl(BACnetLiftCarModeTagged liftCarMode) {
-
       this.liftCarMode = liftCarMode;
     }
 

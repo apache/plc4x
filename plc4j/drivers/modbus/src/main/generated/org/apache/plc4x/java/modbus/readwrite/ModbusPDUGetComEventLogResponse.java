@@ -168,7 +168,6 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
 
     public ModbusPDUGetComEventLogResponseBuilderImpl(
         int status, int eventCount, int messageCount, byte[] events) {
-
       this.status = status;
       this.eventCount = eventCount;
       this.messageCount = messageCount;

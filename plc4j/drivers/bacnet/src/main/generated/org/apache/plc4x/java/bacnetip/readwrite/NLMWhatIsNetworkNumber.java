@@ -88,7 +88,6 @@ public class NLMWhatIsNetworkNumber extends NLM implements Message {
     private final Integer apduLength;
 
     public NLMWhatIsNetworkNumberBuilderImpl(Integer apduLength) {
-
       this.apduLength = apduLength;
     }
 

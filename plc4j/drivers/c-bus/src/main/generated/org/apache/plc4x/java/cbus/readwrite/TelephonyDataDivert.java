@@ -105,7 +105,6 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
     private final String number;
 
     public TelephonyDataDivertBuilderImpl(String number) {
-
       this.number = number;
     }
 

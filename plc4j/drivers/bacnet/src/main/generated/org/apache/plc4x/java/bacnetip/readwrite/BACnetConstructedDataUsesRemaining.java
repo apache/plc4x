@@ -148,7 +148,6 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
         BACnetApplicationTagSignedInteger usesRemaining,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.usesRemaining = usesRemaining;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

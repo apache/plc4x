@@ -187,7 +187,6 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
         List<BACnetOptionalCharacterString> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;

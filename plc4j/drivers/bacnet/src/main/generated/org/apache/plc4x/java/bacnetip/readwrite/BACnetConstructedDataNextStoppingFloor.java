@@ -151,7 +151,6 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger nextStoppingFloor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.nextStoppingFloor = nextStoppingFloor;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

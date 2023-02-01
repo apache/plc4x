@@ -117,7 +117,6 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
     private final long minorVersion;
 
     public ConfigurationVersionDataTypeBuilderImpl(long majorVersion, long minorVersion) {
-
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
     }

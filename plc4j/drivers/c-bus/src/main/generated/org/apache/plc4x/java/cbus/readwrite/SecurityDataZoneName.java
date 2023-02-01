@@ -116,7 +116,6 @@ public class SecurityDataZoneName extends SecurityData implements Message {
     private final String zoneName;
 
     public SecurityDataZoneNameBuilderImpl(short zoneNumber, String zoneName) {
-
       this.zoneNumber = zoneNumber;
       this.zoneName = zoneName;
     }

@@ -148,7 +148,6 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger installationId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.installationId = installationId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

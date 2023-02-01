@@ -147,7 +147,6 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
         BACnetApplicationTagUnsignedInteger groupId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.groupId = groupId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -135,7 +135,6 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
     private final short pinState;
 
     public SysexCommandPinStateResponseBuilderImpl(short pin, short pinMode, short pinState) {
-
       this.pin = pin;
       this.pinMode = pinMode;
       this.pinState = pinState;

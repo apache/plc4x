@@ -219,7 +219,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
         BACnetContextTagBoolean issueConfirmed,
         BACnetContextTagUnsignedInteger lifetimeInSeconds,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.issueConfirmed = issueConfirmed;

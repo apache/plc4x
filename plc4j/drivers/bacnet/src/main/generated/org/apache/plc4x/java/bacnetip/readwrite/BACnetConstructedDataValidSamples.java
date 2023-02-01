@@ -148,7 +148,6 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
         BACnetApplicationTagUnsignedInteger validSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.validSamples = validSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

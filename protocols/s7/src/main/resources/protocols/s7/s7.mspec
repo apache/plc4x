@@ -223,7 +223,7 @@
 [discriminatedType S7Payload (uint 8 messageType, S7Parameter parameter)
     [typeSwitch parameter.parameterType, messageType
         ['0x04','0x03' S7PayloadReadVarResponse
-            [array S7VarPayloadDataItem ('true') items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
+        [array S7VarPayloadDataItem('true') items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest
             [array S7VarPayloadDataItem items count 'COUNT(CAST(parameter, "S7ParameterWriteVarRequest").items)']
@@ -240,15 +240,16 @@
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 //@param hasNext In the serialization process, if you have multiple write
 //               requests the last element does not require padding.
-[type S7VarPayloadDataItem(bit hasNext)
+
+[type S7VarPayloadDataItem(bit  'hasNext')
     [simple   DataTransportErrorCode returnCode]
     [simple   DataTransportSize      transportSize]
     [implicit uint 16                dataLength 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
     [array    byte                   data       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
     //[padding  uint 8                 pad        '0x00' '(COUNT(data) % 2)']
- //   [optional uint 8 Reserve 'dataLength < -1']
     [padding  uint 8                 pad        '0x00' '(PADCOUNT(data, hasNext) % 2)']
 ]
+
 
 [type S7VarPayloadStatusItem
     [simple DataTransportErrorCode returnCode]
@@ -733,7 +734,7 @@
     ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'null'                             , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
-    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'null'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x14' TIME          ['0x0B'     , 'D'             , '4'                 , 'null'                  , 'null'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     //['0x15' S5TIME        ['0x0C'    , 'X'             , '4'                 , 'null'                  , 'null'                          , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x16' LTIME         ['0x00'     , 'X'             , '8'                 , 'TIME'                  , 'null'                         , 'IEC61131_LTIME'        , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]

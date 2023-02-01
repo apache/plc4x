@@ -221,7 +221,6 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
         BACnetApplicationTagOctetString fileData,
         BACnetClosingTag closingTag,
         Long serviceRequestLength) {
-
       this.deviceIdentifier = deviceIdentifier;
       this.openingTag = openingTag;
       this.fileStartPosition = fileStartPosition;

@@ -42,12 +42,8 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
     return (short) 0xF9;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MFuncPropStateReadReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MFuncPropStateReadReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
 
     readBuffer.closeContext("MFuncPropStateReadReq");
     // Create the instance
-    return new MFuncPropStateReadReqBuilderImpl(size);
+    return new MFuncPropStateReadReqBuilderImpl();
   }
 
   public static class MFuncPropStateReadReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public MFuncPropStateReadReqBuilderImpl(Integer size) {
+    public MFuncPropStateReadReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MFuncPropStateReadReq build(Integer size) {
-
-      MFuncPropStateReadReq mFuncPropStateReadReq = new MFuncPropStateReadReq(size);
-
+    public MFuncPropStateReadReq build() {
+      MFuncPropStateReadReq mFuncPropStateReadReq = new MFuncPropStateReadReq();
       return mFuncPropStateReadReq;
     }
   }

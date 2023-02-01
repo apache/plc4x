@@ -142,7 +142,6 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
         List<BACnetBDTEntry> bbmdForeignDeviceTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdForeignDeviceTable = bbmdForeignDeviceTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

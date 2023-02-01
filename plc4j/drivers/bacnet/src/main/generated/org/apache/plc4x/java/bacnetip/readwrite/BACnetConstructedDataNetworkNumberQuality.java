@@ -151,7 +151,6 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
         BACnetNetworkNumberQualityTagged networkNumberQuality,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.networkNumberQuality = networkNumberQuality;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

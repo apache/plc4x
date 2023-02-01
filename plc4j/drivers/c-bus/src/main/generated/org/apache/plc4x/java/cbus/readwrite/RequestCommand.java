@@ -209,7 +209,6 @@ public class RequestCommand extends Request implements Message {
 
     public RequestCommandBuilderImpl(
         CBusCommand cbusCommand, Checksum chksum, Alpha alpha, CBusOptions cBusOptions) {
-
       this.cbusCommand = cbusCommand;
       this.chksum = chksum;
       this.alpha = alpha;

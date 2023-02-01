@@ -151,7 +151,6 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
         BACnetApplicationTagUnsignedInteger securityTimeWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.securityTimeWindow = securityTimeWindow;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

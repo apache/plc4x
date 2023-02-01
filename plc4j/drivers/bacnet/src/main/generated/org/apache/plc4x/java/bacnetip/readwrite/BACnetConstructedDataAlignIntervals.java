@@ -146,7 +146,6 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
         BACnetApplicationTagBoolean alignIntervals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alignIntervals = alignIntervals;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

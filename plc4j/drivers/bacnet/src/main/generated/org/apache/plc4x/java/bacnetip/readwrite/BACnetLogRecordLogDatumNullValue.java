@@ -118,7 +118,6 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
 
     public BACnetLogRecordLogDatumNullValueBuilderImpl(
         BACnetContextTagNull nullValue, Short tagNumber) {
-
       this.nullValue = nullValue;
       this.tagNumber = tagNumber;
     }

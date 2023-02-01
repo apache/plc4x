@@ -110,7 +110,6 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
     private final BACnetContextTagSignedInteger integerValue;
 
     public BACnetPropertyStatesIntegerValueBuilderImpl(BACnetContextTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

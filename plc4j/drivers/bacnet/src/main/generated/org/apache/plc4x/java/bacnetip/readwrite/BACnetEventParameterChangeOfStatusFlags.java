@@ -180,7 +180,6 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetStatusFlagsTagged selectedFlags,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.selectedFlags = selectedFlags;

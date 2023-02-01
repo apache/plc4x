@@ -148,7 +148,6 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
         BACnetLockStatusTagged lockStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockStatus = lockStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

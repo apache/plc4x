@@ -123,7 +123,6 @@ public class ModbusPDUReadCoilsRequest extends ModbusPDU implements Message {
     private final int quantity;
 
     public ModbusPDUReadCoilsRequestBuilderImpl(int startingAddress, int quantity) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

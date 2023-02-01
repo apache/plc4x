@@ -147,7 +147,6 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
         BACnetDateTime modificationDate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.modificationDate = modificationDate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

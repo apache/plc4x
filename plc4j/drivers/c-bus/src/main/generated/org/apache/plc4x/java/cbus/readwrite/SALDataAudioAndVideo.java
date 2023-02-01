@@ -103,7 +103,6 @@ public class SALDataAudioAndVideo extends SALData implements Message {
     private final LightingData audioVideoData;
 
     public SALDataAudioAndVideoBuilderImpl(LightingData audioVideoData) {
-
       this.audioVideoData = audioVideoData;
     }
 

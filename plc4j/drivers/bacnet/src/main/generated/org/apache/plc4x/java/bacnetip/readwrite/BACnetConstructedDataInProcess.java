@@ -145,7 +145,6 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
         BACnetApplicationTagBoolean inProcess,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inProcess = inProcess;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

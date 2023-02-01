@@ -148,7 +148,6 @@ public class BACnetConstructedDataActiveText extends BACnetConstructedData imple
         BACnetApplicationTagCharacterString activeText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeText = activeText;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

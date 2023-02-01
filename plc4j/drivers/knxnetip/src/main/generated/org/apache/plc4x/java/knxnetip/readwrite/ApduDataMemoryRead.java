@@ -46,14 +46,10 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   protected final short numBytes;
   protected final int address;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataMemoryRead(short numBytes, int address, Short dataLength) {
-    super(dataLength);
+  public ApduDataMemoryRead(short numBytes, int address) {
+    super();
     this.numBytes = numBytes;
     this.address = address;
-    this.dataLength = dataLength;
   }
 
   public short getNumBytes() {
@@ -111,24 +107,20 @@ public class ApduDataMemoryRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataMemoryRead");
     // Create the instance
-    return new ApduDataMemoryReadBuilderImpl(numBytes, address, dataLength);
+    return new ApduDataMemoryReadBuilderImpl(numBytes, address);
   }
 
   public static class ApduDataMemoryReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final short numBytes;
     private final int address;
-    private final Short dataLength;
 
-    public ApduDataMemoryReadBuilderImpl(short numBytes, int address, Short dataLength) {
-
+    public ApduDataMemoryReadBuilderImpl(short numBytes, int address) {
       this.numBytes = numBytes;
       this.address = address;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataMemoryRead build(Short dataLength) {
-
-      ApduDataMemoryRead apduDataMemoryRead = new ApduDataMemoryRead(numBytes, address, dataLength);
+    public ApduDataMemoryRead build() {
+      ApduDataMemoryRead apduDataMemoryRead = new ApduDataMemoryRead(numBytes, address);
       return apduDataMemoryRead;
     }
   }

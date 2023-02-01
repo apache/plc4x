@@ -147,7 +147,6 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

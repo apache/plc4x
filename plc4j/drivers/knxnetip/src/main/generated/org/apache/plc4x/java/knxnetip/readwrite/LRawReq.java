@@ -42,12 +42,8 @@ public class LRawReq extends CEMI implements Message {
     return (short) 0x10;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawReq(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawReq() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class LRawReq extends CEMI implements Message {
 
     readBuffer.closeContext("LRawReq");
     // Create the instance
-    return new LRawReqBuilderImpl(size);
+    return new LRawReqBuilderImpl();
   }
 
   public static class LRawReqBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public LRawReqBuilderImpl(Integer size) {
+    public LRawReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawReq build(Integer size) {
-
-      LRawReq lRawReq = new LRawReq(size);
-
+    public LRawReq build() {
+      LRawReq lRawReq = new LRawReq();
       return lRawReq;
     }
   }

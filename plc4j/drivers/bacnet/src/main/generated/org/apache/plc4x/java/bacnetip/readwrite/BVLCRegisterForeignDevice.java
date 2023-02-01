@@ -105,7 +105,6 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
     private final int ttl;
 
     public BVLCRegisterForeignDeviceBuilderImpl(int ttl) {
-
       this.ttl = ttl;
     }
 

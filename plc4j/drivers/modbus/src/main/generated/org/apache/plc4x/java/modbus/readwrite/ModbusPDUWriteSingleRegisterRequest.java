@@ -124,7 +124,6 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
     private final int value;
 
     public ModbusPDUWriteSingleRegisterRequestBuilderImpl(int address, int value) {
-
       this.address = address;
       this.value = value;
     }

@@ -42,12 +42,8 @@ public class ApduDataExtLinkRead extends ApduDataExt implements Message {
     return (short) 0x25;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtLinkRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtLinkRead() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class ApduDataExtLinkRead extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtLinkRead");
     // Create the instance
-    return new ApduDataExtLinkReadBuilderImpl(length);
+    return new ApduDataExtLinkReadBuilderImpl();
   }
 
   public static class ApduDataExtLinkReadBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtLinkReadBuilderImpl(Short length) {
+    public ApduDataExtLinkReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtLinkRead build(Short length) {
-
-      ApduDataExtLinkRead apduDataExtLinkRead = new ApduDataExtLinkRead(length);
-
+    public ApduDataExtLinkRead build() {
+      ApduDataExtLinkRead apduDataExtLinkRead = new ApduDataExtLinkRead();
       return apduDataExtLinkRead;
     }
   }

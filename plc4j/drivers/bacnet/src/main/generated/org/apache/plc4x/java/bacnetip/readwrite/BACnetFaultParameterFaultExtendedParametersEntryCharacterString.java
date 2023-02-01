@@ -113,7 +113,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 
     public BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue) {
-
       this.characterStringValue = characterStringValue;
     }
 

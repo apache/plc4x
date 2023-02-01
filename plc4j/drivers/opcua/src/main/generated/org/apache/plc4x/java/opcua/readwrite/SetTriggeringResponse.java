@@ -300,7 +300,6 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
         List<StatusCode> removeResults,
         int noOfRemoveDiagnosticInfos,
         List<DiagnosticInfo> removeDiagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfAddResults = noOfAddResults;
       this.addResults = addResults;

@@ -201,7 +201,6 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

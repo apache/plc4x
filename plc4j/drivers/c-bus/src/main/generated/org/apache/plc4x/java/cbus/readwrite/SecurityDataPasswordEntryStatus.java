@@ -158,7 +158,6 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
     private final byte code;
 
     public SecurityDataPasswordEntryStatusBuilderImpl(byte code) {
-
       this.code = code;
     }
 

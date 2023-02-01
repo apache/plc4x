@@ -141,7 +141,6 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
         List<BACnetDeviceObjectReference> credentials,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentials = credentials;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

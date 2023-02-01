@@ -119,7 +119,6 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, Short tagNumber) {
-
       this.realValue = realValue;
       this.tagNumber = tagNumber;
     }

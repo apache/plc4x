@@ -52,6 +52,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
   protected final byte cpuFunctionGroup;
   protected final short currentMode;
   protected final short sequenceNumber;
+
   // Reserved Fields
   private Integer reservedField0;
 

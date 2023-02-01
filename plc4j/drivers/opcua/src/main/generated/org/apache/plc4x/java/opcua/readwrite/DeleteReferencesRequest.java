@@ -158,7 +158,6 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
         ExtensionObjectDefinition requestHeader,
         int noOfReferencesToDelete,
         List<ExtensionObjectDefinition> referencesToDelete) {
-
       this.requestHeader = requestHeader;
       this.noOfReferencesToDelete = noOfReferencesToDelete;
       this.referencesToDelete = referencesToDelete;

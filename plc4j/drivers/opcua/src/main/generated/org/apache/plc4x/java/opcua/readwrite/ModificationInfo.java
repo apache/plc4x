@@ -149,7 +149,6 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
 
     public ModificationInfoBuilderImpl(
         long modificationTime, HistoryUpdateType updateType, PascalString userName) {
-
       this.modificationTime = modificationTime;
       this.updateType = updateType;
       this.userName = userName;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
         BACnetEventStateTagged eventState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventState = eventState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

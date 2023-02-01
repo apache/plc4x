@@ -40,12 +40,8 @@ public abstract class FirmataMessage implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getMessageType();
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataMessage(Boolean response) {
+  public FirmataMessage() {
     super();
-    this.response = response;
   }
 
   protected abstract void serializeFirmataMessageChild(WriteBuffer writeBuffer)
@@ -148,13 +144,12 @@ public abstract class FirmataMessage implements Message {
 
     readBuffer.closeContext("FirmataMessage");
     // Create the instance
-    FirmataMessage _firmataMessage = builder.build(response);
-
+    FirmataMessage _firmataMessage = builder.build();
     return _firmataMessage;
   }
 
   public interface FirmataMessageBuilder {
-    FirmataMessage build(Boolean response);
+    FirmataMessage build();
   }
 
   @Override

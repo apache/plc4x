@@ -148,7 +148,6 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
         BACnetApplicationTagUnsignedInteger carPosition,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carPosition = carPosition;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

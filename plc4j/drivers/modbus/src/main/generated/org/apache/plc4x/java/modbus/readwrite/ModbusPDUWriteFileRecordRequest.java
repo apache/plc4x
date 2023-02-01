@@ -129,7 +129,6 @@ public class ModbusPDUWriteFileRecordRequest extends ModbusPDU implements Messag
 
     public ModbusPDUWriteFileRecordRequestBuilderImpl(
         List<ModbusPDUWriteFileRecordRequestItem> items) {
-
       this.items = items;
     }
 

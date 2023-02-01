@@ -46,15 +46,15 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
   protected final List<BACnetReadAccessResult> data;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckReadPropertyMultiple(
-      List<BACnetReadAccessResult> data, Long serviceAckLength, Long serviceAckPayloadLength) {
+      List<BACnetReadAccessResult> data, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.data = data;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public List<BACnetReadAccessResult> getData() {
@@ -95,7 +95,7 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
   }
 
   public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadPropertyMultiple");
     PositionAware positionAware = readBuffer;
@@ -112,27 +112,26 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
     readBuffer.closeContext("BACnetServiceAckReadPropertyMultiple");
     // Create the instance
     return new BACnetServiceAckReadPropertyMultipleBuilderImpl(
-        data, serviceAckLength, serviceAckPayloadLength);
+        data, serviceAckPayloadLength, serviceAckLength);
   }
 
   public static class BACnetServiceAckReadPropertyMultipleBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final List<BACnetReadAccessResult> data;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
     public BACnetServiceAckReadPropertyMultipleBuilderImpl(
-        List<BACnetReadAccessResult> data, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+        List<BACnetReadAccessResult> data, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.data = data;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckReadPropertyMultiple build(Long serviceAckLength) {
 
       BACnetServiceAckReadPropertyMultiple bACnetServiceAckReadPropertyMultiple =
-          new BACnetServiceAckReadPropertyMultiple(data, serviceAckLength, serviceAckPayloadLength);
+          new BACnetServiceAckReadPropertyMultiple(data, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckReadPropertyMultiple;
     }
   }

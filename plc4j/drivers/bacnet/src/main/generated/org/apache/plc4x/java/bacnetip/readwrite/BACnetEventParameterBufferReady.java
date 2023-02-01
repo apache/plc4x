@@ -188,7 +188,6 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
         BACnetContextTagUnsignedInteger notificationThreshold,
         BACnetContextTagUnsignedInteger previousNotificationCount,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.notificationThreshold = notificationThreshold;
       this.previousNotificationCount = previousNotificationCount;

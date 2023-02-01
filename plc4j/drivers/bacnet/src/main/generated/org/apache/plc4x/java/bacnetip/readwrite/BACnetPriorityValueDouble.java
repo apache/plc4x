@@ -113,7 +113,6 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
 
     public BACnetPriorityValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, BACnetObjectType objectTypeArgument) {
-
       this.doubleValue = doubleValue;
       this.objectTypeArgument = objectTypeArgument;
     }

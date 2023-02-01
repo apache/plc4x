@@ -118,7 +118,6 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
 
     public BACnetLogRecordLogDatumRealValueBuilderImpl(
         BACnetContextTagReal realValue, Short tagNumber) {
-
       this.realValue = realValue;
       this.tagNumber = tagNumber;
     }

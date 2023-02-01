@@ -110,7 +110,6 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     private final BACnetContextTagUnsignedInteger percent;
 
     public BACnetShedLevelPercentBuilderImpl(BACnetContextTagUnsignedInteger percent) {
-
       this.percent = percent;
     }
 

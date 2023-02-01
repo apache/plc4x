@@ -196,7 +196,6 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
         HVACType hvacType,
         HVACStatusFlags hvacStatus,
         HVACError hvacErrorCode) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.hvacType = hvacType;

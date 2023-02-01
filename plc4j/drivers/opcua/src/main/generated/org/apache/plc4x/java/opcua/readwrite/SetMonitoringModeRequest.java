@@ -194,7 +194,6 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         MonitoringMode monitoringMode,
         int noOfMonitoredItemIds,
         List<Long> monitoredItemIds) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.monitoringMode = monitoringMode;

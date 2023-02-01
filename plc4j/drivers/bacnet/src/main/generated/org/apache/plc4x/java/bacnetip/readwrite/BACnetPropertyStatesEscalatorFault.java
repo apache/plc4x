@@ -110,7 +110,6 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
 
     public BACnetPropertyStatesEscalatorFaultBuilderImpl(
         BACnetEscalatorFaultTagged escalatorFault) {
-
       this.escalatorFault = escalatorFault;
     }
 

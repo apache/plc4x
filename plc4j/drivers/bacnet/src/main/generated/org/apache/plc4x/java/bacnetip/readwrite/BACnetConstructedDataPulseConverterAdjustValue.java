@@ -147,7 +147,6 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
         BACnetApplicationTagReal adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -113,7 +113,6 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
     private final Short tagNumberArgument;
 
     public BACnetContextTagDateBuilderImpl(BACnetTagPayloadDate payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

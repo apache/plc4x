@@ -105,7 +105,6 @@ public class S7ParameterReadVarResponse extends S7Parameter implements Message {
     private final short numItems;
 
     public S7ParameterReadVarResponseBuilderImpl(short numItems) {
-
       this.numItems = numItems;
     }
 

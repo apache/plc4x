@@ -173,7 +173,6 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
         short fileType,
         short elementNumber,
         short subElementNumber) {
-
       this.byteSize = byteSize;
       this.fileNumber = fileNumber;
       this.fileType = fileType;

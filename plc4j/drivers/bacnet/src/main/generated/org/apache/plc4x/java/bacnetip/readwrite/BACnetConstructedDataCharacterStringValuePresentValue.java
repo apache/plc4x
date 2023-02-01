@@ -149,7 +149,6 @@ public class BACnetConstructedDataCharacterStringValuePresentValue extends BACne
         BACnetApplicationTagCharacterString presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

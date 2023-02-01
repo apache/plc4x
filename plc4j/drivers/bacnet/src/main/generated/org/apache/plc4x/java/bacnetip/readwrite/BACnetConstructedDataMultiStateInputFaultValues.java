@@ -145,7 +145,6 @@ public class BACnetConstructedDataMultiStateInputFaultValues extends BACnetConst
         List<BACnetApplicationTagUnsignedInteger> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

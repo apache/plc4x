@@ -147,7 +147,6 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
         BACnetApplicationTagUnsignedInteger valueSet,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valueSet = valueSet;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

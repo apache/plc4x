@@ -211,7 +211,6 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
         long readLength,
         List<AdsMultiRequestItem> items,
         byte[] data) {
-
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.readLength = readLength;

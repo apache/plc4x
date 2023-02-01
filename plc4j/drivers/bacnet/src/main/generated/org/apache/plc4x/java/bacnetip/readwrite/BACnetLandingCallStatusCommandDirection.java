@@ -110,7 +110,6 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
 
     public BACnetLandingCallStatusCommandDirectionBuilderImpl(
         BACnetLiftCarDirectionTagged direction) {
-
       this.direction = direction;
     }
 

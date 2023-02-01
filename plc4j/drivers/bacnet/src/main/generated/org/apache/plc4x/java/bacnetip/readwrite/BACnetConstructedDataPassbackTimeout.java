@@ -149,7 +149,6 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
         BACnetApplicationTagUnsignedInteger passbackTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passbackTimeout = passbackTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -109,7 +109,6 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
     private final BACnetMaintenanceTagged maintenance;
 
     public BACnetPropertyStatesMaintenanceBuilderImpl(BACnetMaintenanceTagged maintenance) {
-
       this.maintenance = maintenance;
     }
 

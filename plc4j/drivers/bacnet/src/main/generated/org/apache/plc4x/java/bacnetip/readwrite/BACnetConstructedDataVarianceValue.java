@@ -146,7 +146,6 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
         BACnetApplicationTagReal varianceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.varianceValue = varianceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

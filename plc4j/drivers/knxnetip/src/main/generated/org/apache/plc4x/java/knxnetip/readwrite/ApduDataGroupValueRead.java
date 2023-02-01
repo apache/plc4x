@@ -42,14 +42,8 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
     return (byte) 0x0;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public ApduDataGroupValueRead(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataGroupValueRead() {
+    super();
   }
 
   @Override
@@ -59,10 +53,7 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
     writeBuffer.pushContext("ApduDataGroupValueRead");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
 
     writeBuffer.popContext("ApduDataGroupValueRead");
   }
@@ -95,23 +86,15 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataGroupValueRead");
     // Create the instance
-    return new ApduDataGroupValueReadBuilderImpl(dataLength, reservedField0);
+    return new ApduDataGroupValueReadBuilderImpl();
   }
 
   public static class ApduDataGroupValueReadBuilderImpl implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
-    private final Short reservedField0;
 
-    public ApduDataGroupValueReadBuilderImpl(Short dataLength, Short reservedField0) {
-      this.dataLength = dataLength;
-      this.reservedField0 = reservedField0;
-    }
+    public ApduDataGroupValueReadBuilderImpl() {}
 
-    public ApduDataGroupValueRead build(Short dataLength) {
-
-      ApduDataGroupValueRead apduDataGroupValueRead = new ApduDataGroupValueRead(dataLength);
-
-      apduDataGroupValueRead.reservedField0 = reservedField0;
+    public ApduDataGroupValueRead build() {
+      ApduDataGroupValueRead apduDataGroupValueRead = new ApduDataGroupValueRead();
       return apduDataGroupValueRead;
     }
   }

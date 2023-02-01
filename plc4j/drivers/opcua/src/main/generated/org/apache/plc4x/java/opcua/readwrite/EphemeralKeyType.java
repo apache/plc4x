@@ -125,7 +125,6 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     private final PascalByteString signature;
 
     public EphemeralKeyTypeBuilderImpl(PascalByteString publicKey, PascalByteString signature) {
-
       this.publicKey = publicKey;
       this.signature = signature;
     }

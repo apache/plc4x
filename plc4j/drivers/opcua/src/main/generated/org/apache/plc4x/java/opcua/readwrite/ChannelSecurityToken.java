@@ -148,7 +148,6 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
 
     public ChannelSecurityTokenBuilderImpl(
         long channelId, long tokenId, long createdAt, long revisedLifetime) {
-
       this.channelId = channelId;
       this.tokenId = tokenId;
       this.createdAt = createdAt;

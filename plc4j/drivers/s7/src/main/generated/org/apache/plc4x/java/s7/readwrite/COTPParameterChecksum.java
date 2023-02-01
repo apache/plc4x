@@ -107,7 +107,6 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
     private final Short rest;
 
     public COTPParameterChecksumBuilderImpl(short crc, Short rest) {
-
       this.crc = crc;
       this.rest = rest;
     }

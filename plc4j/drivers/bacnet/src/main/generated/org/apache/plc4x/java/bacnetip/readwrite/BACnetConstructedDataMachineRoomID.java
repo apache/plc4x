@@ -148,7 +148,6 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
         BACnetApplicationTagObjectIdentifier machineRoomId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.machineRoomId = machineRoomId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

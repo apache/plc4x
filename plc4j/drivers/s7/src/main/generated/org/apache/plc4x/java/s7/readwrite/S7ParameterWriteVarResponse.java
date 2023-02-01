@@ -105,7 +105,6 @@ public class S7ParameterWriteVarResponse extends S7Parameter implements Message 
     private final short numItems;
 
     public S7ParameterWriteVarResponseBuilderImpl(short numItems) {
-
       this.numItems = numItems;
     }
 

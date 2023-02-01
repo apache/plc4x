@@ -167,7 +167,6 @@ public class AirConditioningDataSetHvacUpperGuardLimit extends AirConditioningDa
         HVACZoneList zoneList,
         HVACTemperature limit,
         HVACModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

@@ -190,7 +190,6 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
         List<BACnetDailySchedule> weeklySchedule,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.weeklySchedule = weeklySchedule;
       this.tagNumber = tagNumber;

@@ -113,7 +113,6 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
     private final short id;
 
     public NodeIdTwoByteBuilderImpl(short id) {
-
       this.id = id;
     }
 

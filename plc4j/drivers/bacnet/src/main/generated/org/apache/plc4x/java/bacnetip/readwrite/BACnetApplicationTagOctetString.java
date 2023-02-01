@@ -107,7 +107,6 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
     private final BACnetTagPayloadOctetString payload;
 
     public BACnetApplicationTagOctetStringBuilderImpl(BACnetTagPayloadOctetString payload) {
-
       this.payload = payload;
     }
 

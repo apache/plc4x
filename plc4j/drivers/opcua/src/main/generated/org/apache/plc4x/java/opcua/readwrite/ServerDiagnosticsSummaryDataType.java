@@ -329,7 +329,6 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
         long publishingIntervalCount,
         long securityRejectedRequestsCount,
         long rejectedRequestsCount) {
-
       this.serverViewCount = serverViewCount;
       this.currentSessionCount = currentSessionCount;
       this.cumulatedSessionCount = cumulatedSessionCount;

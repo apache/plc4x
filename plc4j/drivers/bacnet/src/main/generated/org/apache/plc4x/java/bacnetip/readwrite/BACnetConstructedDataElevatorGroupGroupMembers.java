@@ -190,7 +190,6 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
         List<BACnetApplicationTagObjectIdentifier> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

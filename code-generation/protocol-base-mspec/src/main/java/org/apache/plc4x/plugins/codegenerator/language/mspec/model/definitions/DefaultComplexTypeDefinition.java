@@ -48,12 +48,10 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     public Optional<List<Argument>> getAllParserArguments() {
         List<Argument> allArguments = new ArrayList<>();
-        getParentType()
-            .map(ComplexTypeDefinition::getParserArguments)
-            .map(arguments -> arguments.orElse(Collections.emptyList()))
-            .map(allArguments::addAll);
-        if (parserArguments != null) {
-            allArguments.addAll(parserArguments);
+        allArguments.addAll(getParserArguments().orElse(Collections.emptyList()));
+        if(getParentType().isPresent()) {
+            ComplexTypeDefinition parent = getParentType().get();
+            allArguments.addAll(parent.getAllParserArguments().orElse(Collections.emptyList()));
         }
         return Optional.of(allArguments);
     }

@@ -148,7 +148,6 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
         BACnetApplicationTagSignedInteger daysRemaining,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.daysRemaining = daysRemaining;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -177,7 +177,6 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData resultBlock,
         Long serviceAckLength) {
-
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;
       this.resultBlock = resultBlock;

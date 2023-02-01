@@ -109,7 +109,6 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
     private final BACnetEscalatorModeTagged escalatorMode;
 
     public BACnetPropertyStatesEscalatorModeBuilderImpl(BACnetEscalatorModeTagged escalatorMode) {
-
       this.escalatorMode = escalatorMode;
     }
 

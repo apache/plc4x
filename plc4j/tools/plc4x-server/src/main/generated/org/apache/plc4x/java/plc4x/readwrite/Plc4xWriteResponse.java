@@ -188,7 +188,6 @@ public class Plc4xWriteResponse extends Plc4xMessage implements Message {
 
     public Plc4xWriteResponseBuilderImpl(
         int connectionId, Plc4xResponseCode responseCode, List<Plc4xTagResponse> tags) {
-
       this.connectionId = connectionId;
       this.responseCode = responseCode;
       this.tags = tags;

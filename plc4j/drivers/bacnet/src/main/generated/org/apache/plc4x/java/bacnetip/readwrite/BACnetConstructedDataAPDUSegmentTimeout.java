@@ -151,7 +151,6 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
         BACnetApplicationTagUnsignedInteger apduSegmentTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.apduSegmentTimeout = apduSegmentTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

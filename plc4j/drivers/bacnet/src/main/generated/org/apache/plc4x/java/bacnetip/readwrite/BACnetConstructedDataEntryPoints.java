@@ -141,7 +141,6 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
         List<BACnetDeviceObjectReference> entryPoints,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.entryPoints = entryPoints;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

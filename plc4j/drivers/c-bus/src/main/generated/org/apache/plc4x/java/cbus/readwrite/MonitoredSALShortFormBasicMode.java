@@ -222,7 +222,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         ApplicationIdContainer application,
         SALData salData,
         CBusOptions cBusOptions) {
-
       this.counts = counts;
       this.bridgeCount = bridgeCount;
       this.networkNumber = networkNumber;

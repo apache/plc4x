@@ -117,7 +117,6 @@ public class XVType extends ExtensionObjectDefinition implements Message {
     private final float value;
 
     public XVTypeBuilderImpl(double x, float value) {
-
       this.x = x;
       this.value = value;
     }

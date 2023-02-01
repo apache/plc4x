@@ -46,15 +46,15 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
   protected final byte[] unknownData;
 
   // Arguments.
-  protected final Short tagNumberArgument;
   protected final Long actualLength;
+  protected final Short tagNumberArgument;
 
   public BACnetContextTagUnknown(
-      BACnetTagHeader header, byte[] unknownData, Short tagNumberArgument, Long actualLength) {
+      BACnetTagHeader header, byte[] unknownData, Long actualLength, Short tagNumberArgument) {
     super(header, tagNumberArgument);
     this.unknownData = unknownData;
-    this.tagNumberArgument = tagNumberArgument;
     this.actualLength = actualLength;
+    this.tagNumberArgument = tagNumberArgument;
   }
 
   public byte[] getUnknownData() {
@@ -93,7 +93,7 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
   }
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
-      ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType, Long actualLength)
+      ReadBuffer readBuffer, Long actualLength, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnknown");
     PositionAware positionAware = readBuffer;
@@ -104,26 +104,25 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
 
     readBuffer.closeContext("BACnetContextTagUnknown");
     // Create the instance
-    return new BACnetContextTagUnknownBuilderImpl(unknownData, tagNumberArgument, actualLength);
+    return new BACnetContextTagUnknownBuilderImpl(unknownData, actualLength, tagNumberArgument);
   }
 
   public static class BACnetContextTagUnknownBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final byte[] unknownData;
-    private final Short tagNumberArgument;
     private final Long actualLength;
+    private final Short tagNumberArgument;
 
     public BACnetContextTagUnknownBuilderImpl(
-        byte[] unknownData, Short tagNumberArgument, Long actualLength) {
-
+        byte[] unknownData, Long actualLength, Short tagNumberArgument) {
       this.unknownData = unknownData;
-      this.tagNumberArgument = tagNumberArgument;
       this.actualLength = actualLength;
+      this.tagNumberArgument = tagNumberArgument;
     }
 
     public BACnetContextTagUnknown build(BACnetTagHeader header, Short tagNumberArgument) {
       BACnetContextTagUnknown bACnetContextTagUnknown =
-          new BACnetContextTagUnknown(header, unknownData, tagNumberArgument, actualLength);
+          new BACnetContextTagUnknown(header, unknownData, actualLength, tagNumberArgument);
       return bACnetContextTagUnknown;
     }
   }

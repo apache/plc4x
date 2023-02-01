@@ -148,7 +148,6 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
         BACnetApplicationTagUnsignedInteger dutyWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dutyWindow = dutyWindow;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

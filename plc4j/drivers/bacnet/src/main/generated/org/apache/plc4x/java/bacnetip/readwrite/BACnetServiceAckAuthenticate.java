@@ -46,15 +46,15 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckAuthenticate(
-      byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -94,7 +94,7 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   }
 
   public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAuthenticate");
     PositionAware positionAware = readBuffer;
@@ -107,28 +107,27 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
     readBuffer.closeContext("BACnetServiceAckAuthenticate");
     // Create the instance
     return new BACnetServiceAckAuthenticateBuilderImpl(
-        bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
   }
 
   public static class BACnetServiceAckAuthenticateBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
     public BACnetServiceAckAuthenticateBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckAuthenticate build(Long serviceAckLength) {
 
       BACnetServiceAckAuthenticate bACnetServiceAckAuthenticate =
           new BACnetServiceAckAuthenticate(
-              bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckAuthenticate;
     }
   }

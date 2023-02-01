@@ -153,7 +153,6 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
 
     public IdentifyReplyCommandNetworkVoltageBuilderImpl(
         String volts, String voltsDecimalPlace, Short numBytes) {
-
       this.volts = volts;
       this.voltsDecimalPlace = voltsDecimalPlace;
       this.numBytes = numBytes;

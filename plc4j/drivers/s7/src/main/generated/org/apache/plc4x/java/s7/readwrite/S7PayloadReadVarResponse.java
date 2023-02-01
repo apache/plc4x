@@ -121,7 +121,6 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
 
     public S7PayloadReadVarResponseBuilderImpl(
         List<S7VarPayloadDataItem> items, S7Parameter parameter) {
-
       this.items = items;
       this.parameter = parameter;
     }

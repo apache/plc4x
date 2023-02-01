@@ -45,13 +45,9 @@ public class ApduDataExtAuthorizeResponse extends ApduDataExt implements Message
   // Properties.
   protected final short level;
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtAuthorizeResponse(short level, Short length) {
-    super(length);
+  public ApduDataExtAuthorizeResponse(short level) {
+    super();
     this.level = level;
-    this.length = length;
   }
 
   public short getLevel() {
@@ -97,24 +93,20 @@ public class ApduDataExtAuthorizeResponse extends ApduDataExt implements Message
 
     readBuffer.closeContext("ApduDataExtAuthorizeResponse");
     // Create the instance
-    return new ApduDataExtAuthorizeResponseBuilderImpl(level, length);
+    return new ApduDataExtAuthorizeResponseBuilderImpl(level);
   }
 
   public static class ApduDataExtAuthorizeResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short level;
-    private final Short length;
 
-    public ApduDataExtAuthorizeResponseBuilderImpl(short level, Short length) {
-
+    public ApduDataExtAuthorizeResponseBuilderImpl(short level) {
       this.level = level;
-      this.length = length;
     }
 
-    public ApduDataExtAuthorizeResponse build(Short length) {
-
+    public ApduDataExtAuthorizeResponse build() {
       ApduDataExtAuthorizeResponse apduDataExtAuthorizeResponse =
-          new ApduDataExtAuthorizeResponse(level, length);
+          new ApduDataExtAuthorizeResponse(level);
       return apduDataExtAuthorizeResponse;
     }
   }

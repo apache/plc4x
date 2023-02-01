@@ -155,7 +155,6 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
         ExtensionObjectDefinition requestHeader,
         int noOfMethodsToCall,
         List<ExtensionObjectDefinition> methodsToCall) {
-
       this.requestHeader = requestHeader;
       this.noOfMethodsToCall = noOfMethodsToCall;
       this.methodsToCall = methodsToCall;

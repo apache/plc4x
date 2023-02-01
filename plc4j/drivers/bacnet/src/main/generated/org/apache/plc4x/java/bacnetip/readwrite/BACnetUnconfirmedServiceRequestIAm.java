@@ -204,7 +204,6 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
         BACnetSegmentationTagged segmentationSupported,
         BACnetVendorIdTagged vendorId,
         Integer serviceRequestLength) {
-
       this.deviceIdentifier = deviceIdentifier;
       this.maximumApduLengthAcceptedLength = maximumApduLengthAcceptedLength;
       this.segmentationSupported = segmentationSupported;

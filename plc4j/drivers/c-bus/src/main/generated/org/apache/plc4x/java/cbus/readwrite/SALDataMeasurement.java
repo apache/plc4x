@@ -105,7 +105,6 @@ public class SALDataMeasurement extends SALData implements Message {
     private final MeasurementData measurementData;
 
     public SALDataMeasurementBuilderImpl(MeasurementData measurementData) {
-
       this.measurementData = measurementData;
     }
 

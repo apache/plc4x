@@ -155,7 +155,6 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
     private final byte[] data;
 
     public AdsWriteControlRequestBuilderImpl(int adsState, int deviceState, byte[] data) {
-
       this.adsState = adsState;
       this.deviceState = deviceState;
       this.data = data;

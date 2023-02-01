@@ -106,7 +106,6 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetOptionalCharacterStringNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

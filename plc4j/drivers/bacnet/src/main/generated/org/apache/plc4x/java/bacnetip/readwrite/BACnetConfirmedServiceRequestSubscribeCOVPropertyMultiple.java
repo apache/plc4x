@@ -257,7 +257,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
             listOfCovSubscriptionSpecifications,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;
       this.lifetime = lifetime;

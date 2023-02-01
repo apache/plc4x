@@ -187,7 +187,6 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
         List<BACnetCredentialAuthenticationFactor> authenticationFactors,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.authenticationFactors = authenticationFactors;
       this.tagNumber = tagNumber;

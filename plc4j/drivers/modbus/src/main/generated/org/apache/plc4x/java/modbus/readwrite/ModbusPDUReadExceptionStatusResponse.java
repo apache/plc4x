@@ -109,7 +109,6 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
     private final short value;
 
     public ModbusPDUReadExceptionStatusResponseBuilderImpl(short value) {
-
       this.value = value;
     }
 

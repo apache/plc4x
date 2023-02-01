@@ -111,7 +111,6 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
 
     public BACnetPropertyStatesFileAccessMethodBuilderImpl(
         BACnetFileAccessMethodTagged fileAccessMethod) {
-
       this.fileAccessMethod = fileAccessMethod;
     }
 

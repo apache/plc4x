@@ -124,7 +124,6 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
     private final byte isolateStatus;
 
     public TelephonyDataIsolateSecondaryOutletBuilderImpl(byte isolateStatus) {
-
       this.isolateStatus = isolateStatus;
     }
 

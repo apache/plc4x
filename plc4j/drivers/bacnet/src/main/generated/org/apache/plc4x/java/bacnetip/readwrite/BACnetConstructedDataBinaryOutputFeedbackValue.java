@@ -149,7 +149,6 @@ public class BACnetConstructedDataBinaryOutputFeedbackValue extends BACnetConstr
         BACnetBinaryPVTagged feedbackValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.feedbackValue = feedbackValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
