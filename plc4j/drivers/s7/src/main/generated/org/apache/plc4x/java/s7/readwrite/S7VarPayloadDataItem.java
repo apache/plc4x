@@ -41,6 +41,7 @@ public class S7VarPayloadDataItem implements Message {
   protected final DataTransportErrorCode returnCode;
   protected final DataTransportSize transportSize;
   protected final byte[] data;
+
   // Arguments.
   protected final Boolean hasNext;
 

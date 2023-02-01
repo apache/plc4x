@@ -226,7 +226,7 @@
         [array S7VarPayloadDataItem('true') items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest
-            [array S7VarPayloadDataItem items count 'COUNT(CAST(parameter, "S7ParameterWriteVarRequest").items)']
+            [array S7VarPayloadDataItem('true') items count 'COUNT(CAST(parameter, "S7ParameterWriteVarRequest").items)']
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse
             [array S7VarPayloadStatusItem items count 'CAST(parameter, "S7ParameterWriteVarResponse").numItems']

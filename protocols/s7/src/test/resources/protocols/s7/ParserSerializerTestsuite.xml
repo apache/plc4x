@@ -632,7 +632,7 @@
                           <data dataType="byte" bitLength="8">0x01</data>
                           <padding isList="true">
                             <value dataType="uint" bitLength="8">0</value>
-                          </padding>
+                          </padding> 
                         </S7VarPayloadDataItem>
                         <S7VarPayloadDataItem>
                           <returnCode>
@@ -889,7 +889,7 @@
                           <data dataType="byte" bitLength="8">0x01</data>
                           <padding isList="true">
                             <value dataType="uint" bitLength="8">0</value>
-                          </padding>
+                          </padding>                   
                         </S7VarPayloadDataItem>
                         <S7VarPayloadDataItem>
                           <returnCode>
@@ -902,7 +902,7 @@
                           <data dataType="byte" bitLength="8">0x01</data>
                           <padding isList="true">
                             <value dataType="uint" bitLength="8">0</value>
-                          </padding>
+                          </padding>                         
                         </S7VarPayloadDataItem>
                         <S7VarPayloadDataItem>
                           <returnCode>
@@ -915,7 +915,7 @@
                           <data dataType="byte" bitLength="8">0x01</data>
                           <padding isList="true">
                             <value dataType="uint" bitLength="8">0</value>
-                          </padding>
+                          </padding>                        
                         </S7VarPayloadDataItem>
                       </items>
                     </S7PayloadWriteVarRequest>
