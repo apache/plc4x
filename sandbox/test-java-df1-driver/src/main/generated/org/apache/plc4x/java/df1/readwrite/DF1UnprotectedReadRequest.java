@@ -63,6 +63,7 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
   @Override
   protected void serializeDF1CommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1UnprotectedReadRequest");
 
@@ -84,6 +85,7 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1UnprotectedReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 16;
@@ -100,6 +102,7 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 
