@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetTypeName() string {
 	return "ParameterValueInterfaceOptions1PowerUpSettings"
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueInterfaceOptions1PowerUpSettingsParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
-	return ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
+func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions1PowerUpSettings"); pullErr != nil {
@@ -146,7 +143,7 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer)
+	_value, _valueErr := InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions1PowerUpSettings")
 	}
@@ -171,14 +168,14 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer ut
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -190,7 +187,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for value")
 		}
-		_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for value")
 		}
@@ -203,7 +200,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) isParameterValueInterfaceOptions1PowerUpSettings() bool {
@@ -215,7 +212,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

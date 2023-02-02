@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,31 +108,27 @@ func (m *_S7VarRequestParameterItemAddress) GetTypeName() string {
 	return "S7VarRequestParameterItemAddress"
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7VarRequestParameterItemAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7VarRequestParameterItemAddress) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
 
 	// Simple field (address)
-	lengthInBits += m.Address.GetLengthInBits()
+	lengthInBits += m.Address.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7VarRequestParameterItemAddressParse(theBytes []byte) (S7VarRequestParameterItemAddress, error) {
-	return S7VarRequestParameterItemAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7VarRequestParameterItemAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
@@ -151,7 +148,7 @@ func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
-	_address, _addressErr := S7AddressParseWithBuffer(readBuffer)
+	_address, _addressErr := S7AddressParseWithBuffer(ctx, readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
 	}
@@ -174,14 +171,14 @@ func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_S7VarRequestParameterItemAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -190,7 +187,7 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(writeBuffer
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(m.GetAddress().GetLengthInBytes())
+		itemLength := uint8(m.GetAddress().GetLengthInBytes(ctx))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -200,7 +197,7 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for address")
 		}
-		_addressErr := writeBuffer.WriteSerializable(m.GetAddress())
+		_addressErr := writeBuffer.WriteSerializable(ctx, m.GetAddress())
 		if popErr := writeBuffer.PopContext("address"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for address")
 		}
@@ -213,7 +210,7 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7VarRequestParameterItemAddress) isS7VarRequestParameterItemAddress() bool {
@@ -225,7 +222,7 @@ func (m *_S7VarRequestParameterItemAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,19 +124,19 @@ func CastBACnetTimerTransition(structType interface{}) BACnetTimerTransition {
 	return castFunc(structType)
 }
 
-func (m BACnetTimerTransition) GetLengthInBits() uint16 {
+func (m BACnetTimerTransition) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetTimerTransition) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetTimerTransition) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerTransitionParse(theBytes []byte) (BACnetTimerTransition, error) {
-	return BACnetTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetTimerTransitionParse(ctx context.Context, theBytes []byte) (BACnetTimerTransition, error) {
+	return BACnetTimerTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
+func BACnetTimerTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerTransition", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetTimerTransition")
@@ -150,13 +151,13 @@ func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTi
 
 func (e BACnetTimerTransition) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetTimerTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetTimerTransition) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetTimerTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

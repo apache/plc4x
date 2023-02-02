@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_ApduControlDisconnect) GetTypeName() string {
 	return "ApduControlDisconnect"
 }
 
-func (m *_ApduControlDisconnect) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduControlDisconnect) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduControlDisconnect) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduControlDisconnect) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduControlDisconnect) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduControlDisconnectParse(theBytes []byte) (ApduControlDisconnect, error) {
-	return ApduControlDisconnectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ApduControlDisconnectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApduControlDisconnectParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {
+func ApduControlDisconnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlDisconnect"); pullErr != nil {
@@ -129,14 +126,14 @@ func ApduControlDisconnectParseWithBuffer(readBuffer utils.ReadBuffer) (ApduCont
 }
 
 func (m *_ApduControlDisconnect) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduControlDisconnect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduControlDisconnect) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -149,7 +146,7 @@ func (m *_ApduControlDisconnect) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduControlDisconnect) isApduControlDisconnect() bool {
@@ -161,7 +158,7 @@ func (m *_ApduControlDisconnect) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

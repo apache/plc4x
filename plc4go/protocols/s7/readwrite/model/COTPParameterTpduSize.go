@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_COTPParameterTpduSize) GetTypeName() string {
 	return "COTPParameterTpduSize"
 }
 
-func (m *_COTPParameterTpduSize) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_COTPParameterTpduSize) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_COTPParameterTpduSize) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (tpduSize)
 	lengthInBits += 8
@@ -120,15 +117,15 @@ func (m *_COTPParameterTpduSize) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_COTPParameterTpduSize) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_COTPParameterTpduSize) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func COTPParameterTpduSizeParse(theBytes []byte, rest uint8) (COTPParameterTpduSize, error) {
-	return COTPParameterTpduSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
+	return COTPParameterTpduSizeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
 }
 
-func COTPParameterTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {
+func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
@@ -141,7 +138,7 @@ func COTPParameterTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer, rest uint
 	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tpduSize")
 	}
-	_tpduSize, _tpduSizeErr := COTPTpduSizeParseWithBuffer(readBuffer)
+	_tpduSize, _tpduSizeErr := COTPTpduSizeParseWithBuffer(ctx, readBuffer)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field of COTPParameterTpduSize")
 	}
@@ -166,14 +163,14 @@ func COTPParameterTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer, rest uint
 }
 
 func (m *_COTPParameterTpduSize) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tpduSize")
 		}
-		_tpduSizeErr := writeBuffer.WriteSerializable(m.GetTpduSize())
+		_tpduSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTpduSize())
 		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tpduSize")
 		}
@@ -198,7 +195,7 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_COTPParameterTpduSize) isCOTPParameterTpduSize() bool {
@@ -210,7 +207,7 @@ func (m *_COTPParameterTpduSize) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

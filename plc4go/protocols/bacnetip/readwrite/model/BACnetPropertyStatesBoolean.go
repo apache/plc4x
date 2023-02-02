@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesBoolean) GetTypeName() string {
 	return "BACnetPropertyStatesBoolean"
 }
 
-func (m *_BACnetPropertyStatesBoolean) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesBoolean) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (booleanValue)
-	lengthInBits += m.BooleanValue.GetLengthInBits()
+	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBoolean) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesBooleanParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
-	return BACnetPropertyStatesBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesBooleanParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesBooleanParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
+func BACnetPropertyStatesBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBoolean"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesBooleanParseWithBuffer(readBuffer utils.ReadBuffer, pee
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
+	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPropertyStatesBoolean")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesBooleanParseWithBuffer(readBuffer utils.ReadBuffer, pee
 }
 
 func (m *_BACnetPropertyStatesBoolean) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
-		_booleanValueErr := writeBuffer.WriteSerializable(m.GetBooleanValue())
+		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesBoolean) isBACnetPropertyStatesBoolean() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesBoolean) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

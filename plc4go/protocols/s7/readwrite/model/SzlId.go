@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +95,7 @@ func (m *_SzlId) GetTypeName() string {
 	return "SzlId"
 }
 
-func (m *_SzlId) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SzlId) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_SzlId) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeClass)
@@ -113,15 +110,15 @@ func (m *_SzlId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_SzlId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SzlId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SzlIdParse(theBytes []byte) (SzlId, error) {
-	return SzlIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SzlIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SzlIdParseWithBuffer(readBuffer utils.ReadBuffer) (SzlId, error) {
+func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
@@ -134,7 +131,7 @@ func SzlIdParseWithBuffer(readBuffer utils.ReadBuffer) (SzlId, error) {
 	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for typeClass")
 	}
-	_typeClass, _typeClassErr := SzlModuleTypeClassParseWithBuffer(readBuffer)
+	_typeClass, _typeClassErr := SzlModuleTypeClassParseWithBuffer(ctx, readBuffer)
 	if _typeClassErr != nil {
 		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field of SzlId")
 	}
@@ -154,7 +151,7 @@ func SzlIdParseWithBuffer(readBuffer utils.ReadBuffer) (SzlId, error) {
 	if pullErr := readBuffer.PullContext("sublistList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sublistList")
 	}
-	_sublistList, _sublistListErr := SzlSublistParseWithBuffer(readBuffer)
+	_sublistList, _sublistListErr := SzlSublistParseWithBuffer(ctx, readBuffer)
 	if _sublistListErr != nil {
 		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field of SzlId")
 	}
@@ -176,14 +173,14 @@ func SzlIdParseWithBuffer(readBuffer utils.ReadBuffer) (SzlId, error) {
 }
 
 func (m *_SzlId) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SzlId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SzlId"); pushErr != nil {
@@ -194,7 +191,7 @@ func (m *_SzlId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("typeClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for typeClass")
 	}
-	_typeClassErr := writeBuffer.WriteSerializable(m.GetTypeClass())
+	_typeClassErr := writeBuffer.WriteSerializable(ctx, m.GetTypeClass())
 	if popErr := writeBuffer.PopContext("typeClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for typeClass")
 	}
@@ -213,7 +210,7 @@ func (m *_SzlId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("sublistList"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for sublistList")
 	}
-	_sublistListErr := writeBuffer.WriteSerializable(m.GetSublistList())
+	_sublistListErr := writeBuffer.WriteSerializable(ctx, m.GetSublistList())
 	if popErr := writeBuffer.PopContext("sublistList"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for sublistList")
 	}
@@ -236,7 +233,7 @@ func (m *_SzlId) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

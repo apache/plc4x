@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -55,12 +56,11 @@ type _EncodedReply struct {
 
 type _EncodedReplyChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type EncodedReplyParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -92,6 +92,8 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_EncodedReply) GetIsMonitoredSAL() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.RequestContext.GetSendIdentifyRequestBefore())))
 }
 
@@ -120,7 +122,7 @@ func (m *_EncodedReply) GetTypeName() string {
 	return "EncodedReply"
 }
 
-func (m *_EncodedReply) GetParentLengthInBits() uint16 {
+func (m *_EncodedReply) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -128,15 +130,15 @@ func (m *_EncodedReply) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_EncodedReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_EncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func EncodedReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
-	return EncodedReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return EncodedReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func EncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
+func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EncodedReply"); pullErr != nil {
@@ -170,9 +172,9 @@ func EncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	var typeSwitchError error
 	switch {
 	case isMonitoredSAL == bool(true): // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = MonitoredSALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // EncodedReplyCALReply
-		_childTemp, typeSwitchError = EncodedReplyCALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = EncodedReplyCALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
 	}
@@ -190,7 +192,7 @@ func EncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	return _child, nil
 }
 
-func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error {
+func (pm *_EncodedReply) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -200,7 +202,7 @@ func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child En
 		return errors.Wrap(pushErr, "Error pushing for EncodedReply")
 	}
 	// Virtual field
-	if _isMonitoredSALErr := writeBuffer.WriteVirtual("isMonitoredSAL", m.GetIsMonitoredSAL()); _isMonitoredSALErr != nil {
+	if _isMonitoredSALErr := writeBuffer.WriteVirtual(ctx, "isMonitoredSAL", m.GetIsMonitoredSAL()); _isMonitoredSALErr != nil {
 		return errors.Wrap(_isMonitoredSALErr, "Error serializing 'isMonitoredSAL' field")
 	}
 
@@ -237,7 +239,7 @@ func (m *_EncodedReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

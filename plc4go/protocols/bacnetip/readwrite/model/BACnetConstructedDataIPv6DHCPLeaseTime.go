@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetIpv6DhcpLeaseTime() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetIpv6DhcpLeaseTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetTypeName() string {
 	return "BACnetConstructedDataIPv6DHCPLeaseTime"
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6DhcpLeaseTime)
-	lengthInBits += m.Ipv6DhcpLeaseTime.GetLengthInBits()
+	lengthInBits += m.Ipv6DhcpLeaseTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPv6DHCPLeaseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
-	return BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
+func BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("ipv6DhcpLeaseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DhcpLeaseTime")
 	}
-	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6DhcpLeaseTimeErr != nil {
 		return nil, errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error parsing 'ipv6DhcpLeaseTime' field of BACnetConstructedDataIPv6DHCPLeaseTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("ipv6DhcpLeaseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6DhcpLeaseTime")
 		}
-		_ipv6DhcpLeaseTimeErr := writeBuffer.WriteSerializable(m.GetIpv6DhcpLeaseTime())
+		_ipv6DhcpLeaseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6DhcpLeaseTime())
 		if popErr := writeBuffer.PopContext("ipv6DhcpLeaseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6DhcpLeaseTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(write
 			return errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error serializing 'ipv6DhcpLeaseTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) isBACnetConstructedDataIPv6DHCPLeaseTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

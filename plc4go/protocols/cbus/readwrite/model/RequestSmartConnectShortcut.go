@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -134,12 +135,8 @@ func (m *_RequestSmartConnectShortcut) GetTypeName() string {
 	return "RequestSmartConnectShortcut"
 }
 
-func (m *_RequestSmartConnectShortcut) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestSmartConnectShortcut) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestSmartConnectShortcut) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (pipe)
 	lengthInBits += 8
@@ -152,15 +149,15 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_RequestSmartConnectShortcut) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestSmartConnectShortcut) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestSmartConnectShortcutParse(theBytes []byte, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
-	return RequestSmartConnectShortcutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestSmartConnectShortcutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func RequestSmartConnectShortcutParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {
@@ -183,7 +180,7 @@ func RequestSmartConnectShortcutParseWithBuffer(readBuffer utils.ReadBuffer, cBu
 	if pullErr := readBuffer.PullContext("pipePeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pipePeek")
 	}
-	pipePeek, _err := RequestTypeParseWithBuffer(readBuffer)
+	pipePeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'pipePeek' field of RequestSmartConnectShortcut")
 	}
@@ -220,14 +217,14 @@ func RequestSmartConnectShortcutParseWithBuffer(readBuffer utils.ReadBuffer, cBu
 }
 
 func (m *_RequestSmartConnectShortcut) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -256,7 +253,7 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestSmartConnectShortcut) isRequestSmartConnectShortcut() bool {
@@ -268,7 +265,7 @@ func (m *_RequestSmartConnectShortcut) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

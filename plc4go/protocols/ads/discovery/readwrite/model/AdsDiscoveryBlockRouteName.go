@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_AdsDiscoveryBlockRouteName) GetTypeName() string {
 	return "AdsDiscoveryBlockRouteName"
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscoveryBlockRouteName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (routeName)
-	lengthInBits += m.RouteName.GetLengthInBits()
+	lengthInBits += m.RouteName.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockRouteNameParse(theBytes []byte) (AdsDiscoveryBlockRouteName, error) {
-	return AdsDiscoveryBlockRouteNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockRouteNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
+func AdsDiscoveryBlockRouteNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockRouteName"); pullErr != nil {
@@ -141,7 +138,7 @@ func AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer utils.ReadBuffer) (Ads
 	if pullErr := readBuffer.PullContext("routeName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for routeName")
 	}
-	_routeName, _routeNameErr := AmsStringParseWithBuffer(readBuffer)
+	_routeName, _routeNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
 	if _routeNameErr != nil {
 		return nil, errors.Wrap(_routeNameErr, "Error parsing 'routeName' field of AdsDiscoveryBlockRouteName")
 	}
@@ -164,14 +161,14 @@ func AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer utils.ReadBuffer) (Ads
 }
 
 func (m *_AdsDiscoveryBlockRouteName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("routeName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for routeName")
 		}
-		_routeNameErr := writeBuffer.WriteSerializable(m.GetRouteName())
+		_routeNameErr := writeBuffer.WriteSerializable(ctx, m.GetRouteName())
 		if popErr := writeBuffer.PopContext("routeName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for routeName")
 		}
@@ -196,7 +193,7 @@ func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDiscoveryBlockRouteName) isAdsDiscoveryBlockRouteName() bool {
@@ -208,7 +205,7 @@ func (m *_AdsDiscoveryBlockRouteName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,58 +119,86 @@ func (m *_BACnetWeekNDayTagged) GetDayOfWeek() uint8 {
 ///////////////////////
 
 func (m *_BACnetWeekNDayTagged) GetOddMonths() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (13)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetEvenMonths() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (14)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAnyMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (0xFF)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetDays1to7() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (1)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetDays8to14() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (2)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetDays15to21() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (3)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetDays22to28() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (4)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetDays29to31() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (5)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetLast7DaysOfThisMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (6)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAny7DaysPriorToLast7DaysOfThisMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (7)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAny7DaysPriorToLast14DaysOfThisMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (8)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAny7DaysPriorToLast21DaysOfThisMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (9)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAnyWeekOfthisMonth() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetWeekOfMonth()) == (0xFF)))
 }
 
 func (m *_BACnetWeekNDayTagged) GetAnyDayOfWeek() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfWeek()) == (0xFF)))
 }
 
@@ -198,15 +227,11 @@ func (m *_BACnetWeekNDayTagged) GetTypeName() string {
 	return "BACnetWeekNDayTagged"
 }
 
-func (m *_BACnetWeekNDayTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetWeekNDayTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetWeekNDayTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (month)
 	lengthInBits += 8
@@ -248,15 +273,15 @@ func (m *_BACnetWeekNDayTagged) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetWeekNDayTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetWeekNDayTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetWeekNDayTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
-	return BACnetWeekNDayTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetWeekNDayTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetWeekNDayTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
+func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetWeekNDayTagged"); pullErr != nil {
@@ -269,7 +294,7 @@ func BACnetWeekNDayTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetWeekNDayTagged")
 	}
@@ -400,14 +425,14 @@ func BACnetWeekNDayTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 }
 
 func (m *_BACnetWeekNDayTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetWeekNDayTagged"); pushErr != nil {
@@ -418,7 +443,7 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -433,15 +458,15 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 	// Virtual field
-	if _oddMonthsErr := writeBuffer.WriteVirtual("oddMonths", m.GetOddMonths()); _oddMonthsErr != nil {
+	if _oddMonthsErr := writeBuffer.WriteVirtual(ctx, "oddMonths", m.GetOddMonths()); _oddMonthsErr != nil {
 		return errors.Wrap(_oddMonthsErr, "Error serializing 'oddMonths' field")
 	}
 	// Virtual field
-	if _evenMonthsErr := writeBuffer.WriteVirtual("evenMonths", m.GetEvenMonths()); _evenMonthsErr != nil {
+	if _evenMonthsErr := writeBuffer.WriteVirtual(ctx, "evenMonths", m.GetEvenMonths()); _evenMonthsErr != nil {
 		return errors.Wrap(_evenMonthsErr, "Error serializing 'evenMonths' field")
 	}
 	// Virtual field
-	if _anyMonthErr := writeBuffer.WriteVirtual("anyMonth", m.GetAnyMonth()); _anyMonthErr != nil {
+	if _anyMonthErr := writeBuffer.WriteVirtual(ctx, "anyMonth", m.GetAnyMonth()); _anyMonthErr != nil {
 		return errors.Wrap(_anyMonthErr, "Error serializing 'anyMonth' field")
 	}
 
@@ -452,43 +477,43 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_weekOfMonthErr, "Error serializing 'weekOfMonth' field")
 	}
 	// Virtual field
-	if _days1to7Err := writeBuffer.WriteVirtual("days1to7", m.GetDays1to7()); _days1to7Err != nil {
+	if _days1to7Err := writeBuffer.WriteVirtual(ctx, "days1to7", m.GetDays1to7()); _days1to7Err != nil {
 		return errors.Wrap(_days1to7Err, "Error serializing 'days1to7' field")
 	}
 	// Virtual field
-	if _days8to14Err := writeBuffer.WriteVirtual("days8to14", m.GetDays8to14()); _days8to14Err != nil {
+	if _days8to14Err := writeBuffer.WriteVirtual(ctx, "days8to14", m.GetDays8to14()); _days8to14Err != nil {
 		return errors.Wrap(_days8to14Err, "Error serializing 'days8to14' field")
 	}
 	// Virtual field
-	if _days15to21Err := writeBuffer.WriteVirtual("days15to21", m.GetDays15to21()); _days15to21Err != nil {
+	if _days15to21Err := writeBuffer.WriteVirtual(ctx, "days15to21", m.GetDays15to21()); _days15to21Err != nil {
 		return errors.Wrap(_days15to21Err, "Error serializing 'days15to21' field")
 	}
 	// Virtual field
-	if _days22to28Err := writeBuffer.WriteVirtual("days22to28", m.GetDays22to28()); _days22to28Err != nil {
+	if _days22to28Err := writeBuffer.WriteVirtual(ctx, "days22to28", m.GetDays22to28()); _days22to28Err != nil {
 		return errors.Wrap(_days22to28Err, "Error serializing 'days22to28' field")
 	}
 	// Virtual field
-	if _days29to31Err := writeBuffer.WriteVirtual("days29to31", m.GetDays29to31()); _days29to31Err != nil {
+	if _days29to31Err := writeBuffer.WriteVirtual(ctx, "days29to31", m.GetDays29to31()); _days29to31Err != nil {
 		return errors.Wrap(_days29to31Err, "Error serializing 'days29to31' field")
 	}
 	// Virtual field
-	if _last7DaysOfThisMonthErr := writeBuffer.WriteVirtual("last7DaysOfThisMonth", m.GetLast7DaysOfThisMonth()); _last7DaysOfThisMonthErr != nil {
+	if _last7DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "last7DaysOfThisMonth", m.GetLast7DaysOfThisMonth()); _last7DaysOfThisMonthErr != nil {
 		return errors.Wrap(_last7DaysOfThisMonthErr, "Error serializing 'last7DaysOfThisMonth' field")
 	}
 	// Virtual field
-	if _any7DaysPriorToLast7DaysOfThisMonthErr := writeBuffer.WriteVirtual("any7DaysPriorToLast7DaysOfThisMonth", m.GetAny7DaysPriorToLast7DaysOfThisMonth()); _any7DaysPriorToLast7DaysOfThisMonthErr != nil {
+	if _any7DaysPriorToLast7DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast7DaysOfThisMonth", m.GetAny7DaysPriorToLast7DaysOfThisMonth()); _any7DaysPriorToLast7DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast7DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast7DaysOfThisMonth' field")
 	}
 	// Virtual field
-	if _any7DaysPriorToLast14DaysOfThisMonthErr := writeBuffer.WriteVirtual("any7DaysPriorToLast14DaysOfThisMonth", m.GetAny7DaysPriorToLast14DaysOfThisMonth()); _any7DaysPriorToLast14DaysOfThisMonthErr != nil {
+	if _any7DaysPriorToLast14DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast14DaysOfThisMonth", m.GetAny7DaysPriorToLast14DaysOfThisMonth()); _any7DaysPriorToLast14DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast14DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast14DaysOfThisMonth' field")
 	}
 	// Virtual field
-	if _any7DaysPriorToLast21DaysOfThisMonthErr := writeBuffer.WriteVirtual("any7DaysPriorToLast21DaysOfThisMonth", m.GetAny7DaysPriorToLast21DaysOfThisMonth()); _any7DaysPriorToLast21DaysOfThisMonthErr != nil {
+	if _any7DaysPriorToLast21DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast21DaysOfThisMonth", m.GetAny7DaysPriorToLast21DaysOfThisMonth()); _any7DaysPriorToLast21DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast21DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast21DaysOfThisMonth' field")
 	}
 	// Virtual field
-	if _anyWeekOfthisMonthErr := writeBuffer.WriteVirtual("anyWeekOfthisMonth", m.GetAnyWeekOfthisMonth()); _anyWeekOfthisMonthErr != nil {
+	if _anyWeekOfthisMonthErr := writeBuffer.WriteVirtual(ctx, "anyWeekOfthisMonth", m.GetAnyWeekOfthisMonth()); _anyWeekOfthisMonthErr != nil {
 		return errors.Wrap(_anyWeekOfthisMonthErr, "Error serializing 'anyWeekOfthisMonth' field")
 	}
 
@@ -499,7 +524,7 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
-	if _anyDayOfWeekErr := writeBuffer.WriteVirtual("anyDayOfWeek", m.GetAnyDayOfWeek()); _anyDayOfWeekErr != nil {
+	if _anyDayOfWeekErr := writeBuffer.WriteVirtual(ctx, "anyDayOfWeek", m.GetAnyDayOfWeek()); _anyDayOfWeekErr != nil {
 		return errors.Wrap(_anyDayOfWeekErr, "Error serializing 'anyDayOfWeek' field")
 	}
 
@@ -531,7 +556,7 @@ func (m *_BACnetWeekNDayTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

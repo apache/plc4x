@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,12 +124,8 @@ func (m *_KnxGroupAddress3Level) GetTypeName() string {
 	return "KnxGroupAddress3Level"
 }
 
-func (m *_KnxGroupAddress3Level) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_KnxGroupAddress3Level) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_KnxGroupAddress3Level) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -142,15 +139,15 @@ func (m *_KnxGroupAddress3Level) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_KnxGroupAddress3Level) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_KnxGroupAddress3Level) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func KnxGroupAddress3LevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddress3Level, error) {
-	return KnxGroupAddress3LevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numLevels)
+	return KnxGroupAddress3LevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
-func KnxGroupAddress3LevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
+func KnxGroupAddress3LevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress3Level"); pullErr != nil {
@@ -196,14 +193,14 @@ func KnxGroupAddress3LevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels
 }
 
 func (m *_KnxGroupAddress3Level) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_KnxGroupAddress3Level) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxGroupAddress3Level) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -237,7 +234,7 @@ func (m *_KnxGroupAddress3Level) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_KnxGroupAddress3Level) isKnxGroupAddress3Level() bool {
@@ -249,7 +246,7 @@ func (m *_KnxGroupAddress3Level) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

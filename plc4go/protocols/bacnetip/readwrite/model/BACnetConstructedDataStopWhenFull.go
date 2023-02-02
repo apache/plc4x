@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataStopWhenFull) GetStopWhenFull() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataStopWhenFull) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetStopWhenFull())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataStopWhenFull) GetTypeName() string {
 	return "BACnetConstructedDataStopWhenFull"
 }
 
-func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (stopWhenFull)
-	lengthInBits += m.StopWhenFull.GetLengthInBits()
+	lengthInBits += m.StopWhenFull.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataStopWhenFullParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
-	return BACnetConstructedDataStopWhenFullParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataStopWhenFullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataStopWhenFullParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
+func BACnetConstructedDataStopWhenFullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopWhenFull"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataStopWhenFullParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("stopWhenFull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for stopWhenFull")
 	}
-	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _stopWhenFullErr != nil {
 		return nil, errors.Wrap(_stopWhenFullErr, "Error parsing 'stopWhenFull' field of BACnetConstructedDataStopWhenFull")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataStopWhenFullParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("stopWhenFull"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for stopWhenFull")
 		}
-		_stopWhenFullErr := writeBuffer.WriteSerializable(m.GetStopWhenFull())
+		_stopWhenFullErr := writeBuffer.WriteSerializable(ctx, m.GetStopWhenFull())
 		if popErr := writeBuffer.PopContext("stopWhenFull"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for stopWhenFull")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_stopWhenFullErr, "Error serializing 'stopWhenFull' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) isBACnetConstructedDataStopWhenFull() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataStopWhenFull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

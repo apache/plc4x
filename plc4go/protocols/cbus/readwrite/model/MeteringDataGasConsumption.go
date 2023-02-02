@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_MeteringDataGasConsumption) GetTypeName() string {
 	return "MeteringDataGasConsumption"
 }
 
-func (m *_MeteringDataGasConsumption) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MeteringDataGasConsumption) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MeteringDataGasConsumption) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (mJ)
 	lengthInBits += 32
@@ -119,15 +116,15 @@ func (m *_MeteringDataGasConsumption) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_MeteringDataGasConsumption) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeteringDataGasConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeteringDataGasConsumptionParse(theBytes []byte) (MeteringDataGasConsumption, error) {
-	return MeteringDataGasConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeteringDataGasConsumptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeteringDataGasConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
+func MeteringDataGasConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataGasConsumption"); pullErr != nil {
@@ -157,14 +154,14 @@ func MeteringDataGasConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (Met
 }
 
 func (m *_MeteringDataGasConsumption) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MeteringDataGasConsumption) isMeteringDataGasConsumption() bool {
@@ -196,7 +193,7 @@ func (m *_MeteringDataGasConsumption) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

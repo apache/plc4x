@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,25 +98,21 @@ func (m *_ModbusPDUReportServerIdRequest) GetTypeName() string {
 	return "ModbusPDUReportServerIdRequest"
 }
 
-func (m *_ModbusPDUReportServerIdRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUReportServerIdRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUReportServerIdRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUReportServerIdRequestParse(theBytes []byte, response bool) (ModbusPDUReportServerIdRequest, error) {
-	return ModbusPDUReportServerIdRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUReportServerIdRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUReportServerIdRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdRequest, error) {
+func ModbusPDUReportServerIdRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
@@ -137,14 +134,14 @@ func ModbusPDUReportServerIdRequestParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_ModbusPDUReportServerIdRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUReportServerIdRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReportServerIdRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -157,7 +154,7 @@ func (m *_ModbusPDUReportServerIdRequest) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUReportServerIdRequest) isModbusPDUReportServerIdRequest() bool {
@@ -169,7 +166,7 @@ func (m *_ModbusPDUReportServerIdRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

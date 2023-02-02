@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPriorityValueNull) GetTypeName() string {
 	return "BACnetPriorityValueNull"
 }
 
-func (m *_BACnetPriorityValueNull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityValueNull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPriorityValueNull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nullValue)
-	lengthInBits += m.NullValue.GetLengthInBits()
+	lengthInBits += m.NullValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueNull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValueNull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueNullParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
-	return BACnetPriorityValueNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueNullParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
+func BACnetPriorityValueNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueNull"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPriorityValueNullParseWithBuffer(readBuffer utils.ReadBuffer, objectT
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetPriorityValueNull")
 	}
@@ -164,14 +161,14 @@ func BACnetPriorityValueNullParseWithBuffer(readBuffer utils.ReadBuffer, objectT
 }
 
 func (m *_BACnetPriorityValueNull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
-		_nullValueErr := writeBuffer.WriteSerializable(m.GetNullValue())
+		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPriorityValueNull) isBACnetPriorityValueNull() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetPriorityValueNull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,34 +98,30 @@ func (m *_BACnetEventTimestampsEnclosed) GetTypeName() string {
 	return "BACnetEventTimestampsEnclosed"
 }
 
-func (m *_BACnetEventTimestampsEnclosed) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventTimestampsEnclosed) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetEventTimestampsEnclosed) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (eventTimestamps)
-	lengthInBits += m.EventTimestamps.GetLengthInBits()
+	lengthInBits += m.EventTimestamps.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventTimestampsEnclosed) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventTimestampsEnclosed) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventTimestampsEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetEventTimestampsEnclosed, error) {
-	return BACnetEventTimestampsEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventTimestampsEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventTimestampsEnclosed, error) {
+func BACnetEventTimestampsEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventTimestampsEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestampsEnclosed"); pullErr != nil {
@@ -137,7 +134,7 @@ func BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventTimestampsEnclosed")
 	}
@@ -150,7 +147,7 @@ func BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("eventTimestamps"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventTimestamps")
 	}
-	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsParseWithBuffer(readBuffer)
+	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsParseWithBuffer(ctx, readBuffer)
 	if _eventTimestampsErr != nil {
 		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field of BACnetEventTimestampsEnclosed")
 	}
@@ -163,7 +160,7 @@ func BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventTimestampsEnclosed")
 	}
@@ -186,14 +183,14 @@ func BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetEventTimestampsEnclosed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventTimestampsEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventTimestampsEnclosed) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestampsEnclosed"); pushErr != nil {
@@ -204,7 +201,7 @@ func (m *_BACnetEventTimestampsEnclosed) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -216,7 +213,7 @@ func (m *_BACnetEventTimestampsEnclosed) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("eventTimestamps"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventTimestamps")
 	}
-	_eventTimestampsErr := writeBuffer.WriteSerializable(m.GetEventTimestamps())
+	_eventTimestampsErr := writeBuffer.WriteSerializable(ctx, m.GetEventTimestamps())
 	if popErr := writeBuffer.PopContext("eventTimestamps"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventTimestamps")
 	}
@@ -228,7 +225,7 @@ func (m *_BACnetEventTimestampsEnclosed) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -261,7 +258,7 @@ func (m *_BACnetEventTimestampsEnclosed) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

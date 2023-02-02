@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLandingCallControl) GetLandingCallControl() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataLandingCallControl) GetActualValue() BACnetLandingCallStatus {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLandingCallStatus(m.GetLandingCallControl())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLandingCallControl) GetTypeName() string {
 	return "BACnetConstructedDataLandingCallControl"
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (landingCallControl)
-	lengthInBits += m.LandingCallControl.GetLengthInBits()
+	lengthInBits += m.LandingCallControl.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLandingCallControlParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
-	return BACnetConstructedDataLandingCallControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLandingCallControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLandingCallControlParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
+func BACnetConstructedDataLandingCallControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCallControl"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLandingCallControlParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("landingCallControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCallControl")
 	}
-	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParseWithBuffer(readBuffer)
+	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParseWithBuffer(ctx, readBuffer)
 	if _landingCallControlErr != nil {
 		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field of BACnetConstructedDataLandingCallControl")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLandingCallControlParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataLandingCallControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("landingCallControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for landingCallControl")
 		}
-		_landingCallControlErr := writeBuffer.WriteSerializable(m.GetLandingCallControl())
+		_landingCallControlErr := writeBuffer.WriteSerializable(ctx, m.GetLandingCallControl())
 		if popErr := writeBuffer.PopContext("landingCallControl"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for landingCallControl")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_landingCallControlErr, "Error serializing 'landingCallControl' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLandingCallControl) isBACnetConstructedDataLandingCallControl() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLandingCallControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

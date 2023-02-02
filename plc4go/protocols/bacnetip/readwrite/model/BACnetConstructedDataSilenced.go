@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSilenced) GetSilenced() BACnetSilencedStateTagged
 ///////////////////////
 
 func (m *_BACnetConstructedDataSilenced) GetActualValue() BACnetSilencedStateTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetSilencedStateTagged(m.GetSilenced())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSilenced) GetTypeName() string {
 	return "BACnetConstructedDataSilenced"
 }
 
-func (m *_BACnetConstructedDataSilenced) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSilenced) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSilenced) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (silenced)
-	lengthInBits += m.Silenced.GetLengthInBits()
+	lengthInBits += m.Silenced.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSilenced) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSilenced) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSilencedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSilenced, error) {
-	return BACnetConstructedDataSilencedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSilencedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSilencedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSilenced, error) {
+func BACnetConstructedDataSilencedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSilenced, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSilenced"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSilencedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("silenced"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for silenced")
 	}
-	_silenced, _silencedErr := BACnetSilencedStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_silenced, _silencedErr := BACnetSilencedStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _silencedErr != nil {
 		return nil, errors.Wrap(_silencedErr, "Error parsing 'silenced' field of BACnetConstructedDataSilenced")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSilencedParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataSilenced) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("silenced"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for silenced")
 		}
-		_silencedErr := writeBuffer.WriteSerializable(m.GetSilenced())
+		_silencedErr := writeBuffer.WriteSerializable(ctx, m.GetSilenced())
 		if popErr := writeBuffer.PopContext("silenced"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for silenced")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_silencedErr, "Error serializing 'silenced' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSilenced) isBACnetConstructedDataSilenced() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSilenced) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

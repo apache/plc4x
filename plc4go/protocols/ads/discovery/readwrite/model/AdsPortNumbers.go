@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,19 +154,19 @@ func CastAdsPortNumbers(structType interface{}) AdsPortNumbers {
 	return castFunc(structType)
 }
 
-func (m AdsPortNumbers) GetLengthInBits() uint16 {
+func (m AdsPortNumbers) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m AdsPortNumbers) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AdsPortNumbers) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsPortNumbersParse(theBytes []byte) (AdsPortNumbers, error) {
-	return AdsPortNumbersParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AdsPortNumbersParse(ctx context.Context, theBytes []byte) (AdsPortNumbers, error) {
+	return AdsPortNumbersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsPortNumbersParseWithBuffer(readBuffer utils.ReadBuffer) (AdsPortNumbers, error) {
+func AdsPortNumbersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsPortNumbers, error) {
 	val, err := readBuffer.ReadUint16("AdsPortNumbers", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsPortNumbers")
@@ -180,13 +181,13 @@ func AdsPortNumbersParseWithBuffer(readBuffer utils.ReadBuffer) (AdsPortNumbers,
 
 func (e AdsPortNumbers) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AdsPortNumbers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AdsPortNumbers) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("AdsPortNumbers", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

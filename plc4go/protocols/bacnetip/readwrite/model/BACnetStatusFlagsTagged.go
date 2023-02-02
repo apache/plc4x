@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -84,18 +85,26 @@ func (m *_BACnetStatusFlagsTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetStatusFlagsTagged) GetInAlarm() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetFault() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetOverridden() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetOutOfService() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -124,18 +133,14 @@ func (m *_BACnetStatusFlagsTagged) GetTypeName() string {
 	return "BACnetStatusFlagsTagged"
 }
 
-func (m *_BACnetStatusFlagsTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetStatusFlagsTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetStatusFlagsTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -148,15 +153,15 @@ func (m *_BACnetStatusFlagsTagged) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_BACnetStatusFlagsTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetStatusFlagsTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetStatusFlagsTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetStatusFlagsTagged, error) {
-	return BACnetStatusFlagsTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetStatusFlagsTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetStatusFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetStatusFlagsTagged, error) {
+func BACnetStatusFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetStatusFlagsTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetStatusFlagsTagged"); pullErr != nil {
@@ -169,7 +174,7 @@ func BACnetStatusFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetStatusFlagsTagged")
 	}
@@ -192,7 +197,7 @@ func BACnetStatusFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetStatusFlagsTagged")
 	}
@@ -235,14 +240,14 @@ func BACnetStatusFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 }
 
 func (m *_BACnetStatusFlagsTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetStatusFlagsTagged"); pushErr != nil {
@@ -253,7 +258,7 @@ func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -265,7 +270,7 @@ func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -273,19 +278,19 @@ func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _inAlarmErr := writeBuffer.WriteVirtual("inAlarm", m.GetInAlarm()); _inAlarmErr != nil {
+	if _inAlarmErr := writeBuffer.WriteVirtual(ctx, "inAlarm", m.GetInAlarm()); _inAlarmErr != nil {
 		return errors.Wrap(_inAlarmErr, "Error serializing 'inAlarm' field")
 	}
 	// Virtual field
-	if _faultErr := writeBuffer.WriteVirtual("fault", m.GetFault()); _faultErr != nil {
+	if _faultErr := writeBuffer.WriteVirtual(ctx, "fault", m.GetFault()); _faultErr != nil {
 		return errors.Wrap(_faultErr, "Error serializing 'fault' field")
 	}
 	// Virtual field
-	if _overriddenErr := writeBuffer.WriteVirtual("overridden", m.GetOverridden()); _overriddenErr != nil {
+	if _overriddenErr := writeBuffer.WriteVirtual(ctx, "overridden", m.GetOverridden()); _overriddenErr != nil {
 		return errors.Wrap(_overriddenErr, "Error serializing 'overridden' field")
 	}
 	// Virtual field
-	if _outOfServiceErr := writeBuffer.WriteVirtual("outOfService", m.GetOutOfService()); _outOfServiceErr != nil {
+	if _outOfServiceErr := writeBuffer.WriteVirtual(ctx, "outOfService", m.GetOutOfService()); _outOfServiceErr != nil {
 		return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
 	}
 
@@ -317,7 +322,7 @@ func (m *_BACnetStatusFlagsTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

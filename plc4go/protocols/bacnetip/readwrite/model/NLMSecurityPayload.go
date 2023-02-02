@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_NLMSecurityPayload) GetTypeName() string {
 	return "NLMSecurityPayload"
 }
 
-func (m *_NLMSecurityPayload) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMSecurityPayload) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMSecurityPayload) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (payloadLength)
 	lengthInBits += 16
@@ -133,15 +130,15 @@ func (m *_NLMSecurityPayload) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMSecurityPayload) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMSecurityPayloadParse(theBytes []byte, apduLength uint16) (NLMSecurityPayload, error) {
-	return NLMSecurityPayloadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMSecurityPayloadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMSecurityPayloadParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {
+func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMSecurityPayload"); pullErr != nil {
@@ -180,14 +177,14 @@ func NLMSecurityPayloadParseWithBuffer(readBuffer utils.ReadBuffer, apduLength u
 }
 
 func (m *_NLMSecurityPayload) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -213,7 +210,7 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMSecurityPayload) isNLMSecurityPayload() bool {
@@ -225,7 +222,7 @@ func (m *_NLMSecurityPayload) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

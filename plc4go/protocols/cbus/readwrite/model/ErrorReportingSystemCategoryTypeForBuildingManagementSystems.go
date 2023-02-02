@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBits() uint16 {
+func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
-	return ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(ctx context.Context, theBytes []byte) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+	return ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
@@ -198,13 +199,13 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer
 
 func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

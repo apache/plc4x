@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,12 +151,8 @@ func (m *_AdsReadDeviceInfoResponse) GetTypeName() string {
 	return "AdsReadDeviceInfoResponse"
 }
 
-func (m *_AdsReadDeviceInfoResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsReadDeviceInfoResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsReadDeviceInfoResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -177,15 +174,15 @@ func (m *_AdsReadDeviceInfoResponse) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_AdsReadDeviceInfoResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsReadDeviceInfoResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsReadDeviceInfoResponseParse(theBytes []byte) (AdsReadDeviceInfoResponse, error) {
-	return AdsReadDeviceInfoResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsReadDeviceInfoResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsReadDeviceInfoResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
+func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
@@ -198,7 +195,7 @@ func AdsReadDeviceInfoResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsR
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadDeviceInfoResponse")
 	}
@@ -252,14 +249,14 @@ func AdsReadDeviceInfoResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsR
 }
 
 func (m *_AdsReadDeviceInfoResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -271,7 +268,7 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for result")
 		}
-		_resultErr := writeBuffer.WriteSerializable(m.GetResult())
+		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for result")
 		}
@@ -311,7 +308,7 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsReadDeviceInfoResponse) isAdsReadDeviceInfoResponse() bool {
@@ -323,7 +320,7 @@ func (m *_AdsReadDeviceInfoResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

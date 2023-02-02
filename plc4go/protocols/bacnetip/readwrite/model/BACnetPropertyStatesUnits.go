@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesUnits) GetTypeName() string {
 	return "BACnetPropertyStatesUnits"
 }
 
-func (m *_BACnetPropertyStatesUnits) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesUnits) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesUnits) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (units)
-	lengthInBits += m.Units.GetLengthInBits()
+	lengthInBits += m.Units.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesUnitsParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
-	return BACnetPropertyStatesUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesUnitsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesUnitsParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
+func BACnetPropertyStatesUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesUnits"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesUnitsParseWithBuffer(readBuffer utils.ReadBuffer, peeke
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
-	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _unitsErr != nil {
 		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetPropertyStatesUnits")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesUnitsParseWithBuffer(readBuffer utils.ReadBuffer, peeke
 }
 
 func (m *_BACnetPropertyStatesUnits) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for units")
 		}
-		_unitsErr := writeBuffer.WriteSerializable(m.GetUnits())
+		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
 		if popErr := writeBuffer.PopContext("units"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for units")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesUnits) isBACnetPropertyStatesUnits() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesUnits) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

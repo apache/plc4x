@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetIpv6PrefixLength() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetIpv6PrefixLength())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetTypeName() string {
 	return "BACnetConstructedDataIPv6PrefixLength"
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6PrefixLength)
-	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits()
+	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPv6PrefixLengthParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
-	return BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
+func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6PrefixLength"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("ipv6PrefixLength"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6PrefixLength")
 	}
-	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6PrefixLengthErr != nil {
 		return nil, errors.Wrap(_ipv6PrefixLengthErr, "Error parsing 'ipv6PrefixLength' field of BACnetConstructedDataIPv6PrefixLength")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("ipv6PrefixLength"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6PrefixLength")
 		}
-		_ipv6PrefixLengthErr := writeBuffer.WriteSerializable(m.GetIpv6PrefixLength())
+		_ipv6PrefixLengthErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6PrefixLength())
 		if popErr := writeBuffer.PopContext("ipv6PrefixLength"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6PrefixLength")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_ipv6PrefixLengthErr, "Error serializing 'ipv6PrefixLength' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) isBACnetConstructedDataIPv6PrefixLength() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

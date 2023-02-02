@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,41 +103,37 @@ func (m *_BACnetReadAccessSpecification) GetTypeName() string {
 	return "BACnetReadAccessSpecification"
 }
 
-func (m *_BACnetReadAccessSpecification) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetReadAccessSpecification) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetReadAccessSpecification) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.ListOfPropertyReferences) > 0 {
 		for _, element := range m.ListOfPropertyReferences {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessSpecification) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetReadAccessSpecification) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetReadAccessSpecificationParse(theBytes []byte) (BACnetReadAccessSpecification, error) {
-	return BACnetReadAccessSpecificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetReadAccessSpecificationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
+func BACnetReadAccessSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessSpecification"); pullErr != nil {
@@ -148,7 +146,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessSpecification")
 	}
@@ -161,7 +159,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetReadAccessSpecification")
 	}
@@ -178,7 +176,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 	var listOfPropertyReferences []BACnetPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
-			_item, _err := BACnetPropertyReferenceParseWithBuffer(readBuffer)
+			_item, _err := BACnetPropertyReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyReferences' field of BACnetReadAccessSpecification")
 			}
@@ -193,7 +191,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetReadAccessSpecification")
 	}
@@ -216,14 +214,14 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 }
 
 func (m *_BACnetReadAccessSpecification) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessSpecification"); pushErr != nil {
@@ -234,7 +232,7 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+	_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -246,7 +244,7 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -258,8 +256,11 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("listOfPropertyReferences", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for listOfPropertyReferences")
 	}
-	for _, _element := range m.GetListOfPropertyReferences() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetListOfPropertyReferences() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfPropertyReferences()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyReferences' field")
 		}
@@ -272,7 +273,7 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -295,7 +296,7 @@ func (m *_BACnetReadAccessSpecification) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

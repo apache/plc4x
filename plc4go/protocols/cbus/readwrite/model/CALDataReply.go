@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,31 +115,27 @@ func (m *_CALDataReply) GetTypeName() string {
 	return "CALDataReply"
 }
 
-func (m *_CALDataReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALDataReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALDataReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
 
 	// Simple field (parameterValue)
-	lengthInBits += m.ParameterValue.GetLengthInBits()
+	lengthInBits += m.ParameterValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CALDataReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALDataReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CALDataReplyParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataReply, error) {
-	return CALDataReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
+	return CALDataReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataReplyParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataReply, error) {
+func CALDataReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReply"); pullErr != nil {
@@ -151,7 +148,7 @@ func CALDataReplyParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataReply")
 	}
@@ -164,7 +161,7 @@ func CALDataReplyParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
 	}
-	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
+	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(ctx, readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
 	if _parameterValueErr != nil {
 		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataReply")
 	}
@@ -190,14 +187,14 @@ func CALDataReplyParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 }
 
 func (m *_CALDataReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CALDataReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -209,7 +206,7 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for paramNo")
 		}
-		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
 		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for paramNo")
 		}
@@ -221,7 +218,7 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameterValue")
 		}
-		_parameterValueErr := writeBuffer.WriteSerializable(m.GetParameterValue())
+		_parameterValueErr := writeBuffer.WriteSerializable(ctx, m.GetParameterValue())
 		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameterValue")
 		}
@@ -234,7 +231,7 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALDataReply) isCALDataReply() bool {
@@ -246,7 +243,7 @@ func (m *_CALDataReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

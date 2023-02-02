@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -150,12 +151,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetTypeName() stri
 	return "S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -175,15 +172,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBitsCon
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
@@ -214,7 +211,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffe
 	if pullErr := readBuffer.PullContext("pudicfReturnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pudicfReturnCode")
 	}
-	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
+	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _pudicfReturnCodeErr != nil {
 		return nil, errors.Wrap(_pudicfReturnCodeErr, "Error parsing 'pudicfReturnCode' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
@@ -227,7 +224,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffe
 	if pullErr := readBuffer.PullContext("pudicftransportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pudicftransportSize")
 	}
-	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
+	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
 	if _pudicftransportSizeErr != nil {
 		return nil, errors.Wrap(_pudicftransportSizeErr, "Error parsing 'pudicftransportSize' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
@@ -269,14 +266,14 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffe
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -300,7 +297,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 		if pushErr := writeBuffer.PushContext("pudicfReturnCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicfReturnCode")
 		}
-		_pudicfReturnCodeErr := writeBuffer.WriteSerializable(m.GetPudicfReturnCode())
+		_pudicfReturnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetPudicfReturnCode())
 		if popErr := writeBuffer.PopContext("pudicfReturnCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicfReturnCode")
 		}
@@ -312,7 +309,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 		if pushErr := writeBuffer.PushContext("pudicftransportSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicftransportSize")
 		}
-		_pudicftransportSizeErr := writeBuffer.WriteSerializable(m.GetPudicftransportSize())
+		_pudicftransportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetPudicftransportSize())
 		if popErr := writeBuffer.PopContext("pudicftransportSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicftransportSize")
 		}
@@ -341,7 +338,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool {
@@ -353,7 +350,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

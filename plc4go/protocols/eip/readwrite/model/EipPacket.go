@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -61,13 +63,12 @@ type _EipPacket struct {
 
 type _EipPacketChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommand() uint16
 }
 
 type EipPacketParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child EipPacket, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EipPacket, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -126,7 +127,7 @@ func (m *_EipPacket) GetTypeName() string {
 	return "EipPacket"
 }
 
-func (m *_EipPacket) GetParentLengthInBits() uint16 {
+func (m *_EipPacket) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (command)
 	lengthInBits += 16
@@ -151,15 +152,15 @@ func (m *_EipPacket) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_EipPacket) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func EipPacketParse(theBytes []byte) (EipPacket, error) {
-	return EipPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {
+func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
@@ -206,12 +207,16 @@ func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {
 		senderContext = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
+		_numItems := uint16(uint16(8))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of EipPacket")
 			}
-			senderContext[curItem] = _item
+			senderContext[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
@@ -236,11 +241,11 @@ func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	var typeSwitchError error
 	switch {
 	case command == 0x0065: // EipConnectionRequest
-		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer)
 	case command == 0x0066: // EipDisconnectRequest
-		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(ctx, readBuffer)
 	case command == 0x006F: // CipRRData
-		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(readBuffer, packetLength)
+		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(ctx, readBuffer, packetLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v]", command)
 	}
@@ -258,7 +263,7 @@ func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	return _child, nil
 }
 
-func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPacket, serializeChildFunction func() error) error {
+func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EipPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -277,7 +282,7 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 	}
 
 	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	packetLength := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(24)))
+	packetLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(24)))
 	_packetLengthErr := writeBuffer.WriteUint16("packetLength", 16, (packetLength))
 	if _packetLengthErr != nil {
 		return errors.Wrap(_packetLengthErr, "Error serializing 'packetLength' field")
@@ -301,7 +306,8 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for senderContext")
 	}
-	for _, _element := range m.GetSenderContext() {
+	for _curItem, _element := range m.GetSenderContext() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
@@ -338,7 +344,7 @@ func (m *_EipPacket) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetOptionalCharacterStringNull) GetTypeName() string {
 	return "BACnetOptionalCharacterStringNull"
 }
 
-func (m *_BACnetOptionalCharacterStringNull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetOptionalCharacterStringNull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetOptionalCharacterStringNull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nullValue)
-	lengthInBits += m.NullValue.GetLengthInBits()
+	lengthInBits += m.NullValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalCharacterStringNull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetOptionalCharacterStringNull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalCharacterStringNullParse(theBytes []byte) (BACnetOptionalCharacterStringNull, error) {
-	return BACnetOptionalCharacterStringNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetOptionalCharacterStringNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetOptionalCharacterStringNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
+func BACnetOptionalCharacterStringNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetOptionalCharacterStringNullParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalCharacterStringNull")
 	}
@@ -162,14 +159,14 @@ func BACnetOptionalCharacterStringNullParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetOptionalCharacterStringNull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
-		_nullValueErr := writeBuffer.WriteSerializable(m.GetNullValue())
+		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetOptionalCharacterStringNull) isBACnetOptionalCharacterStringNull() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetOptionalCharacterStringNull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

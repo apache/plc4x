@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,28 +119,24 @@ func (m *_S7PayloadAlarmAckInd) GetTypeName() string {
 	return "S7PayloadAlarmAckInd"
 }
 
-func (m *_S7PayloadAlarmAckInd) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadAlarmAckInd) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadAlarmAckInd) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (alarmMessage)
-	lengthInBits += m.AlarmMessage.GetLengthInBits()
+	lengthInBits += m.AlarmMessage.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_S7PayloadAlarmAckInd) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadAlarmAckInd) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadAlarmAckIndParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
-	return S7PayloadAlarmAckIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadAlarmAckIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadAlarmAckIndParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+func S7PayloadAlarmAckIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {
@@ -152,7 +149,7 @@ func S7PayloadAlarmAckIndParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctio
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
 	}
-	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParseWithBuffer(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParseWithBuffer(ctx, readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadAlarmAckInd")
 	}
@@ -175,14 +172,14 @@ func S7PayloadAlarmAckIndParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctio
 }
 
 func (m *_S7PayloadAlarmAckInd) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -194,7 +191,7 @@ func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
 		}
-		_alarmMessageErr := writeBuffer.WriteSerializable(m.GetAlarmMessage())
+		_alarmMessageErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmMessage())
 		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmMessage")
 		}
@@ -207,7 +204,7 @@ func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadAlarmAckInd) isS7PayloadAlarmAckInd() bool {
@@ -219,7 +216,7 @@ func (m *_S7PayloadAlarmAckInd) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,19 +154,19 @@ func CastSyntaxIdType(structType interface{}) SyntaxIdType {
 	return castFunc(structType)
 }
 
-func (m SyntaxIdType) GetLengthInBits() uint16 {
+func (m SyntaxIdType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m SyntaxIdType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SyntaxIdType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SyntaxIdTypeParse(theBytes []byte) (SyntaxIdType, error) {
-	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SyntaxIdTypeParse(ctx context.Context, theBytes []byte) (SyntaxIdType, error) {
+	return SyntaxIdTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
+func SyntaxIdTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	val, err := readBuffer.ReadUint8("SyntaxIdType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SyntaxIdType")
@@ -180,13 +181,13 @@ func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, err
 
 func (e SyntaxIdType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SyntaxIdType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SyntaxIdType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

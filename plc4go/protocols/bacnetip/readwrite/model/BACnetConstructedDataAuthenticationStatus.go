@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetAuthenticationStatus() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataAuthenticationStatus) GetActualValue() BACnetAuthenticationStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAuthenticationStatusTagged(m.GetAuthenticationStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetTypeName() string {
 	return "BACnetConstructedDataAuthenticationStatus"
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (authenticationStatus)
-	lengthInBits += m.AuthenticationStatus.GetLengthInBits()
+	lengthInBits += m.AuthenticationStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAuthenticationStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
-	return BACnetConstructedDataAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAuthenticationStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
+func BACnetConstructedDataAuthenticationStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAuthenticationStatusParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authenticationStatusErr != nil {
 		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetConstructedDataAuthenticationStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAuthenticationStatusParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataAuthenticationStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("authenticationStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for authenticationStatus")
 		}
-		_authenticationStatusErr := writeBuffer.WriteSerializable(m.GetAuthenticationStatus())
+		_authenticationStatusErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationStatus())
 		if popErr := writeBuffer.PopContext("authenticationStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for authenticationStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_authenticationStatusErr, "Error serializing 'authenticationStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAuthenticationStatus) isBACnetConstructedDataAuthenticationStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAuthenticationStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

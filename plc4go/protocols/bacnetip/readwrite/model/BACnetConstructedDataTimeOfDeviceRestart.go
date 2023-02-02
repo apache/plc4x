@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetTimeOfDeviceRestart() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetActualValue() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetTimeStamp(m.GetTimeOfDeviceRestart())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetTypeName() string {
 	return "BACnetConstructedDataTimeOfDeviceRestart"
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (timeOfDeviceRestart)
-	lengthInBits += m.TimeOfDeviceRestart.GetLengthInBits()
+	lengthInBits += m.TimeOfDeviceRestart.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTimeOfDeviceRestartParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
-	return BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
+func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfDeviceRestart"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("timeOfDeviceRestart"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeOfDeviceRestart")
 	}
-	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _timeOfDeviceRestartErr != nil {
 		return nil, errors.Wrap(_timeOfDeviceRestartErr, "Error parsing 'timeOfDeviceRestart' field of BACnetConstructedDataTimeOfDeviceRestart")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("timeOfDeviceRestart"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeOfDeviceRestart")
 		}
-		_timeOfDeviceRestartErr := writeBuffer.WriteSerializable(m.GetTimeOfDeviceRestart())
+		_timeOfDeviceRestartErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfDeviceRestart())
 		if popErr := writeBuffer.PopContext("timeOfDeviceRestart"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfDeviceRestart")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_timeOfDeviceRestartErr, "Error serializing 'timeOfDeviceRestart' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) isBACnetConstructedDataTimeOfDeviceRestart() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

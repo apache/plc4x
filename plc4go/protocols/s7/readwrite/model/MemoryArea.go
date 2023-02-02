@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -183,19 +184,19 @@ func CastMemoryArea(structType interface{}) MemoryArea {
 	return castFunc(structType)
 }
 
-func (m MemoryArea) GetLengthInBits() uint16 {
+func (m MemoryArea) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m MemoryArea) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MemoryArea) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MemoryAreaParse(theBytes []byte) (MemoryArea, error) {
-	return MemoryAreaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MemoryAreaParse(ctx context.Context, theBytes []byte) (MemoryArea, error) {
+	return MemoryAreaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MemoryAreaParseWithBuffer(readBuffer utils.ReadBuffer) (MemoryArea, error) {
+func MemoryAreaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	val, err := readBuffer.ReadUint8("MemoryArea", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MemoryArea")
@@ -210,13 +211,13 @@ func MemoryAreaParseWithBuffer(readBuffer utils.ReadBuffer) (MemoryArea, error) 
 
 func (e MemoryArea) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MemoryArea) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MemoryArea) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

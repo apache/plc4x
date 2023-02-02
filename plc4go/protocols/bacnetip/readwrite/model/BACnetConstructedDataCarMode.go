@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCarMode) GetCarMode() BACnetLiftCarModeTagged {
 ///////////////////////
 
 func (m *_BACnetConstructedDataCarMode) GetActualValue() BACnetLiftCarModeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLiftCarModeTagged(m.GetCarMode())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCarMode) GetTypeName() string {
 	return "BACnetConstructedDataCarMode"
 }
 
-func (m *_BACnetConstructedDataCarMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCarMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCarMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (carMode)
-	lengthInBits += m.CarMode.GetLengthInBits()
+	lengthInBits += m.CarMode.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCarMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCarModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
-	return BACnetConstructedDataCarModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCarModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCarModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
+func BACnetConstructedDataCarModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMode"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCarModeParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("carMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carMode")
 	}
-	_carMode, _carModeErr := BACnetLiftCarModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_carMode, _carModeErr := BACnetLiftCarModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carModeErr != nil {
 		return nil, errors.Wrap(_carModeErr, "Error parsing 'carMode' field of BACnetConstructedDataCarMode")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCarModeParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetConstructedDataCarMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("carMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for carMode")
 		}
-		_carModeErr := writeBuffer.WriteSerializable(m.GetCarMode())
+		_carModeErr := writeBuffer.WriteSerializable(ctx, m.GetCarMode())
 		if popErr := writeBuffer.PopContext("carMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for carMode")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(writeBuffer uti
 			return errors.Wrap(_carModeErr, "Error serializing 'carMode' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCarMode) isBACnetConstructedDataCarMode() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCarMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

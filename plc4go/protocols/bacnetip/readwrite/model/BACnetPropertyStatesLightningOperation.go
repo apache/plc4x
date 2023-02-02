@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesLightningOperation) GetTypeName() string {
 	return "BACnetPropertyStatesLightningOperation"
 }
 
-func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lightningOperation)
-	lengthInBits += m.LightningOperation.GetLengthInBits()
+	lengthInBits += m.LightningOperation.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesLightningOperationParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
-	return BACnetPropertyStatesLightningOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesLightningOperationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesLightningOperationParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
+func BACnetPropertyStatesLightningOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningOperation"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesLightningOperationParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
 		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetPropertyStatesLightningOperation")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesLightningOperationParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 		}
-		_lightningOperationErr := writeBuffer.WriteSerializable(m.GetLightningOperation())
+		_lightningOperationErr := writeBuffer.WriteSerializable(ctx, m.GetLightningOperation())
 		if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lightningOperation")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) isBACnetPropertyStatesLightningOperation() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesLightningOperation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

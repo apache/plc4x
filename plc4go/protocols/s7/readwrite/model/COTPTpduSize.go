@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -163,19 +164,19 @@ func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
 	return castFunc(structType)
 }
 
-func (m COTPTpduSize) GetLengthInBits() uint16 {
+func (m COTPTpduSize) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m COTPTpduSize) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m COTPTpduSize) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPTpduSizeParse(theBytes []byte) (COTPTpduSize, error) {
-	return COTPTpduSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func COTPTpduSizeParse(ctx context.Context, theBytes []byte) (COTPTpduSize, error) {
+	return COTPTpduSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func COTPTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	val, err := readBuffer.ReadUint8("COTPTpduSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")
@@ -190,13 +191,13 @@ func COTPTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer) (COTPTpduSize, err
 
 func (e COTPTpduSize) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e COTPTpduSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e COTPTpduSize) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

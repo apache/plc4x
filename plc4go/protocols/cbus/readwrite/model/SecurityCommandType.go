@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,19 +124,19 @@ func CastSecurityCommandType(structType interface{}) SecurityCommandType {
 	return castFunc(structType)
 }
 
-func (m SecurityCommandType) GetLengthInBits() uint16 {
+func (m SecurityCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m SecurityCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SecurityCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityCommandTypeParse(theBytes []byte) (SecurityCommandType, error) {
-	return SecurityCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SecurityCommandTypeParse(ctx context.Context, theBytes []byte) (SecurityCommandType, error) {
+	return SecurityCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCommandType, error) {
+func SecurityCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityCommandType, error) {
 	val, err := readBuffer.ReadUint8("SecurityCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityCommandType")
@@ -150,13 +151,13 @@ func SecurityCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCo
 
 func (e SecurityCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SecurityCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SecurityCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SecurityCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

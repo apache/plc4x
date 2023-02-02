@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -105,43 +106,39 @@ func (m *_BACnetPropertyValue) GetTypeName() string {
 	return "BACnetPropertyValue"
 }
 
-func (m *_BACnetPropertyValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPropertyValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (propertyArrayIndex)
 	if m.PropertyArrayIndex != nil {
-		lengthInBits += m.PropertyArrayIndex.GetLengthInBits()
+		lengthInBits += m.PropertyArrayIndex.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (propertyValue)
 	if m.PropertyValue != nil {
-		lengthInBits += m.PropertyValue.GetLengthInBits()
+		lengthInBits += m.PropertyValue.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (priority)
 	if m.Priority != nil {
-		lengthInBits += m.Priority.GetLengthInBits()
+		lengthInBits += m.Priority.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPropertyValue, error) {
-	return BACnetPropertyValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPropertyValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyValue, error) {
+func BACnetPropertyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyValue"); pullErr != nil {
@@ -154,7 +151,7 @@ func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetPropertyValue")
 	}
@@ -170,7 +167,7 @@ func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyArrayIndex")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -192,7 +189,7 @@ func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
-		_val, _err := BACnetConstructedDataElementParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -214,7 +211,7 @@ func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -244,14 +241,14 @@ func BACnetPropertyValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 }
 
 func (m *_BACnetPropertyValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyValue"); pushErr != nil {
@@ -262,7 +259,7 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.GetPropertyIdentifier())
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -277,7 +274,7 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
 		}
 		propertyArrayIndex = m.GetPropertyArrayIndex()
-		_propertyArrayIndexErr := writeBuffer.WriteSerializable(propertyArrayIndex)
+		_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
 		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
 		}
@@ -293,7 +290,7 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.GetPropertyValue()
-		_propertyValueErr := writeBuffer.WriteSerializable(propertyValue)
+		_propertyValueErr := writeBuffer.WriteSerializable(ctx, propertyValue)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
@@ -309,7 +306,7 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.GetPriority()
-		_priorityErr := writeBuffer.WriteSerializable(priority)
+		_priorityErr := writeBuffer.WriteSerializable(ctx, priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -343,7 +340,7 @@ func (m *_BACnetPropertyValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

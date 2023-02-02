@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -175,19 +176,19 @@ func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
 	return castFunc(structType)
 }
 
-func (m CIPDataTypeCode) GetLengthInBits() uint16 {
+func (m CIPDataTypeCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m CIPDataTypeCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPDataTypeCodeParse(theBytes []byte) (CIPDataTypeCode, error) {
-	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func CIPDataTypeCodeParse(ctx context.Context, theBytes []byte) (CIPDataTypeCode, error) {
+	return CIPDataTypeCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
+func CIPDataTypeCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
@@ -202,13 +203,13 @@ func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCod
 
 func (e CIPDataTypeCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e CIPDataTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e CIPDataTypeCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

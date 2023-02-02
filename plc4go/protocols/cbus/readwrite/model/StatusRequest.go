@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -49,12 +50,11 @@ type _StatusRequest struct {
 
 type _StatusRequestChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type StatusRequestParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -101,21 +101,21 @@ func (m *_StatusRequest) GetTypeName() string {
 	return "StatusRequest"
 }
 
-func (m *_StatusRequest) GetParentLengthInBits() uint16 {
+func (m *_StatusRequest) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_StatusRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func StatusRequestParse(theBytes []byte) (StatusRequest, error) {
-	return StatusRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return StatusRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func StatusRequestParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequest, error) {
+func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequest"); pullErr != nil {
@@ -144,11 +144,11 @@ func StatusRequestParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequest, e
 	var typeSwitchError error
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		_childTemp, typeSwitchError = StatusRequestBinaryStateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestBinaryStateParseWithBuffer(ctx, readBuffer)
 	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
-		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, readBuffer)
 	case statusType == 0x73: // StatusRequestLevel
-		_childTemp, typeSwitchError = StatusRequestLevelParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestLevelParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [statusType=%v]", statusType)
 	}
@@ -166,7 +166,7 @@ func StatusRequestParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequest, e
 	return _child, nil
 }
 
-func (pm *_StatusRequest) SerializeParent(writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error {
+func (pm *_StatusRequest) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -196,7 +196,7 @@ func (m *_StatusRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

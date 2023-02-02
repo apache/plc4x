@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -116,11 +117,7 @@ func (m *_AdsTableSizes) GetTypeName() string {
 	return "AdsTableSizes"
 }
 
-func (m *_AdsTableSizes) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsTableSizes) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AdsTableSizes) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (symbolCount)
@@ -144,15 +141,15 @@ func (m *_AdsTableSizes) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsTableSizes) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsTableSizes) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsTableSizesParse(theBytes []byte) (AdsTableSizes, error) {
-	return AdsTableSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+	return AdsTableSizesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
-func AdsTableSizesParseWithBuffer(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
+func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsTableSizes"); pullErr != nil {
@@ -219,14 +216,14 @@ func AdsTableSizesParseWithBuffer(readBuffer utils.ReadBuffer) (AdsTableSizes, e
 }
 
 func (m *_AdsTableSizes) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsTableSizes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsTableSizes"); pushErr != nil {
@@ -290,7 +287,7 @@ func (m *_AdsTableSizes) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

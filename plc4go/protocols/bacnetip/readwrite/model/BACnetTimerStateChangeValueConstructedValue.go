@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) GetTypeName() string {
 	return "BACnetTimerStateChangeValueConstructedValue"
 }
 
-func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (constructedValue)
-	lengthInBits += m.ConstructedValue.GetLengthInBits()
+	lengthInBits += m.ConstructedValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimerStateChangeValueConstructedValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
-	return BACnetTimerStateChangeValueConstructedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetTimerStateChangeValueConstructedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
+func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueConstructedValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field of BACnetTimerStateChangeValueConstructedValue")
 	}
@@ -164,14 +161,14 @@ func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetTimerStateChangeValueConstructedValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("constructedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for constructedValue")
 		}
-		_constructedValueErr := writeBuffer.WriteSerializable(m.GetConstructedValue())
+		_constructedValueErr := writeBuffer.WriteSerializable(ctx, m.GetConstructedValue())
 		if popErr := writeBuffer.PopContext("constructedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for constructedValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetTimerStateChangeValueConstructedValue) isBACnetTimerStateChangeValueConstructedValue() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

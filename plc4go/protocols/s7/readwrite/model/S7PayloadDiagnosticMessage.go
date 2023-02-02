@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -166,12 +167,8 @@ func (m *_S7PayloadDiagnosticMessage) GetTypeName() string {
 	return "S7PayloadDiagnosticMessage"
 }
 
-func (m *_S7PayloadDiagnosticMessage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadDiagnosticMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadDiagnosticMessage) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (EventId)
 	lengthInBits += 16
@@ -192,20 +189,20 @@ func (m *_S7PayloadDiagnosticMessage) GetLengthInBitsConditional(lastItem bool) 
 	lengthInBits += 32
 
 	// Simple field (TimeStamp)
-	lengthInBits += m.TimeStamp.GetLengthInBits()
+	lengthInBits += m.TimeStamp.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_S7PayloadDiagnosticMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadDiagnosticMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadDiagnosticMessageParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
-	return S7PayloadDiagnosticMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadDiagnosticMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadDiagnosticMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
+func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {
@@ -260,7 +257,7 @@ func S7PayloadDiagnosticMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuF
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(readBuffer)
+	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
 	if _TimeStampErr != nil {
 		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of S7PayloadDiagnosticMessage")
 	}
@@ -289,14 +286,14 @@ func S7PayloadDiagnosticMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuF
 }
 
 func (m *_S7PayloadDiagnosticMessage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -350,7 +347,7 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for TimeStamp")
 		}
-		_TimeStampErr := writeBuffer.WriteSerializable(m.GetTimeStamp())
+		_TimeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
 		if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for TimeStamp")
 		}
@@ -363,7 +360,7 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadDiagnosticMessage) isS7PayloadDiagnosticMessage() bool {
@@ -375,7 +372,7 @@ func (m *_S7PayloadDiagnosticMessage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

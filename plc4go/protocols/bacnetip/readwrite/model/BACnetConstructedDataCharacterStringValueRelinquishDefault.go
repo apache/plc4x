@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetRelinqu
 ///////////////////////
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetRelinquishDefault())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetTypeNam
 	return "BACnetConstructedDataCharacterStringValueRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
-	lengthInBits += m.RelinquishDefault.GetLengthInBits()
+	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCharacterStringValueRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
-	return BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
+func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCharacterStringValueRelinquishDefault"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(r
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataCharacterStringValueRelinquishDefault")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(r
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeW
 		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
 		}
-		_relinquishDefaultErr := writeBuffer.WriteSerializable(m.GetRelinquishDefault())
+		_relinquishDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetRelinquishDefault())
 		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for relinquishDefault")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeW
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeW
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) isBACnetConstructedDataCharacterStringValueRelinquishDefault() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) String() s
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

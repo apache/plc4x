@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_FirmataCommandSetPinMode) GetTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataCommandSetPinMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -131,15 +128,15 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataCommandSetPinModeParse(theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
-	return FirmataCommandSetPinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return FirmataCommandSetPinModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func FirmataCommandSetPinModeParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
+func FirmataCommandSetPinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
@@ -159,7 +156,7 @@ func FirmataCommandSetPinModeParseWithBuffer(readBuffer utils.ReadBuffer, respon
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := PinModeParseWithBuffer(readBuffer)
+	_mode, _modeErr := PinModeParseWithBuffer(ctx, readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
 	}
@@ -185,14 +182,14 @@ func FirmataCommandSetPinModeParseWithBuffer(readBuffer utils.ReadBuffer, respon
 }
 
 func (m *_FirmataCommandSetPinMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -211,7 +208,7 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for mode")
 		}
-		_modeErr := writeBuffer.WriteSerializable(m.GetMode())
+		_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
 		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for mode")
 		}
@@ -224,7 +221,7 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataCommandSetPinMode) isFirmataCommandSetPinMode() bool {
@@ -236,7 +233,7 @@ func (m *_FirmataCommandSetPinMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetTypeName() string {
 	return "ApduDataExtIndividualAddressSerialNumberRead"
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtIndividualAddressSerialNumberReadParse(theBytes []byte, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
-	return ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
+func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberRead"); pullErr != nil {
@@ -131,14 +128,14 @@ func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(readBuffer util
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberRead) isApduDataExtIndividualAddressSerialNumberRead() bool {
@@ -163,7 +160,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

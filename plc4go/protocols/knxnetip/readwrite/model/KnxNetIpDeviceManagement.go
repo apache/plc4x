@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_KnxNetIpDeviceManagement) GetTypeName() string {
 	return "KnxNetIpDeviceManagement"
 }
 
-func (m *_KnxNetIpDeviceManagement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_KnxNetIpDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_KnxNetIpDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -120,15 +117,15 @@ func (m *_KnxNetIpDeviceManagement) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_KnxNetIpDeviceManagement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_KnxNetIpDeviceManagement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func KnxNetIpDeviceManagementParse(theBytes []byte) (KnxNetIpDeviceManagement, error) {
-	return KnxNetIpDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return KnxNetIpDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxNetIpDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
+func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
@@ -158,14 +155,14 @@ func KnxNetIpDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNe
 }
 
 func (m *_KnxNetIpDeviceManagement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_KnxNetIpDeviceManagement) isKnxNetIpDeviceManagement() bool {
@@ -197,7 +194,7 @@ func (m *_KnxNetIpDeviceManagement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

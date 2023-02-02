@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetRouterEntryStatus(structType interface{}) BACnetRouterEntryStatus
 	return castFunc(structType)
 }
 
-func (m BACnetRouterEntryStatus) GetLengthInBits() uint16 {
+func (m BACnetRouterEntryStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetRouterEntryStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetRouterEntryStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRouterEntryStatusParse(theBytes []byte) (BACnetRouterEntryStatus, error) {
-	return BACnetRouterEntryStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetRouterEntryStatusParse(ctx context.Context, theBytes []byte) (BACnetRouterEntryStatus, error) {
+	return BACnetRouterEntryStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetRouterEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouterEntryStatus, error) {
+func BACnetRouterEntryStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntryStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetRouterEntryStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRouterEntryStatus")
@@ -120,13 +121,13 @@ func BACnetRouterEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 
 func (e BACnetRouterEntryStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetRouterEntryStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetRouterEntryStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetRouterEntryStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

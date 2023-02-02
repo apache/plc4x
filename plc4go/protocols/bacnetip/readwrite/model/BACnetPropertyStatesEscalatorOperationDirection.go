@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetTypeName() string 
 	return "BACnetPropertyStatesEscalatorOperationDirection"
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (escalatorOperationDirection)
-	lengthInBits += m.EscalatorOperationDirection.GetLengthInBits()
+	lengthInBits += m.EscalatorOperationDirection.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesEscalatorOperationDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
-	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorOperationDirection"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("escalatorOperationDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorOperationDirection")
 	}
-	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorOperationDirectionErr != nil {
 		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field of BACnetPropertyStatesEscalatorOperationDirection")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("escalatorOperationDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorOperationDirection")
 		}
-		_escalatorOperationDirectionErr := writeBuffer.WriteSerializable(m.GetEscalatorOperationDirection())
+		_escalatorOperationDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorOperationDirection())
 		if popErr := writeBuffer.PopContext("escalatorOperationDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorOperationDirection")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) isBACnetPropertyStatesEscalatorOperationDirection() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

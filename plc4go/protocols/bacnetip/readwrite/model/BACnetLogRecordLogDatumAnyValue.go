@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -108,30 +109,26 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetTypeName() string {
 	return "BACnetLogRecordLogDatumAnyValue"
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Optional Field (anyValue)
 	if m.AnyValue != nil {
-		lengthInBits += m.AnyValue.GetLengthInBits()
+		lengthInBits += m.AnyValue.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumAnyValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
-	return BACnetLogRecordLogDatumAnyValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumAnyValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumAnyValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
+func BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumAnyValue"); pullErr != nil {
@@ -147,7 +144,7 @@ func BACnetLogRecordLogDatumAnyValueParseWithBuffer(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("anyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for anyValue")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(10), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(10), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -178,14 +175,14 @@ func BACnetLogRecordLogDatumAnyValueParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetLogRecordLogDatumAnyValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -200,7 +197,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(writeBuffer 
 				return errors.Wrap(pushErr, "Error pushing for anyValue")
 			}
 			anyValue = m.GetAnyValue()
-			_anyValueErr := writeBuffer.WriteSerializable(anyValue)
+			_anyValueErr := writeBuffer.WriteSerializable(ctx, anyValue)
 			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for anyValue")
 			}
@@ -214,7 +211,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogRecordLogDatumAnyValue) isBACnetLogRecordLogDatumAnyValue() bool {
@@ -226,7 +223,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -125,7 +125,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			serviceRequest,
 			nil,
 			nil,
-			serviceRequest.GetLengthInBytes(),
+			serviceRequest.GetLengthInBytes(context.Background()),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastErrorReportingSystemCategoryTypeForClimateControllers(structType interf
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBits() uint16 {
+func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeForClimateControllersParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
-	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingSystemCategoryTypeForClimateControllersParse(ctx context.Context, theBytes []byte) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForClimateControllers")
@@ -198,13 +199,13 @@ func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBu
 
 func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingSystemCategoryTypeForClimateControllers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForClimateControllers) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

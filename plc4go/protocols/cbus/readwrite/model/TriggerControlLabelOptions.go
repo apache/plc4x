@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -92,11 +93,7 @@ func (m *_TriggerControlLabelOptions) GetTypeName() string {
 	return "TriggerControlLabelOptions"
 }
 
-func (m *_TriggerControlLabelOptions) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TriggerControlLabelOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_TriggerControlLabelOptions) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -120,15 +117,15 @@ func (m *_TriggerControlLabelOptions) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_TriggerControlLabelOptions) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TriggerControlLabelOptions) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TriggerControlLabelOptionsParse(theBytes []byte) (TriggerControlLabelOptions, error) {
-	return TriggerControlLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TriggerControlLabelOptionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlLabelOptions"); pullErr != nil {
@@ -158,7 +155,7 @@ func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (Tri
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
 	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(readBuffer)
+	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(ctx, readBuffer)
 	if _labelFlavourErr != nil {
 		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
 	}
@@ -205,7 +202,7 @@ func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (Tri
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
 	}
-	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(readBuffer)
+	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(ctx, readBuffer)
 	if _labelTypeErr != nil {
 		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of TriggerControlLabelOptions")
 	}
@@ -247,14 +244,14 @@ func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (Tri
 }
 
 func (m *_TriggerControlLabelOptions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TriggerControlLabelOptions"); pushErr != nil {
@@ -281,7 +278,7 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("labelFlavour"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for labelFlavour")
 	}
-	_labelFlavourErr := writeBuffer.WriteSerializable(m.GetLabelFlavour())
+	_labelFlavourErr := writeBuffer.WriteSerializable(ctx, m.GetLabelFlavour())
 	if popErr := writeBuffer.PopContext("labelFlavour"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for labelFlavour")
 	}
@@ -325,7 +322,7 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("labelType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for labelType")
 	}
-	_labelTypeErr := writeBuffer.WriteSerializable(m.GetLabelType())
+	_labelTypeErr := writeBuffer.WriteSerializable(ctx, m.GetLabelType())
 	if popErr := writeBuffer.PopContext("labelType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for labelType")
 	}
@@ -364,7 +361,7 @@ func (m *_TriggerControlLabelOptions) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

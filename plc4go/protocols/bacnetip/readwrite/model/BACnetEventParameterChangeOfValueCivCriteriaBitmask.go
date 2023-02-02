@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetTypeName() str
 	return "BACnetEventParameterChangeOfValueCivCriteriaBitmask"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bitmask)
-	lengthInBits += m.Bitmask.GetLengthInBits()
+	lengthInBits += m.Bitmask.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
-	return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(readBuff
 	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
 	}
-	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
 		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
@@ -166,14 +163,14 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(readBuff
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitmask")
 		}
-		_bitmaskErr := writeBuffer.WriteSerializable(m.GetBitmask())
+		_bitmaskErr := writeBuffer.WriteSerializable(ctx, m.GetBitmask())
 		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitmask")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

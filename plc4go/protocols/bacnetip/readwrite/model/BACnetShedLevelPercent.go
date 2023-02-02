@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetShedLevelPercent) GetTypeName() string {
 	return "BACnetShedLevelPercent"
 }
 
-func (m *_BACnetShedLevelPercent) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetShedLevelPercent) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetShedLevelPercent) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (percent)
-	lengthInBits += m.Percent.GetLengthInBits()
+	lengthInBits += m.Percent.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetShedLevelPercent) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetShedLevelPercent) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetShedLevelPercentParse(theBytes []byte) (BACnetShedLevelPercent, error) {
-	return BACnetShedLevelPercentParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetShedLevelPercentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetShedLevelPercentParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
+func BACnetShedLevelPercentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelPercent"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetShedLevelPercentParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetS
 	if pullErr := readBuffer.PullContext("percent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for percent")
 	}
-	_percent, _percentErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_percent, _percentErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _percentErr != nil {
 		return nil, errors.Wrap(_percentErr, "Error parsing 'percent' field of BACnetShedLevelPercent")
 	}
@@ -162,14 +159,14 @@ func BACnetShedLevelPercentParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetS
 }
 
 func (m *_BACnetShedLevelPercent) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("percent"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for percent")
 		}
-		_percentErr := writeBuffer.WriteSerializable(m.GetPercent())
+		_percentErr := writeBuffer.WriteSerializable(ctx, m.GetPercent())
 		if popErr := writeBuffer.PopContext("percent"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for percent")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetShedLevelPercent) isBACnetShedLevelPercent() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetShedLevelPercent) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

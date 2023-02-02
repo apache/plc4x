@@ -21,13 +21,14 @@ package cbus
 
 import (
 	"bufio"
+	"hash/crc32"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"hash/crc32"
 )
 
 type MessageCodec struct {

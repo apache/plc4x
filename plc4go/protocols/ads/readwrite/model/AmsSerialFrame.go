@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,11 +123,7 @@ func (m *_AmsSerialFrame) GetTypeName() string {
 	return "AmsSerialFrame"
 }
 
-func (m *_AmsSerialFrame) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AmsSerialFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AmsSerialFrame) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -145,7 +142,7 @@ func (m *_AmsSerialFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (userdata)
-	lengthInBits += m.Userdata.GetLengthInBits()
+	lengthInBits += m.Userdata.GetLengthInBits(ctx)
 
 	// Simple field (crc)
 	lengthInBits += 16
@@ -153,15 +150,15 @@ func (m *_AmsSerialFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsSerialFrame) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AmsSerialFrame) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AmsSerialFrameParse(theBytes []byte) (AmsSerialFrame, error) {
-	return AmsSerialFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AmsSerialFrameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AmsSerialFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
+func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
@@ -209,7 +206,7 @@ func AmsSerialFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialFrame,
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(ctx, readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsSerialFrame")
 	}
@@ -242,14 +239,14 @@ func AmsSerialFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialFrame,
 }
 
 func (m *_AmsSerialFrame) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AmsSerialFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsSerialFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialFrame"); pushErr != nil {
@@ -295,7 +292,7 @@ func (m *_AmsSerialFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 	if pushErr := writeBuffer.PushContext("userdata"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for userdata")
 	}
-	_userdataErr := writeBuffer.WriteSerializable(m.GetUserdata())
+	_userdataErr := writeBuffer.WriteSerializable(ctx, m.GetUserdata())
 	if popErr := writeBuffer.PopContext("userdata"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for userdata")
 	}
@@ -325,7 +322,7 @@ func (m *_AmsSerialFrame) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

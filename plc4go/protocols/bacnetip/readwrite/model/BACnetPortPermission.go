@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -88,33 +89,29 @@ func (m *_BACnetPortPermission) GetTypeName() string {
 	return "BACnetPortPermission"
 }
 
-func (m *_BACnetPortPermission) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPortPermission) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPortPermission) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (port)
-	lengthInBits += m.Port.GetLengthInBits()
+	lengthInBits += m.Port.GetLengthInBits(ctx)
 
 	// Optional Field (enable)
 	if m.Enable != nil {
-		lengthInBits += m.Enable.GetLengthInBits()
+		lengthInBits += m.Enable.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetPortPermission) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPortPermission) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPortPermissionParse(theBytes []byte) (BACnetPortPermission, error) {
-	return BACnetPortPermissionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetPortPermissionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetPortPermissionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
+func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPortPermission"); pullErr != nil {
@@ -127,7 +124,7 @@ func BACnetPortPermissionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPor
 	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for port")
 	}
-	_port, _portErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_port, _portErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetPortPermission")
 	}
@@ -143,7 +140,7 @@ func BACnetPortPermissionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPor
 		if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for enable")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -170,14 +167,14 @@ func BACnetPortPermissionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPor
 }
 
 func (m *_BACnetPortPermission) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPortPermission) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPortPermission"); pushErr != nil {
@@ -188,7 +185,7 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("port"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for port")
 	}
-	_portErr := writeBuffer.WriteSerializable(m.GetPort())
+	_portErr := writeBuffer.WriteSerializable(ctx, m.GetPort())
 	if popErr := writeBuffer.PopContext("port"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for port")
 	}
@@ -203,7 +200,7 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(writeBuffer utils.Write
 			return errors.Wrap(pushErr, "Error pushing for enable")
 		}
 		enable = m.GetEnable()
-		_enableErr := writeBuffer.WriteSerializable(enable)
+		_enableErr := writeBuffer.WriteSerializable(ctx, enable)
 		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enable")
 		}
@@ -227,7 +224,7 @@ func (m *_BACnetPortPermission) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

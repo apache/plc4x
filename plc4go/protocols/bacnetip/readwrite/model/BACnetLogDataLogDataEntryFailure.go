@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetLogDataLogDataEntryFailure) GetTypeName() string {
 	return "BACnetLogDataLogDataEntryFailure"
 }
 
-func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (failure)
-	lengthInBits += m.Failure.GetLengthInBits()
+	lengthInBits += m.Failure.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataEntryFailureParse(theBytes []byte) (BACnetLogDataLogDataEntryFailure, error) {
-	return BACnetLogDataLogDataEntryFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLogDataLogDataEntryFailureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
+func BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryFailure"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for failure")
 	}
-	_failure, _failureErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(7)))
+	_failure, _failureErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
 	if _failureErr != nil {
 		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogDataLogDataEntryFailure")
 	}
@@ -162,14 +159,14 @@ func BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetLogDataLogDataEntryFailure) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("failure"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for failure")
 		}
-		_failureErr := writeBuffer.WriteSerializable(m.GetFailure())
+		_failureErr := writeBuffer.WriteSerializable(ctx, m.GetFailure())
 		if popErr := writeBuffer.PopContext("failure"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for failure")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogDataLogDataEntryFailure) isBACnetLogDataLogDataEntryFailure() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetLogDataLogDataEntryFailure) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

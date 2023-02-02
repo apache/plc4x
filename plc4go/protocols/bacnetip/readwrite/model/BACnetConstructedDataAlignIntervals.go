@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAlignIntervals) GetAlignIntervals() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataAlignIntervals) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetAlignIntervals())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAlignIntervals) GetTypeName() string {
 	return "BACnetConstructedDataAlignIntervals"
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (alignIntervals)
-	lengthInBits += m.AlignIntervals.GetLengthInBits()
+	lengthInBits += m.AlignIntervals.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAlignIntervalsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
-	return BACnetConstructedDataAlignIntervalsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAlignIntervalsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAlignIntervalsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
+func BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlignIntervals"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAlignIntervalsParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("alignIntervals"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alignIntervals")
 	}
-	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _alignIntervalsErr != nil {
 		return nil, errors.Wrap(_alignIntervalsErr, "Error parsing 'alignIntervals' field of BACnetConstructedDataAlignIntervals")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAlignIntervalsParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataAlignIntervals) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("alignIntervals"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alignIntervals")
 		}
-		_alignIntervalsErr := writeBuffer.WriteSerializable(m.GetAlignIntervals())
+		_alignIntervalsErr := writeBuffer.WriteSerializable(ctx, m.GetAlignIntervals())
 		if popErr := writeBuffer.PopContext("alignIntervals"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alignIntervals")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_alignIntervalsErr, "Error serializing 'alignIntervals' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAlignIntervals) isBACnetConstructedDataAlignIntervals() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAlignIntervals) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

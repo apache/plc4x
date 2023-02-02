@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,10 +97,14 @@ func (m *_ReplyEncodedReply) GetChksum() Checksum {
 ///////////////////////
 
 func (m *_ReplyEncodedReply) GetEncodedReplyDecoded() EncodedReply {
+	ctx := context.Background()
+	_ = ctx
 	return CastEncodedReply(m.GetEncodedReply())
 }
 
 func (m *_ReplyEncodedReply) GetChksumDecoded() Checksum {
+	ctx := context.Background()
+	_ = ctx
 	return CastChecksum(m.GetChksum())
 }
 
@@ -134,15 +139,11 @@ func (m *_ReplyEncodedReply) GetTypeName() string {
 	return "ReplyEncodedReply"
 }
 
-func (m *_ReplyEncodedReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ReplyEncodedReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ReplyEncodedReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Manual Field (encodedReply)
-	lengthInBits += uint16(int32((int32(m.GetEncodedReply().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetEncodedReply().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -154,15 +155,15 @@ func (m *_ReplyEncodedReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReplyEncodedReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ReplyEncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ReplyEncodedReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
-	return ReplyEncodedReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyEncodedReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ReplyEncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
+func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyEncodedReply"); pullErr != nil {
@@ -219,14 +220,14 @@ func ReplyEncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions C
 }
 
 func (m *_ReplyEncodedReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -240,7 +241,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
 		}
 		// Virtual field
-		if _encodedReplyDecodedErr := writeBuffer.WriteVirtual("encodedReplyDecoded", m.GetEncodedReplyDecoded()); _encodedReplyDecodedErr != nil {
+		if _encodedReplyDecodedErr := writeBuffer.WriteVirtual(ctx, "encodedReplyDecoded", m.GetEncodedReplyDecoded()); _encodedReplyDecodedErr != nil {
 			return errors.Wrap(_encodedReplyDecodedErr, "Error serializing 'encodedReplyDecoded' field")
 		}
 
@@ -250,7 +251,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 		// Virtual field
-		if _chksumDecodedErr := writeBuffer.WriteVirtual("chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
+		if _chksumDecodedErr := writeBuffer.WriteVirtual(ctx, "chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
@@ -259,7 +260,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ReplyEncodedReply) isReplyEncodedReply() bool {
@@ -271,7 +272,7 @@ func (m *_ReplyEncodedReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

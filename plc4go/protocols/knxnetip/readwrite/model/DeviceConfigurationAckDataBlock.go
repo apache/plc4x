@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +95,7 @@ func (m *_DeviceConfigurationAckDataBlock) GetTypeName() string {
 	return "DeviceConfigurationAckDataBlock"
 }
 
-func (m *_DeviceConfigurationAckDataBlock) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DeviceConfigurationAckDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_DeviceConfigurationAckDataBlock) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -116,15 +113,15 @@ func (m *_DeviceConfigurationAckDataBlock) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationAckDataBlock) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DeviceConfigurationAckDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DeviceConfigurationAckDataBlockParse(theBytes []byte) (DeviceConfigurationAckDataBlock, error) {
-	return DeviceConfigurationAckDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return DeviceConfigurationAckDataBlockParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
+func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
@@ -158,7 +155,7 @@ func DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer utils.ReadBuffer)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParseWithBuffer(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DeviceConfigurationAckDataBlock")
 	}
@@ -180,14 +177,14 @@ func DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_DeviceConfigurationAckDataBlock) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {
@@ -195,7 +192,7 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(writeBuffer 
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.GetLengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -219,7 +216,7 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(writeBuffer 
 	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for status")
 	}
-	_statusErr := writeBuffer.WriteSerializable(m.GetStatus())
+	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
 	if popErr := writeBuffer.PopContext("status"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for status")
 	}
@@ -242,7 +239,7 @@ func (m *_DeviceConfigurationAckDataBlock) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

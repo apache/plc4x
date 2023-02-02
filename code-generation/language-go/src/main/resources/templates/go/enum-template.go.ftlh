@@ -49,6 +49,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -165,23 +166,23 @@ func Cast${type.name}(structType interface{}) ${type.name} {
 	return castFunc(structType)
 }
 
-func (m ${type.name}) GetLengthInBits() uint16 {
+func (m ${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	return <#if type.type.orElseThrow().isStringTypeReference()>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
-func (m ${type.name}) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 <#if type.type?has_content && type.type.orElseThrow().isSimpleTypeReference()>
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
-func ${type.name}Parse(theBytes []byte) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)}))
+func ${type.name}Parse(ctx context.Context, theBytes []byte) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)}))
 }
 
-func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, error) {
+func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
 	if err != nil {
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
@@ -196,13 +197,13 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, err
 
 func (e ${type.name}) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(${helper.getEndiannessOptions(false, false)})
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>

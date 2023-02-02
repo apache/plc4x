@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,34 +124,30 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetTypeName() string {
 	return "BACnetServiceAckGetAlarmSummary"
 }
 
-func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (eventState)
-	lengthInBits += m.EventState.GetLengthInBits()
+	lengthInBits += m.EventState.GetLengthInBits(ctx)
 
 	// Simple field (acknowledgedTransitions)
-	lengthInBits += m.AcknowledgedTransitions.GetLengthInBits()
+	lengthInBits += m.AcknowledgedTransitions.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckGetAlarmSummaryParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
-	return BACnetServiceAckGetAlarmSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+	return BACnetServiceAckGetAlarmSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
-func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
+func BACnetServiceAckGetAlarmSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
@@ -163,7 +160,7 @@ func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckGetAlarmSummary")
 	}
@@ -176,7 +173,7 @@ func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
-	_eventState, _eventStateErr := BACnetEventStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_eventState, _eventStateErr := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetServiceAckGetAlarmSummary")
 	}
@@ -189,7 +186,7 @@ func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
 	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _acknowledgedTransitionsErr != nil {
 		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field of BACnetServiceAckGetAlarmSummary")
 	}
@@ -216,14 +213,14 @@ func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -235,7 +232,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -247,7 +244,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventState")
 		}
-		_eventStateErr := writeBuffer.WriteSerializable(m.GetEventState())
+		_eventStateErr := writeBuffer.WriteSerializable(ctx, m.GetEventState())
 		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventState")
 		}
@@ -259,7 +256,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
 		}
-		_acknowledgedTransitionsErr := writeBuffer.WriteSerializable(m.GetAcknowledgedTransitions())
+		_acknowledgedTransitionsErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgedTransitions())
 		if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
 		}
@@ -272,7 +269,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) isBACnetServiceAckGetAlarmSummary() bool {
@@ -284,7 +281,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

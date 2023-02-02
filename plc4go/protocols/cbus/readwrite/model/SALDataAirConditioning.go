@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataAirConditioning) GetTypeName() string {
 	return "SALDataAirConditioning"
 }
 
-func (m *_SALDataAirConditioning) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataAirConditioning) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataAirConditioning) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (airConditioningData)
-	lengthInBits += m.AirConditioningData.GetLengthInBits()
+	lengthInBits += m.AirConditioningData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataAirConditioning) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataAirConditioning) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataAirConditioningParse(theBytes []byte, applicationId ApplicationId) (SALDataAirConditioning, error) {
-	return SALDataAirConditioningParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataAirConditioningParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataAirConditioningParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
+func SALDataAirConditioningParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAirConditioning"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataAirConditioningParseWithBuffer(readBuffer utils.ReadBuffer, applicat
 	if pullErr := readBuffer.PullContext("airConditioningData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for airConditioningData")
 	}
-	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(readBuffer)
+	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(ctx, readBuffer)
 	if _airConditioningDataErr != nil {
 		return nil, errors.Wrap(_airConditioningDataErr, "Error parsing 'airConditioningData' field of SALDataAirConditioning")
 	}
@@ -166,14 +163,14 @@ func SALDataAirConditioningParseWithBuffer(readBuffer utils.ReadBuffer, applicat
 }
 
 func (m *_SALDataAirConditioning) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("airConditioningData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for airConditioningData")
 		}
-		_airConditioningDataErr := writeBuffer.WriteSerializable(m.GetAirConditioningData())
+		_airConditioningDataErr := writeBuffer.WriteSerializable(ctx, m.GetAirConditioningData())
 		if popErr := writeBuffer.PopContext("airConditioningData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for airConditioningData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataAirConditioning) isSALDataAirConditioning() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataAirConditioning) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

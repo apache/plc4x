@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,19 +136,19 @@ func CastBACnetDoorAlarmState(structType interface{}) BACnetDoorAlarmState {
 	return castFunc(structType)
 }
 
-func (m BACnetDoorAlarmState) GetLengthInBits() uint16 {
+func (m BACnetDoorAlarmState) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetDoorAlarmState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetDoorAlarmState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDoorAlarmStateParse(theBytes []byte) (BACnetDoorAlarmState, error) {
-	return BACnetDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetDoorAlarmStateParse(ctx context.Context, theBytes []byte) (BACnetDoorAlarmState, error) {
+	return BACnetDoorAlarmStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
+func BACnetDoorAlarmStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorAlarmState", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
@@ -162,13 +163,13 @@ func BACnetDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoo
 
 func (e BACnetDoorAlarmState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorAlarmState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDoorAlarmState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

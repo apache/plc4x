@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) GetTypeName() string {
 	return "BACnetLogRecordLogDatumBooleanValue"
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (booleanValue)
-	lengthInBits += m.BooleanValue.GetLengthInBits()
+	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumBooleanValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumBooleanValue, error) {
-	return BACnetLogRecordLogDatumBooleanValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumBooleanValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBooleanValue, error) {
+func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBooleanValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBooleanValue"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetLogRecordLogDatumBooleanValue")
 	}
@@ -166,14 +163,14 @@ func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumBooleanValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
-		_booleanValueErr := writeBuffer.WriteSerializable(m.GetBooleanValue())
+		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) isBACnetLogRecordLogDatumBooleanValue() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

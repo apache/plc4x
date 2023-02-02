@@ -20,11 +20,13 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"math/big"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type WriteBufferJsonBased interface {
@@ -180,16 +182,16 @@ func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, enco
 	return j.encodeNode(logicalName, value, attr)
 }
 
-func (j *jsonWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (j *jsonWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (j *jsonWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (j *jsonWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(j)
+	return serializable.SerializeWithWriteBuffer(ctx, j)
 }
 
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

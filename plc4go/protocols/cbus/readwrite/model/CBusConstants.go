@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -81,11 +82,7 @@ func (m *_CBusConstants) GetTypeName() string {
 	return "CBusConstants"
 }
 
-func (m *_CBusConstants) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CBusConstants) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (cbusTcpDefaultPort)
@@ -94,15 +91,15 @@ func (m *_CBusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusConstants) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusConstants) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusConstantsParse(theBytes []byte) (CBusConstants, error) {
-	return CBusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return CBusConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CBusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusConstants, error) {
+func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusConstants"); pullErr != nil {
@@ -129,14 +126,14 @@ func CBusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusConstants, e
 }
 
 func (m *_CBusConstants) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusConstants"); pushErr != nil {
@@ -164,7 +161,7 @@ func (m *_CBusConstants) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

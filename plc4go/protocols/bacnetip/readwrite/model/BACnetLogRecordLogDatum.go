@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -60,12 +61,11 @@ type _BACnetLogRecordLogDatum struct {
 
 type _BACnetLogRecordLogDatumChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetLogRecordLogDatumParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLogRecordLogDatum, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLogRecordLogDatum, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -105,6 +105,8 @@ func (m *_BACnetLogRecordLogDatum) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 
 func (m *_BACnetLogRecordLogDatum) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -133,29 +135,29 @@ func (m *_BACnetLogRecordLogDatum) GetTypeName() string {
 	return "BACnetLogRecordLogDatum"
 }
 
-func (m *_BACnetLogRecordLogDatum) GetParentLengthInBits() uint16 {
+func (m *_BACnetLogRecordLogDatum) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatum) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatum, error) {
-	return BACnetLogRecordLogDatumParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatum, error) {
+func BACnetLogRecordLogDatumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatum, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatum"); pullErr != nil {
@@ -168,7 +170,7 @@ func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetLogRecordLogDatum")
 	}
@@ -182,7 +184,7 @@ func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -201,27 +203,27 @@ func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogRecordLogDatumLogStatus
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumLogStatusParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetLogRecordLogDatumBooleanValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBooleanValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(2): // BACnetLogRecordLogDatumRealValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumRealValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumRealValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(3): // BACnetLogRecordLogDatumEnumeratedValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumEnumeratedValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumEnumeratedValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(4): // BACnetLogRecordLogDatumUnsignedValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(5): // BACnetLogRecordLogDatumIntegerValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumIntegerValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumIntegerValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(6): // BACnetLogRecordLogDatumBitStringValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBitStringValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(7): // BACnetLogRecordLogDatumNullValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumNullValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumNullValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(8): // BACnetLogRecordLogDatumFailure
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumFailureParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumFailureParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(9): // BACnetLogRecordLogDatumTimeChange
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumTimeChangeParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx, readBuffer, tagNumber)
 	case peekedTagNumber == uint8(10): // BACnetLogRecordLogDatumAnyValue
-		_childTemp, typeSwitchError = BACnetLogRecordLogDatumAnyValueParseWithBuffer(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx, readBuffer, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -234,7 +236,7 @@ func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetLogRecordLogDatum")
 	}
@@ -252,7 +254,7 @@ func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLogRecordLogDatum, serializeChildFunction func() error) error {
+func (pm *_BACnetLogRecordLogDatum) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLogRecordLogDatum, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -266,7 +268,7 @@ func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -274,7 +276,7 @@ func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -287,7 +289,7 @@ func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -320,7 +322,7 @@ func (m *_BACnetLogRecordLogDatum) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

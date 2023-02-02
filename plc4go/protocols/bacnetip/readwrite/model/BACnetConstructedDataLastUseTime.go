@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastUseTime) GetLastUseTime() BACnetDateTime {
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastUseTime) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetLastUseTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastUseTime) GetTypeName() string {
 	return "BACnetConstructedDataLastUseTime"
 }
 
-func (m *_BACnetConstructedDataLastUseTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastUseTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastUseTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastUseTime)
-	lengthInBits += m.LastUseTime.GetLengthInBits()
+	lengthInBits += m.LastUseTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastUseTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastUseTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastUseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastUseTime, error) {
-	return BACnetConstructedDataLastUseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastUseTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastUseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastUseTime, error) {
+func BACnetConstructedDataLastUseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastUseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastUseTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastUseTimeParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("lastUseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastUseTime")
 	}
-	_lastUseTime, _lastUseTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_lastUseTime, _lastUseTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _lastUseTimeErr != nil {
 		return nil, errors.Wrap(_lastUseTimeErr, "Error parsing 'lastUseTime' field of BACnetConstructedDataLastUseTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastUseTimeParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataLastUseTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("lastUseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastUseTime")
 		}
-		_lastUseTimeErr := writeBuffer.WriteSerializable(m.GetLastUseTime())
+		_lastUseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastUseTime())
 		if popErr := writeBuffer.PopContext("lastUseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastUseTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_lastUseTimeErr, "Error serializing 'lastUseTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastUseTime) isBACnetConstructedDataLastUseTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastUseTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetOperation() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataNextPreviousCategory) GetIsSetThePreviousCategory() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataNextPreviousCategory) GetIsSetTheNextCategory() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) != (0x00)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetTypeName() string {
 	return "MediaTransportControlDataNextPreviousCategory"
 }
 
-func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBitsConditio
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataNextPreviousCategoryParse(theBytes []byte) (MediaTransportControlDataNextPreviousCategory, error) {
-	return MediaTransportControlDataNextPreviousCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataNextPreviousCategoryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousCategory, error) {
+func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousCategory"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(readBuffer uti
 }
 
 func (m *_MediaTransportControlDataNextPreviousCategory) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffe
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
-		if _isSetThePreviousCategoryErr := writeBuffer.WriteVirtual("isSetThePreviousCategory", m.GetIsSetThePreviousCategory()); _isSetThePreviousCategoryErr != nil {
+		if _isSetThePreviousCategoryErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousCategory", m.GetIsSetThePreviousCategory()); _isSetThePreviousCategoryErr != nil {
 			return errors.Wrap(_isSetThePreviousCategoryErr, "Error serializing 'isSetThePreviousCategory' field")
 		}
 		// Virtual field
-		if _isSetTheNextCategoryErr := writeBuffer.WriteVirtual("isSetTheNextCategory", m.GetIsSetTheNextCategory()); _isSetTheNextCategoryErr != nil {
+		if _isSetTheNextCategoryErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextCategory", m.GetIsSetTheNextCategory()); _isSetTheNextCategoryErr != nil {
 			return errors.Wrap(_isSetTheNextCategoryErr, "Error serializing 'isSetTheNextCategory' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataNextPreviousCategory) isMediaTransportControlDataNextPreviousCategory() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataNextPreviousCategory) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -50,14 +51,13 @@ type _SysexCommand struct {
 
 type _SysexCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommandType() uint8
 	GetResponse() bool
 }
 
 type SysexCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child SysexCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SysexCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_SysexCommand) GetTypeName() string {
 	return "SysexCommand"
 }
 
-func (m *_SysexCommand) GetParentLengthInBits() uint16 {
+func (m *_SysexCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 8
@@ -98,15 +98,15 @@ func (m *_SysexCommand) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_SysexCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SysexCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandParse(theBytes []byte, response bool) (SysexCommand, error) {
-	return SysexCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return SysexCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SysexCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommand, error) {
+func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommand"); pullErr != nil {
@@ -132,35 +132,35 @@ func SysexCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (Sy
 	var typeSwitchError error
 	switch {
 	case commandType == 0x00: // SysexCommandExtendedId
-		_childTemp, typeSwitchError = SysexCommandExtendedIdParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandExtendedIdParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x69 && response == bool(false): // SysexCommandAnalogMappingQueryRequest
-		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryRequestParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x69 && response == bool(true): // SysexCommandAnalogMappingQueryResponse
-		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryResponseParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryResponseParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6A: // SysexCommandAnalogMappingResponse
-		_childTemp, typeSwitchError = SysexCommandAnalogMappingResponseParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandAnalogMappingResponseParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6B: // SysexCommandCapabilityQuery
-		_childTemp, typeSwitchError = SysexCommandCapabilityQueryParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandCapabilityQueryParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6C: // SysexCommandCapabilityResponse
-		_childTemp, typeSwitchError = SysexCommandCapabilityResponseParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandCapabilityResponseParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6D: // SysexCommandPinStateQuery
-		_childTemp, typeSwitchError = SysexCommandPinStateQueryParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandPinStateQueryParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6E: // SysexCommandPinStateResponse
-		_childTemp, typeSwitchError = SysexCommandPinStateResponseParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandPinStateResponseParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x6F: // SysexCommandExtendedAnalog
-		_childTemp, typeSwitchError = SysexCommandExtendedAnalogParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandExtendedAnalogParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x71: // SysexCommandStringData
-		_childTemp, typeSwitchError = SysexCommandStringDataParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandStringDataParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x79 && response == bool(false): // SysexCommandReportFirmwareRequest
-		_childTemp, typeSwitchError = SysexCommandReportFirmwareRequestParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandReportFirmwareRequestParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x79 && response == bool(true): // SysexCommandReportFirmwareResponse
-		_childTemp, typeSwitchError = SysexCommandReportFirmwareResponseParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandReportFirmwareResponseParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x7A: // SysexCommandSamplingInterval
-		_childTemp, typeSwitchError = SysexCommandSamplingIntervalParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandSamplingIntervalParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x7E: // SysexCommandSysexNonRealtime
-		_childTemp, typeSwitchError = SysexCommandSysexNonRealtimeParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandSysexNonRealtimeParseWithBuffer(ctx, readBuffer, response)
 	case commandType == 0x7F: // SysexCommandSysexRealtime
-		_childTemp, typeSwitchError = SysexCommandSysexRealtimeParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = SysexCommandSysexRealtimeParseWithBuffer(ctx, readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, response=%v]", commandType, response)
 	}
@@ -178,7 +178,7 @@ func SysexCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (Sy
 	return _child, nil
 }
 
-func (pm *_SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child SysexCommand, serializeChildFunction func() error) error {
+func (pm *_SysexCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SysexCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -216,7 +216,7 @@ func (m *_SysexCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -110,11 +111,7 @@ func (m *_CipExchange) GetTypeName() string {
 	return "CipExchange"
 }
 
-func (m *_CipExchange) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CipExchange) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (itemCount)
@@ -130,20 +127,20 @@ func (m *_CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (service)
-	lengthInBits += m.Service.GetLengthInBits()
+	lengthInBits += m.Service.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CipExchange) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CipExchange) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CipExchangeParse(theBytes []byte, exchangeLen uint16) (CipExchange, error) {
-	return CipExchangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), exchangeLen)
+	return CipExchangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), exchangeLen)
 }
 
-func CipExchangeParseWithBuffer(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
+func CipExchangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
@@ -190,7 +187,7 @@ func CipExchangeParseWithBuffer(readBuffer utils.ReadBuffer, exchangeLen uint16)
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for service")
 	}
-	_service, _serviceErr := CipServiceParseWithBuffer(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
+	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipExchange")
 	}
@@ -211,14 +208,14 @@ func CipExchangeParseWithBuffer(readBuffer utils.ReadBuffer, exchangeLen uint16)
 }
 
 func (m *_CipExchange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CipExchange) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {
@@ -244,7 +241,7 @@ func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	size := uint16(uint16(uint16(uint16(m.GetLengthInBytes()))-uint16(uint16(8))) - uint16(uint16(2)))
+	size := uint16(uint16(uint16(uint16(m.GetLengthInBytes(ctx)))-uint16(uint16(8))) - uint16(uint16(2)))
 	_sizeErr := writeBuffer.WriteUint16("size", 16, (size))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
@@ -254,7 +251,7 @@ func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for service")
 	}
-	_serviceErr := writeBuffer.WriteSerializable(m.GetService())
+	_serviceErr := writeBuffer.WriteSerializable(ctx, m.GetService())
 	if popErr := writeBuffer.PopContext("service"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for service")
 	}
@@ -287,7 +284,7 @@ func (m *_CipExchange) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

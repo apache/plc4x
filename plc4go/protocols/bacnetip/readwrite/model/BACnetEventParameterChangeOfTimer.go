@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,40 +138,36 @@ func (m *_BACnetEventParameterChangeOfTimer) GetTypeName() string {
 	return "BACnetEventParameterChangeOfTimer"
 }
 
-func (m *_BACnetEventParameterChangeOfTimer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterChangeOfTimer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterChangeOfTimer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (timeDelay)
-	lengthInBits += m.TimeDelay.GetLengthInBits()
+	lengthInBits += m.TimeDelay.GetLengthInBits(ctx)
 
 	// Simple field (alarmValues)
-	lengthInBits += m.AlarmValues.GetLengthInBits()
+	lengthInBits += m.AlarmValues.GetLengthInBits(ctx)
 
 	// Simple field (updateTimeReference)
-	lengthInBits += m.UpdateTimeReference.GetLengthInBits()
+	lengthInBits += m.UpdateTimeReference.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfTimer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterChangeOfTimer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfTimerParse(theBytes []byte) (BACnetEventParameterChangeOfTimer, error) {
-	return BACnetEventParameterChangeOfTimerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterChangeOfTimerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfTimer, error) {
+func BACnetEventParameterChangeOfTimerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfTimer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfTimer"); pullErr != nil {
@@ -183,7 +180,7 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(22)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(22)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfTimer")
 	}
@@ -196,7 +193,7 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfTimer")
 	}
@@ -209,7 +206,7 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("alarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
-	_alarmValues, _alarmValuesErr := BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_alarmValues, _alarmValuesErr := BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _alarmValuesErr != nil {
 		return nil, errors.Wrap(_alarmValuesErr, "Error parsing 'alarmValues' field of BACnetEventParameterChangeOfTimer")
 	}
@@ -222,7 +219,7 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("updateTimeReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateTimeReference")
 	}
-	_updateTimeReference, _updateTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
+	_updateTimeReference, _updateTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
 	if _updateTimeReferenceErr != nil {
 		return nil, errors.Wrap(_updateTimeReferenceErr, "Error parsing 'updateTimeReference' field of BACnetEventParameterChangeOfTimer")
 	}
@@ -235,7 +232,7 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(22)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(22)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfTimer")
 	}
@@ -262,14 +259,14 @@ func BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetEventParameterChangeOfTimer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -281,7 +278,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -293,7 +290,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := writeBuffer.WriteSerializable(m.GetTimeDelay())
+		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -305,7 +302,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("alarmValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmValues")
 		}
-		_alarmValuesErr := writeBuffer.WriteSerializable(m.GetAlarmValues())
+		_alarmValuesErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmValues())
 		if popErr := writeBuffer.PopContext("alarmValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmValues")
 		}
@@ -317,7 +314,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("updateTimeReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateTimeReference")
 		}
-		_updateTimeReferenceErr := writeBuffer.WriteSerializable(m.GetUpdateTimeReference())
+		_updateTimeReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateTimeReference())
 		if popErr := writeBuffer.PopContext("updateTimeReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateTimeReference")
 		}
@@ -329,7 +326,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -342,7 +339,7 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterChangeOfTimer) isBACnetEventParameterChangeOfTimer() bool {
@@ -354,7 +351,7 @@ func (m *_BACnetEventParameterChangeOfTimer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

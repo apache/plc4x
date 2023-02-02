@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLogInterval) GetLogInterval() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataLogInterval) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetLogInterval())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLogInterval) GetTypeName() string {
 	return "BACnetConstructedDataLogInterval"
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLogInterval) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLogInterval) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (logInterval)
-	lengthInBits += m.LogInterval.GetLengthInBits()
+	lengthInBits += m.LogInterval.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLogInterval) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLogIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
-	return BACnetConstructedDataLogIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLogIntervalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLogIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
+func BACnetConstructedDataLogIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogInterval"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLogIntervalParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("logInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logInterval")
 	}
-	_logInterval, _logIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_logInterval, _logIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _logIntervalErr != nil {
 		return nil, errors.Wrap(_logIntervalErr, "Error parsing 'logInterval' field of BACnetConstructedDataLogInterval")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLogIntervalParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataLogInterval) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("logInterval"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for logInterval")
 		}
-		_logIntervalErr := writeBuffer.WriteSerializable(m.GetLogInterval())
+		_logIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetLogInterval())
 		if popErr := writeBuffer.PopContext("logInterval"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for logInterval")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_logIntervalErr, "Error serializing 'logInterval' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLogInterval) isBACnetConstructedDataLogInterval() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLogInterval) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

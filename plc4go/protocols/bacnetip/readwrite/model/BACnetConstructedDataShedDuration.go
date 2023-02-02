@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataShedDuration) GetShedDuration() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataShedDuration) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetShedDuration())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataShedDuration) GetTypeName() string {
 	return "BACnetConstructedDataShedDuration"
 }
 
-func (m *_BACnetConstructedDataShedDuration) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataShedDuration) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataShedDuration) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (shedDuration)
-	lengthInBits += m.ShedDuration.GetLengthInBits()
+	lengthInBits += m.ShedDuration.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataShedDurationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
-	return BACnetConstructedDataShedDurationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataShedDurationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataShedDurationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
+func BACnetConstructedDataShedDurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedDuration"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataShedDurationParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("shedDuration"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for shedDuration")
 	}
-	_shedDuration, _shedDurationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_shedDuration, _shedDurationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _shedDurationErr != nil {
 		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field of BACnetConstructedDataShedDuration")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataShedDurationParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataShedDuration) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("shedDuration"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for shedDuration")
 		}
-		_shedDurationErr := writeBuffer.WriteSerializable(m.GetShedDuration())
+		_shedDurationErr := writeBuffer.WriteSerializable(ctx, m.GetShedDuration())
 		if popErr := writeBuffer.PopContext("shedDuration"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for shedDuration")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_shedDurationErr, "Error serializing 'shedDuration' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataShedDuration) isBACnetConstructedDataShedDuration() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataShedDuration) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

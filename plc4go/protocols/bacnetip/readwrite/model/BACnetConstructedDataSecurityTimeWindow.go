@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetSecurityTimeWindow() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetSecurityTimeWindow())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetTypeName() string {
 	return "BACnetConstructedDataSecurityTimeWindow"
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (securityTimeWindow)
-	lengthInBits += m.SecurityTimeWindow.GetLengthInBits()
+	lengthInBits += m.SecurityTimeWindow.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSecurityTimeWindowParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
-	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityTimeWindow"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
 	}
-	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _securityTimeWindowErr != nil {
 		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("securityTimeWindow"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for securityTimeWindow")
 		}
-		_securityTimeWindowErr := writeBuffer.WriteSerializable(m.GetSecurityTimeWindow())
+		_securityTimeWindowErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityTimeWindow())
 		if popErr := writeBuffer.PopContext("securityTimeWindow"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for securityTimeWindow")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_securityTimeWindowErr, "Error serializing 'securityTimeWindow' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) isBACnetConstructedDataSecurityTimeWindow() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

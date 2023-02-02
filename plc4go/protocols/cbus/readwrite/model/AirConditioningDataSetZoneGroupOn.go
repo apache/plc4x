@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,12 +106,8 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetTypeName() string {
 	return "AirConditioningDataSetZoneGroupOn"
 }
 
-func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -118,15 +115,15 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataSetZoneGroupOnParse(theBytes []byte) (AirConditioningDataSetZoneGroupOn, error) {
-	return AirConditioningDataSetZoneGroupOnParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AirConditioningDataSetZoneGroupOnParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningDataSetZoneGroupOnParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
+func AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneGroupOn"); pullErr != nil {
@@ -156,14 +153,14 @@ func AirConditioningDataSetZoneGroupOnParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_AirConditioningDataSetZoneGroupOn) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AirConditioningDataSetZoneGroupOn) isAirConditioningDataSetZoneGroupOn() bool {
@@ -195,7 +192,7 @@ func (m *_AirConditioningDataSetZoneGroupOn) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

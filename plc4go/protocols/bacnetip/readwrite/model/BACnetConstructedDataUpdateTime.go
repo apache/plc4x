@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUpdateTime) GetUpdateTime() BACnetDateTime {
 ///////////////////////
 
 func (m *_BACnetConstructedDataUpdateTime) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetUpdateTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUpdateTime) GetTypeName() string {
 	return "BACnetConstructedDataUpdateTime"
 }
 
-func (m *_BACnetConstructedDataUpdateTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUpdateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (updateTime)
-	lengthInBits += m.UpdateTime.GetLengthInBits()
+	lengthInBits += m.UpdateTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUpdateTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUpdateTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUpdateTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateTime, error) {
-	return BACnetConstructedDataUpdateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUpdateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateTime, error) {
+func BACnetConstructedDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("updateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateTime")
 	}
-	_updateTime, _updateTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_updateTime, _updateTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _updateTimeErr != nil {
 		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetConstructedDataUpdateTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataUpdateTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("updateTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateTime")
 		}
-		_updateTimeErr := writeBuffer.WriteSerializable(m.GetUpdateTime())
+		_updateTimeErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateTime())
 		if popErr := writeBuffer.PopContext("updateTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUpdateTime) isBACnetConstructedDataUpdateTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUpdateTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

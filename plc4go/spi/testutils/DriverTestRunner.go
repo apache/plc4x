@@ -20,6 +20,7 @@
 package testutils
 
 import (
+	"context"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -225,7 +226,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := readRequestResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
+			err := readRequestResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -250,7 +251,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := writeResponseResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
+			err := writeResponseResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -288,7 +289,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		} else {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.SerializeWithWriteBuffer(expectedWriteBuffer)
+		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), expectedWriteBuffer)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}
@@ -376,7 +377,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		} else {
 			wb = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.SerializeWithWriteBuffer(wb)
+		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}

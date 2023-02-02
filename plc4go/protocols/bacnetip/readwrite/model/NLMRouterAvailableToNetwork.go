@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_NLMRouterAvailableToNetwork) GetTypeName() string {
 	return "NLMRouterAvailableToNetwork"
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMRouterAvailableToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMRouterAvailableToNetwork) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.DestinationNetworkAddresses) > 0 {
@@ -122,15 +119,15 @@ func (m *_NLMRouterAvailableToNetwork) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMRouterAvailableToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMRouterAvailableToNetworkParse(theBytes []byte, apduLength uint16) (NLMRouterAvailableToNetwork, error) {
-	return NLMRouterAvailableToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMRouterAvailableToNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMRouterAvailableToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterAvailableToNetwork, error) {
+func NLMRouterAvailableToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterAvailableToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRouterAvailableToNetwork"); pullErr != nil {
@@ -176,14 +173,14 @@ func NLMRouterAvailableToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apd
 }
 
 func (m *_NLMRouterAvailableToNetwork) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -195,7 +192,8 @@ func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddresses")
 		}
-		for _, _element := range m.GetDestinationNetworkAddresses() {
+		for _curItem, _element := range m.GetDestinationNetworkAddresses() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint16("", 16, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddresses' field")
@@ -210,7 +208,7 @@ func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMRouterAvailableToNetwork) isNLMRouterAvailableToNetwork() bool {
@@ -222,7 +220,7 @@ func (m *_NLMRouterAvailableToNetwork) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

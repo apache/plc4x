@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,28 +81,24 @@ func (m *_BACnetAccessThreatLevel) GetTypeName() string {
 	return "BACnetAccessThreatLevel"
 }
 
-func (m *_BACnetAccessThreatLevel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAccessThreatLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAccessThreatLevel) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (threatLevel)
-	lengthInBits += m.ThreatLevel.GetLengthInBits()
+	lengthInBits += m.ThreatLevel.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAccessThreatLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAccessThreatLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAccessThreatLevelParse(theBytes []byte) (BACnetAccessThreatLevel, error) {
-	return BACnetAccessThreatLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAccessThreatLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessThreatLevel"); pullErr != nil {
@@ -114,7 +111,7 @@ func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("threatLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for threatLevel")
 	}
-	_threatLevel, _threatLevelErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_threatLevel, _threatLevelErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _threatLevelErr != nil {
 		return nil, errors.Wrap(_threatLevelErr, "Error parsing 'threatLevel' field of BACnetAccessThreatLevel")
 	}
@@ -134,14 +131,14 @@ func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetAccessThreatLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccessThreatLevel"); pushErr != nil {
@@ -152,7 +149,7 @@ func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("threatLevel"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for threatLevel")
 	}
-	_threatLevelErr := writeBuffer.WriteSerializable(m.GetThreatLevel())
+	_threatLevelErr := writeBuffer.WriteSerializable(ctx, m.GetThreatLevel())
 	if popErr := writeBuffer.PopContext("threatLevel"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for threatLevel")
 	}
@@ -175,7 +172,7 @@ func (m *_BACnetAccessThreatLevel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLockoutRelinquishTime()
 ///////////////////////
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetLockoutRelinquishTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetTypeName() string {
 	return "BACnetConstructedDataLockoutRelinquishTime"
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lockoutRelinquishTime)
-	lengthInBits += m.LockoutRelinquishTime.GetLengthInBits()
+	lengthInBits += m.LockoutRelinquishTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLockoutRelinquishTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
-	return BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
+func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockoutRelinquishTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("lockoutRelinquishTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockoutRelinquishTime")
 	}
-	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _lockoutRelinquishTimeErr != nil {
 		return nil, errors.Wrap(_lockoutRelinquishTimeErr, "Error parsing 'lockoutRelinquishTime' field of BACnetConstructedDataLockoutRelinquishTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("lockoutRelinquishTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lockoutRelinquishTime")
 		}
-		_lockoutRelinquishTimeErr := writeBuffer.WriteSerializable(m.GetLockoutRelinquishTime())
+		_lockoutRelinquishTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLockoutRelinquishTime())
 		if popErr := writeBuffer.PopContext("lockoutRelinquishTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lockoutRelinquishTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(w
 			return errors.Wrap(_lockoutRelinquishTimeErr, "Error serializing 'lockoutRelinquishTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) isBACnetConstructedDataLockoutRelinquishTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

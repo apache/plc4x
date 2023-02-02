@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataProportionalConstant) GetProportionalConstant() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetProportionalConstant())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataProportionalConstant) GetTypeName() string {
 	return "BACnetConstructedDataProportionalConstant"
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (proportionalConstant)
-	lengthInBits += m.ProportionalConstant.GetLengthInBits()
+	lengthInBits += m.ProportionalConstant.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataProportionalConstantParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
-	return BACnetConstructedDataProportionalConstantParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataProportionalConstantParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataProportionalConstantParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
+func BACnetConstructedDataProportionalConstantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProportionalConstant"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataProportionalConstantParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("proportionalConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for proportionalConstant")
 	}
-	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _proportionalConstantErr != nil {
 		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field of BACnetConstructedDataProportionalConstant")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataProportionalConstantParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("proportionalConstant"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for proportionalConstant")
 		}
-		_proportionalConstantErr := writeBuffer.WriteSerializable(m.GetProportionalConstant())
+		_proportionalConstantErr := writeBuffer.WriteSerializable(ctx, m.GetProportionalConstant())
 		if popErr := writeBuffer.PopContext("proportionalConstant"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for proportionalConstant")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_proportionalConstantErr, "Error serializing 'proportionalConstant' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) isBACnetConstructedDataProportionalConstant() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataProportionalConstant) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

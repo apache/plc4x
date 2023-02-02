@@ -21,12 +21,13 @@ package bacnetip
 
 import (
 	"fmt"
+	"net"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
-	"time"
 )
 
 type UDPActor struct {

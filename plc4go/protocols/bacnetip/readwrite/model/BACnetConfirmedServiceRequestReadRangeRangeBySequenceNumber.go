@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetTypeNa
 	return "BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referenceSequenceNumber)
-	lengthInBits += m.ReferenceSequenceNumber.GetLengthInBits()
+	lengthInBits += m.ReferenceSequenceNumber.GetLengthInBits(ctx)
 
 	// Simple field (count)
-	lengthInBits += m.Count.GetLengthInBits()
+	lengthInBits += m.Count.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pullErr != nil {
@@ -152,7 +149,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(
 	if pullErr := readBuffer.PullContext("referenceSequenceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceSequenceNumber")
 	}
-	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _referenceSequenceNumberErr != nil {
 		return nil, errors.Wrap(_referenceSequenceNumberErr, "Error parsing 'referenceSequenceNumber' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
@@ -165,7 +162,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
@@ -189,14 +186,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		if pushErr := writeBuffer.PushContext("referenceSequenceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceSequenceNumber")
 		}
-		_referenceSequenceNumberErr := writeBuffer.WriteSerializable(m.GetReferenceSequenceNumber())
+		_referenceSequenceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceSequenceNumber())
 		if popErr := writeBuffer.PopContext("referenceSequenceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceSequenceNumber")
 		}
@@ -220,7 +217,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for count")
 		}
-		_countErr := writeBuffer.WriteSerializable(m.GetCount())
+		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for count")
 		}
@@ -233,7 +230,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool {
@@ -245,7 +242,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() 
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

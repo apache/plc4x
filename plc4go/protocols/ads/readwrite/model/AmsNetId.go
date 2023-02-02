@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,11 +116,7 @@ func (m *_AmsNetId) GetTypeName() string {
 	return "AmsNetId"
 }
 
-func (m *_AmsNetId) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AmsNetId) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AmsNetId) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (octet1)
@@ -143,15 +140,15 @@ func (m *_AmsNetId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsNetId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AmsNetId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AmsNetIdParse(theBytes []byte) (AmsNetId, error) {
-	return AmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AmsNetIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AmsNetId, error) {
+func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
@@ -218,14 +215,14 @@ func AmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 }
 
 func (m *_AmsNetId) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AmsNetId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsNetId"); pushErr != nil {
@@ -289,7 +286,7 @@ func (m *_AmsNetId) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

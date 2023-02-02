@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesBackupState) GetTypeName() string {
 	return "BACnetPropertyStatesBackupState"
 }
 
-func (m *_BACnetPropertyStatesBackupState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesBackupState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesBackupState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (backupState)
-	lengthInBits += m.BackupState.GetLengthInBits()
+	lengthInBits += m.BackupState.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBackupState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesBackupState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesBackupStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
-	return BACnetPropertyStatesBackupStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesBackupStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesBackupStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
+func BACnetPropertyStatesBackupStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBackupState"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesBackupStateParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("backupState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for backupState")
 	}
-	_backupState, _backupStateErr := BACnetBackupStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_backupState, _backupStateErr := BACnetBackupStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _backupStateErr != nil {
 		return nil, errors.Wrap(_backupStateErr, "Error parsing 'backupState' field of BACnetPropertyStatesBackupState")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesBackupStateParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetPropertyStatesBackupState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("backupState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for backupState")
 		}
-		_backupStateErr := writeBuffer.WriteSerializable(m.GetBackupState())
+		_backupStateErr := writeBuffer.WriteSerializable(ctx, m.GetBackupState())
 		if popErr := writeBuffer.PopContext("backupState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for backupState")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesBackupState) isBACnetPropertyStatesBackupState() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesBackupState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

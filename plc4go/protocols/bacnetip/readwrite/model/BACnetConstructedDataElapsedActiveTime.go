@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetElapsedActiveTime() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataElapsedActiveTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetElapsedActiveTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetTypeName() string {
 	return "BACnetConstructedDataElapsedActiveTime"
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (elapsedActiveTime)
-	lengthInBits += m.ElapsedActiveTime.GetLengthInBits()
+	lengthInBits += m.ElapsedActiveTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataElapsedActiveTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
-	return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
+func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElapsedActiveTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("elapsedActiveTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for elapsedActiveTime")
 	}
-	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _elapsedActiveTimeErr != nil {
 		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field of BACnetConstructedDataElapsedActiveTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataElapsedActiveTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("elapsedActiveTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for elapsedActiveTime")
 		}
-		_elapsedActiveTimeErr := writeBuffer.WriteSerializable(m.GetElapsedActiveTime())
+		_elapsedActiveTimeErr := writeBuffer.WriteSerializable(ctx, m.GetElapsedActiveTime())
 		if popErr := writeBuffer.PopContext("elapsedActiveTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for elapsedActiveTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(write
 			return errors.Wrap(_elapsedActiveTimeErr, "Error serializing 'elapsedActiveTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataElapsedActiveTime) isBACnetConstructedDataElapsedActiveTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataElapsedActiveTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -66,13 +67,12 @@ type _DF1ResponseMessage struct {
 
 type _DF1ResponseMessageChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommandCode() uint8
 }
 
 type DF1ResponseMessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child DF1ResponseMessage, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1ResponseMessage, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -131,7 +131,7 @@ func (m *_DF1ResponseMessage) GetTypeName() string {
 	return "DF1ResponseMessage"
 }
 
-func (m *_DF1ResponseMessage) GetParentLengthInBits() uint16 {
+func (m *_DF1ResponseMessage) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -157,15 +157,15 @@ func (m *_DF1ResponseMessage) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1ResponseMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DF1ResponseMessageParse(theBytes []byte, payloadLength uint16) (DF1ResponseMessage, error) {
-	return DF1ResponseMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), payloadLength)
+	return DF1ResponseMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), payloadLength)
 }
 
-func DF1ResponseMessageParseWithBuffer(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
+func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
@@ -253,7 +253,7 @@ func DF1ResponseMessageParseWithBuffer(readBuffer utils.ReadBuffer, payloadLengt
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		_childTemp, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(readBuffer, payloadLength)
+		_childTemp, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx, readBuffer, payloadLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
@@ -273,7 +273,7 @@ func DF1ResponseMessageParseWithBuffer(readBuffer utils.ReadBuffer, payloadLengt
 	return _child, nil
 }
 
-func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, child DF1ResponseMessage, serializeChildFunction func() error) error {
+func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1ResponseMessage, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -381,7 +381,7 @@ func (m *_DF1ResponseMessage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

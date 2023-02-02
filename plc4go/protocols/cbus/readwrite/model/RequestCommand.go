@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -112,12 +113,16 @@ func (m *_RequestCommand) GetAlpha() Alpha {
 ///////////////////////
 
 func (m *_RequestCommand) GetCbusCommandDecoded() CBusCommand {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastCBusCommand(m.GetCbusCommand())
 }
 
 func (m *_RequestCommand) GetChksumDecoded() Checksum {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastChecksum(m.GetChksum())
@@ -168,18 +173,14 @@ func (m *_RequestCommand) GetTypeName() string {
 	return "RequestCommand"
 }
 
-func (m *_RequestCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (initiator)
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -190,21 +191,21 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
+		lengthInBits += m.Alpha.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_RequestCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestCommandParse(theBytes []byte, cBusOptions CBusOptions) (RequestCommand, error) {
-	return RequestCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func RequestCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
+func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
@@ -259,7 +260,7 @@ func RequestCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBus
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParseWithBuffer(readBuffer)
+		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -292,14 +293,14 @@ func RequestCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBus
 }
 
 func (m *_RequestCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_RequestCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -319,7 +320,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
-		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual("cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
+		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual(ctx, "cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
 			return errors.Wrap(_cbusCommandDecodedErr, "Error serializing 'cbusCommandDecoded' field")
 		}
 
@@ -329,7 +330,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 		// Virtual field
-		if _chksumDecodedErr := writeBuffer.WriteVirtual("chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
+		if _chksumDecodedErr := writeBuffer.WriteVirtual(ctx, "chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
@@ -340,7 +341,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
+			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for alpha")
 			}
@@ -354,7 +355,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestCommand) isRequestCommand() bool {
@@ -366,7 +367,7 @@ func (m *_RequestCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

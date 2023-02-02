@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -327,19 +328,19 @@ func CastMeasurementUnits(structType interface{}) MeasurementUnits {
 	return castFunc(structType)
 }
 
-func (m MeasurementUnits) GetLengthInBits() uint16 {
+func (m MeasurementUnits) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m MeasurementUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MeasurementUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementUnitsParse(theBytes []byte) (MeasurementUnits, error) {
-	return MeasurementUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MeasurementUnitsParse(ctx context.Context, theBytes []byte) (MeasurementUnits, error) {
+	return MeasurementUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeasurementUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementUnits, error) {
+func MeasurementUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementUnits, error) {
 	val, err := readBuffer.ReadUint8("MeasurementUnits", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementUnits")
@@ -354,13 +355,13 @@ func MeasurementUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementUn
 
 func (e MeasurementUnits) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MeasurementUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementUnits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

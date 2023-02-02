@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,38 +96,34 @@ func (m *_BACnetActionList) GetTypeName() string {
 	return "BACnetActionList"
 }
 
-func (m *_BACnetActionList) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetActionList) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetActionList) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.Action) > 0 {
 		for _, element := range m.Action {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetActionList) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetActionList) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetActionListParse(theBytes []byte) (BACnetActionList, error) {
-	return BACnetActionListParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetActionListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionList, error) {
+func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetActionList"); pullErr != nil {
@@ -138,7 +136,7 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetActionList")
 	}
@@ -155,7 +153,7 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 	var action []BACnetActionCommand
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
-			_item, _err := BACnetActionCommandParseWithBuffer(readBuffer)
+			_item, _err := BACnetActionCommandParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")
 			}
@@ -170,7 +168,7 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetActionList")
 	}
@@ -192,14 +190,14 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 }
 
 func (m *_BACnetActionList) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetActionList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetActionList"); pushErr != nil {
@@ -210,7 +208,7 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 	}
-	_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+	_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 	}
@@ -222,8 +220,11 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for action")
 	}
-	for _, _element := range m.GetAction() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetAction() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAction()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'action' field")
 		}
@@ -236,7 +237,7 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 	}
-	_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+	_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerClosingTag")
 	}
@@ -259,7 +260,7 @@ func (m *_BACnetActionList) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

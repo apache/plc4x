@@ -20,9 +20,15 @@
 package testutils
 
 import (
+	"context"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
+	"testing"
+
 	abethModel "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
 	bacnetModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite"
@@ -36,10 +42,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/subchen/go-xmldom"
-	"os"
-	"strconv"
-	"strings"
-	"testing"
 )
 
 func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCases ...string) {
@@ -171,7 +173,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					// First try to use the native xml writer
 					serializable := msg.(utils.Serializable)
 					buffer := utils.NewXmlWriteBuffer()
-					if err := serializable.SerializeWithWriteBuffer(buffer); err == nil {
+					if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
 						actualXml := buffer.GetXmlString()
 						if err := CompareResults([]byte(actualXml), []byte(referenceSerialized)); err != nil {
 							border := strings.Repeat("=", 100)
@@ -218,7 +220,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				} else {
 					writeBuffer = utils.NewWriteBufferByteBased()
 				}
-				err = s.SerializeWithWriteBuffer(writeBuffer)
+				err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
 				if !ok {
 					t.Error("Couldn't serialize message back to byte array")
 					return

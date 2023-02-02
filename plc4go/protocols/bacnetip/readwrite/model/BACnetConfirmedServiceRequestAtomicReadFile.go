@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,31 +117,27 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFile"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fileIdentifier)
-	lengthInBits += m.FileIdentifier.GetLengthInBits()
+	lengthInBits += m.FileIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (accessMethod)
-	lengthInBits += m.AccessMethod.GetLengthInBits()
+	lengthInBits += m.AccessMethod.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
@@ -153,7 +150,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileIdentifier")
 	}
-	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _fileIdentifierErr != nil {
 		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}
@@ -166,7 +163,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
 	}
-	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(readBuffer)
+	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx, readBuffer)
 	if _accessMethodErr != nil {
 		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}
@@ -192,14 +189,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -211,7 +208,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("fileIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileIdentifier")
 		}
-		_fileIdentifierErr := writeBuffer.WriteSerializable(m.GetFileIdentifier())
+		_fileIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetFileIdentifier())
 		if popErr := writeBuffer.PopContext("fileIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileIdentifier")
 		}
@@ -223,7 +220,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessMethod")
 		}
-		_accessMethodErr := writeBuffer.WriteSerializable(m.GetAccessMethod())
+		_accessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetAccessMethod())
 		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessMethod")
 		}
@@ -236,7 +233,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) isBACnetConfirmedServiceRequestAtomicReadFile() bool {
@@ -248,7 +245,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

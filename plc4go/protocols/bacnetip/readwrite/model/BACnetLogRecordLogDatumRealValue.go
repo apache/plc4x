@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetTypeName() string {
 	return "BACnetLogRecordLogDatumRealValue"
 }
 
-func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (realValue)
-	lengthInBits += m.RealValue.GetLengthInBits()
+	lengthInBits += m.RealValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumRealValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
-	return BACnetLogRecordLogDatumRealValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumRealValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumRealValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
+func BACnetLogRecordLogDatumRealValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumRealValue"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetLogRecordLogDatumRealValueParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogRecordLogDatumRealValue")
 	}
@@ -166,14 +163,14 @@ func BACnetLogRecordLogDatumRealValueParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetLogRecordLogDatumRealValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
-		_realValueErr := writeBuffer.WriteSerializable(m.GetRealValue())
+		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogRecordLogDatumRealValue) isBACnetLogRecordLogDatumRealValue() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

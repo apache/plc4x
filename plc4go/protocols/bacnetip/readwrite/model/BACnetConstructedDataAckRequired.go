@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAckRequired) GetAckRequired() BACnetEventTransiti
 ///////////////////////
 
 func (m *_BACnetConstructedDataAckRequired) GetActualValue() BACnetEventTransitionBitsTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEventTransitionBitsTagged(m.GetAckRequired())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAckRequired) GetTypeName() string {
 	return "BACnetConstructedDataAckRequired"
 }
 
-func (m *_BACnetConstructedDataAckRequired) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAckRequired) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAckRequired) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ackRequired)
-	lengthInBits += m.AckRequired.GetLengthInBits()
+	lengthInBits += m.AckRequired.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAckRequired) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAckRequired) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAckRequiredParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
-	return BACnetConstructedDataAckRequiredParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAckRequiredParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAckRequiredParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
+func BACnetConstructedDataAckRequiredParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckRequired"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAckRequiredParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackRequired")
 	}
-	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackRequiredErr != nil {
 		return nil, errors.Wrap(_ackRequiredErr, "Error parsing 'ackRequired' field of BACnetConstructedDataAckRequired")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAckRequiredParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataAckRequired) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ackRequired")
 		}
-		_ackRequiredErr := writeBuffer.WriteSerializable(m.GetAckRequired())
+		_ackRequiredErr := writeBuffer.WriteSerializable(ctx, m.GetAckRequired())
 		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ackRequired")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAckRequired) isBACnetConstructedDataAckRequired() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAckRequired) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

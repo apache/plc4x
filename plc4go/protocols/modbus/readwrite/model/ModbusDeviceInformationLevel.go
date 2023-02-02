@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastModbusDeviceInformationLevel(structType interface{}) ModbusDeviceInform
 	return castFunc(structType)
 }
 
-func (m ModbusDeviceInformationLevel) GetLengthInBits() uint16 {
+func (m ModbusDeviceInformationLevel) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ModbusDeviceInformationLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ModbusDeviceInformationLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusDeviceInformationLevelParse(theBytes []byte) (ModbusDeviceInformationLevel, error) {
-	return ModbusDeviceInformationLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ModbusDeviceInformationLevelParse(ctx context.Context, theBytes []byte) (ModbusDeviceInformationLevel, error) {
+	return ModbusDeviceInformationLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ModbusDeviceInformationLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
+func ModbusDeviceInformationLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationLevel", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")
@@ -126,13 +127,13 @@ func ModbusDeviceInformationLevelParseWithBuffer(readBuffer utils.ReadBuffer) (M
 
 func (e ModbusDeviceInformationLevel) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ModbusDeviceInformationLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ModbusDeviceInformationLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModbusDeviceInformationLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

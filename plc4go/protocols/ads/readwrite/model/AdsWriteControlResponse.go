@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,12 +119,8 @@ func (m *_AdsWriteControlResponse) GetTypeName() string {
 	return "AdsWriteControlResponse"
 }
 
-func (m *_AdsWriteControlResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsWriteControlResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsWriteControlResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -131,15 +128,15 @@ func (m *_AdsWriteControlResponse) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_AdsWriteControlResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsWriteControlResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsWriteControlResponseParse(theBytes []byte) (AdsWriteControlResponse, error) {
-	return AdsWriteControlResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsWriteControlResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsWriteControlResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
+func AdsWriteControlResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlResponse"); pullErr != nil {
@@ -152,7 +149,7 @@ func AdsWriteControlResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsWri
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsWriteControlResponse")
 	}
@@ -175,14 +172,14 @@ func AdsWriteControlResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsWri
 }
 
 func (m *_AdsWriteControlResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsWriteControlResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsWriteControlResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -194,7 +191,7 @@ func (m *_AdsWriteControlResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for result")
 		}
-		_resultErr := writeBuffer.WriteSerializable(m.GetResult())
+		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for result")
 		}
@@ -207,7 +204,7 @@ func (m *_AdsWriteControlResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsWriteControlResponse) isAdsWriteControlResponse() bool {
@@ -219,7 +216,7 @@ func (m *_AdsWriteControlResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

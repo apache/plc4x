@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_CBusCommandPointToMultiPoint) GetTypeName() string {
 	return "CBusCommandPointToMultiPoint"
 }
 
-func (m *_CBusCommandPointToMultiPoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusCommandPointToMultiPoint) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusCommandPointToMultiPoint) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	lengthInBits += m.Command.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusCommandPointToMultiPoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusCommandPointToMultiPoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusCommandPointToMultiPointParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
-	return CBusCommandPointToMultiPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusCommandPointToMultiPointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusCommandPointToMultiPointParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
+func CBusCommandPointToMultiPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToMultiPoint"); pullErr != nil {
@@ -139,7 +136,7 @@ func CBusCommandPointToMultiPointParseWithBuffer(readBuffer utils.ReadBuffer, cB
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToMultiPointCommandParseWithBuffer(readBuffer, cBusOptions)
+	_command, _commandErr := CBusPointToMultiPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToMultiPoint")
 	}
@@ -164,14 +161,14 @@ func CBusCommandPointToMultiPointParseWithBuffer(readBuffer utils.ReadBuffer, cB
 }
 
 func (m *_CBusCommandPointToMultiPoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for command")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
+		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for command")
 		}
@@ -196,7 +193,7 @@ func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusCommandPointToMultiPoint) isCBusCommandPointToMultiPoint() bool {
@@ -208,7 +205,7 @@ func (m *_CBusCommandPointToMultiPoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

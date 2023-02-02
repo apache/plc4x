@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLockStatus) GetLockStatus() BACnetLockStatusTagge
 ///////////////////////
 
 func (m *_BACnetConstructedDataLockStatus) GetActualValue() BACnetLockStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLockStatusTagged(m.GetLockStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLockStatus) GetTypeName() string {
 	return "BACnetConstructedDataLockStatus"
 }
 
-func (m *_BACnetConstructedDataLockStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLockStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLockStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lockStatus)
-	lengthInBits += m.LockStatus.GetLengthInBits()
+	lengthInBits += m.LockStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLockStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLockStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLockStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
-	return BACnetConstructedDataLockStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLockStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLockStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
+func BACnetConstructedDataLockStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLockStatusParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("lockStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockStatus")
 	}
-	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lockStatusErr != nil {
 		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field of BACnetConstructedDataLockStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLockStatusParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataLockStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("lockStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lockStatus")
 		}
-		_lockStatusErr := writeBuffer.WriteSerializable(m.GetLockStatus())
+		_lockStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLockStatus())
 		if popErr := writeBuffer.PopContext("lockStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lockStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_lockStatusErr, "Error serializing 'lockStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLockStatus) isBACnetConstructedDataLockStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLockStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

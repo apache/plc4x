@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSerialNumber) GetSerialNumber() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataSerialNumber) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetSerialNumber())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSerialNumber) GetTypeName() string {
 	return "BACnetConstructedDataSerialNumber"
 }
 
-func (m *_BACnetConstructedDataSerialNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSerialNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSerialNumber) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (serialNumber)
-	lengthInBits += m.SerialNumber.GetLengthInBits()
+	lengthInBits += m.SerialNumber.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSerialNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSerialNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSerialNumberParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
-	return BACnetConstructedDataSerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSerialNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSerialNumberParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
+func BACnetConstructedDataSerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSerialNumber"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSerialNumberParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("serialNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serialNumber")
 	}
-	_serialNumber, _serialNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_serialNumber, _serialNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _serialNumberErr != nil {
 		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of BACnetConstructedDataSerialNumber")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSerialNumberParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataSerialNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("serialNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serialNumber")
 		}
-		_serialNumberErr := writeBuffer.WriteSerializable(m.GetSerialNumber())
+		_serialNumberErr := writeBuffer.WriteSerializable(ctx, m.GetSerialNumber())
 		if popErr := writeBuffer.PopContext("serialNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serialNumber")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSerialNumber) isBACnetConstructedDataSerialNumber() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSerialNumber) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

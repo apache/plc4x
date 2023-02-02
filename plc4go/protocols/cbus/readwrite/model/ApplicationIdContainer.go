@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -3696,19 +3697,19 @@ func CastApplicationIdContainer(structType interface{}) ApplicationIdContainer {
 	return castFunc(structType)
 }
 
-func (m ApplicationIdContainer) GetLengthInBits() uint16 {
+func (m ApplicationIdContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ApplicationIdContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ApplicationIdContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApplicationIdContainerParse(theBytes []byte) (ApplicationIdContainer, error) {
-	return ApplicationIdContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ApplicationIdContainerParse(ctx context.Context, theBytes []byte) (ApplicationIdContainer, error) {
+	return ApplicationIdContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApplicationIdContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
+func ApplicationIdContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
 	val, err := readBuffer.ReadUint8("ApplicationIdContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")
@@ -3723,13 +3724,13 @@ func ApplicationIdContainerParseWithBuffer(readBuffer utils.ReadBuffer) (Applica
 
 func (e ApplicationIdContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ApplicationIdContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ApplicationIdContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ApplicationIdContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

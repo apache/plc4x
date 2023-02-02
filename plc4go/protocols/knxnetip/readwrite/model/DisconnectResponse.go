@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -116,12 +117,8 @@ func (m *_DisconnectResponse) GetTypeName() string {
 	return "DisconnectResponse"
 }
 
-func (m *_DisconnectResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DisconnectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DisconnectResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -132,15 +129,15 @@ func (m *_DisconnectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_DisconnectResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DisconnectResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DisconnectResponseParse(theBytes []byte) (DisconnectResponse, error) {
-	return DisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DisconnectResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
+func DisconnectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
@@ -160,7 +157,7 @@ func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectR
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParseWithBuffer(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DisconnectResponse")
 	}
@@ -184,14 +181,14 @@ func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectR
 }
 
 func (m *_DisconnectResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DisconnectResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DisconnectResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_DisconnectResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for status")
 		}
-		_statusErr := writeBuffer.WriteSerializable(m.GetStatus())
+		_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for status")
 		}
@@ -223,7 +220,7 @@ func (m *_DisconnectResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DisconnectResponse) isDisconnectResponse() bool {
@@ -235,7 +232,7 @@ func (m *_DisconnectResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

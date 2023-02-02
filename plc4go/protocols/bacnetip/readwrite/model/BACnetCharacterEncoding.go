@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastBACnetCharacterEncoding(structType interface{}) BACnetCharacterEncoding
 	return castFunc(structType)
 }
 
-func (m BACnetCharacterEncoding) GetLengthInBits() uint16 {
+func (m BACnetCharacterEncoding) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetCharacterEncoding) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCharacterEncodingParse(theBytes []byte) (BACnetCharacterEncoding, error) {
-	return BACnetCharacterEncodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetCharacterEncodingParse(ctx context.Context, theBytes []byte) (BACnetCharacterEncoding, error) {
+	return BACnetCharacterEncodingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCharacterEncodingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
+func BACnetCharacterEncodingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
 	val, err := readBuffer.ReadByte("BACnetCharacterEncoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")
@@ -138,13 +139,13 @@ func BACnetCharacterEncodingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 
 func (e BACnetCharacterEncoding) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetCharacterEncoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetCharacterEncoding) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("BACnetCharacterEncoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

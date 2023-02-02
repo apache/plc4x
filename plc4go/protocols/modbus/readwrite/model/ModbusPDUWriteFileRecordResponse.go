@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +117,8 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetTypeName() string {
 	return "ModbusPDUWriteFileRecordResponse"
 }
 
-func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -128,22 +126,22 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBitsConditional(lastItem 
 	// Array field
 	if len(m.Items) > 0 {
 		for _, element := range m.Items {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUWriteFileRecordResponseParse(theBytes []byte, response bool) (ModbusPDUWriteFileRecordResponse, error) {
-	return ModbusPDUWriteFileRecordResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUWriteFileRecordResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUWriteFileRecordResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordResponse, error) {
+func ModbusPDUWriteFileRecordResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordResponse"); pullErr != nil {
@@ -169,7 +167,7 @@ func ModbusPDUWriteFileRecordResponseParseWithBuffer(readBuffer utils.ReadBuffer
 		_itemsLength := byteCount
 		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
 		for positionAware.GetPos() < _itemsEndPos {
-			_item, _err := ModbusPDUWriteFileRecordResponseItemParseWithBuffer(readBuffer)
+			_item, _err := ModbusPDUWriteFileRecordResponseItemParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUWriteFileRecordResponse")
 			}
@@ -194,20 +192,20 @@ func ModbusPDUWriteFileRecordResponseParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_ModbusPDUWriteFileRecordResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	itemsArraySizeInBytes := func(items []ModbusPDUWriteFileRecordResponseItem) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
-			sizeInBytes += uint32(v.GetLengthInBytes())
+			sizeInBytes += uint32(v.GetLengthInBytes(ctx))
 		}
 		return sizeInBytes
 	}
@@ -227,8 +225,11 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for items")
 		}
-		for _, _element := range m.GetItems() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetItems() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
@@ -242,7 +243,7 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUWriteFileRecordResponse) isModbusPDUWriteFileRecordResponse() bool {
@@ -254,7 +255,7 @@ func (m *_ModbusPDUWriteFileRecordResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

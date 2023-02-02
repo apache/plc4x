@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastHVACHumidityType(structType interface{}) HVACHumidityType {
 	return castFunc(structType)
 }
 
-func (m HVACHumidityType) GetLengthInBits() uint16 {
+func (m HVACHumidityType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m HVACHumidityType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HVACHumidityType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACHumidityTypeParse(theBytes []byte) (HVACHumidityType, error) {
-	return HVACHumidityTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HVACHumidityTypeParse(ctx context.Context, theBytes []byte) (HVACHumidityType, error) {
+	return HVACHumidityTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACHumidityTypeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityType, error) {
+func HVACHumidityTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityType, error) {
 	val, err := readBuffer.ReadUint8("HVACHumidityType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACHumidityType")
@@ -126,13 +127,13 @@ func HVACHumidityTypeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityT
 
 func (e HVACHumidityType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HVACHumidityType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HVACHumidityType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACHumidityType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

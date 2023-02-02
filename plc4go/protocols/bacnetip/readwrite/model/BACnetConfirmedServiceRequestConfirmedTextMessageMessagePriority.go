@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(struct
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLengthInBits() uint16 {
+func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(theBytes []byte) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority")
@@ -114,13 +115,13 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBu
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

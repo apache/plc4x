@@ -22,6 +22,10 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"net"
+	"net/url"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -29,9 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
-	"net/url"
-	"time"
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetTypeName() strin
 	return "BACnetConfirmedServiceRequestAtomicReadFileStream"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
-	lengthInBits += m.FileStartPosition.GetLengthInBits()
+	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
 
 	// Simple field (requestOctetCount)
-	lengthInBits += m.RequestOctetCount.GetLengthInBits()
+	lengthInBits += m.RequestOctetCount.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); pullErr != nil {
@@ -152,7 +149,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
@@ -165,7 +162,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("requestOctetCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestOctetCount")
 	}
-	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _requestOctetCountErr != nil {
 		return nil, errors.Wrap(_requestOctetCountErr, "Error parsing 'requestOctetCount' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
@@ -189,14 +186,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(readBuffer
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
 		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(m.GetFileStartPosition())
+		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
 		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileStartPosition")
 		}
@@ -220,7 +217,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("requestOctetCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for requestOctetCount")
 		}
-		_requestOctetCountErr := writeBuffer.WriteSerializable(m.GetRequestOctetCount())
+		_requestOctetCountErr := writeBuffer.WriteSerializable(ctx, m.GetRequestOctetCount())
 		if popErr := writeBuffer.PopContext("requestOctetCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for requestOctetCount")
 		}
@@ -233,7 +230,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) isBACnetConfirmedServiceRequestAtomicReadFileStream() bool {
@@ -245,7 +242,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

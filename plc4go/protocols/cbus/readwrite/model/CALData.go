@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -60,12 +61,11 @@ type _CALData struct {
 
 type _CALDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type CALDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -101,12 +101,16 @@ func (m *_CALData) GetAdditionalData() CALData {
 ///////////////////////
 
 func (m *_CALData) GetCommandType() CALCommandType {
+	ctx := context.Background()
+	_ = ctx
 	additionalData := m.AdditionalData
 	_ = additionalData
 	return CastCALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 func (m *_CALData) GetSendIdentifyRequestBefore() bool {
+	ctx := context.Background()
+	_ = ctx
 	additionalData := m.AdditionalData
 	_ = additionalData
 	return bool(utils.InlineIf(bool((m.RequestContext) != (nil)), func() interface{} { return bool(m.RequestContext.GetSendIdentifyRequestBefore()) }, func() interface{} { return bool(bool(false)) }).(bool))
@@ -137,7 +141,7 @@ func (m *_CALData) GetTypeName() string {
 	return "CALData"
 }
 
-func (m *_CALData) GetParentLengthInBits() uint16 {
+func (m *_CALData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -149,21 +153,21 @@ func (m *_CALData) GetParentLengthInBits() uint16 {
 
 	// Optional Field (additionalData)
 	if m.AdditionalData != nil {
-		lengthInBits += m.AdditionalData.GetLengthInBits()
+		lengthInBits += m.AdditionalData.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_CALData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CALDataParse(theBytes []byte, requestContext RequestContext) (CALData, error) {
-	return CALDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
+	return CALDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
-func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
+func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
@@ -181,7 +185,7 @@ func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestC
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
 	}
@@ -211,25 +215,25 @@ func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestC
 	var typeSwitchError error
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataReset
-		_childTemp, typeSwitchError = CALDataResetParseWithBuffer(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataResetParseWithBuffer(ctx, readBuffer, requestContext)
 	case commandType == CALCommandType_RECALL: // CALDataRecall
-		_childTemp, typeSwitchError = CALDataRecallParseWithBuffer(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataRecallParseWithBuffer(ctx, readBuffer, requestContext)
 	case commandType == CALCommandType_IDENTIFY: // CALDataIdentify
-		_childTemp, typeSwitchError = CALDataIdentifyParseWithBuffer(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataIdentifyParseWithBuffer(ctx, readBuffer, requestContext)
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
-		_childTemp, typeSwitchError = CALDataGetStatusParseWithBuffer(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataGetStatusParseWithBuffer(ctx, readBuffer, requestContext)
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
+		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
+		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
+		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
-		_childTemp, typeSwitchError = CALDataAcknowledgeParseWithBuffer(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataAcknowledgeParseWithBuffer(ctx, readBuffer, requestContext)
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
+		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
+		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, sendIdentifyRequestBefore=%v]", commandType, sendIdentifyRequestBefore)
 	}
@@ -245,7 +249,7 @@ func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestC
 		if pullErr := readBuffer.PullContext("additionalData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for additionalData")
 		}
-		_val, _err := CALDataParseWithBuffer(readBuffer, nil)
+		_val, _err := CALDataParseWithBuffer(ctx, readBuffer, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -269,7 +273,7 @@ func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestC
 	return _child, nil
 }
 
-func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error {
+func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -283,7 +287,7 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -291,11 +295,11 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 	// Virtual field
-	if _sendIdentifyRequestBeforeErr := writeBuffer.WriteVirtual("sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore()); _sendIdentifyRequestBeforeErr != nil {
+	if _sendIdentifyRequestBeforeErr := writeBuffer.WriteVirtual(ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore()); _sendIdentifyRequestBeforeErr != nil {
 		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
 	}
 
@@ -311,7 +315,7 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 			return errors.Wrap(pushErr, "Error pushing for additionalData")
 		}
 		additionalData = m.GetAdditionalData()
-		_additionalDataErr := writeBuffer.WriteSerializable(additionalData)
+		_additionalDataErr := writeBuffer.WriteSerializable(ctx, additionalData)
 		if popErr := writeBuffer.PopContext("additionalData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for additionalData")
 		}
@@ -345,7 +349,7 @@ func (m *_CALData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

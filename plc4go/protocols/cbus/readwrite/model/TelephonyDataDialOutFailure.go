@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_TelephonyDataDialOutFailure) GetTypeName() string {
 	return "TelephonyDataDialOutFailure"
 }
 
-func (m *_TelephonyDataDialOutFailure) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TelephonyDataDialOutFailure) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TelephonyDataDialOutFailure) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reason)
 	lengthInBits += 8
@@ -119,15 +116,15 @@ func (m *_TelephonyDataDialOutFailure) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_TelephonyDataDialOutFailure) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyDataDialOutFailure) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataDialOutFailureParse(theBytes []byte) (TelephonyDataDialOutFailure, error) {
-	return TelephonyDataDialOutFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TelephonyDataDialOutFailureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TelephonyDataDialOutFailureParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
+func TelephonyDataDialOutFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDialOutFailure"); pullErr != nil {
@@ -140,7 +137,7 @@ func TelephonyDataDialOutFailureParseWithBuffer(readBuffer utils.ReadBuffer) (Te
 	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reason")
 	}
-	_reason, _reasonErr := DialOutFailureReasonParseWithBuffer(readBuffer)
+	_reason, _reasonErr := DialOutFailureReasonParseWithBuffer(ctx, readBuffer)
 	if _reasonErr != nil {
 		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataDialOutFailure")
 	}
@@ -163,14 +160,14 @@ func TelephonyDataDialOutFailureParseWithBuffer(readBuffer utils.ReadBuffer) (Te
 }
 
 func (m *_TelephonyDataDialOutFailure) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -182,7 +179,7 @@ func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("reason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reason")
 		}
-		_reasonErr := writeBuffer.WriteSerializable(m.GetReason())
+		_reasonErr := writeBuffer.WriteSerializable(ctx, m.GetReason())
 		if popErr := writeBuffer.PopContext("reason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reason")
 		}
@@ -195,7 +192,7 @@ func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TelephonyDataDialOutFailure) isTelephonyDataDialOutFailure() bool {
@@ -207,7 +204,7 @@ func (m *_TelephonyDataDialOutFailure) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

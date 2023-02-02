@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_COTPParameterCalledTsap) GetTypeName() string {
 	return "COTPParameterCalledTsap"
 }
 
-func (m *_COTPParameterCalledTsap) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_COTPParameterCalledTsap) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_COTPParameterCalledTsap) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -120,15 +117,15 @@ func (m *_COTPParameterCalledTsap) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_COTPParameterCalledTsap) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func COTPParameterCalledTsapParse(theBytes []byte, rest uint8) (COTPParameterCalledTsap, error) {
-	return COTPParameterCalledTsapParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
+	return COTPParameterCalledTsapParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
 }
 
-func COTPParameterCalledTsapParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
+func COTPParameterCalledTsapParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
@@ -160,14 +157,14 @@ func COTPParameterCalledTsapParseWithBuffer(readBuffer utils.ReadBuffer, rest ui
 }
 
 func (m *_COTPParameterCalledTsap) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_COTPParameterCalledTsap) isCOTPParameterCalledTsap() bool {
@@ -199,7 +196,7 @@ func (m *_COTPParameterCalledTsap) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

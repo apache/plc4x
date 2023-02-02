@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetOperation() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataNextPreviousTrack) GetIsSetThePreviousTrack() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataNextPreviousTrack) GetIsSetTheNextTrack() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) != (0x00)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetTypeName() string {
 	return "MediaTransportControlDataNextPreviousTrack"
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBitsConditional
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataNextPreviousTrackParse(theBytes []byte) (MediaTransportControlDataNextPreviousTrack, error) {
-	return MediaTransportControlDataNextPreviousTrackParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataNextPreviousTrackParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataNextPreviousTrackParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousTrack, error) {
+func MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousTrack, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousTrack"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataNextPreviousTrackParseWithBuffer(readBuffer utils.
 }
 
 func (m *_MediaTransportControlDataNextPreviousTrack) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(w
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
-		if _isSetThePreviousTrackErr := writeBuffer.WriteVirtual("isSetThePreviousTrack", m.GetIsSetThePreviousTrack()); _isSetThePreviousTrackErr != nil {
+		if _isSetThePreviousTrackErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousTrack", m.GetIsSetThePreviousTrack()); _isSetThePreviousTrackErr != nil {
 			return errors.Wrap(_isSetThePreviousTrackErr, "Error serializing 'isSetThePreviousTrack' field")
 		}
 		// Virtual field
-		if _isSetTheNextTrackErr := writeBuffer.WriteVirtual("isSetTheNextTrack", m.GetIsSetTheNextTrack()); _isSetTheNextTrackErr != nil {
+		if _isSetTheNextTrackErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextTrack", m.GetIsSetTheNextTrack()); _isSetTheNextTrackErr != nil {
 			return errors.Wrap(_isSetTheNextTrackErr, "Error serializing 'isSetTheNextTrack' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataNextPreviousTrack) isMediaTransportControlDataNextPreviousTrack() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataNextPreviousTrack) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,12 +132,8 @@ func (m *_NLMSecurityResponse) GetTypeName() string {
 	return "NLMSecurityResponse"
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMSecurityResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (responseCode)
 	lengthInBits += 8
@@ -155,15 +152,15 @@ func (m *_NLMSecurityResponse) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMSecurityResponseParse(theBytes []byte, apduLength uint16) (NLMSecurityResponse, error) {
-	return NLMSecurityResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMSecurityResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMSecurityResponseParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityResponse, error) {
+func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMSecurityResponse"); pullErr != nil {
@@ -176,7 +173,7 @@ func NLMSecurityResponseParseWithBuffer(readBuffer utils.ReadBuffer, apduLength 
 	if pullErr := readBuffer.PullContext("responseCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for responseCode")
 	}
-	_responseCode, _responseCodeErr := SecurityResponseCodeParseWithBuffer(readBuffer)
+	_responseCode, _responseCodeErr := SecurityResponseCodeParseWithBuffer(ctx, readBuffer)
 	if _responseCodeErr != nil {
 		return nil, errors.Wrap(_responseCodeErr, "Error parsing 'responseCode' field of NLMSecurityResponse")
 	}
@@ -224,14 +221,14 @@ func NLMSecurityResponseParseWithBuffer(readBuffer utils.ReadBuffer, apduLength 
 }
 
 func (m *_NLMSecurityResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -243,7 +240,7 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("responseCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for responseCode")
 		}
-		_responseCodeErr := writeBuffer.WriteSerializable(m.GetResponseCode())
+		_responseCodeErr := writeBuffer.WriteSerializable(ctx, m.GetResponseCode())
 		if popErr := writeBuffer.PopContext("responseCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for responseCode")
 		}
@@ -276,7 +273,7 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMSecurityResponse) isNLMSecurityResponse() bool {
@@ -288,7 +285,7 @@ func (m *_NLMSecurityResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetTypeName() string {
 	return "BACnetPropertyStatesNetworkPortCommand"
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (networkPortCommand)
-	lengthInBits += m.NetworkPortCommand.GetLengthInBits()
+	lengthInBits += m.NetworkPortCommand.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesNetworkPortCommandParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
-	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
+func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkPortCommand"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("networkPortCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPortCommand")
 	}
-	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkPortCommandErr != nil {
 		return nil, errors.Wrap(_networkPortCommandErr, "Error parsing 'networkPortCommand' field of BACnetPropertyStatesNetworkPortCommand")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("networkPortCommand"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkPortCommand")
 		}
-		_networkPortCommandErr := writeBuffer.WriteSerializable(m.GetNetworkPortCommand())
+		_networkPortCommandErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPortCommand())
 		if popErr := writeBuffer.PopContext("networkPortCommand"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkPortCommand")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) isBACnetPropertyStatesNetworkPortCommand() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

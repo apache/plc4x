@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -149,53 +150,49 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetTypeName() strin
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummary"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (acknowledgmentFilter)
-	lengthInBits += m.AcknowledgmentFilter.GetLengthInBits()
+	lengthInBits += m.AcknowledgmentFilter.GetLengthInBits(ctx)
 
 	// Optional Field (enrollmentFilter)
 	if m.EnrollmentFilter != nil {
-		lengthInBits += m.EnrollmentFilter.GetLengthInBits()
+		lengthInBits += m.EnrollmentFilter.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (eventStateFilter)
 	if m.EventStateFilter != nil {
-		lengthInBits += m.EventStateFilter.GetLengthInBits()
+		lengthInBits += m.EventStateFilter.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (eventTypeFilter)
 	if m.EventTypeFilter != nil {
-		lengthInBits += m.EventTypeFilter.GetLengthInBits()
+		lengthInBits += m.EventTypeFilter.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (priorityFilter)
 	if m.PriorityFilter != nil {
-		lengthInBits += m.PriorityFilter.GetLengthInBits()
+		lengthInBits += m.PriorityFilter.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (notificationClassFilter)
 	if m.NotificationClassFilter != nil {
-		lengthInBits += m.NotificationClassFilter.GetLengthInBits()
+		lengthInBits += m.NotificationClassFilter.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pullErr != nil {
@@ -208,7 +205,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("acknowledgmentFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgmentFilter")
 	}
-	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgmentFilterErr != nil {
 		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 	}
@@ -224,7 +221,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 		if pullErr := readBuffer.PullContext("enrollmentFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for enrollmentFilter")
 		}
-		_val, _err := BACnetRecipientProcessEnclosedParseWithBuffer(readBuffer, uint8(1))
+		_val, _err := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -246,7 +243,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 		if pullErr := readBuffer.PullContext("eventStateFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for eventStateFilter")
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(ctx, readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -268,7 +265,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 		if pullErr := readBuffer.PullContext("eventTypeFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for eventTypeFilter")
 		}
-		_val, _err := BACnetEventTypeTaggedParseWithBuffer(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -290,7 +287,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 		if pullErr := readBuffer.PullContext("priorityFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priorityFilter")
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(readBuffer, uint8(4))
+		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, readBuffer, uint8(4))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -312,7 +309,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 		if pullErr := readBuffer.PullContext("notificationClassFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for notificationClassFilter")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -348,14 +345,14 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -367,7 +364,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("acknowledgmentFilter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgmentFilter")
 		}
-		_acknowledgmentFilterErr := writeBuffer.WriteSerializable(m.GetAcknowledgmentFilter())
+		_acknowledgmentFilterErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgmentFilter())
 		if popErr := writeBuffer.PopContext("acknowledgmentFilter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgmentFilter")
 		}
@@ -382,7 +379,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 				return errors.Wrap(pushErr, "Error pushing for enrollmentFilter")
 			}
 			enrollmentFilter = m.GetEnrollmentFilter()
-			_enrollmentFilterErr := writeBuffer.WriteSerializable(enrollmentFilter)
+			_enrollmentFilterErr := writeBuffer.WriteSerializable(ctx, enrollmentFilter)
 			if popErr := writeBuffer.PopContext("enrollmentFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for enrollmentFilter")
 			}
@@ -398,7 +395,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 				return errors.Wrap(pushErr, "Error pushing for eventStateFilter")
 			}
 			eventStateFilter = m.GetEventStateFilter()
-			_eventStateFilterErr := writeBuffer.WriteSerializable(eventStateFilter)
+			_eventStateFilterErr := writeBuffer.WriteSerializable(ctx, eventStateFilter)
 			if popErr := writeBuffer.PopContext("eventStateFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for eventStateFilter")
 			}
@@ -414,7 +411,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 				return errors.Wrap(pushErr, "Error pushing for eventTypeFilter")
 			}
 			eventTypeFilter = m.GetEventTypeFilter()
-			_eventTypeFilterErr := writeBuffer.WriteSerializable(eventTypeFilter)
+			_eventTypeFilterErr := writeBuffer.WriteSerializable(ctx, eventTypeFilter)
 			if popErr := writeBuffer.PopContext("eventTypeFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for eventTypeFilter")
 			}
@@ -430,7 +427,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 				return errors.Wrap(pushErr, "Error pushing for priorityFilter")
 			}
 			priorityFilter = m.GetPriorityFilter()
-			_priorityFilterErr := writeBuffer.WriteSerializable(priorityFilter)
+			_priorityFilterErr := writeBuffer.WriteSerializable(ctx, priorityFilter)
 			if popErr := writeBuffer.PopContext("priorityFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for priorityFilter")
 			}
@@ -446,7 +443,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 				return errors.Wrap(pushErr, "Error pushing for notificationClassFilter")
 			}
 			notificationClassFilter = m.GetNotificationClassFilter()
-			_notificationClassFilterErr := writeBuffer.WriteSerializable(notificationClassFilter)
+			_notificationClassFilterErr := writeBuffer.WriteSerializable(ctx, notificationClassFilter)
 			if popErr := writeBuffer.PopContext("notificationClassFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for notificationClassFilter")
 			}
@@ -460,7 +457,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) isBACnetConfirmedServiceRequestGetEnrollmentSummary() bool {
@@ -472,7 +469,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

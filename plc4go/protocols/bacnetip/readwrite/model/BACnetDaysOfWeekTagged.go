@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,30 +91,44 @@ func (m *_BACnetDaysOfWeekTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetDaysOfWeekTagged) GetMonday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetTuesday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetWednesday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetThursday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetFriday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetSaturday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetDaysOfWeekTagged) GetSunday() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -142,18 +157,14 @@ func (m *_BACnetDaysOfWeekTagged) GetTypeName() string {
 	return "BACnetDaysOfWeekTagged"
 }
 
-func (m *_BACnetDaysOfWeekTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetDaysOfWeekTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetDaysOfWeekTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -172,15 +183,15 @@ func (m *_BACnetDaysOfWeekTagged) GetLengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *_BACnetDaysOfWeekTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetDaysOfWeekTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetDaysOfWeekTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
-	return BACnetDaysOfWeekTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetDaysOfWeekTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
+func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDaysOfWeekTagged"); pullErr != nil {
@@ -193,7 +204,7 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetDaysOfWeekTagged")
 	}
@@ -216,7 +227,7 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetDaysOfWeekTagged")
 	}
@@ -274,14 +285,14 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumbe
 }
 
 func (m *_BACnetDaysOfWeekTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDaysOfWeekTagged"); pushErr != nil {
@@ -292,7 +303,7 @@ func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -304,7 +315,7 @@ func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -312,31 +323,31 @@ func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _mondayErr := writeBuffer.WriteVirtual("monday", m.GetMonday()); _mondayErr != nil {
+	if _mondayErr := writeBuffer.WriteVirtual(ctx, "monday", m.GetMonday()); _mondayErr != nil {
 		return errors.Wrap(_mondayErr, "Error serializing 'monday' field")
 	}
 	// Virtual field
-	if _tuesdayErr := writeBuffer.WriteVirtual("tuesday", m.GetTuesday()); _tuesdayErr != nil {
+	if _tuesdayErr := writeBuffer.WriteVirtual(ctx, "tuesday", m.GetTuesday()); _tuesdayErr != nil {
 		return errors.Wrap(_tuesdayErr, "Error serializing 'tuesday' field")
 	}
 	// Virtual field
-	if _wednesdayErr := writeBuffer.WriteVirtual("wednesday", m.GetWednesday()); _wednesdayErr != nil {
+	if _wednesdayErr := writeBuffer.WriteVirtual(ctx, "wednesday", m.GetWednesday()); _wednesdayErr != nil {
 		return errors.Wrap(_wednesdayErr, "Error serializing 'wednesday' field")
 	}
 	// Virtual field
-	if _thursdayErr := writeBuffer.WriteVirtual("thursday", m.GetThursday()); _thursdayErr != nil {
+	if _thursdayErr := writeBuffer.WriteVirtual(ctx, "thursday", m.GetThursday()); _thursdayErr != nil {
 		return errors.Wrap(_thursdayErr, "Error serializing 'thursday' field")
 	}
 	// Virtual field
-	if _fridayErr := writeBuffer.WriteVirtual("friday", m.GetFriday()); _fridayErr != nil {
+	if _fridayErr := writeBuffer.WriteVirtual(ctx, "friday", m.GetFriday()); _fridayErr != nil {
 		return errors.Wrap(_fridayErr, "Error serializing 'friday' field")
 	}
 	// Virtual field
-	if _saturdayErr := writeBuffer.WriteVirtual("saturday", m.GetSaturday()); _saturdayErr != nil {
+	if _saturdayErr := writeBuffer.WriteVirtual(ctx, "saturday", m.GetSaturday()); _saturdayErr != nil {
 		return errors.Wrap(_saturdayErr, "Error serializing 'saturday' field")
 	}
 	// Virtual field
-	if _sundayErr := writeBuffer.WriteVirtual("sunday", m.GetSunday()); _sundayErr != nil {
+	if _sundayErr := writeBuffer.WriteVirtual(ctx, "sunday", m.GetSunday()); _sundayErr != nil {
 		return errors.Wrap(_sundayErr, "Error serializing 'sunday' field")
 	}
 
@@ -368,7 +379,7 @@ func (m *_BACnetDaysOfWeekTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

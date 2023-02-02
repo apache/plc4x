@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataReferencePort) GetReferencePort() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataReferencePort) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetReferencePort())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataReferencePort) GetTypeName() string {
 	return "BACnetConstructedDataReferencePort"
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataReferencePort) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataReferencePort) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referencePort)
-	lengthInBits += m.ReferencePort.GetLengthInBits()
+	lengthInBits += m.ReferencePort.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataReferencePort) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataReferencePortParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReferencePort, error) {
-	return BACnetConstructedDataReferencePortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataReferencePortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataReferencePortParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReferencePort, error) {
+func BACnetConstructedDataReferencePortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReferencePort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReferencePort"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataReferencePortParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("referencePort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referencePort")
 	}
-	_referencePort, _referencePortErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_referencePort, _referencePortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _referencePortErr != nil {
 		return nil, errors.Wrap(_referencePortErr, "Error parsing 'referencePort' field of BACnetConstructedDataReferencePort")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataReferencePortParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataReferencePort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("referencePort"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referencePort")
 		}
-		_referencePortErr := writeBuffer.WriteSerializable(m.GetReferencePort())
+		_referencePortErr := writeBuffer.WriteSerializable(ctx, m.GetReferencePort())
 		if popErr := writeBuffer.PopContext("referencePort"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referencePort")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_referencePortErr, "Error serializing 'referencePort' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataReferencePort) isBACnetConstructedDataReferencePort() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataReferencePort) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

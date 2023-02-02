@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
-	lengthInBits += m.FileStartPosition.GetLengthInBits()
+	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckAtomicWriteFileParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
-	return BACnetServiceAckAtomicWriteFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+	return BACnetServiceAckAtomicWriteFileParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
-func BACnetServiceAckAtomicWriteFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
+func BACnetServiceAckAtomicWriteFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetServiceAckAtomicWriteFileParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicWriteFile")
 	}
@@ -166,14 +163,14 @@ func BACnetServiceAckAtomicWriteFileParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
 		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(m.GetFileStartPosition())
+		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
 		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileStartPosition")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) isBACnetServiceAckAtomicWriteFile() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

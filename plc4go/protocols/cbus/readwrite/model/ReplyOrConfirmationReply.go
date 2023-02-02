@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,31 +114,27 @@ func (m *_ReplyOrConfirmationReply) GetTypeName() string {
 	return "ReplyOrConfirmationReply"
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ReplyOrConfirmationReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reply)
-	lengthInBits += m.Reply.GetLengthInBits()
+	lengthInBits += m.Reply.GetLengthInBits(ctx)
 
 	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
+	lengthInBits += m.Termination.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ReplyOrConfirmationReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ReplyOrConfirmationReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
-	return ReplyOrConfirmationReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyOrConfirmationReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ReplyOrConfirmationReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
+func ReplyOrConfirmationReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationReply"); pullErr != nil {
@@ -150,7 +147,7 @@ func ReplyOrConfirmationReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOp
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+	_reply, _replyErr := ReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of ReplyOrConfirmationReply")
 	}
@@ -163,7 +160,7 @@ func ReplyOrConfirmationReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOp
 	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for termination")
 	}
-	_termination, _terminationErr := ResponseTerminationParseWithBuffer(readBuffer)
+	_termination, _terminationErr := ResponseTerminationParseWithBuffer(ctx, readBuffer)
 	if _terminationErr != nil {
 		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of ReplyOrConfirmationReply")
 	}
@@ -190,14 +187,14 @@ func ReplyOrConfirmationReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOp
 }
 
 func (m *_ReplyOrConfirmationReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -209,7 +206,7 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reply")
 		}
-		_replyErr := writeBuffer.WriteSerializable(m.GetReply())
+		_replyErr := writeBuffer.WriteSerializable(ctx, m.GetReply())
 		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reply")
 		}
@@ -221,7 +218,7 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for termination")
 		}
-		_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
+		_terminationErr := writeBuffer.WriteSerializable(ctx, m.GetTermination())
 		if popErr := writeBuffer.PopContext("termination"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for termination")
 		}
@@ -234,7 +231,7 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ReplyOrConfirmationReply) isReplyOrConfirmationReply() bool {
@@ -246,7 +243,7 @@ func (m *_ReplyOrConfirmationReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

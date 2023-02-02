@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -63,25 +64,21 @@ func (m *_GroupObjectDescriptorRealisationType6) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType6"
 }
 
-func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func GroupObjectDescriptorRealisationType6Parse(theBytes []byte) (GroupObjectDescriptorRealisationType6, error) {
-	return GroupObjectDescriptorRealisationType6ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return GroupObjectDescriptorRealisationType6ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func GroupObjectDescriptorRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
+func GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
@@ -99,14 +96,14 @@ func GroupObjectDescriptorRealisationType6ParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType6) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_GroupObjectDescriptorRealisationType6) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType6"); pushErr != nil {
@@ -128,7 +125,7 @@ func (m *_GroupObjectDescriptorRealisationType6) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

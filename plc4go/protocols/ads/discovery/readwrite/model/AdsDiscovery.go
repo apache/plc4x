@@ -20,8 +20,10 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,11 +128,7 @@ func (m *_AdsDiscovery) GetTypeName() string {
 	return "AdsDiscovery"
 }
 
-func (m *_AdsDiscovery) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscovery) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AdsDiscovery) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (header)
@@ -143,7 +141,7 @@ func (m *_AdsDiscovery) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 32
 
 	// Simple field (amsNetId)
-	lengthInBits += m.AmsNetId.GetLengthInBits()
+	lengthInBits += m.AmsNetId.GetLengthInBits(ctx)
 
 	// Simple field (portNumber)
 	lengthInBits += 16
@@ -153,24 +151,26 @@ func (m *_AdsDiscovery) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Array field
 	if len(m.Blocks) > 0 {
-		for i, element := range m.Blocks {
-			last := i == len(m.Blocks)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Blocks {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Blocks), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscovery) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscovery) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryParse(theBytes []byte) (AdsDiscovery, error) {
-	return AdsDiscoveryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+	return AdsDiscoveryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
-func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
+func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscovery"); pullErr != nil {
@@ -199,7 +199,7 @@ func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, err
 	if pullErr := readBuffer.PullContext("operation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for operation")
 	}
-	_operation, _operationErr := OperationParseWithBuffer(readBuffer)
+	_operation, _operationErr := OperationParseWithBuffer(ctx, readBuffer)
 	if _operationErr != nil {
 		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of AdsDiscovery")
 	}
@@ -212,7 +212,7 @@ func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, err
 	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
 	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
+	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
 	if _amsNetIdErr != nil {
 		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscovery")
 	}
@@ -225,7 +225,7 @@ func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, err
 	if pullErr := readBuffer.PullContext("portNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for portNumber")
 	}
-	_portNumber, _portNumberErr := AdsPortNumbersParseWithBuffer(readBuffer)
+	_portNumber, _portNumberErr := AdsPortNumbersParseWithBuffer(ctx, readBuffer)
 	if _portNumberErr != nil {
 		return nil, errors.Wrap(_portNumberErr, "Error parsing 'portNumber' field of AdsDiscovery")
 	}
@@ -252,12 +252,16 @@ func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, err
 		blocks = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numBlocks); curItem++ {
-			_item, _err := AdsDiscoveryBlockParseWithBuffer(readBuffer)
+		_numItems := uint16(numBlocks)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := AdsDiscoveryBlockParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'blocks' field of AdsDiscovery")
 			}
-			blocks[curItem] = _item.(AdsDiscoveryBlock)
+			blocks[_curItem] = _item.(AdsDiscoveryBlock)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("blocks", utils.WithRenderAsList(true)); closeErr != nil {
@@ -279,14 +283,14 @@ func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, err
 }
 
 func (m *_AdsDiscovery) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDiscovery"); pushErr != nil {
@@ -310,7 +314,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("operation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for operation")
 	}
-	_operationErr := writeBuffer.WriteSerializable(m.GetOperation())
+	_operationErr := writeBuffer.WriteSerializable(ctx, m.GetOperation())
 	if popErr := writeBuffer.PopContext("operation"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for operation")
 	}
@@ -322,7 +326,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("amsNetId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for amsNetId")
 	}
-	_amsNetIdErr := writeBuffer.WriteSerializable(m.GetAmsNetId())
+	_amsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetAmsNetId())
 	if popErr := writeBuffer.PopContext("amsNetId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for amsNetId")
 	}
@@ -334,7 +338,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("portNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for portNumber")
 	}
-	_portNumberErr := writeBuffer.WriteSerializable(m.GetPortNumber())
+	_portNumberErr := writeBuffer.WriteSerializable(ctx, m.GetPortNumber())
 	if popErr := writeBuffer.PopContext("portNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for portNumber")
 	}
@@ -353,8 +357,11 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("blocks", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for blocks")
 	}
-	for _, _element := range m.GetBlocks() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetBlocks() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetBlocks()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'blocks' field")
 		}
@@ -378,7 +385,7 @@ func (m *_AdsDiscovery) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

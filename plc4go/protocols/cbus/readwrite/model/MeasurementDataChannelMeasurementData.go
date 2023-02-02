@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,10 +125,14 @@ func (m *_MeasurementDataChannelMeasurementData) GetLsb() uint8 {
 ///////////////////////
 
 func (m *_MeasurementDataChannelMeasurementData) GetRawValue() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	return uint16(m.GetMsb()<<uint16(8) | m.GetLsb())
 }
 
 func (m *_MeasurementDataChannelMeasurementData) GetValue() float64 {
+	ctx := context.Background()
+	_ = ctx
 	return float64(float64(float64(m.GetRawValue())*float64(m.GetMultiplier())) * float64(float64(10)))
 }
 
@@ -166,12 +171,8 @@ func (m *_MeasurementDataChannelMeasurementData) GetTypeName() string {
 	return "MeasurementDataChannelMeasurementData"
 }
 
-func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MeasurementDataChannelMeasurementData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deviceId)
 	lengthInBits += 8
@@ -198,15 +199,15 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeasurementDataChannelMeasurementDataParse(theBytes []byte) (MeasurementDataChannelMeasurementData, error) {
-	return MeasurementDataChannelMeasurementDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeasurementDataChannelMeasurementDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
+func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeasurementDataChannelMeasurementData"); pullErr != nil {
@@ -233,7 +234,7 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
-	_units, _unitsErr := MeasurementUnitsParseWithBuffer(readBuffer)
+	_units, _unitsErr := MeasurementUnitsParseWithBuffer(ctx, readBuffer)
 	if _unitsErr != nil {
 		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of MeasurementDataChannelMeasurementData")
 	}
@@ -292,14 +293,14 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_MeasurementDataChannelMeasurementData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -325,7 +326,7 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for units")
 		}
-		_unitsErr := writeBuffer.WriteSerializable(m.GetUnits())
+		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
 		if popErr := writeBuffer.PopContext("units"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for units")
 		}
@@ -354,11 +355,11 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
 		}
 		// Virtual field
-		if _rawValueErr := writeBuffer.WriteVirtual("rawValue", m.GetRawValue()); _rawValueErr != nil {
+		if _rawValueErr := writeBuffer.WriteVirtual(ctx, "rawValue", m.GetRawValue()); _rawValueErr != nil {
 			return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 		}
 		// Virtual field
-		if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
+		if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
@@ -367,7 +368,7 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MeasurementDataChannelMeasurementData) isMeasurementDataChannelMeasurementData() bool {
@@ -379,7 +380,7 @@ func (m *_MeasurementDataChannelMeasurementData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDoorStatus) GetDoorStatus() BACnetDoorStatusTagge
 ///////////////////////
 
 func (m *_BACnetConstructedDataDoorStatus) GetActualValue() BACnetDoorStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDoorStatusTagged(m.GetDoorStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDoorStatus) GetTypeName() string {
 	return "BACnetConstructedDataDoorStatus"
 }
 
-func (m *_BACnetConstructedDataDoorStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDoorStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doorStatus)
-	lengthInBits += m.DoorStatus.GetLengthInBits()
+	lengthInBits += m.DoorStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDoorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDoorStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorStatus, error) {
-	return BACnetConstructedDataDoorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDoorStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorStatus, error) {
+func BACnetConstructedDataDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("doorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorStatus")
 	}
-	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _doorStatusErr != nil {
 		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetConstructedDataDoorStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataDoorStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("doorStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorStatus")
 		}
-		_doorStatusErr := writeBuffer.WriteSerializable(m.GetDoorStatus())
+		_doorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDoorStatus())
 		if popErr := writeBuffer.PopContext("doorStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_doorStatusErr, "Error serializing 'doorStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDoorStatus) isBACnetConstructedDataDoorStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDoorStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

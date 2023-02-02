@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataVerificationTime) GetVerificationTime() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetVerificationTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
 	return "BACnetConstructedDataVerificationTime"
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataVerificationTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (verificationTime)
-	lengthInBits += m.VerificationTime.GetLengthInBits()
+	lengthInBits += m.VerificationTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataVerificationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
-	return BACnetConstructedDataVerificationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataVerificationTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataVerificationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
+func BACnetConstructedDataVerificationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVerificationTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataVerificationTimeParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("verificationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for verificationTime")
 	}
-	_verificationTime, _verificationTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_verificationTime, _verificationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _verificationTimeErr != nil {
 		return nil, errors.Wrap(_verificationTimeErr, "Error parsing 'verificationTime' field of BACnetConstructedDataVerificationTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataVerificationTimeParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataVerificationTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("verificationTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for verificationTime")
 		}
-		_verificationTimeErr := writeBuffer.WriteSerializable(m.GetVerificationTime())
+		_verificationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetVerificationTime())
 		if popErr := writeBuffer.PopContext("verificationTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for verificationTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_verificationTimeErr, "Error serializing 'verificationTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataVerificationTime) isBACnetConstructedDataVerificationTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataVerificationTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSetpoint) GetSetpoint() BACnetApplicationTagReal 
 ///////////////////////
 
 func (m *_BACnetConstructedDataSetpoint) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetSetpoint())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSetpoint) GetTypeName() string {
 	return "BACnetConstructedDataSetpoint"
 }
 
-func (m *_BACnetConstructedDataSetpoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSetpoint) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSetpoint) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (setpoint)
-	lengthInBits += m.Setpoint.GetLengthInBits()
+	lengthInBits += m.Setpoint.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSetpoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSetpoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSetpointParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
-	return BACnetConstructedDataSetpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSetpointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSetpointParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
+func BACnetConstructedDataSetpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpoint"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSetpointParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("setpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setpoint")
 	}
-	_setpoint, _setpointErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_setpoint, _setpointErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _setpointErr != nil {
 		return nil, errors.Wrap(_setpointErr, "Error parsing 'setpoint' field of BACnetConstructedDataSetpoint")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSetpointParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataSetpoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("setpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setpoint")
 		}
-		_setpointErr := writeBuffer.WriteSerializable(m.GetSetpoint())
+		_setpointErr := writeBuffer.WriteSerializable(ctx, m.GetSetpoint())
 		if popErr := writeBuffer.PopContext("setpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setpoint")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_setpointErr, "Error serializing 'setpoint' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSetpoint) isBACnetConstructedDataSetpoint() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSetpoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,19 +142,19 @@ func CastBACnetRejectReason(structType interface{}) BACnetRejectReason {
 	return castFunc(structType)
 }
 
-func (m BACnetRejectReason) GetLengthInBits() uint16 {
+func (m BACnetRejectReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetRejectReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetRejectReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRejectReasonParse(theBytes []byte) (BACnetRejectReason, error) {
-	return BACnetRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetRejectReasonParse(ctx context.Context, theBytes []byte) (BACnetRejectReason, error) {
+	return BACnetRejectReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
+func BACnetRejectReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRejectReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRejectReason")
@@ -168,13 +169,13 @@ func BACnetRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRejec
 
 func (e BACnetRejectReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetRejectReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetRejectReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

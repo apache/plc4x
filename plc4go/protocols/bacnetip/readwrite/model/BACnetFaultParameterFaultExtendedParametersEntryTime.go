@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetTypeName() st
 	return "BACnetFaultParameterFaultExtendedParametersEntryTime"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (timeValue)
-	lengthInBits += m.TimeValue.GetLengthInBits()
+	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryTimeParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryTime"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuf
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetFaultParameterFaultExtendedParametersEntryTime")
 	}
@@ -162,14 +159,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuf
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWri
 		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeValue")
 		}
-		_timeValueErr := writeBuffer.WriteSerializable(m.GetTimeValue())
+		_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
 		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) isBACnetFaultParameterFaultExtendedParametersEntryTime() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) String() string 
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

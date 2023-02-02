@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIntegralConstant) GetIntegralConstant() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataIntegralConstant) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetIntegralConstant())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIntegralConstant) GetTypeName() string {
 	return "BACnetConstructedDataIntegralConstant"
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (integralConstant)
-	lengthInBits += m.IntegralConstant.GetLengthInBits()
+	lengthInBits += m.IntegralConstant.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIntegralConstantParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
-	return BACnetConstructedDataIntegralConstantParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIntegralConstantParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIntegralConstantParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
+func BACnetConstructedDataIntegralConstantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegralConstant"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIntegralConstantParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("integralConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integralConstant")
 	}
-	_integralConstant, _integralConstantErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_integralConstant, _integralConstantErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _integralConstantErr != nil {
 		return nil, errors.Wrap(_integralConstantErr, "Error parsing 'integralConstant' field of BACnetConstructedDataIntegralConstant")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIntegralConstantParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataIntegralConstant) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("integralConstant"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for integralConstant")
 		}
-		_integralConstantErr := writeBuffer.WriteSerializable(m.GetIntegralConstant())
+		_integralConstantErr := writeBuffer.WriteSerializable(ctx, m.GetIntegralConstant())
 		if popErr := writeBuffer.PopContext("integralConstant"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integralConstant")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_integralConstantErr, "Error serializing 'integralConstant' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIntegralConstant) isBACnetConstructedDataIntegralConstant() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIntegralConstant) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

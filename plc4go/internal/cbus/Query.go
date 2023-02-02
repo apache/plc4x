@@ -20,8 +20,10 @@
 package cbus
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -95,25 +97,25 @@ func (u unitInfoQuery) GetAttribute() *readWriteModel.Attribute {
 
 func (u unitInfoQuery) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := u.SerializeWithWriteBuffer(wb); err != nil {
+	if err := u.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (u unitInfoQuery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (u unitInfoQuery) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(u.tagType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := u.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).SerializeWithWriteBuffer(writeBuffer); err != nil {
+		if err := (*unitAddress).SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 			return err
 		}
 	}
 
 	if attribute := u.attribute; attribute != nil {
-		if err := (*attribute).SerializeWithWriteBuffer(writeBuffer); err != nil {
+		if err := (*attribute).SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 			return err
 		}
 	}
@@ -126,7 +128,7 @@ func (u unitInfoQuery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 
 func (u unitInfoQuery) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(u); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), u); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

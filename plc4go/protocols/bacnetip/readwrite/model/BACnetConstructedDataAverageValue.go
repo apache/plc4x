@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAverageValue) GetAverageValue() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataAverageValue) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetAverageValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAverageValue) GetTypeName() string {
 	return "BACnetConstructedDataAverageValue"
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAverageValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAverageValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (averageValue)
-	lengthInBits += m.AverageValue.GetLengthInBits()
+	lengthInBits += m.AverageValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAverageValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
-	return BACnetConstructedDataAverageValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAverageValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAverageValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
+func BACnetConstructedDataAverageValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAverageValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAverageValueParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("averageValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for averageValue")
 	}
-	_averageValue, _averageValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_averageValue, _averageValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _averageValueErr != nil {
 		return nil, errors.Wrap(_averageValueErr, "Error parsing 'averageValue' field of BACnetConstructedDataAverageValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAverageValueParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataAverageValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("averageValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for averageValue")
 		}
-		_averageValueErr := writeBuffer.WriteSerializable(m.GetAverageValue())
+		_averageValueErr := writeBuffer.WriteSerializable(ctx, m.GetAverageValue())
 		if popErr := writeBuffer.PopContext("averageValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for averageValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_averageValueErr, "Error serializing 'averageValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAverageValue) isBACnetConstructedDataAverageValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAverageValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,12 +140,8 @@ func (m *_CipWriteRequest) GetTypeName() string {
 	return "CipWriteRequest"
 }
 
-func (m *_CipWriteRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CipWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -168,15 +165,15 @@ func (m *_CipWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipWriteRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CipWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CipWriteRequestParse(theBytes []byte, serviceLen uint16) (CipWriteRequest, error) {
-	return CipWriteRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+	return CipWriteRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
-func CipWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteRequest, error) {
+func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteRequest"); pullErr != nil {
@@ -202,7 +199,7 @@ func CipWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint
 	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
 	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(readBuffer)
+	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(ctx, readBuffer)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipWriteRequest")
 	}
@@ -244,14 +241,14 @@ func CipWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint
 }
 
 func (m *_CipWriteRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CipWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -276,7 +273,7 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataType")
 		}
-		_dataTypeErr := writeBuffer.WriteSerializable(m.GetDataType())
+		_dataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDataType())
 		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataType")
 		}
@@ -302,7 +299,7 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipWriteRequest) isCipWriteRequest() bool {
@@ -314,7 +311,7 @@ func (m *_CipWriteRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

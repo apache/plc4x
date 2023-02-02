@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -225,19 +226,19 @@ func CastBACnetAuthenticationFactorType(structType interface{}) BACnetAuthentica
 	return castFunc(structType)
 }
 
-func (m BACnetAuthenticationFactorType) GetLengthInBits() uint16 {
+func (m BACnetAuthenticationFactorType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAuthenticationFactorType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAuthenticationFactorType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthenticationFactorTypeParse(theBytes []byte) (BACnetAuthenticationFactorType, error) {
-	return BACnetAuthenticationFactorTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAuthenticationFactorTypeParse(ctx context.Context, theBytes []byte) (BACnetAuthenticationFactorType, error) {
+	return BACnetAuthenticationFactorTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAuthenticationFactorTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
+func BACnetAuthenticationFactorTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationFactorType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")
@@ -252,13 +253,13 @@ func BACnetAuthenticationFactorTypeParseWithBuffer(readBuffer utils.ReadBuffer) 
 
 func (e BACnetAuthenticationFactorType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthenticationFactorType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthenticationFactorType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAuthenticationFactorType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetAccessPassbackMode(structType interface{}) BACnetAccessPassbackMo
 	return castFunc(structType)
 }
 
-func (m BACnetAccessPassbackMode) GetLengthInBits() uint16 {
+func (m BACnetAccessPassbackMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAccessPassbackMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessPassbackMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessPassbackModeParse(theBytes []byte) (BACnetAccessPassbackMode, error) {
-	return BACnetAccessPassbackModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessPassbackModeParse(ctx context.Context, theBytes []byte) (BACnetAccessPassbackMode, error) {
+	return BACnetAccessPassbackModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessPassbackModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
+func BACnetAccessPassbackModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessPassbackMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
@@ -120,13 +121,13 @@ func BACnetAccessPassbackModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 
 func (e BACnetAccessPassbackMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessPassbackMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessPassbackMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccessPassbackMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

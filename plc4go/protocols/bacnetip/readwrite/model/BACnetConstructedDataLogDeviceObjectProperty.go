@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLogDeviceObjectProper
 ///////////////////////
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetActualValue() BACnetDeviceObjectPropertyReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectPropertyReference(m.GetLogDeviceObjectProperty())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetTypeName() string {
 	return "BACnetConstructedDataLogDeviceObjectProperty"
 }
 
-func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (logDeviceObjectProperty)
-	lengthInBits += m.LogDeviceObjectProperty.GetLengthInBits()
+	lengthInBits += m.LogDeviceObjectProperty.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLogDeviceObjectPropertyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
-	return BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
+func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogDeviceObjectProperty"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("logDeviceObjectProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDeviceObjectProperty")
 	}
-	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
+	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 	if _logDeviceObjectPropertyErr != nil {
 		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field of BACnetConstructedDataLogDeviceObjectProperty")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("logDeviceObjectProperty"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for logDeviceObjectProperty")
 		}
-		_logDeviceObjectPropertyErr := writeBuffer.WriteSerializable(m.GetLogDeviceObjectProperty())
+		_logDeviceObjectPropertyErr := writeBuffer.WriteSerializable(ctx, m.GetLogDeviceObjectProperty())
 		if popErr := writeBuffer.PopContext("logDeviceObjectProperty"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for logDeviceObjectProperty")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer
 			return errors.Wrap(_logDeviceObjectPropertyErr, "Error serializing 'logDeviceObjectProperty' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) isBACnetConstructedDataLogDeviceObjectProperty() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

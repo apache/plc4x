@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,11 +88,7 @@ func (m *_ChannelInformation) GetTypeName() string {
 	return "ChannelInformation"
 }
 
-func (m *_ChannelInformation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ChannelInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ChannelInformation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (numChannels)
@@ -103,15 +100,15 @@ func (m *_ChannelInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_ChannelInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ChannelInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ChannelInformationParse(theBytes []byte) (ChannelInformation, error) {
-	return ChannelInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ChannelInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ChannelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelInformation, error) {
+func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
@@ -146,14 +143,14 @@ func ChannelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelInfo
 }
 
 func (m *_ChannelInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ChannelInformation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ChannelInformation"); pushErr != nil {
@@ -189,7 +186,7 @@ func (m *_ChannelInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

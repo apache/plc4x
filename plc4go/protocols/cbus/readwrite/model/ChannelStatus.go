@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastChannelStatus(structType interface{}) ChannelStatus {
 	return castFunc(structType)
 }
 
-func (m ChannelStatus) GetLengthInBits() uint16 {
+func (m ChannelStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ChannelStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ChannelStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ChannelStatusParse(theBytes []byte) (ChannelStatus, error) {
-	return ChannelStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ChannelStatusParse(ctx context.Context, theBytes []byte) (ChannelStatus, error) {
+	return ChannelStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ChannelStatusParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelStatus, error) {
+func ChannelStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelStatus, error) {
 	val, err := readBuffer.ReadUint8("ChannelStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ChannelStatus")
@@ -120,13 +121,13 @@ func ChannelStatusParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelStatus, e
 
 func (e ChannelStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ChannelStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ChannelStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ChannelStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

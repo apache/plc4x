@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,37 +132,33 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetTypeName() string 
 	return "BACnetNotificationParametersChangeOfStatusFlags"
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (presentValue)
-	lengthInBits += m.PresentValue.GetLengthInBits()
+	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
 
 	// Simple field (referencedFlags)
-	lengthInBits += m.ReferencedFlags.GetLengthInBits()
+	lengthInBits += m.ReferencedFlags.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfStatusFlagsParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {
-	return BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+	return BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {
+func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfStatusFlags"); pullErr != nil {
@@ -174,7 +171,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -187,7 +184,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_presentValue, _presentValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -200,7 +197,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("referencedFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referencedFlags")
 	}
-	_referencedFlags, _referencedFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_referencedFlags, _referencedFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _referencedFlagsErr != nil {
 		return nil, errors.Wrap(_referencedFlagsErr, "Error parsing 'referencedFlags' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -213,7 +210,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -242,14 +239,14 @@ func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetNotificationParametersChangeOfStatusFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -261,7 +258,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -273,7 +270,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for presentValue")
 		}
-		_presentValueErr := writeBuffer.WriteSerializable(m.GetPresentValue())
+		_presentValueErr := writeBuffer.WriteSerializable(ctx, m.GetPresentValue())
 		if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
@@ -285,7 +282,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("referencedFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referencedFlags")
 		}
-		_referencedFlagsErr := writeBuffer.WriteSerializable(m.GetReferencedFlags())
+		_referencedFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetReferencedFlags())
 		if popErr := writeBuffer.PopContext("referencedFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referencedFlags")
 		}
@@ -297,7 +294,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfStatusFlags) isBACnetNotificationParametersChangeOfStatusFlags() bool {
@@ -322,7 +319,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_ApduDataDeviceDescriptorRead) GetTypeName() string {
 	return "ApduDataDeviceDescriptorRead"
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -120,15 +117,15 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataDeviceDescriptorReadParse(theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
-	return ApduDataDeviceDescriptorReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+	return ApduDataDeviceDescriptorReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
-func ApduDataDeviceDescriptorReadParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
+func ApduDataDeviceDescriptorReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {
@@ -160,14 +157,14 @@ func ApduDataDeviceDescriptorReadParseWithBuffer(readBuffer utils.ReadBuffer, da
 }
 
 func (m *_ApduDataDeviceDescriptorRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataDeviceDescriptorRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataDeviceDescriptorRead) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_ApduDataDeviceDescriptorRead) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataDeviceDescriptorRead) isApduDataDeviceDescriptorRead() bool {
@@ -199,7 +196,7 @@ func (m *_ApduDataDeviceDescriptorRead) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

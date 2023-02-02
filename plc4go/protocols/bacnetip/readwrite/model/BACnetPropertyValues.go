@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -98,38 +100,34 @@ func (m *_BACnetPropertyValues) GetTypeName() string {
 	return "BACnetPropertyValues"
 }
 
-func (m *_BACnetPropertyValues) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyValues) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPropertyValues) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.Data) > 0 {
 		for _, element := range m.Data {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyValues) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyValues) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyValuesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
-	return BACnetPropertyValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument)
+	return BACnetPropertyValuesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument)
 }
 
-func BACnetPropertyValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
+func BACnetPropertyValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
@@ -142,7 +140,7 @@ func BACnetPropertyValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetPropertyValues")
 	}
@@ -159,7 +157,7 @@ func BACnetPropertyValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 	var data []BACnetPropertyValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyValueParseWithBuffer(readBuffer, objectTypeArgument)
+			_item, _err := BACnetPropertyValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPropertyValues")
 			}
@@ -174,7 +172,7 @@ func BACnetPropertyValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetPropertyValues")
 	}
@@ -198,14 +196,14 @@ func BACnetPropertyValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber 
 }
 
 func (m *_BACnetPropertyValues) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyValues"); pushErr != nil {
@@ -216,7 +214,7 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 	}
-	_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+	_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 	}
@@ -228,8 +226,11 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for data")
 	}
-	for _, _element := range m.GetData() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetData() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetData()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
@@ -242,7 +243,7 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 	}
-	_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+	_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerClosingTag")
 	}
@@ -278,7 +279,7 @@ func (m *_BACnetPropertyValues) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

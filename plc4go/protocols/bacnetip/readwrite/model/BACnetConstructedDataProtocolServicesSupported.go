@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetProtocolServicesSup
 ///////////////////////
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) GetActualValue() BACnetServicesSupportedTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetServicesSupportedTagged(m.GetProtocolServicesSupported())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetTypeName() string {
 	return "BACnetConstructedDataProtocolServicesSupported"
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (protocolServicesSupported)
-	lengthInBits += m.ProtocolServicesSupported.GetLengthInBits()
+	lengthInBits += m.ProtocolServicesSupported.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataProtocolServicesSupportedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
-	return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
+func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolServicesSupported"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("protocolServicesSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolServicesSupported")
 	}
-	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolServicesSupportedErr != nil {
 		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field of BACnetConstructedDataProtocolServicesSupported")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("protocolServicesSupported"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for protocolServicesSupported")
 		}
-		_protocolServicesSupportedErr := writeBuffer.WriteSerializable(m.GetProtocolServicesSupported())
+		_protocolServicesSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolServicesSupported())
 		if popErr := writeBuffer.PopContext("protocolServicesSupported"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for protocolServicesSupported")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 			return errors.Wrap(_protocolServicesSupportedErr, "Error serializing 'protocolServicesSupported' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) isBACnetConstructedDataProtocolServicesSupported() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,15 +109,11 @@ func (m *_CBusPointToPointCommandDirect) GetTypeName() string {
 	return "CBusPointToPointCommandDirect"
 }
 
-func (m *_CBusPointToPointCommandDirect) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusPointToPointCommandDirect) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusPointToPointCommandDirect) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (unitAddress)
-	lengthInBits += m.UnitAddress.GetLengthInBits()
+	lengthInBits += m.UnitAddress.GetLengthInBits(ctx)
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -124,15 +121,15 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBitsConditional(lastItem boo
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommandDirect) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToPointCommandDirect) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointCommandDirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
-	return CBusPointToPointCommandDirectParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointCommandDirectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToPointCommandDirectParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+func CBusPointToPointCommandDirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
@@ -145,7 +142,7 @@ func CBusPointToPointCommandDirectParseWithBuffer(readBuffer utils.ReadBuffer, c
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandDirect")
 	}
@@ -188,14 +185,14 @@ func CBusPointToPointCommandDirectParseWithBuffer(readBuffer utils.ReadBuffer, c
 }
 
 func (m *_CBusPointToPointCommandDirect) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -207,7 +204,7 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unitAddress")
 		}
-		_unitAddressErr := writeBuffer.WriteSerializable(m.GetUnitAddress())
+		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
 		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unitAddress")
 		}
@@ -236,7 +233,7 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusPointToPointCommandDirect) isCBusPointToPointCommandDirect() bool {
@@ -248,7 +245,7 @@ func (m *_CBusPointToPointCommandDirect) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

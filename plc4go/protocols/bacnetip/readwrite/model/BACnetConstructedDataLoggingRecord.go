@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLoggingRecord) GetLoggingRecord() BACnetAccumulat
 ///////////////////////
 
 func (m *_BACnetConstructedDataLoggingRecord) GetActualValue() BACnetAccumulatorRecord {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAccumulatorRecord(m.GetLoggingRecord())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLoggingRecord) GetTypeName() string {
 	return "BACnetConstructedDataLoggingRecord"
 }
 
-func (m *_BACnetConstructedDataLoggingRecord) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLoggingRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLoggingRecord) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (loggingRecord)
-	lengthInBits += m.LoggingRecord.GetLengthInBits()
+	lengthInBits += m.LoggingRecord.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLoggingRecord) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLoggingRecord) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLoggingRecordParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingRecord, error) {
-	return BACnetConstructedDataLoggingRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLoggingRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLoggingRecordParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingRecord, error) {
+func BACnetConstructedDataLoggingRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingRecord"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLoggingRecordParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("loggingRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for loggingRecord")
 	}
-	_loggingRecord, _loggingRecordErr := BACnetAccumulatorRecordParseWithBuffer(readBuffer)
+	_loggingRecord, _loggingRecordErr := BACnetAccumulatorRecordParseWithBuffer(ctx, readBuffer)
 	if _loggingRecordErr != nil {
 		return nil, errors.Wrap(_loggingRecordErr, "Error parsing 'loggingRecord' field of BACnetConstructedDataLoggingRecord")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLoggingRecordParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataLoggingRecord) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("loggingRecord"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for loggingRecord")
 		}
-		_loggingRecordErr := writeBuffer.WriteSerializable(m.GetLoggingRecord())
+		_loggingRecordErr := writeBuffer.WriteSerializable(ctx, m.GetLoggingRecord())
 		if popErr := writeBuffer.PopContext("loggingRecord"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for loggingRecord")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_loggingRecordErr, "Error serializing 'loggingRecord' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLoggingRecord) isBACnetConstructedDataLoggingRecord() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLoggingRecord) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

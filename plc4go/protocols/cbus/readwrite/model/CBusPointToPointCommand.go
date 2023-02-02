@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -57,12 +58,11 @@ type _CBusPointToPointCommand struct {
 
 type _CBusPointToPointCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type CBusPointToPointCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToPointCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToPointCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -98,6 +98,8 @@ func (m *_CBusPointToPointCommand) GetCalData() CALData {
 ///////////////////////
 
 func (m *_CBusPointToPointCommand) GetIsDirect() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetBridgeAddressCountPeek() & 0x00FF) == (0x0000)))
 }
 
@@ -126,26 +128,26 @@ func (m *_CBusPointToPointCommand) GetTypeName() string {
 	return "CBusPointToPointCommand"
 }
 
-func (m *_CBusPointToPointCommand) GetParentLengthInBits() uint16 {
+func (m *_CBusPointToPointCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (calData)
-	lengthInBits += m.CalData.GetLengthInBits()
+	lengthInBits += m.CalData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
-	return CBusPointToPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
+func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommand"); pullErr != nil {
@@ -179,9 +181,9 @@ func CBusPointToPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOpt
 	var typeSwitchError error
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParseWithBuffer(ctx, readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
@@ -194,7 +196,7 @@ func CBusPointToPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOpt
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
-	_calData, _calDataErr := CALDataParseWithBuffer(readBuffer, nil)
+	_calData, _calDataErr := CALDataParseWithBuffer(ctx, readBuffer, nil)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CBusPointToPointCommand")
 	}
@@ -212,7 +214,7 @@ func CBusPointToPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOpt
 	return _child, nil
 }
 
-func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToPointCommand, serializeChildFunction func() error) error {
+func (pm *_CBusPointToPointCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToPointCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -222,7 +224,7 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommand")
 	}
 	// Virtual field
-	if _isDirectErr := writeBuffer.WriteVirtual("isDirect", m.GetIsDirect()); _isDirectErr != nil {
+	if _isDirectErr := writeBuffer.WriteVirtual(ctx, "isDirect", m.GetIsDirect()); _isDirectErr != nil {
 		return errors.Wrap(_isDirectErr, "Error serializing 'isDirect' field")
 	}
 
@@ -235,7 +237,7 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
-	_calDataErr := writeBuffer.WriteSerializable(m.GetCalData())
+	_calDataErr := writeBuffer.WriteSerializable(ctx, m.GetCalData())
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for calData")
 	}
@@ -268,7 +270,7 @@ func (m *_CBusPointToPointCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

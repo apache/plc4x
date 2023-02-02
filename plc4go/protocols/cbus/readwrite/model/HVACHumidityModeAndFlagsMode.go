@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastHVACHumidityModeAndFlagsMode(structType interface{}) HVACHumidityModeAn
 	return castFunc(structType)
 }
 
-func (m HVACHumidityModeAndFlagsMode) GetLengthInBits() uint16 {
+func (m HVACHumidityModeAndFlagsMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 3
 }
 
-func (m HVACHumidityModeAndFlagsMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HVACHumidityModeAndFlagsMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACHumidityModeAndFlagsModeParse(theBytes []byte) (HVACHumidityModeAndFlagsMode, error) {
-	return HVACHumidityModeAndFlagsModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HVACHumidityModeAndFlagsModeParse(ctx context.Context, theBytes []byte) (HVACHumidityModeAndFlagsMode, error) {
+	return HVACHumidityModeAndFlagsModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlagsMode, error) {
+func HVACHumidityModeAndFlagsModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlagsMode, error) {
 	val, err := readBuffer.ReadUint8("HVACHumidityModeAndFlagsMode", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACHumidityModeAndFlagsMode")
@@ -126,13 +127,13 @@ func HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (H
 
 func (e HVACHumidityModeAndFlagsMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HVACHumidityModeAndFlagsMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HVACHumidityModeAndFlagsMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACHumidityModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

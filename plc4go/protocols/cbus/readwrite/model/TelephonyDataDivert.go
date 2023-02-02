@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_TelephonyDataDivert) GetTypeName() string {
 	return "TelephonyDataDivert"
 }
 
-func (m *_TelephonyDataDivert) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TelephonyDataDivert) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TelephonyDataDivert) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (number)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -119,15 +116,15 @@ func (m *_TelephonyDataDivert) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataDivert) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyDataDivert) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataDivertParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
-	return TelephonyDataDivertParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return TelephonyDataDivertParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func TelephonyDataDivertParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
+func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDivert"); pullErr != nil {
@@ -157,14 +154,14 @@ func TelephonyDataDivertParseWithBuffer(readBuffer utils.ReadBuffer, commandType
 }
 
 func (m *_TelephonyDataDivert) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TelephonyDataDivert) isTelephonyDataDivert() bool {
@@ -196,7 +193,7 @@ func (m *_TelephonyDataDivert) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

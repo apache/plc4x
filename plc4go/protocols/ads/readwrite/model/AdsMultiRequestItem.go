@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _AdsMultiRequestItem struct {
 
 type _AdsMultiRequestItemChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetIndexGroup() uint32
 }
 
 type AdsMultiRequestItemParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,21 +87,21 @@ func (m *_AdsMultiRequestItem) GetTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *_AdsMultiRequestItem) GetParentLengthInBits() uint16 {
+func (m *_AdsMultiRequestItem) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_AdsMultiRequestItem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsMultiRequestItemParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItem, error) {
-	return AdsMultiRequestItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes), indexGroup)
+	return AdsMultiRequestItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
-func AdsMultiRequestItemParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
+func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
@@ -121,11 +121,11 @@ func AdsMultiRequestItemParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup 
 	var typeSwitchError error
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadParseWithBuffer(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemReadParseWithBuffer(ctx, readBuffer, indexGroup)
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParseWithBuffer(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParseWithBuffer(ctx, readBuffer, indexGroup)
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParseWithBuffer(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParseWithBuffer(ctx, readBuffer, indexGroup)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [indexGroup=%v]", indexGroup)
 	}
@@ -143,7 +143,7 @@ func AdsMultiRequestItemParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup 
 	return _child, nil
 }
 
-func (pm *_AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error {
+func (pm *_AdsMultiRequestItem) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -173,7 +173,7 @@ func (m *_AdsMultiRequestItem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

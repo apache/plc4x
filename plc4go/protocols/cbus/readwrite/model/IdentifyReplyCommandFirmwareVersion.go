@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetTypeName() string {
 	return "IdentifyReplyCommandFirmwareVersion"
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (firmwareVersion)
 	lengthInBits += 64
@@ -120,15 +117,15 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandFirmwareVersionParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
-	return IdentifyReplyCommandFirmwareVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandFirmwareVersionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandFirmwareVersionParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
+func IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareVersion"); pullErr != nil {
@@ -160,14 +157,14 @@ func IdentifyReplyCommandFirmwareVersionParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) isIdentifyReplyCommandFirmwareVersion() bool {
@@ -199,7 +196,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,25 +94,21 @@ func (m *_SysexCommandCapabilityResponse) GetTypeName() string {
 	return "SysexCommandCapabilityResponse"
 }
 
-func (m *_SysexCommandCapabilityResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SysexCommandCapabilityResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SysexCommandCapabilityResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandCapabilityResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SysexCommandCapabilityResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandCapabilityResponseParse(theBytes []byte, response bool) (SysexCommandCapabilityResponse, error) {
-	return SysexCommandCapabilityResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return SysexCommandCapabilityResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SysexCommandCapabilityResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityResponse, error) {
+func SysexCommandCapabilityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityResponse"); pullErr != nil {
@@ -133,14 +130,14 @@ func SysexCommandCapabilityResponseParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_SysexCommandCapabilityResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SysexCommandCapabilityResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandCapabilityResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -153,7 +150,7 @@ func (m *_SysexCommandCapabilityResponse) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SysexCommandCapabilityResponse) isSysexCommandCapabilityResponse() bool {
@@ -165,7 +162,7 @@ func (m *_SysexCommandCapabilityResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

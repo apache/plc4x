@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetBackupState(structType interface{}) BACnetBackupState {
 	return castFunc(structType)
 }
 
-func (m BACnetBackupState) GetLengthInBits() uint16 {
+func (m BACnetBackupState) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetBackupState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetBackupState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetBackupStateParse(theBytes []byte) (BACnetBackupState, error) {
-	return BACnetBackupStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetBackupStateParse(ctx context.Context, theBytes []byte) (BACnetBackupState, error) {
+	return BACnetBackupStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetBackupStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBackupState, error) {
+func BACnetBackupStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBackupState, error) {
 	val, err := readBuffer.ReadUint8("BACnetBackupState", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBackupState")
@@ -144,13 +145,13 @@ func BACnetBackupStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBackup
 
 func (e BACnetBackupState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetBackupState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetBackupState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetBackupState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

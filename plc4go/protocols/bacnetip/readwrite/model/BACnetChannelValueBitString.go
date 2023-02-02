@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetChannelValueBitString) GetTypeName() string {
 	return "BACnetChannelValueBitString"
 }
 
-func (m *_BACnetChannelValueBitString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetChannelValueBitString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetChannelValueBitString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bitStringValue)
-	lengthInBits += m.BitStringValue.GetLengthInBits()
+	lengthInBits += m.BitStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueBitString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetChannelValueBitString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueBitStringParse(theBytes []byte) (BACnetChannelValueBitString, error) {
-	return BACnetChannelValueBitStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetChannelValueBitStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetChannelValueBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
+func BACnetChannelValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBitString"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetChannelValueBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetChannelValueBitString")
 	}
@@ -162,14 +159,14 @@ func BACnetChannelValueBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BA
 }
 
 func (m *_BACnetChannelValueBitString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
-		_bitStringValueErr := writeBuffer.WriteSerializable(m.GetBitStringValue())
+		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetBitStringValue())
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetChannelValueBitString) isBACnetChannelValueBitString() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetChannelValueBitString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

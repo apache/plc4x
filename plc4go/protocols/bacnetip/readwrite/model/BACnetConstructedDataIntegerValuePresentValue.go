@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) GetPresentValue() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetPresentValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) GetTypeName() string {
 	return "BACnetConstructedDataIntegerValuePresentValue"
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (presentValue)
-	lengthInBits += m.PresentValue.GetLengthInBits()
+	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIntegerValuePresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValuePresentValue, error) {
-	return BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValuePresentValue, error) {
+func BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValuePresentValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataIntegerValuePresentValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIntegerValuePresentValueParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for presentValue")
 		}
-		_presentValueErr := writeBuffer.WriteSerializable(m.GetPresentValue())
+		_presentValueErr := writeBuffer.WriteSerializable(ctx, m.GetPresentValue())
 		if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffe
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) isBACnetConstructedDataIntegerValuePresentValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

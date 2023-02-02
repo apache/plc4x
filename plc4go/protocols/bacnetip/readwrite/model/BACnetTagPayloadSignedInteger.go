@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,6 +136,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetValueInt64() *int64 {
 ///////////////////////
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt8() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -155,6 +158,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt8() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt16() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -175,6 +180,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt16() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt24() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -195,6 +202,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt24() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt32() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -215,6 +224,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt32() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt40() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -235,6 +246,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt40() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt48() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -255,6 +268,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt48() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt56() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -275,6 +290,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt56() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt64() bool {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -295,6 +312,8 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt64() bool {
 }
 
 func (m *_BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
+	ctx := context.Background()
+	_ = ctx
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
 	valueInt16 := m.ValueInt16
@@ -351,11 +370,7 @@ func (m *_BACnetTagPayloadSignedInteger) GetTypeName() string {
 	return "BACnetTagPayloadSignedInteger"
 }
 
-func (m *_BACnetTagPayloadSignedInteger) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadSignedInteger) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadSignedInteger) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -419,15 +434,15 @@ func (m *_BACnetTagPayloadSignedInteger) GetLengthInBitsConditional(lastItem boo
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadSignedInteger) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadSignedInteger) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadSignedIntegerParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
-	return BACnetTagPayloadSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength)
+	return BACnetTagPayloadSignedIntegerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
-func BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
+func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadSignedInteger"); pullErr != nil {
@@ -597,21 +612,21 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, a
 }
 
 func (m *_BACnetTagPayloadSignedInteger) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadSignedInteger"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadSignedInteger")
 	}
 	// Virtual field
-	if _isInt8Err := writeBuffer.WriteVirtual("isInt8", m.GetIsInt8()); _isInt8Err != nil {
+	if _isInt8Err := writeBuffer.WriteVirtual(ctx, "isInt8", m.GetIsInt8()); _isInt8Err != nil {
 		return errors.Wrap(_isInt8Err, "Error serializing 'isInt8' field")
 	}
 
@@ -625,7 +640,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt16Err := writeBuffer.WriteVirtual("isInt16", m.GetIsInt16()); _isInt16Err != nil {
+	if _isInt16Err := writeBuffer.WriteVirtual(ctx, "isInt16", m.GetIsInt16()); _isInt16Err != nil {
 		return errors.Wrap(_isInt16Err, "Error serializing 'isInt16' field")
 	}
 
@@ -639,7 +654,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt24Err := writeBuffer.WriteVirtual("isInt24", m.GetIsInt24()); _isInt24Err != nil {
+	if _isInt24Err := writeBuffer.WriteVirtual(ctx, "isInt24", m.GetIsInt24()); _isInt24Err != nil {
 		return errors.Wrap(_isInt24Err, "Error serializing 'isInt24' field")
 	}
 
@@ -653,7 +668,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt32Err := writeBuffer.WriteVirtual("isInt32", m.GetIsInt32()); _isInt32Err != nil {
+	if _isInt32Err := writeBuffer.WriteVirtual(ctx, "isInt32", m.GetIsInt32()); _isInt32Err != nil {
 		return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
 	}
 
@@ -667,7 +682,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt40Err := writeBuffer.WriteVirtual("isInt40", m.GetIsInt40()); _isInt40Err != nil {
+	if _isInt40Err := writeBuffer.WriteVirtual(ctx, "isInt40", m.GetIsInt40()); _isInt40Err != nil {
 		return errors.Wrap(_isInt40Err, "Error serializing 'isInt40' field")
 	}
 
@@ -681,7 +696,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt48Err := writeBuffer.WriteVirtual("isInt48", m.GetIsInt48()); _isInt48Err != nil {
+	if _isInt48Err := writeBuffer.WriteVirtual(ctx, "isInt48", m.GetIsInt48()); _isInt48Err != nil {
 		return errors.Wrap(_isInt48Err, "Error serializing 'isInt48' field")
 	}
 
@@ -695,7 +710,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt56Err := writeBuffer.WriteVirtual("isInt56", m.GetIsInt56()); _isInt56Err != nil {
+	if _isInt56Err := writeBuffer.WriteVirtual(ctx, "isInt56", m.GetIsInt56()); _isInt56Err != nil {
 		return errors.Wrap(_isInt56Err, "Error serializing 'isInt56' field")
 	}
 
@@ -709,7 +724,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _isInt64Err := writeBuffer.WriteVirtual("isInt64", m.GetIsInt64()); _isInt64Err != nil {
+	if _isInt64Err := writeBuffer.WriteVirtual(ctx, "isInt64", m.GetIsInt64()); _isInt64Err != nil {
 		return errors.Wrap(_isInt64Err, "Error serializing 'isInt64' field")
 	}
 
@@ -723,7 +738,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer ut
 		}
 	}
 	// Virtual field
-	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}
 
@@ -752,7 +767,7 @@ func (m *_BACnetTagPayloadSignedInteger) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

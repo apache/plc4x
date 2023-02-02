@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetMaxApduLengthAccepted()
 ///////////////////////
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxApduLengthAccepted())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetTypeName() string {
 	return "BACnetConstructedDataMaxAPDULengthAccepted"
 }
 
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maxApduLengthAccepted)
-	lengthInBits += m.MaxApduLengthAccepted.GetLengthInBits()
+	lengthInBits += m.MaxApduLengthAccepted.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMaxAPDULengthAcceptedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
-	return BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxAPDULengthAccepted"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
 	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of BACnetConstructedDataMaxAPDULengthAccepted")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
 		}
-		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(m.GetMaxApduLengthAccepted())
+		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxApduLengthAccepted())
 		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(w
 			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) isBACnetConstructedDataMaxAPDULengthAccepted() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

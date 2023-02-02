@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,32 +113,28 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestVTClose"
 }
 
-func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.ListOfRemoteVtSessionIdentifiers) > 0 {
 		for _, element := range m.ListOfRemoteVtSessionIdentifiers {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestVTCloseParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
-	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
+	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
@@ -155,7 +153,7 @@ func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBu
 		_listOfRemoteVtSessionIdentifiersLength := serviceRequestPayloadLength
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
 		for positionAware.GetPos() < _listOfRemoteVtSessionIdentifiersEndPos {
-			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfRemoteVtSessionIdentifiers' field of BACnetConfirmedServiceRequestVTClose")
 			}
@@ -182,14 +180,14 @@ func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConfirmedServiceRequestVTClose) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -201,8 +199,11 @@ func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
 		}
-		for _, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
 			}
@@ -216,7 +217,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -238,7 +239,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

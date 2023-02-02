@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetHighLimit() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetActualValue() BACnetApplicationTagDouble {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagDouble(m.GetHighLimit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueHighLimit"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (highLimit)
-	lengthInBits += m.HighLimit.GetLengthInBits()
+	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLargeAnalogValueHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueHighLimit, error) {
-	return BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueHighLimit, error) {
+func BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueHighLimit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataLargeAnalogValueHighLimit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLargeAnalogValueHighLimitParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highLimit")
 		}
-		_highLimitErr := writeBuffer.WriteSerializable(m.GetHighLimit())
+		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
 		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highLimit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuff
 			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) isBACnetConstructedDataLargeAnalogValueHighLimit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

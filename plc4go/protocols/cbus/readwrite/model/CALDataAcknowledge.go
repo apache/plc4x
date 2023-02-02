@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,12 +115,8 @@ func (m *_CALDataAcknowledge) GetTypeName() string {
 	return "CALDataAcknowledge"
 }
 
-func (m *_CALDataAcknowledge) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALDataAcknowledge) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALDataAcknowledge) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -130,15 +127,15 @@ func (m *_CALDataAcknowledge) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALDataAcknowledge) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CALDataAcknowledgeParse(theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
-	return CALDataAcknowledgeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
+	return CALDataAcknowledgeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
-func CALDataAcknowledgeParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
+func CALDataAcknowledgeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataAcknowledge"); pullErr != nil {
@@ -151,7 +148,7 @@ func CALDataAcknowledgeParseWithBuffer(readBuffer utils.ReadBuffer, requestConte
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
 	}
@@ -184,14 +181,14 @@ func CALDataAcknowledgeParseWithBuffer(readBuffer utils.ReadBuffer, requestConte
 }
 
 func (m *_CALDataAcknowledge) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -203,7 +200,7 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for paramNo")
 		}
-		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
 		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for paramNo")
 		}
@@ -223,7 +220,7 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALDataAcknowledge) isCALDataAcknowledge() bool {
@@ -235,7 +232,7 @@ func (m *_CALDataAcknowledge) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

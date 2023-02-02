@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,18 +116,26 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetDaylightSaving() byte {
 ///////////////////////
 
 func (m *_ClockAndTimekeepingDataUpdateTime) GetIsNoDaylightSavings() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDaylightSaving()) == (0x00)))
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) GetIsAdvancedBy1Hour() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDaylightSaving()) == (0x01)))
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetDaylightSaving()) > (0x01))) && bool(bool((m.GetDaylightSaving()) <= (0xFE))))
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) GetIsUnknown() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDaylightSaving()) > (0xFE)))
 }
 
@@ -163,12 +172,8 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetTypeName() string {
 	return "ClockAndTimekeepingDataUpdateTime"
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (hours)
 	lengthInBits += 8
@@ -193,15 +198,15 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ClockAndTimekeepingDataUpdateTimeParse(theBytes []byte) (ClockAndTimekeepingDataUpdateTime, error) {
-	return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
+func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataUpdateTime"); pullErr != nil {
@@ -275,14 +280,14 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -318,19 +323,19 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_daylightSavingErr, "Error serializing 'daylightSaving' field")
 		}
 		// Virtual field
-		if _isNoDaylightSavingsErr := writeBuffer.WriteVirtual("isNoDaylightSavings", m.GetIsNoDaylightSavings()); _isNoDaylightSavingsErr != nil {
+		if _isNoDaylightSavingsErr := writeBuffer.WriteVirtual(ctx, "isNoDaylightSavings", m.GetIsNoDaylightSavings()); _isNoDaylightSavingsErr != nil {
 			return errors.Wrap(_isNoDaylightSavingsErr, "Error serializing 'isNoDaylightSavings' field")
 		}
 		// Virtual field
-		if _isAdvancedBy1HourErr := writeBuffer.WriteVirtual("isAdvancedBy1Hour", m.GetIsAdvancedBy1Hour()); _isAdvancedBy1HourErr != nil {
+		if _isAdvancedBy1HourErr := writeBuffer.WriteVirtual(ctx, "isAdvancedBy1Hour", m.GetIsAdvancedBy1Hour()); _isAdvancedBy1HourErr != nil {
 			return errors.Wrap(_isAdvancedBy1HourErr, "Error serializing 'isAdvancedBy1Hour' field")
 		}
 		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 		// Virtual field
-		if _isUnknownErr := writeBuffer.WriteVirtual("isUnknown", m.GetIsUnknown()); _isUnknownErr != nil {
+		if _isUnknownErr := writeBuffer.WriteVirtual(ctx, "isUnknown", m.GetIsUnknown()); _isUnknownErr != nil {
 			return errors.Wrap(_isUnknownErr, "Error serializing 'isUnknown' field")
 		}
 
@@ -339,7 +344,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) isClockAndTimekeepingDataUpdateTime() bool {
@@ -351,7 +356,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

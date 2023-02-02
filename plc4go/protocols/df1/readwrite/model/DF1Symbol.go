@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -53,13 +54,12 @@ type _DF1Symbol struct {
 
 type _DF1SymbolChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetSymbolType() uint8
 }
 
 type DF1SymbolParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -106,7 +106,7 @@ func (m *_DF1Symbol) GetTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *_DF1Symbol) GetParentLengthInBits() uint16 {
+func (m *_DF1Symbol) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (messageStart)
@@ -117,15 +117,15 @@ func (m *_DF1Symbol) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1Symbol) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DF1SymbolParse(theBytes []byte) (DF1Symbol, error) {
-	return DF1SymbolParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DF1SymbolParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DF1SymbolParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
+func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
@@ -160,11 +160,11 @@ func DF1SymbolParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	var typeSwitchError error
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameParseWithBuffer(ctx, readBuffer)
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParseWithBuffer(ctx, readBuffer)
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
 	}
@@ -182,7 +182,7 @@ func DF1SymbolParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	return _child, nil
 }
 
-func (pm *_DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {
+func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -226,7 +226,7 @@ func (m *_DF1Symbol) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

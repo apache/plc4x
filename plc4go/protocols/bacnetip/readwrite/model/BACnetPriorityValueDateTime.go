@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPriorityValueDateTime) GetTypeName() string {
 	return "BACnetPriorityValueDateTime"
 }
 
-func (m *_BACnetPriorityValueDateTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityValueDateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPriorityValueDateTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dateTimeValue)
-	lengthInBits += m.DateTimeValue.GetLengthInBits()
+	lengthInBits += m.DateTimeValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueDateTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValueDateTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueDateTimeParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
-	return BACnetPriorityValueDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueDateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueDateTimeParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
+func BACnetPriorityValueDateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDateTime"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPriorityValueDateTimeParseWithBuffer(readBuffer utils.ReadBuffer, obj
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetPriorityValueDateTime")
 	}
@@ -164,14 +161,14 @@ func BACnetPriorityValueDateTimeParseWithBuffer(readBuffer utils.ReadBuffer, obj
 }
 
 func (m *_BACnetPriorityValueDateTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
 		}
-		_dateTimeValueErr := writeBuffer.WriteSerializable(m.GetDateTimeValue())
+		_dateTimeValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateTimeValue())
 		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dateTimeValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPriorityValueDateTime) isBACnetPriorityValueDateTime() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetPriorityValueDateTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

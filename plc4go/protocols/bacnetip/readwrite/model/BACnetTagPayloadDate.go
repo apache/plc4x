@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,46 +109,68 @@ func (m *_BACnetTagPayloadDate) GetDayOfWeek() uint8 {
 ///////////////////////
 
 func (m *_BACnetTagPayloadDate) GetWildcard() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(0xFF)
 }
 
 func (m *_BACnetTagPayloadDate) GetYearIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetYearMinus1900()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadDate) GetYear() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	return uint16(uint16(m.GetYearMinus1900()) + uint16(uint16(1900)))
 }
 
 func (m *_BACnetTagPayloadDate) GetMonthIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadDate) GetOddMonthWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (13)))
 }
 
 func (m *_BACnetTagPayloadDate) GetEvenMonthWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMonth()) == (14)))
 }
 
 func (m *_BACnetTagPayloadDate) GetDayOfMonthIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfMonth()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadDate) GetLastDayOfMonthWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfMonth()) == (32)))
 }
 
 func (m *_BACnetTagPayloadDate) GetOddDayOfMonthWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfMonth()) == (33)))
 }
 
 func (m *_BACnetTagPayloadDate) GetEvenDayOfMonthWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfMonth()) == (34)))
 }
 
 func (m *_BACnetTagPayloadDate) GetDayOfWeekIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetDayOfWeek()) == (m.GetWildcard())))
 }
 
@@ -176,11 +199,7 @@ func (m *_BACnetTagPayloadDate) GetTypeName() string {
 	return "BACnetTagPayloadDate"
 }
 
-func (m *_BACnetTagPayloadDate) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadDate) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadDate) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -220,15 +239,15 @@ func (m *_BACnetTagPayloadDate) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadDate) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadDate) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadDateParse(theBytes []byte) (BACnetTagPayloadDate, error) {
-	return BACnetTagPayloadDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTagPayloadDateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTagPayloadDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
+func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDate"); pullErr != nil {
@@ -334,21 +353,21 @@ func BACnetTagPayloadDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTag
 }
 
 func (m *_BACnetTagPayloadDate) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadDate"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDate")
 	}
 	// Virtual field
-	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.GetWildcard()); _wildcardErr != nil {
+	if _wildcardErr := writeBuffer.WriteVirtual(ctx, "wildcard", m.GetWildcard()); _wildcardErr != nil {
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
@@ -359,11 +378,11 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
 	}
 	// Virtual field
-	if _yearIsWildcardErr := writeBuffer.WriteVirtual("yearIsWildcard", m.GetYearIsWildcard()); _yearIsWildcardErr != nil {
+	if _yearIsWildcardErr := writeBuffer.WriteVirtual(ctx, "yearIsWildcard", m.GetYearIsWildcard()); _yearIsWildcardErr != nil {
 		return errors.Wrap(_yearIsWildcardErr, "Error serializing 'yearIsWildcard' field")
 	}
 	// Virtual field
-	if _yearErr := writeBuffer.WriteVirtual("year", m.GetYear()); _yearErr != nil {
+	if _yearErr := writeBuffer.WriteVirtual(ctx, "year", m.GetYear()); _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
@@ -374,15 +393,15 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 	// Virtual field
-	if _monthIsWildcardErr := writeBuffer.WriteVirtual("monthIsWildcard", m.GetMonthIsWildcard()); _monthIsWildcardErr != nil {
+	if _monthIsWildcardErr := writeBuffer.WriteVirtual(ctx, "monthIsWildcard", m.GetMonthIsWildcard()); _monthIsWildcardErr != nil {
 		return errors.Wrap(_monthIsWildcardErr, "Error serializing 'monthIsWildcard' field")
 	}
 	// Virtual field
-	if _oddMonthWildcardErr := writeBuffer.WriteVirtual("oddMonthWildcard", m.GetOddMonthWildcard()); _oddMonthWildcardErr != nil {
+	if _oddMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "oddMonthWildcard", m.GetOddMonthWildcard()); _oddMonthWildcardErr != nil {
 		return errors.Wrap(_oddMonthWildcardErr, "Error serializing 'oddMonthWildcard' field")
 	}
 	// Virtual field
-	if _evenMonthWildcardErr := writeBuffer.WriteVirtual("evenMonthWildcard", m.GetEvenMonthWildcard()); _evenMonthWildcardErr != nil {
+	if _evenMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "evenMonthWildcard", m.GetEvenMonthWildcard()); _evenMonthWildcardErr != nil {
 		return errors.Wrap(_evenMonthWildcardErr, "Error serializing 'evenMonthWildcard' field")
 	}
 
@@ -393,19 +412,19 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
 	}
 	// Virtual field
-	if _dayOfMonthIsWildcardErr := writeBuffer.WriteVirtual("dayOfMonthIsWildcard", m.GetDayOfMonthIsWildcard()); _dayOfMonthIsWildcardErr != nil {
+	if _dayOfMonthIsWildcardErr := writeBuffer.WriteVirtual(ctx, "dayOfMonthIsWildcard", m.GetDayOfMonthIsWildcard()); _dayOfMonthIsWildcardErr != nil {
 		return errors.Wrap(_dayOfMonthIsWildcardErr, "Error serializing 'dayOfMonthIsWildcard' field")
 	}
 	// Virtual field
-	if _lastDayOfMonthWildcardErr := writeBuffer.WriteVirtual("lastDayOfMonthWildcard", m.GetLastDayOfMonthWildcard()); _lastDayOfMonthWildcardErr != nil {
+	if _lastDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "lastDayOfMonthWildcard", m.GetLastDayOfMonthWildcard()); _lastDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_lastDayOfMonthWildcardErr, "Error serializing 'lastDayOfMonthWildcard' field")
 	}
 	// Virtual field
-	if _oddDayOfMonthWildcardErr := writeBuffer.WriteVirtual("oddDayOfMonthWildcard", m.GetOddDayOfMonthWildcard()); _oddDayOfMonthWildcardErr != nil {
+	if _oddDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "oddDayOfMonthWildcard", m.GetOddDayOfMonthWildcard()); _oddDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_oddDayOfMonthWildcardErr, "Error serializing 'oddDayOfMonthWildcard' field")
 	}
 	// Virtual field
-	if _evenDayOfMonthWildcardErr := writeBuffer.WriteVirtual("evenDayOfMonthWildcard", m.GetEvenDayOfMonthWildcard()); _evenDayOfMonthWildcardErr != nil {
+	if _evenDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "evenDayOfMonthWildcard", m.GetEvenDayOfMonthWildcard()); _evenDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_evenDayOfMonthWildcardErr, "Error serializing 'evenDayOfMonthWildcard' field")
 	}
 
@@ -416,7 +435,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
-	if _dayOfWeekIsWildcardErr := writeBuffer.WriteVirtual("dayOfWeekIsWildcard", m.GetDayOfWeekIsWildcard()); _dayOfWeekIsWildcardErr != nil {
+	if _dayOfWeekIsWildcardErr := writeBuffer.WriteVirtual(ctx, "dayOfWeekIsWildcard", m.GetDayOfWeekIsWildcard()); _dayOfWeekIsWildcardErr != nil {
 		return errors.Wrap(_dayOfWeekIsWildcardErr, "Error serializing 'dayOfWeekIsWildcard' field")
 	}
 
@@ -435,7 +454,7 @@ func (m *_BACnetTagPayloadDate) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

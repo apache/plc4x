@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -114,33 +115,29 @@ func (m *_ReplyOrConfirmationConfirmation) GetTypeName() string {
 	return "ReplyOrConfirmationConfirmation"
 }
 
-func (m *_ReplyOrConfirmationConfirmation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ReplyOrConfirmationConfirmation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ReplyOrConfirmationConfirmation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (confirmation)
-	lengthInBits += m.Confirmation.GetLengthInBits()
+	lengthInBits += m.Confirmation.GetLengthInBits(ctx)
 
 	// Optional Field (embeddedReply)
 	if m.EmbeddedReply != nil {
-		lengthInBits += m.EmbeddedReply.GetLengthInBits()
+		lengthInBits += m.EmbeddedReply.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ReplyOrConfirmationConfirmationParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
-	return ReplyOrConfirmationConfirmationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyOrConfirmationConfirmationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
+func ReplyOrConfirmationConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationConfirmation"); pullErr != nil {
@@ -153,7 +150,7 @@ func ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
 	}
-	_confirmation, _confirmationErr := ConfirmationParseWithBuffer(readBuffer)
+	_confirmation, _confirmationErr := ConfirmationParseWithBuffer(ctx, readBuffer)
 	if _confirmationErr != nil {
 		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field of ReplyOrConfirmationConfirmation")
 	}
@@ -169,7 +166,7 @@ func ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("embeddedReply"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for embeddedReply")
 		}
-		_val, _err := ReplyOrConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_val, _err := ReplyOrConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -202,14 +199,14 @@ func ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_ReplyOrConfirmationConfirmation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -221,7 +218,7 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("confirmation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for confirmation")
 		}
-		_confirmationErr := writeBuffer.WriteSerializable(m.GetConfirmation())
+		_confirmationErr := writeBuffer.WriteSerializable(ctx, m.GetConfirmation())
 		if popErr := writeBuffer.PopContext("confirmation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for confirmation")
 		}
@@ -236,7 +233,7 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(writeBuffer 
 				return errors.Wrap(pushErr, "Error pushing for embeddedReply")
 			}
 			embeddedReply = m.GetEmbeddedReply()
-			_embeddedReplyErr := writeBuffer.WriteSerializable(embeddedReply)
+			_embeddedReplyErr := writeBuffer.WriteSerializable(ctx, embeddedReply)
 			if popErr := writeBuffer.PopContext("embeddedReply"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for embeddedReply")
 			}
@@ -250,7 +247,7 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ReplyOrConfirmationConfirmation) isReplyOrConfirmationConfirmation() bool {
@@ -262,7 +259,7 @@ func (m *_ReplyOrConfirmationConfirmation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

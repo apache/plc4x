@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,12 +133,8 @@ func (m *_LBusmonInd) GetTypeName() string {
 	return "LBusmonInd"
 }
 
-func (m *_LBusmonInd) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LBusmonInd) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LBusmonInd) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -144,12 +142,12 @@ func (m *_LBusmonInd) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.GetLengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits(ctx)
 
 	// Optional Field (crc)
 	if m.Crc != nil {
@@ -159,15 +157,15 @@ func (m *_LBusmonInd) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_LBusmonInd) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LBusmonInd) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LBusmonIndParse(theBytes []byte, size uint16) (LBusmonInd, error) {
-	return LBusmonIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+	return LBusmonIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
 }
 
-func LBusmonIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, error) {
+func LBusmonIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
@@ -193,7 +191,7 @@ func LBusmonIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LBusmo
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
 		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParseWithBuffer(readBuffer)
+			_item, _err := CEMIAdditionalInformationParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LBusmonInd")
 			}
@@ -208,7 +206,7 @@ func LBusmonIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LBusmo
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
-	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(ctx, readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LBusmonInd")
 	}
@@ -246,14 +244,14 @@ func LBusmonIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LBusmo
 }
 
 func (m *_LBusmonInd) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LBusmonInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -272,8 +270,11 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for additionalInformation")
 		}
-		for _, _element := range m.GetAdditionalInformation() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetAdditionalInformation() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdditionalInformation()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 			}
@@ -286,7 +287,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataFrame")
 		}
-		_dataFrameErr := writeBuffer.WriteSerializable(m.GetDataFrame())
+		_dataFrameErr := writeBuffer.WriteSerializable(ctx, m.GetDataFrame())
 		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataFrame")
 		}
@@ -309,7 +310,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LBusmonInd) isLBusmonInd() bool {
@@ -321,7 +322,7 @@ func (m *_LBusmonInd) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

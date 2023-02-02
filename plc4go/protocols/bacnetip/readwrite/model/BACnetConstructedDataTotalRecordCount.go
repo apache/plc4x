@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTotalRecordCount) GetTotalRecordCount() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataTotalRecordCount) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetTotalRecordCount())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTotalRecordCount) GetTypeName() string {
 	return "BACnetConstructedDataTotalRecordCount"
 }
 
-func (m *_BACnetConstructedDataTotalRecordCount) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTotalRecordCount) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTotalRecordCount) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (totalRecordCount)
-	lengthInBits += m.TotalRecordCount.GetLengthInBits()
+	lengthInBits += m.TotalRecordCount.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTotalRecordCount) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTotalRecordCount) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTotalRecordCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTotalRecordCount, error) {
-	return BACnetConstructedDataTotalRecordCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTotalRecordCountParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTotalRecordCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTotalRecordCount, error) {
+func BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTotalRecordCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTotalRecordCount"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTotalRecordCountParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("totalRecordCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for totalRecordCount")
 	}
-	_totalRecordCount, _totalRecordCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_totalRecordCount, _totalRecordCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _totalRecordCountErr != nil {
 		return nil, errors.Wrap(_totalRecordCountErr, "Error parsing 'totalRecordCount' field of BACnetConstructedDataTotalRecordCount")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTotalRecordCountParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataTotalRecordCount) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("totalRecordCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for totalRecordCount")
 		}
-		_totalRecordCountErr := writeBuffer.WriteSerializable(m.GetTotalRecordCount())
+		_totalRecordCountErr := writeBuffer.WriteSerializable(ctx, m.GetTotalRecordCount())
 		if popErr := writeBuffer.PopContext("totalRecordCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for totalRecordCount")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_totalRecordCountErr, "Error serializing 'totalRecordCount' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTotalRecordCount) isBACnetConstructedDataTotalRecordCount() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTotalRecordCount) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

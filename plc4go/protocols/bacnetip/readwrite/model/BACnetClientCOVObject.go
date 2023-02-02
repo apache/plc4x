@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetClientCOVObject) GetTypeName() string {
 	return "BACnetClientCOVObject"
 }
 
-func (m *_BACnetClientCOVObject) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetClientCOVObject) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetClientCOVObject) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (realIncrement)
-	lengthInBits += m.RealIncrement.GetLengthInBits()
+	lengthInBits += m.RealIncrement.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetClientCOVObject) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetClientCOVObject) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetClientCOVObjectParse(theBytes []byte) (BACnetClientCOVObject, error) {
-	return BACnetClientCOVObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetClientCOVObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetClientCOVObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
+func BACnetClientCOVObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOVObject"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetClientCOVObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCl
 	if pullErr := readBuffer.PullContext("realIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realIncrement")
 	}
-	_realIncrement, _realIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_realIncrement, _realIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _realIncrementErr != nil {
 		return nil, errors.Wrap(_realIncrementErr, "Error parsing 'realIncrement' field of BACnetClientCOVObject")
 	}
@@ -162,14 +159,14 @@ func BACnetClientCOVObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCl
 }
 
 func (m *_BACnetClientCOVObject) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("realIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realIncrement")
 		}
-		_realIncrementErr := writeBuffer.WriteSerializable(m.GetRealIncrement())
+		_realIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetRealIncrement())
 		if popErr := writeBuffer.PopContext("realIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realIncrement")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetClientCOVObject) isBACnetClientCOVObject() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetClientCOVObject) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

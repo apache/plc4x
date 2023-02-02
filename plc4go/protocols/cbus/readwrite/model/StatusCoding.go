@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastStatusCoding(structType interface{}) StatusCoding {
 	return castFunc(structType)
 }
 
-func (m StatusCoding) GetLengthInBits() uint16 {
+func (m StatusCoding) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m StatusCoding) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m StatusCoding) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusCodingParse(theBytes []byte) (StatusCoding, error) {
-	return StatusCodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func StatusCodingParse(ctx context.Context, theBytes []byte) (StatusCoding, error) {
+	return StatusCodingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func StatusCodingParseWithBuffer(readBuffer utils.ReadBuffer) (StatusCoding, error) {
+func StatusCodingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	val, err := readBuffer.ReadByte("StatusCoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading StatusCoding")
@@ -126,13 +127,13 @@ func StatusCodingParseWithBuffer(readBuffer utils.ReadBuffer) (StatusCoding, err
 
 func (e StatusCoding) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e StatusCoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e StatusCoding) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

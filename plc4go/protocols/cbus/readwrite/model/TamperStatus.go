@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -71,14 +72,20 @@ func (m *_TamperStatus) GetStatus() uint8 {
 ///////////////////////
 
 func (m *_TamperStatus) GetIsNoTamper() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStatus()) == (0x00)))
 }
 
 func (m *_TamperStatus) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetStatus()) >= (0x01))) && bool(bool((m.GetStatus()) <= (0xFE))))
 }
 
 func (m *_TamperStatus) GetIsTamperActive() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStatus()) > (0xFE)))
 }
 
@@ -107,11 +114,7 @@ func (m *_TamperStatus) GetTypeName() string {
 	return "TamperStatus"
 }
 
-func (m *_TamperStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TamperStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_TamperStatus) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (status)
@@ -126,15 +129,15 @@ func (m *_TamperStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_TamperStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TamperStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TamperStatusParse(theBytes []byte) (TamperStatus, error) {
-	return TamperStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TamperStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TamperStatusParseWithBuffer(readBuffer utils.ReadBuffer) (TamperStatus, error) {
+func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TamperStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TamperStatus"); pullErr != nil {
@@ -176,14 +179,14 @@ func TamperStatusParseWithBuffer(readBuffer utils.ReadBuffer) (TamperStatus, err
 }
 
 func (m *_TamperStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TamperStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TamperStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TamperStatus"); pushErr != nil {
@@ -197,15 +200,15 @@ func (m *_TamperStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 	// Virtual field
-	if _isNoTamperErr := writeBuffer.WriteVirtual("isNoTamper", m.GetIsNoTamper()); _isNoTamperErr != nil {
+	if _isNoTamperErr := writeBuffer.WriteVirtual(ctx, "isNoTamper", m.GetIsNoTamper()); _isNoTamperErr != nil {
 		return errors.Wrap(_isNoTamperErr, "Error serializing 'isNoTamper' field")
 	}
 	// Virtual field
-	if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}
 	// Virtual field
-	if _isTamperActiveErr := writeBuffer.WriteVirtual("isTamperActive", m.GetIsTamperActive()); _isTamperActiveErr != nil {
+	if _isTamperActiveErr := writeBuffer.WriteVirtual(ctx, "isTamperActive", m.GetIsTamperActive()); _isTamperActiveErr != nil {
 		return errors.Wrap(_isTamperActiveErr, "Error serializing 'isTamperActive' field")
 	}
 
@@ -224,7 +227,7 @@ func (m *_TamperStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetTimerState(structType interface{}) BACnetTimerState {
 	return castFunc(structType)
 }
 
-func (m BACnetTimerState) GetLengthInBits() uint16 {
+func (m BACnetTimerState) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetTimerState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetTimerState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateParse(theBytes []byte) (BACnetTimerState, error) {
-	return BACnetTimerStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetTimerStateParse(ctx context.Context, theBytes []byte) (BACnetTimerState, error) {
+	return BACnetTimerStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTimerStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerState, error) {
+func BACnetTimerStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerState, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerState", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetTimerState")
@@ -120,13 +121,13 @@ func BACnetTimerStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerSt
 
 func (e BACnetTimerState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetTimerState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetTimerState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetTimerState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

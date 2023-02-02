@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataOccupancyState) GetOccupancyState() BACnetAccessZ
 ///////////////////////
 
 func (m *_BACnetConstructedDataOccupancyState) GetActualValue() BACnetAccessZoneOccupancyStateTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAccessZoneOccupancyStateTagged(m.GetOccupancyState())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataOccupancyState) GetTypeName() string {
 	return "BACnetConstructedDataOccupancyState"
 }
 
-func (m *_BACnetConstructedDataOccupancyState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataOccupancyState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataOccupancyState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (occupancyState)
-	lengthInBits += m.OccupancyState.GetLengthInBits()
+	lengthInBits += m.OccupancyState.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataOccupancyState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataOccupancyStateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
-	return BACnetConstructedDataOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataOccupancyStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
+func BACnetConstructedDataOccupancyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyState"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataOccupancyStateParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("occupancyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyState")
 	}
-	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _occupancyStateErr != nil {
 		return nil, errors.Wrap(_occupancyStateErr, "Error parsing 'occupancyState' field of BACnetConstructedDataOccupancyState")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataOccupancyStateParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataOccupancyState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("occupancyState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for occupancyState")
 		}
-		_occupancyStateErr := writeBuffer.WriteSerializable(m.GetOccupancyState())
+		_occupancyStateErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyState())
 		if popErr := writeBuffer.PopContext("occupancyState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for occupancyState")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_occupancyStateErr, "Error serializing 'occupancyState' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataOccupancyState) isBACnetConstructedDataOccupancyState() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataOccupancyState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

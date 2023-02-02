@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,10 +114,14 @@ func (m *_HVACHumidityStatusFlags) GetHumidifyingPlant() bool {
 ///////////////////////
 
 func (m *_HVACHumidityStatusFlags) GetIsDamperStateClosed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetDamperState()))
 }
 
 func (m *_HVACHumidityStatusFlags) GetIsDamperStateOpen() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetDamperState())
 }
 
@@ -145,11 +150,7 @@ func (m *_HVACHumidityStatusFlags) GetTypeName() string {
 	return "HVACHumidityStatusFlags"
 }
 
-func (m *_HVACHumidityStatusFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACHumidityStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACHumidityStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (expansion)
@@ -183,15 +184,15 @@ func (m *_HVACHumidityStatusFlags) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_HVACHumidityStatusFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACHumidityStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACHumidityStatusFlagsParse(theBytes []byte) (HVACHumidityStatusFlags, error) {
-	return HVACHumidityStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACHumidityStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACHumidityStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
+func HVACHumidityStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidityStatusFlags"); pullErr != nil {
@@ -294,14 +295,14 @@ func HVACHumidityStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHu
 }
 
 func (m *_HVACHumidityStatusFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACHumidityStatusFlags"); pushErr != nil {
@@ -352,11 +353,11 @@ func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		return errors.Wrap(_damperStateErr, "Error serializing 'damperState' field")
 	}
 	// Virtual field
-	if _isDamperStateClosedErr := writeBuffer.WriteVirtual("isDamperStateClosed", m.GetIsDamperStateClosed()); _isDamperStateClosedErr != nil {
+	if _isDamperStateClosedErr := writeBuffer.WriteVirtual(ctx, "isDamperStateClosed", m.GetIsDamperStateClosed()); _isDamperStateClosedErr != nil {
 		return errors.Wrap(_isDamperStateClosedErr, "Error serializing 'isDamperStateClosed' field")
 	}
 	// Virtual field
-	if _isDamperStateOpenErr := writeBuffer.WriteVirtual("isDamperStateOpen", m.GetIsDamperStateOpen()); _isDamperStateOpenErr != nil {
+	if _isDamperStateOpenErr := writeBuffer.WriteVirtual(ctx, "isDamperStateOpen", m.GetIsDamperStateOpen()); _isDamperStateOpenErr != nil {
 		return errors.Wrap(_isDamperStateOpenErr, "Error serializing 'isDamperStateOpen' field")
 	}
 
@@ -396,7 +397,7 @@ func (m *_HVACHumidityStatusFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

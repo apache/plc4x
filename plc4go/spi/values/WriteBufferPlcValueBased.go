@@ -20,6 +20,7 @@
 package values
 
 import (
+	"context"
 	"math/big"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -165,16 +166,16 @@ func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uin
 	return p.appendValue(logicalName, NewPlcSTRING(value))
 }
 
-func (p *writeBufferPlcValueBased) WriteVirtual(logicalName string, value interface{}, _ ...utils.WithWriterArgs) error {
+func (p *writeBufferPlcValueBased) WriteVirtual(ctx context.Context, logicalName string, value interface{}, _ ...utils.WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (p *writeBufferPlcValueBased) WriteSerializable(serializable utils.Serializable) error {
+func (p *writeBufferPlcValueBased) WriteSerializable(ctx context.Context, serializable utils.Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(p)
+	return serializable.SerializeWithWriteBuffer(ctx, p)
 }
 
 func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.WithWriterArgs) error {

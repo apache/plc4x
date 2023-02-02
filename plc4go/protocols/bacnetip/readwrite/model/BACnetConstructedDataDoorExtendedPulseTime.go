@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetDoorExtendedPulseTime()
 ///////////////////////
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetDoorExtendedPulseTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetTypeName() string {
 	return "BACnetConstructedDataDoorExtendedPulseTime"
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doorExtendedPulseTime)
-	lengthInBits += m.DoorExtendedPulseTime.GetLengthInBits()
+	lengthInBits += m.DoorExtendedPulseTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDoorExtendedPulseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
-	return BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
+func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorExtendedPulseTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("doorExtendedPulseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorExtendedPulseTime")
 	}
-	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _doorExtendedPulseTimeErr != nil {
 		return nil, errors.Wrap(_doorExtendedPulseTimeErr, "Error parsing 'doorExtendedPulseTime' field of BACnetConstructedDataDoorExtendedPulseTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("doorExtendedPulseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorExtendedPulseTime")
 		}
-		_doorExtendedPulseTimeErr := writeBuffer.WriteSerializable(m.GetDoorExtendedPulseTime())
+		_doorExtendedPulseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorExtendedPulseTime())
 		if popErr := writeBuffer.PopContext("doorExtendedPulseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorExtendedPulseTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(w
 			return errors.Wrap(_doorExtendedPulseTimeErr, "Error serializing 'doorExtendedPulseTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) isBACnetConstructedDataDoorExtendedPulseTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

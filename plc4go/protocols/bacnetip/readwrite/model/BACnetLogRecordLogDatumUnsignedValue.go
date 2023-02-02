@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetTypeName() string {
 	return "BACnetLogRecordLogDatumUnsignedValue"
 }
 
-func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
-	lengthInBits += m.UnsignedValue.GetLengthInBits()
+	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumUnsignedValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
-	return BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
+func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumUnsignedValue"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_unsignedValue, _unsignedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetLogRecordLogDatumUnsignedValue")
 	}
@@ -166,14 +163,14 @@ func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
-		_unsignedValueErr := writeBuffer.WriteSerializable(m.GetUnsignedValue())
+		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnsignedValue())
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) isBACnetLogRecordLogDatumUnsignedValue() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

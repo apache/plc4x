@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetCalendarEntry struct {
 
 type _BACnetCalendarEntryChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetCalendarEntryParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetCalendarEntry) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetCalendarEntry) GetTypeName() string {
 	return "BACnetCalendarEntry"
 }
 
-func (m *_BACnetCalendarEntry) GetParentLengthInBits() uint16 {
+func (m *_BACnetCalendarEntry) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetCalendarEntry) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetCalendarEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetCalendarEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetCalendarEntryParse(theBytes []byte) (BACnetCalendarEntry, error) {
-	return BACnetCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetCalendarEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
+func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntry"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCale
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -170,11 +172,11 @@ func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCale
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryDateParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -192,7 +194,7 @@ func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCale
 	return _child, nil
 }
 
-func (pm *_BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error {
+func (pm *_BACnetCalendarEntry) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -202,7 +204,7 @@ func (pm *_BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntry")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -226,7 +228,7 @@ func (m *_BACnetCalendarEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

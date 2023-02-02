@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,12 +125,8 @@ func (m *_LDataCon) GetTypeName() string {
 	return "LDataCon"
 }
 
-func (m *_LDataCon) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LDataCon) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LDataCon) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -136,25 +134,25 @@ func (m *_LDataCon) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.GetLengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_LDataCon) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LDataCon) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LDataConParse(theBytes []byte, size uint16) (LDataCon, error) {
-	return LDataConParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+	return LDataConParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
 }
 
-func LDataConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
+func LDataConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataCon"); pullErr != nil {
@@ -180,7 +178,7 @@ func LDataConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataCon
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
 		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParseWithBuffer(readBuffer)
+			_item, _err := CEMIAdditionalInformationParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LDataCon")
 			}
@@ -195,7 +193,7 @@ func LDataConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataCon
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
-	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(ctx, readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LDataCon")
 	}
@@ -222,14 +220,14 @@ func LDataConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataCon
 }
 
 func (m *_LDataCon) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LDataCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -248,8 +246,11 @@ func (m *_LDataCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) erro
 		if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for additionalInformation")
 		}
-		for _, _element := range m.GetAdditionalInformation() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetAdditionalInformation() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdditionalInformation()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 			}
@@ -262,7 +263,7 @@ func (m *_LDataCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) erro
 		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataFrame")
 		}
-		_dataFrameErr := writeBuffer.WriteSerializable(m.GetDataFrame())
+		_dataFrameErr := writeBuffer.WriteSerializable(ctx, m.GetDataFrame())
 		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataFrame")
 		}
@@ -275,7 +276,7 @@ func (m *_LDataCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LDataCon) isLDataCon() bool {
@@ -287,7 +288,7 @@ func (m *_LDataCon) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

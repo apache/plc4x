@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -86,11 +87,7 @@ func (m *_ResponseTermination) GetTypeName() string {
 	return "ResponseTermination"
 }
 
-func (m *_ResponseTermination) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ResponseTermination) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ResponseTermination) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (cr)
@@ -102,15 +99,15 @@ func (m *_ResponseTermination) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_ResponseTermination) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ResponseTermination) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ResponseTerminationParse(theBytes []byte) (ResponseTermination, error) {
-	return ResponseTerminationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ResponseTerminationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ResponseTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ResponseTermination"); pullErr != nil {
@@ -146,14 +143,14 @@ func ResponseTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (ResponseTe
 }
 
 func (m *_ResponseTermination) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ResponseTermination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ResponseTermination"); pushErr != nil {
@@ -187,7 +184,7 @@ func (m *_ResponseTermination) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

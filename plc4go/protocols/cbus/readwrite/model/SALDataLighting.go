@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataLighting) GetTypeName() string {
 	return "SALDataLighting"
 }
 
-func (m *_SALDataLighting) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataLighting) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataLighting) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lightingData)
-	lengthInBits += m.LightingData.GetLengthInBits()
+	lengthInBits += m.LightingData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataLighting) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataLighting) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataLightingParse(theBytes []byte, applicationId ApplicationId) (SALDataLighting, error) {
-	return SALDataLightingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataLightingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataLightingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
+func SALDataLightingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataLighting"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataLightingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId A
 	if pullErr := readBuffer.PullContext("lightingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingData")
 	}
-	_lightingData, _lightingDataErr := LightingDataParseWithBuffer(readBuffer)
+	_lightingData, _lightingDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
 	if _lightingDataErr != nil {
 		return nil, errors.Wrap(_lightingDataErr, "Error parsing 'lightingData' field of SALDataLighting")
 	}
@@ -166,14 +163,14 @@ func SALDataLightingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId A
 }
 
 func (m *_SALDataLighting) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataLighting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataLighting) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("lightingData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lightingData")
 		}
-		_lightingDataErr := writeBuffer.WriteSerializable(m.GetLightingData())
+		_lightingDataErr := writeBuffer.WriteSerializable(ctx, m.GetLightingData())
 		if popErr := writeBuffer.PopContext("lightingData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lightingData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataLighting) isSALDataLighting() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataLighting) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

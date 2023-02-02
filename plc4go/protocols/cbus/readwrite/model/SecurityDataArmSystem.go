@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -98,26 +99,38 @@ func (m *_SecurityDataArmSystem) GetArmMode() byte {
 ///////////////////////
 
 func (m *_SecurityDataArmSystem) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetArmMode()) == (0x00))) || bool((bool(bool((m.GetArmMode()) >= (0x05))) && bool(bool((m.GetArmMode()) <= (0xFE))))))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToAwayMode() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetArmMode()) == (0x01)))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToNightMode() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetArmMode()) == (0x02)))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToDayMode() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetArmMode()) == (0x03)))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToVacationMode() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetArmMode()) == (0x04)))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToHighestLevelOfProtection() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetArmMode()) > (0xFE)))
 }
 
@@ -151,12 +164,8 @@ func (m *_SecurityDataArmSystem) GetTypeName() string {
 	return "SecurityDataArmSystem"
 }
 
-func (m *_SecurityDataArmSystem) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataArmSystem) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataArmSystem) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (armMode)
 	lengthInBits += 8
@@ -176,15 +185,15 @@ func (m *_SecurityDataArmSystem) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_SecurityDataArmSystem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataArmSystem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataArmSystemParse(theBytes []byte) (SecurityDataArmSystem, error) {
-	return SecurityDataArmSystemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataArmSystemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataArmSystemParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
+func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmSystem"); pullErr != nil {
@@ -244,14 +253,14 @@ func SecurityDataArmSystemParseWithBuffer(readBuffer utils.ReadBuffer) (Security
 }
 
 func (m *_SecurityDataArmSystem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -266,27 +275,27 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(writeBuffer utils.Writ
 			return errors.Wrap(_armModeErr, "Error serializing 'armMode' field")
 		}
 		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 		// Virtual field
-		if _isArmToAwayModeErr := writeBuffer.WriteVirtual("isArmToAwayMode", m.GetIsArmToAwayMode()); _isArmToAwayModeErr != nil {
+		if _isArmToAwayModeErr := writeBuffer.WriteVirtual(ctx, "isArmToAwayMode", m.GetIsArmToAwayMode()); _isArmToAwayModeErr != nil {
 			return errors.Wrap(_isArmToAwayModeErr, "Error serializing 'isArmToAwayMode' field")
 		}
 		// Virtual field
-		if _isArmToNightModeErr := writeBuffer.WriteVirtual("isArmToNightMode", m.GetIsArmToNightMode()); _isArmToNightModeErr != nil {
+		if _isArmToNightModeErr := writeBuffer.WriteVirtual(ctx, "isArmToNightMode", m.GetIsArmToNightMode()); _isArmToNightModeErr != nil {
 			return errors.Wrap(_isArmToNightModeErr, "Error serializing 'isArmToNightMode' field")
 		}
 		// Virtual field
-		if _isArmToDayModeErr := writeBuffer.WriteVirtual("isArmToDayMode", m.GetIsArmToDayMode()); _isArmToDayModeErr != nil {
+		if _isArmToDayModeErr := writeBuffer.WriteVirtual(ctx, "isArmToDayMode", m.GetIsArmToDayMode()); _isArmToDayModeErr != nil {
 			return errors.Wrap(_isArmToDayModeErr, "Error serializing 'isArmToDayMode' field")
 		}
 		// Virtual field
-		if _isArmToVacationModeErr := writeBuffer.WriteVirtual("isArmToVacationMode", m.GetIsArmToVacationMode()); _isArmToVacationModeErr != nil {
+		if _isArmToVacationModeErr := writeBuffer.WriteVirtual(ctx, "isArmToVacationMode", m.GetIsArmToVacationMode()); _isArmToVacationModeErr != nil {
 			return errors.Wrap(_isArmToVacationModeErr, "Error serializing 'isArmToVacationMode' field")
 		}
 		// Virtual field
-		if _isArmToHighestLevelOfProtectionErr := writeBuffer.WriteVirtual("isArmToHighestLevelOfProtection", m.GetIsArmToHighestLevelOfProtection()); _isArmToHighestLevelOfProtectionErr != nil {
+		if _isArmToHighestLevelOfProtectionErr := writeBuffer.WriteVirtual(ctx, "isArmToHighestLevelOfProtection", m.GetIsArmToHighestLevelOfProtection()); _isArmToHighestLevelOfProtectionErr != nil {
 			return errors.Wrap(_isArmToHighestLevelOfProtectionErr, "Error serializing 'isArmToHighestLevelOfProtection' field")
 		}
 
@@ -295,7 +304,7 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataArmSystem) isSecurityDataArmSystem() bool {
@@ -307,7 +316,7 @@ func (m *_SecurityDataArmSystem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

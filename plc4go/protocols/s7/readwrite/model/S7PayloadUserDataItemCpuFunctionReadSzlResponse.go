@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"fmt"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -151,15 +153,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetTypeName() string 
 	return "S7PayloadUserDataItemCpuFunctionReadSzlResponse"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (szlId)
-	lengthInBits += m.SzlId.GetLengthInBits()
+	lengthInBits += m.SzlId.GetLengthInBits(ctx)
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
@@ -172,24 +170,26 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBitsCondit
 
 	// Array field
 	if len(m.Items) > 0 {
-		for i, element := range m.Items {
-			last := i == len(m.Items)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Items {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
@@ -202,7 +202,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for szlId")
 	}
-	_szlId, _szlIdErr := SzlIdParseWithBuffer(readBuffer)
+	_szlId, _szlIdErr := SzlIdParseWithBuffer(ctx, readBuffer)
 	if _szlIdErr != nil {
 		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
@@ -245,12 +245,16 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer u
 		items = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
-			_item, _err := SzlDataTreeItemParseWithBuffer(readBuffer)
+		_numItems := uint16(szlItemCount)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := SzlDataTreeItemParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 			}
-			items[curItem] = _item.(SzlDataTreeItem)
+			items[_curItem] = _item.(SzlDataTreeItem)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
@@ -273,14 +277,14 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer u
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -292,7 +296,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("szlId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for szlId")
 		}
-		_szlIdErr := writeBuffer.WriteSerializable(m.GetSzlId())
+		_szlIdErr := writeBuffer.WriteSerializable(ctx, m.GetSzlId())
 		if popErr := writeBuffer.PopContext("szlId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for szlId")
 		}
@@ -324,8 +328,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for items")
 		}
-		for _, _element := range m.GetItems() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetItems() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
@@ -339,7 +346,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) isS7PayloadUserDataItemCpuFunctionReadSzlResponse() bool {
@@ -351,7 +358,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

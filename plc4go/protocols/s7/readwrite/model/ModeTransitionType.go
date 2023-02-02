@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,19 +130,19 @@ func CastModeTransitionType(structType interface{}) ModeTransitionType {
 	return castFunc(structType)
 }
 
-func (m ModeTransitionType) GetLengthInBits() uint16 {
+func (m ModeTransitionType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ModeTransitionType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ModeTransitionType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModeTransitionTypeParse(theBytes []byte) (ModeTransitionType, error) {
-	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ModeTransitionTypeParse(ctx context.Context, theBytes []byte) (ModeTransitionType, error) {
+	return ModeTransitionTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
+func ModeTransitionTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
 	val, err := readBuffer.ReadUint8("ModeTransitionType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModeTransitionType")
@@ -156,13 +157,13 @@ func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransit
 
 func (e ModeTransitionType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ModeTransitionType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ModeTransitionType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

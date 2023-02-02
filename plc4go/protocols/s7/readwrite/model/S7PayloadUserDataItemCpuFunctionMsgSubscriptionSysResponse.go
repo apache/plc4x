@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,12 +127,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetTypeNam
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 8
@@ -142,15 +139,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthI
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"); pullErr != nil {
@@ -188,14 +185,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(r
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -222,7 +219,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) isS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() bool {
@@ -234,7 +231,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() s
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

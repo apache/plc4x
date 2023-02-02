@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetState() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataShuffleOnOff) GetIsOff() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetState()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) GetIsOn() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetState()) > (0xFE)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetTypeName() string {
 	return "MediaTransportControlDataShuffleOnOff"
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataShuffleOnOffParse(theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
-	return MediaTransportControlDataShuffleOnOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataShuffleOnOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataShuffleOnOffParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataShuffleOnOffParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}
 		// Virtual field
-		if _isOffErr := writeBuffer.WriteVirtual("isOff", m.GetIsOff()); _isOffErr != nil {
+		if _isOffErr := writeBuffer.WriteVirtual(ctx, "isOff", m.GetIsOff()); _isOffErr != nil {
 			return errors.Wrap(_isOffErr, "Error serializing 'isOff' field")
 		}
 		// Virtual field
-		if _isOnErr := writeBuffer.WriteVirtual("isOn", m.GetIsOn()); _isOnErr != nil {
+		if _isOnErr := writeBuffer.WriteVirtual(ctx, "isOn", m.GetIsOn()); _isOnErr != nil {
 			return errors.Wrap(_isOnErr, "Error serializing 'isOn' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) isMediaTransportControlDataShuffleOnOff() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

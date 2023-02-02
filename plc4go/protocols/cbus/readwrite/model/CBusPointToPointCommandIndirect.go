@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,34 +123,30 @@ func (m *_CBusPointToPointCommandIndirect) GetTypeName() string {
 	return "CBusPointToPointCommandIndirect"
 }
 
-func (m *_CBusPointToPointCommandIndirect) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusPointToPointCommandIndirect) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bridgeAddress)
-	lengthInBits += m.BridgeAddress.GetLengthInBits()
+	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
 
 	// Simple field (networkRoute)
-	lengthInBits += m.NetworkRoute.GetLengthInBits()
+	lengthInBits += m.NetworkRoute.GetLengthInBits(ctx)
 
 	// Simple field (unitAddress)
-	lengthInBits += m.UnitAddress.GetLengthInBits()
+	lengthInBits += m.UnitAddress.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointCommandIndirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
-	return CBusPointToPointCommandIndirectParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointCommandIndirectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
+func CBusPointToPointCommandIndirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
@@ -162,7 +159,7 @@ func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(readBuffer)
+	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(ctx, readBuffer)
 	if _bridgeAddressErr != nil {
 		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointCommandIndirect")
 	}
@@ -175,7 +172,7 @@ func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(readBuffer)
+	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
 	if _networkRouteErr != nil {
 		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointCommandIndirect")
 	}
@@ -188,7 +185,7 @@ func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandIndirect")
 	}
@@ -215,14 +212,14 @@ func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_CBusPointToPointCommandIndirect) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -234,7 +231,7 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 		}
-		_bridgeAddressErr := writeBuffer.WriteSerializable(m.GetBridgeAddress())
+		_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBridgeAddress())
 		if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bridgeAddress")
 		}
@@ -246,7 +243,7 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkRoute")
 		}
-		_networkRouteErr := writeBuffer.WriteSerializable(m.GetNetworkRoute())
+		_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
 		if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkRoute")
 		}
@@ -258,7 +255,7 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unitAddress")
 		}
-		_unitAddressErr := writeBuffer.WriteSerializable(m.GetUnitAddress())
+		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
 		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unitAddress")
 		}
@@ -271,7 +268,7 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusPointToPointCommandIndirect) isCBusPointToPointCommandIndirect() bool {
@@ -283,7 +280,7 @@ func (m *_CBusPointToPointCommandIndirect) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

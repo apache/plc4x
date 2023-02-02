@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesDoorValue) GetTypeName() string {
 	return "BACnetPropertyStatesDoorValue"
 }
 
-func (m *_BACnetPropertyStatesDoorValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesDoorValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesDoorValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doorValue)
-	lengthInBits += m.DoorValue.GetLengthInBits()
+	lengthInBits += m.DoorValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesDoorValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
-	return BACnetPropertyStatesDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesDoorValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
+func BACnetPropertyStatesDoorValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, p
 	if pullErr := readBuffer.PullContext("doorValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorValue")
 	}
-	_doorValue, _doorValueErr := BACnetDoorValueTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorValue, _doorValueErr := BACnetDoorValueTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorValueErr != nil {
 		return nil, errors.Wrap(_doorValueErr, "Error parsing 'doorValue' field of BACnetPropertyStatesDoorValue")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, p
 }
 
 func (m *_BACnetPropertyStatesDoorValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("doorValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorValue")
 		}
-		_doorValueErr := writeBuffer.WriteSerializable(m.GetDoorValue())
+		_doorValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoorValue())
 		if popErr := writeBuffer.PopContext("doorValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesDoorValue) isBACnetPropertyStatesDoorValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesDoorValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

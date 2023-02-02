@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_ApduDataExtOpenRoutingTableRequest) GetTypeName() string {
 	return "ApduDataExtOpenRoutingTableRequest"
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtOpenRoutingTableRequestParse(theBytes []byte, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {
-	return ApduDataExtOpenRoutingTableRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtOpenRoutingTableRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtOpenRoutingTableRequestParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {
+func ApduDataExtOpenRoutingTableRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtOpenRoutingTableRequest"); pullErr != nil {
@@ -131,14 +128,14 @@ func ApduDataExtOpenRoutingTableRequestParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_ApduDataExtOpenRoutingTableRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtOpenRoutingTableRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_ApduDataExtOpenRoutingTableRequest) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataExtOpenRoutingTableRequest) isApduDataExtOpenRoutingTableRequest() bool {
@@ -163,7 +160,7 @@ func (m *_ApduDataExtOpenRoutingTableRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

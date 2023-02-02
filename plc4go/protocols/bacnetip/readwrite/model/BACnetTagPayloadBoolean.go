@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -58,14 +59,20 @@ type _BACnetTagPayloadBoolean struct {
 ///////////////////////
 
 func (m *_BACnetTagPayloadBoolean) GetValue() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.ActualLength) == (1)))
 }
 
 func (m *_BACnetTagPayloadBoolean) GetIsTrue() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetValue())
 }
 
 func (m *_BACnetTagPayloadBoolean) GetIsFalse() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetValue()))
 }
 
@@ -94,11 +101,7 @@ func (m *_BACnetTagPayloadBoolean) GetTypeName() string {
 	return "BACnetTagPayloadBoolean"
 }
 
-func (m *_BACnetTagPayloadBoolean) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadBoolean) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -110,15 +113,15 @@ func (m *_BACnetTagPayloadBoolean) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadBoolean) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadBooleanParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadBoolean, error) {
-	return BACnetTagPayloadBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength)
+	return BACnetTagPayloadBooleanParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
-func BACnetTagPayloadBooleanParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
+func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {
@@ -153,29 +156,29 @@ func BACnetTagPayloadBooleanParseWithBuffer(readBuffer utils.ReadBuffer, actualL
 }
 
 func (m *_BACnetTagPayloadBoolean) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadBoolean"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadBoolean")
 	}
 	// Virtual field
-	if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
+	if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
-	if _isTrueErr := writeBuffer.WriteVirtual("isTrue", m.GetIsTrue()); _isTrueErr != nil {
+	if _isTrueErr := writeBuffer.WriteVirtual(ctx, "isTrue", m.GetIsTrue()); _isTrueErr != nil {
 		return errors.Wrap(_isTrueErr, "Error serializing 'isTrue' field")
 	}
 	// Virtual field
-	if _isFalseErr := writeBuffer.WriteVirtual("isFalse", m.GetIsFalse()); _isFalseErr != nil {
+	if _isFalseErr := writeBuffer.WriteVirtual(ctx, "isFalse", m.GetIsFalse()); _isFalseErr != nil {
 		return errors.Wrap(_isFalseErr, "Error serializing 'isFalse' field")
 	}
 
@@ -204,7 +207,7 @@ func (m *_BACnetTagPayloadBoolean) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

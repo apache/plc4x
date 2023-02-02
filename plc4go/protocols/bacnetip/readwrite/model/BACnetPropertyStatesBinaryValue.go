@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesBinaryValue) GetTypeName() string {
 	return "BACnetPropertyStatesBinaryValue"
 }
 
-func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (binaryValue)
-	lengthInBits += m.BinaryValue.GetLengthInBits()
+	lengthInBits += m.BinaryValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesBinaryValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
-	return BACnetPropertyStatesBinaryValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesBinaryValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesBinaryValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
+func BACnetPropertyStatesBinaryValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesBinaryValueParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryValue")
 	}
-	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryValueErr != nil {
 		return nil, errors.Wrap(_binaryValueErr, "Error parsing 'binaryValue' field of BACnetPropertyStatesBinaryValue")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesBinaryValueParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetPropertyStatesBinaryValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("binaryValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for binaryValue")
 		}
-		_binaryValueErr := writeBuffer.WriteSerializable(m.GetBinaryValue())
+		_binaryValueErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryValue())
 		if popErr := writeBuffer.PopContext("binaryValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for binaryValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesBinaryValue) isBACnetPropertyStatesBinaryValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesBinaryValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

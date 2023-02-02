@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataProtocolVersion) GetProtocolVersion() BACnetAppli
 ///////////////////////
 
 func (m *_BACnetConstructedDataProtocolVersion) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetProtocolVersion())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataProtocolVersion) GetTypeName() string {
 	return "BACnetConstructedDataProtocolVersion"
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (protocolVersion)
-	lengthInBits += m.ProtocolVersion.GetLengthInBits()
+	lengthInBits += m.ProtocolVersion.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataProtocolVersionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolVersion, error) {
-	return BACnetConstructedDataProtocolVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataProtocolVersionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataProtocolVersionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolVersion, error) {
+func BACnetConstructedDataProtocolVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolVersion"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataProtocolVersionParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("protocolVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolVersion")
 	}
-	_protocolVersion, _protocolVersionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_protocolVersion, _protocolVersionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of BACnetConstructedDataProtocolVersion")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataProtocolVersionParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("protocolVersion"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for protocolVersion")
 		}
-		_protocolVersionErr := writeBuffer.WriteSerializable(m.GetProtocolVersion())
+		_protocolVersionErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolVersion())
 		if popErr := writeBuffer.PopContext("protocolVersion"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for protocolVersion")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) isBACnetConstructedDataProtocolVersion() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataProtocolVersion) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

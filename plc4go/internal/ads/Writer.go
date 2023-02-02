@@ -342,6 +342,6 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 		if !ok {
 			return errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemSerializeWithWriteBuffer(wb, plcValue, adsValueType, stringLength)
+		return driverModel.DataItemSerializeWithWriteBuffer(context.Background(), wb, plcValue, adsValueType, stringLength)
 	}
 }

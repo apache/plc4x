@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _CEMIAdditionalInformation struct {
 
 type _CEMIAdditionalInformationChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetAdditionalInformationType() uint8
 }
 
 type CEMIAdditionalInformationParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CEMIAdditionalInformation, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CEMIAdditionalInformation, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_CEMIAdditionalInformation) GetTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 
-func (m *_CEMIAdditionalInformation) GetParentLengthInBits() uint16 {
+func (m *_CEMIAdditionalInformation) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
@@ -95,15 +95,15 @@ func (m *_CEMIAdditionalInformation) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_CEMIAdditionalInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CEMIAdditionalInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CEMIAdditionalInformationParse(theBytes []byte) (CEMIAdditionalInformation, error) {
-	return CEMIAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return CEMIAdditionalInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CEMIAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
@@ -129,9 +129,9 @@ func CEMIAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer) (CEMI
 	var typeSwitchError error
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		_childTemp, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx, readBuffer)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		_childTemp, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [additionalInformationType=%v]", additionalInformationType)
 	}
@@ -149,7 +149,7 @@ func CEMIAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer) (CEMI
 	return _child, nil
 }
 
-func (pm *_CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffer, child CEMIAdditionalInformation, serializeChildFunction func() error) error {
+func (pm *_CEMIAdditionalInformation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CEMIAdditionalInformation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -187,7 +187,7 @@ func (m *_CEMIAdditionalInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

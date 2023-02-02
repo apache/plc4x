@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetDoorPulseTime() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataDoorPulseTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetDoorPulseTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetTypeName() string {
 	return "BACnetConstructedDataDoorPulseTime"
 }
 
-func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doorPulseTime)
-	lengthInBits += m.DoorPulseTime.GetLengthInBits()
+	lengthInBits += m.DoorPulseTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDoorPulseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
-	return BACnetConstructedDataDoorPulseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDoorPulseTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDoorPulseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
+func BACnetConstructedDataDoorPulseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorPulseTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDoorPulseTimeParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("doorPulseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorPulseTime")
 	}
-	_doorPulseTime, _doorPulseTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_doorPulseTime, _doorPulseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _doorPulseTimeErr != nil {
 		return nil, errors.Wrap(_doorPulseTimeErr, "Error parsing 'doorPulseTime' field of BACnetConstructedDataDoorPulseTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDoorPulseTimeParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataDoorPulseTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("doorPulseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorPulseTime")
 		}
-		_doorPulseTimeErr := writeBuffer.WriteSerializable(m.GetDoorPulseTime())
+		_doorPulseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorPulseTime())
 		if popErr := writeBuffer.PopContext("doorPulseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorPulseTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_doorPulseTimeErr, "Error serializing 'doorPulseTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDoorPulseTime) isBACnetConstructedDataDoorPulseTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDoorPulseTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

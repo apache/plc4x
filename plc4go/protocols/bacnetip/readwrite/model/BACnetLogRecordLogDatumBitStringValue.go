@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetTypeName() string {
 	return "BACnetLogRecordLogDatumBitStringValue"
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bitStringValue)
-	lengthInBits += m.BitStringValue.GetLengthInBits()
+	lengthInBits += m.BitStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumBitStringValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
-	return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
+func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBitStringValue"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogRecordLogDatumBitStringValue")
 	}
@@ -166,14 +163,14 @@ func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
-		_bitStringValueErr := writeBuffer.WriteSerializable(m.GetBitStringValue())
+		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetBitStringValue())
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) isBACnetLogRecordLogDatumBitStringValue() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

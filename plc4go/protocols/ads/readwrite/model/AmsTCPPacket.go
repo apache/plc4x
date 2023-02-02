@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -83,11 +84,7 @@ func (m *_AmsTCPPacket) GetTypeName() string {
 	return "AmsTCPPacket"
 }
 
-func (m *_AmsTCPPacket) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AmsTCPPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AmsTCPPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -97,20 +94,20 @@ func (m *_AmsTCPPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 32
 
 	// Simple field (userdata)
-	lengthInBits += m.Userdata.GetLengthInBits()
+	lengthInBits += m.Userdata.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_AmsTCPPacket) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AmsTCPPacket) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AmsTCPPacketParse(theBytes []byte) (AmsTCPPacket, error) {
-	return AmsTCPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+	return AmsTCPPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
-func AmsTCPPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
+func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsTCPPacket"); pullErr != nil {
@@ -147,7 +144,7 @@ func AmsTCPPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsTCPPacket, err
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(ctx, readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsTCPPacket")
 	}
@@ -168,14 +165,14 @@ func AmsTCPPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsTCPPacket, err
 }
 
 func (m *_AmsTCPPacket) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AmsTCPPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsTCPPacket"); pushErr != nil {
@@ -199,7 +196,7 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint32(m.GetUserdata().GetLengthInBytes())
+	length := uint32(m.GetUserdata().GetLengthInBytes(ctx))
 	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -209,7 +206,7 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("userdata"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for userdata")
 	}
-	_userdataErr := writeBuffer.WriteSerializable(m.GetUserdata())
+	_userdataErr := writeBuffer.WriteSerializable(ctx, m.GetUserdata())
 	if popErr := writeBuffer.PopContext("userdata"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for userdata")
 	}
@@ -232,7 +229,7 @@ func (m *_AmsTCPPacket) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

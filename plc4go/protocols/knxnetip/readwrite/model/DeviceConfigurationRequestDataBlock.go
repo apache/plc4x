@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,11 +90,7 @@ func (m *_DeviceConfigurationRequestDataBlock) GetTypeName() string {
 	return "DeviceConfigurationRequestDataBlock"
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -111,15 +108,15 @@ func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DeviceConfigurationRequestDataBlockParse(theBytes []byte) (DeviceConfigurationRequestDataBlock, error) {
-	return DeviceConfigurationRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return DeviceConfigurationRequestDataBlockParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
+func DeviceConfigurationRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
@@ -179,14 +176,14 @@ func DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationRequestDataBlock"); pushErr != nil {
@@ -194,7 +191,7 @@ func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(writeBuf
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.GetLengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -245,7 +242,7 @@ func (m *_DeviceConfigurationRequestDataBlock) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

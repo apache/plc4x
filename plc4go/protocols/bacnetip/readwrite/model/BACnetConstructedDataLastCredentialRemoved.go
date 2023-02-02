@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) GetLastCredentialRemoved()
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) GetActualValue() BACnetDeviceObjectReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectReference(m.GetLastCredentialRemoved())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) GetTypeName() string {
 	return "BACnetConstructedDataLastCredentialRemoved"
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastCredentialRemoved)
-	lengthInBits += m.LastCredentialRemoved.GetLengthInBits()
+	lengthInBits += m.LastCredentialRemoved.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastCredentialRemovedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
-	return BACnetConstructedDataLastCredentialRemovedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastCredentialRemovedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastCredentialRemovedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
+func BACnetConstructedDataLastCredentialRemovedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialRemoved"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastCredentialRemovedParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("lastCredentialRemoved"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialRemoved")
 	}
-	_lastCredentialRemoved, _lastCredentialRemovedErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
+	_lastCredentialRemoved, _lastCredentialRemovedErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 	if _lastCredentialRemovedErr != nil {
 		return nil, errors.Wrap(_lastCredentialRemovedErr, "Error parsing 'lastCredentialRemoved' field of BACnetConstructedDataLastCredentialRemoved")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastCredentialRemovedParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("lastCredentialRemoved"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastCredentialRemoved")
 		}
-		_lastCredentialRemovedErr := writeBuffer.WriteSerializable(m.GetLastCredentialRemoved())
+		_lastCredentialRemovedErr := writeBuffer.WriteSerializable(ctx, m.GetLastCredentialRemoved())
 		if popErr := writeBuffer.PopContext("lastCredentialRemoved"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastCredentialRemoved")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(w
 			return errors.Wrap(_lastCredentialRemovedErr, "Error serializing 'lastCredentialRemoved' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) isBACnetConstructedDataLastCredentialRemoved() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

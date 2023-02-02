@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDaysRemaining) GetDaysRemaining() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataDaysRemaining) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetDaysRemaining())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDaysRemaining) GetTypeName() string {
 	return "BACnetConstructedDataDaysRemaining"
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (daysRemaining)
-	lengthInBits += m.DaysRemaining.GetLengthInBits()
+	lengthInBits += m.DaysRemaining.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDaysRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
-	return BACnetConstructedDataDaysRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDaysRemainingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDaysRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
+func BACnetConstructedDataDaysRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaysRemaining"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDaysRemainingParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("daysRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for daysRemaining")
 	}
-	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _daysRemainingErr != nil {
 		return nil, errors.Wrap(_daysRemainingErr, "Error parsing 'daysRemaining' field of BACnetConstructedDataDaysRemaining")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDaysRemainingParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("daysRemaining"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for daysRemaining")
 		}
-		_daysRemainingErr := writeBuffer.WriteSerializable(m.GetDaysRemaining())
+		_daysRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetDaysRemaining())
 		if popErr := writeBuffer.PopContext("daysRemaining"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for daysRemaining")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_daysRemainingErr, "Error serializing 'daysRemaining' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) isBACnetConstructedDataDaysRemaining() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDaysRemaining) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

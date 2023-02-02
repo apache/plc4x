@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetResolution() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetResolution())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetTypeName() str
 	return "BACnetConstructedDataPositiveIntegerValueResolution"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (resolution)
-	lengthInBits += m.Resolution.GetLengthInBits()
+	lengthInBits += m.Resolution.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPositiveIntegerValueResolutionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueResolution, error) {
-	return BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueResolution, error) {
+func BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueResolution, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueResolution"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(readBuff
 	if pullErr := readBuffer.PullContext("resolution"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for resolution")
 	}
-	_resolution, _resolutionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_resolution, _resolutionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _resolutionErr != nil {
 		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataPositiveIntegerValueResolution")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(readBuff
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWrit
 		if pushErr := writeBuffer.PushContext("resolution"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for resolution")
 		}
-		_resolutionErr := writeBuffer.WriteSerializable(m.GetResolution())
+		_resolutionErr := writeBuffer.WriteSerializable(ctx, m.GetResolution())
 		if popErr := writeBuffer.PopContext("resolution"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for resolution")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWrit
 			return errors.Wrap(_resolutionErr, "Error serializing 'resolution' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) isBACnetConstructedDataPositiveIntegerValueResolution() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

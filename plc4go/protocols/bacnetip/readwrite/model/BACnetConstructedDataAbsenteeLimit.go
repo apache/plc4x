@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetAbsenteeLimit() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataAbsenteeLimit) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetAbsenteeLimit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetTypeName() string {
 	return "BACnetConstructedDataAbsenteeLimit"
 }
 
-func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (absenteeLimit)
-	lengthInBits += m.AbsenteeLimit.GetLengthInBits()
+	lengthInBits += m.AbsenteeLimit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAbsenteeLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAbsenteeLimit, error) {
-	return BACnetConstructedDataAbsenteeLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAbsenteeLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAbsenteeLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAbsenteeLimit, error) {
+func BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAbsenteeLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAbsenteeLimit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAbsenteeLimitParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("absenteeLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for absenteeLimit")
 	}
-	_absenteeLimit, _absenteeLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_absenteeLimit, _absenteeLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _absenteeLimitErr != nil {
 		return nil, errors.Wrap(_absenteeLimitErr, "Error parsing 'absenteeLimit' field of BACnetConstructedDataAbsenteeLimit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAbsenteeLimitParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataAbsenteeLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("absenteeLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for absenteeLimit")
 		}
-		_absenteeLimitErr := writeBuffer.WriteSerializable(m.GetAbsenteeLimit())
+		_absenteeLimitErr := writeBuffer.WriteSerializable(ctx, m.GetAbsenteeLimit())
 		if popErr := writeBuffer.PopContext("absenteeLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for absenteeLimit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_absenteeLimitErr, "Error serializing 'absenteeLimit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAbsenteeLimit) isBACnetConstructedDataAbsenteeLimit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

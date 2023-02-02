@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetFeedbackValue() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetActualValue() BACnetBinaryPVTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetBinaryPVTagged(m.GetFeedbackValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetTypeName() string {
 	return "BACnetConstructedDataBinaryOutputFeedbackValue"
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (feedbackValue)
-	lengthInBits += m.FeedbackValue.GetLengthInBits()
+	lengthInBits += m.FeedbackValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBinaryOutputFeedbackValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
-	return BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
+func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryOutputFeedbackValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
 	}
-	_feedbackValue, _feedbackValueErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_feedbackValue, _feedbackValueErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _feedbackValueErr != nil {
 		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataBinaryOutputFeedbackValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("feedbackValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for feedbackValue")
 		}
-		_feedbackValueErr := writeBuffer.WriteSerializable(m.GetFeedbackValue())
+		_feedbackValueErr := writeBuffer.WriteSerializable(ctx, m.GetFeedbackValue())
 		if popErr := writeBuffer.PopContext("feedbackValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for feedbackValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) isBACnetConstructedDataBinaryOutputFeedbackValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

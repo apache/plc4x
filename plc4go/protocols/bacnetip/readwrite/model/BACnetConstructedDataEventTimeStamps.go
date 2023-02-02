@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -111,24 +113,32 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetEventTimeStamps() []BACnetTim
 ///////////////////////
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetZero() uint64 {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetToOffnormal() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[0]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetToFault() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[1]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetToNormal() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[2]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
@@ -165,24 +175,20 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetTypeName() string {
 	return "BACnetConstructedDataEventTimeStamps"
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (numberOfDataElements)
 	if m.NumberOfDataElements != nil {
-		lengthInBits += m.NumberOfDataElements.GetLengthInBits()
+		lengthInBits += m.NumberOfDataElements.GetLengthInBits(ctx)
 	}
 
 	// Array field
 	if len(m.EventTimeStamps) > 0 {
 		for _, element := range m.EventTimeStamps {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
@@ -195,15 +201,15 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEventTimeStampsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
-	return BACnetConstructedDataEventTimeStampsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEventTimeStampsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEventTimeStampsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
+func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimeStamps"); pullErr != nil {
@@ -224,7 +230,7 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(readBuffer utils.ReadBu
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -247,7 +253,7 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(readBuffer utils.ReadBu
 	var eventTimeStamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeStampParseWithBuffer(readBuffer)
+			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'eventTimeStamps' field of BACnetConstructedDataEventTimeStamps")
 			}
@@ -296,14 +302,14 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -311,7 +317,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventTimeStamps")
 		}
 		// Virtual field
-		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
+		if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
@@ -322,7 +328,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBu
 				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.GetNumberOfDataElements()
-			_numberOfDataElementsErr := writeBuffer.WriteSerializable(numberOfDataElements)
+			_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
@@ -335,8 +341,11 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
 		}
-		for _, _element := range m.GetEventTimeStamps() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetEventTimeStamps() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetEventTimeStamps()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
 			}
@@ -345,15 +354,15 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(popErr, "Error popping for eventTimeStamps")
 		}
 		// Virtual field
-		if _toOffnormalErr := writeBuffer.WriteVirtual("toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {
+		if _toOffnormalErr := writeBuffer.WriteVirtual(ctx, "toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {
 			return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
 		}
 		// Virtual field
-		if _toFaultErr := writeBuffer.WriteVirtual("toFault", m.GetToFault()); _toFaultErr != nil {
+		if _toFaultErr := writeBuffer.WriteVirtual(ctx, "toFault", m.GetToFault()); _toFaultErr != nil {
 			return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
 		}
 		// Virtual field
-		if _toNormalErr := writeBuffer.WriteVirtual("toNormal", m.GetToNormal()); _toNormalErr != nil {
+		if _toNormalErr := writeBuffer.WriteVirtual(ctx, "toNormal", m.GetToNormal()); _toNormalErr != nil {
 			return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
 		}
 
@@ -362,7 +371,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) isBACnetConstructedDataEventTimeStamps() bool {
@@ -374,7 +383,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

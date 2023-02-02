@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastDeviceGroup(structType interface{}) DeviceGroup {
 	return castFunc(structType)
 }
 
-func (m DeviceGroup) GetLengthInBits() uint16 {
+func (m DeviceGroup) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m DeviceGroup) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DeviceGroup) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceGroupParse(theBytes []byte) (DeviceGroup, error) {
-	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DeviceGroupParse(ctx context.Context, theBytes []byte) (DeviceGroup, error) {
+	return DeviceGroupParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := readBuffer.ReadUint8("DeviceGroup", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceGroup")
@@ -120,13 +121,13 @@ func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error
 
 func (e DeviceGroup) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DeviceGroup) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DeviceGroup) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

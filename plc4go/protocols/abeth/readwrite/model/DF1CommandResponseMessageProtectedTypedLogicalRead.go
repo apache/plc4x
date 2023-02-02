@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -112,12 +113,8 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetTypeName() stri
 	return "DF1CommandResponseMessageProtectedTypedLogicalRead"
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -127,15 +124,15 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBitsCon
 	return lengthInBits
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DF1CommandResponseMessageProtectedTypedLogicalReadParse(theBytes []byte, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
-	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), payloadLength)
+	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), payloadLength)
 }
 
-func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {
@@ -181,14 +178,14 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(readBuffe
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -200,7 +197,8 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
-		for _, _element := range m.GetData() {
+		for _curItem, _element := range m.GetData() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
@@ -215,7 +213,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) isDF1CommandResponseMessageProtectedTypedLogicalRead() bool {
@@ -227,7 +225,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

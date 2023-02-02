@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,13 +54,12 @@ type _BACnetConfirmedServiceRequest struct {
 
 type _BACnetConfirmedServiceRequestChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetServiceChoice() BACnetConfirmedServiceChoice
 }
 
 type BACnetConfirmedServiceRequestParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -78,6 +78,8 @@ type BACnetConfirmedServiceRequestChild interface {
 ///////////////////////
 
 func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+	ctx := context.Background()
+	_ = ctx
 	return uint32(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint32((uint32(m.ServiceRequestLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32))
 }
 
@@ -106,7 +108,7 @@ func (m *_BACnetConfirmedServiceRequest) GetTypeName() string {
 	return "BACnetConfirmedServiceRequest"
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetParentLengthInBits() uint16 {
+func (m *_BACnetConfirmedServiceRequest) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -116,15 +118,15 @@ func (m *_BACnetConfirmedServiceRequest) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
-	return BACnetConfirmedServiceRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequest"); pullErr != nil {
@@ -137,7 +139,7 @@ func BACnetConfirmedServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, s
 	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
 	}
-	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
+	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
 	var serviceChoice BACnetConfirmedServiceChoice = serviceChoice_temp
 	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
@@ -162,69 +164,69 @@ func BACnetConfirmedServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, s
 	var typeSwitchError error
 	switch {
 	case serviceChoice == BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM: // BACnetConfirmedServiceRequestAcknowledgeAlarm
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION: // BACnetConfirmedServiceRequestConfirmedCOVNotification
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION: // BACnetConfirmedServiceRequestConfirmedEventNotification
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: // BACnetConfirmedServiceRequestGetEnrollmentSummary
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: // BACnetConfirmedServiceRequestGetEventInformation
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION: // BACnetConfirmedServiceRequestLifeSafetyOperation
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV: // BACnetConfirmedServiceRequestSubscribeCOV
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY: // BACnetConfirmedServiceRequestSubscribeCOVProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: // BACnetConfirmedServiceRequestAtomicReadFile
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: // BACnetConfirmedServiceRequestAtomicWriteFile
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // BACnetConfirmedServiceRequestAddListElement
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // BACnetConfirmedServiceRequestRemoveListElement
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // BACnetConfirmedServiceRequestCreateObject
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_DELETE_OBJECT: // BACnetConfirmedServiceRequestDeleteObject
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetConfirmedServiceRequestReadProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestReadPropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetConfirmedServiceRequestReadRange
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY: // BACnetConfirmedServiceRequestWriteProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestWritePropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL: // BACnetConfirmedServiceRequestDeviceCommunicationControl
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE: // BACnetConfirmedServiceRequestConfirmedTextMessage
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE: // BACnetConfirmedServiceRequestReinitializeDevice
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetConfirmedServiceRequestVTOpen
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // BACnetConfirmedServiceRequestVTClose
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetConfirmedServiceRequestVTData
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTDataParseWithBuffer(readBuffer, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx, readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetConfirmedServiceRequestAuthenticate
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetConfirmedServiceRequestRequestKey
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetConfirmedServiceRequestReadPropertyConditional
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	case 0 == 0: // BACnetConfirmedServiceRequestUnknown
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestUnknownParseWithBuffer(readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestUnknownParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
@@ -242,7 +244,7 @@ func BACnetConfirmedServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, s
 	return _child, nil
 }
 
-func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error {
+func (pm *_BACnetConfirmedServiceRequest) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -257,7 +259,7 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
 	}
-	_serviceChoiceErr := writeBuffer.WriteSerializable(serviceChoice)
+	_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, serviceChoice)
 	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for serviceChoice")
 	}
@@ -266,7 +268,7 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 	// Virtual field
-	if _serviceRequestPayloadLengthErr := writeBuffer.WriteVirtual("serviceRequestPayloadLength", m.GetServiceRequestPayloadLength()); _serviceRequestPayloadLengthErr != nil {
+	if _serviceRequestPayloadLengthErr := writeBuffer.WriteVirtual(ctx, "serviceRequestPayloadLength", m.GetServiceRequestPayloadLength()); _serviceRequestPayloadLengthErr != nil {
 		return errors.Wrap(_serviceRequestPayloadLengthErr, "Error serializing 'serviceRequestPayloadLength' field")
 	}
 
@@ -300,7 +302,7 @@ func (m *_BACnetConfirmedServiceRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

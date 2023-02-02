@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,11 +89,7 @@ func (m *_DIBSuppSvcFamilies) GetTypeName() string {
 	return "DIBSuppSvcFamilies"
 }
 
-func (m *_DIBSuppSvcFamilies) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DIBSuppSvcFamilies) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_DIBSuppSvcFamilies) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -103,22 +101,22 @@ func (m *_DIBSuppSvcFamilies) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.ServiceIds) > 0 {
 		for _, element := range m.ServiceIds {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_DIBSuppSvcFamilies) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DIBSuppSvcFamilies) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DIBSuppSvcFamiliesParse(theBytes []byte) (DIBSuppSvcFamilies, error) {
-	return DIBSuppSvcFamiliesParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return DIBSuppSvcFamiliesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DIBSuppSvcFamiliesParseWithBuffer(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
+func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
@@ -151,7 +149,7 @@ func DIBSuppSvcFamiliesParseWithBuffer(readBuffer utils.ReadBuffer) (DIBSuppSvcF
 		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
 		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
 		for positionAware.GetPos() < _serviceIdsEndPos {
-			_item, _err := ServiceIdParseWithBuffer(readBuffer)
+			_item, _err := ServiceIdParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field of DIBSuppSvcFamilies")
 			}
@@ -174,14 +172,14 @@ func DIBSuppSvcFamiliesParseWithBuffer(readBuffer utils.ReadBuffer) (DIBSuppSvcF
 }
 
 func (m *_DIBSuppSvcFamilies) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DIBSuppSvcFamilies"); pushErr != nil {
@@ -189,7 +187,7 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.GetLengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -206,8 +204,11 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 	if pushErr := writeBuffer.PushContext("serviceIds", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for serviceIds")
 	}
-	for _, _element := range m.GetServiceIds() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetServiceIds() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 		}
@@ -231,7 +232,7 @@ func (m *_DIBSuppSvcFamilies) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastBACnetAccumulatorRecordAccumulatorStatus(structType interface{}) BACnet
 	return castFunc(structType)
 }
 
-func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBits() uint16 {
+func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusParse(theBytes []byte) (BACnetAccumulatorRecordAccumulatorStatus, error) {
-	return BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccumulatorRecordAccumulatorStatusParse(ctx context.Context, theBytes []byte) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+	return BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
@@ -132,13 +133,13 @@ func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(readBuffer utils.Re
 
 func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccumulatorRecordAccumulatorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccumulatorRecordAccumulatorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

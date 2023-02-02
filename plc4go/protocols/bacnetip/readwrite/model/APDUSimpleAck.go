@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,12 +118,8 @@ func (m *_APDUSimpleAck) GetTypeName() string {
 	return "APDUSimpleAck"
 }
 
-func (m *_APDUSimpleAck) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUSimpleAck) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -136,15 +133,15 @@ func (m *_APDUSimpleAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUSimpleAck) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUSimpleAckParse(theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
-	return APDUSimpleAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUSimpleAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUSimpleAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
+func APDUSimpleAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
@@ -181,7 +178,7 @@ func APDUSimpleAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16
 	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
 	}
-	_serviceChoice, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
+	_serviceChoice, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of APDUSimpleAck")
 	}
@@ -208,14 +205,14 @@ func APDUSimpleAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16
 }
 
 func (m *_APDUSimpleAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUSimpleAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -250,7 +247,7 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceChoice")
 		}
-		_serviceChoiceErr := writeBuffer.WriteSerializable(m.GetServiceChoice())
+		_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetServiceChoice())
 		if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceChoice")
 		}
@@ -263,7 +260,7 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUSimpleAck) isAPDUSimpleAck() bool {
@@ -275,7 +272,7 @@ func (m *_APDUSimpleAck) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

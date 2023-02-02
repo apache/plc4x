@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetMinimumOnTime() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataMinimumOnTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetMinimumOnTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetTypeName() string {
 	return "BACnetConstructedDataMinimumOnTime"
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (minimumOnTime)
-	lengthInBits += m.MinimumOnTime.GetLengthInBits()
+	lengthInBits += m.MinimumOnTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMinimumOnTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
-	return BACnetConstructedDataMinimumOnTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMinimumOnTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMinimumOnTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
+func BACnetConstructedDataMinimumOnTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOnTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMinimumOnTimeParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("minimumOnTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumOnTime")
 	}
-	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _minimumOnTimeErr != nil {
 		return nil, errors.Wrap(_minimumOnTimeErr, "Error parsing 'minimumOnTime' field of BACnetConstructedDataMinimumOnTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMinimumOnTimeParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataMinimumOnTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("minimumOnTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumOnTime")
 		}
-		_minimumOnTimeErr := writeBuffer.WriteSerializable(m.GetMinimumOnTime())
+		_minimumOnTimeErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumOnTime())
 		if popErr := writeBuffer.PopContext("minimumOnTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumOnTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_minimumOnTimeErr, "Error serializing 'minimumOnTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMinimumOnTime) isBACnetConstructedDataMinimumOnTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

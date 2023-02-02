@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -125,36 +126,32 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestReadProperty"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += m.ArrayIndex.GetLengthInBits()
+		lengthInBits += m.ArrayIndex.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadPropertyParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
-	return BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
+func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadProperty"); pullErr != nil {
@@ -167,7 +164,7 @@ func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestReadProperty")
 	}
@@ -180,7 +177,7 @@ func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetConfirmedServiceRequestReadProperty")
 	}
@@ -196,7 +193,7 @@ func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer utils.R
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -229,14 +226,14 @@ func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -248,7 +245,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -260,7 +257,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 		}
-		_propertyIdentifierErr := writeBuffer.WriteSerializable(m.GetPropertyIdentifier())
+		_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
 		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 		}
@@ -275,7 +272,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(wr
 				return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 			}
 			arrayIndex = m.GetArrayIndex()
-			_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
+			_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
 			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for arrayIndex")
 			}
@@ -289,7 +286,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) isBACnetConfirmedServiceRequestReadProperty() bool {
@@ -301,7 +298,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

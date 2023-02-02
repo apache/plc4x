@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,19 +148,19 @@ func CastBACnetLightingOperation(structType interface{}) BACnetLightingOperation
 	return castFunc(structType)
 }
 
-func (m BACnetLightingOperation) GetLengthInBits() uint16 {
+func (m BACnetLightingOperation) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetLightingOperation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLightingOperation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingOperationParse(theBytes []byte) (BACnetLightingOperation, error) {
-	return BACnetLightingOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLightingOperationParse(ctx context.Context, theBytes []byte) (BACnetLightingOperation, error) {
+	return BACnetLightingOperationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLightingOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
+func BACnetLightingOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
 	val, err := readBuffer.ReadUint16("BACnetLightingOperation", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingOperation")
@@ -174,13 +175,13 @@ func BACnetLightingOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 
 func (e BACnetLightingOperation) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLightingOperation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLightingOperation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

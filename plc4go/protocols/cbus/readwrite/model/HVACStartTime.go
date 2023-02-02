@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -75,22 +76,32 @@ func (m *_HVACStartTime) GetMinutesSinceSunday12AM() uint16 {
 ///////////////////////
 
 func (m *_HVACStartTime) GetHoursSinceSunday12AM() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetMinutesSinceSunday12AM()) / float32(float32(60)))
 }
 
 func (m *_HVACStartTime) GetDaysSinceSunday12AM() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetHoursSinceSunday12AM()) / float32(float32(24)))
 }
 
 func (m *_HVACStartTime) GetDayOfWeek() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(uint8(m.GetDaysSinceSunday12AM()) + uint8(uint8(1)))
 }
 
 func (m *_HVACStartTime) GetHour() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(uint8(m.GetHoursSinceSunday12AM()) % uint8(uint8(24)))
 }
 
 func (m *_HVACStartTime) GetMinute() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(uint8(m.GetMinutesSinceSunday12AM()) % uint8(uint8(60)))
 }
 
@@ -119,11 +130,7 @@ func (m *_HVACStartTime) GetTypeName() string {
 	return "HVACStartTime"
 }
 
-func (m *_HVACStartTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACStartTime) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (minutesSinceSunday12AM)
@@ -142,15 +149,15 @@ func (m *_HVACStartTime) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACStartTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACStartTimeParse(theBytes []byte) (HVACStartTime, error) {
-	return HVACStartTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACStartTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
+func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStartTime"); pullErr != nil {
@@ -202,14 +209,14 @@ func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, e
 }
 
 func (m *_HVACStartTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACStartTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACStartTime"); pushErr != nil {
@@ -223,23 +230,23 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(_minutesSinceSunday12AMErr, "Error serializing 'minutesSinceSunday12AM' field")
 	}
 	// Virtual field
-	if _hoursSinceSunday12AMErr := writeBuffer.WriteVirtual("hoursSinceSunday12AM", m.GetHoursSinceSunday12AM()); _hoursSinceSunday12AMErr != nil {
+	if _hoursSinceSunday12AMErr := writeBuffer.WriteVirtual(ctx, "hoursSinceSunday12AM", m.GetHoursSinceSunday12AM()); _hoursSinceSunday12AMErr != nil {
 		return errors.Wrap(_hoursSinceSunday12AMErr, "Error serializing 'hoursSinceSunday12AM' field")
 	}
 	// Virtual field
-	if _daysSinceSunday12AMErr := writeBuffer.WriteVirtual("daysSinceSunday12AM", m.GetDaysSinceSunday12AM()); _daysSinceSunday12AMErr != nil {
+	if _daysSinceSunday12AMErr := writeBuffer.WriteVirtual(ctx, "daysSinceSunday12AM", m.GetDaysSinceSunday12AM()); _daysSinceSunday12AMErr != nil {
 		return errors.Wrap(_daysSinceSunday12AMErr, "Error serializing 'daysSinceSunday12AM' field")
 	}
 	// Virtual field
-	if _dayOfWeekErr := writeBuffer.WriteVirtual("dayOfWeek", m.GetDayOfWeek()); _dayOfWeekErr != nil {
+	if _dayOfWeekErr := writeBuffer.WriteVirtual(ctx, "dayOfWeek", m.GetDayOfWeek()); _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
-	if _hourErr := writeBuffer.WriteVirtual("hour", m.GetHour()); _hourErr != nil {
+	if _hourErr := writeBuffer.WriteVirtual(ctx, "hour", m.GetHour()); _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 	// Virtual field
-	if _minuteErr := writeBuffer.WriteVirtual("minute", m.GetMinute()); _minuteErr != nil {
+	if _minuteErr := writeBuffer.WriteVirtual(ctx, "minute", m.GetMinute()); _minuteErr != nil {
 		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 	}
 
@@ -258,7 +265,7 @@ func (m *_HVACStartTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

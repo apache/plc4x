@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -148,12 +149,8 @@ func (m *_S7MessageObjectRequest) GetTypeName() string {
 	return "S7MessageObjectRequest"
 }
 
-func (m *_S7MessageObjectRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7MessageObjectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7MessageObjectRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -179,15 +176,15 @@ func (m *_S7MessageObjectRequest) GetLengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *_S7MessageObjectRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7MessageObjectRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7MessageObjectRequestParse(theBytes []byte, cpuFunctionType uint8) (S7MessageObjectRequest, error) {
-	return S7MessageObjectRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+	return S7MessageObjectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
-func S7MessageObjectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectRequest, error) {
+func S7MessageObjectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageObjectRequest"); pullErr != nil {
@@ -218,7 +215,7 @@ func S7MessageObjectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunct
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
 	}
-	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(readBuffer)
+	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(ctx, readBuffer)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of S7MessageObjectRequest")
 	}
@@ -248,7 +245,7 @@ func S7MessageObjectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunct
 	if pullErr := readBuffer.PullContext("queryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for queryType")
 	}
-	_queryType, _queryTypeErr := QueryTypeParseWithBuffer(readBuffer)
+	_queryType, _queryTypeErr := QueryTypeParseWithBuffer(ctx, readBuffer)
 	if _queryTypeErr != nil {
 		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field of S7MessageObjectRequest")
 	}
@@ -278,7 +275,7 @@ func S7MessageObjectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunct
 	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmType")
 	}
-	_alarmType, _alarmTypeErr := AlarmTypeParseWithBuffer(readBuffer)
+	_alarmType, _alarmTypeErr := AlarmTypeParseWithBuffer(ctx, readBuffer)
 	if _alarmTypeErr != nil {
 		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7MessageObjectRequest")
 	}
@@ -305,14 +302,14 @@ func S7MessageObjectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunct
 }
 
 func (m *_S7MessageObjectRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -336,7 +333,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for syntaxId")
 		}
-		_syntaxIdErr := writeBuffer.WriteSerializable(m.GetSyntaxId())
+		_syntaxIdErr := writeBuffer.WriteSerializable(ctx, m.GetSyntaxId())
 		if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for syntaxId")
 		}
@@ -364,7 +361,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("queryType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for queryType")
 		}
-		_queryTypeErr := writeBuffer.WriteSerializable(m.GetQueryType())
+		_queryTypeErr := writeBuffer.WriteSerializable(ctx, m.GetQueryType())
 		if popErr := writeBuffer.PopContext("queryType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for queryType")
 		}
@@ -392,7 +389,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmType")
 		}
-		_alarmTypeErr := writeBuffer.WriteSerializable(m.GetAlarmType())
+		_alarmTypeErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmType())
 		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmType")
 		}
@@ -405,7 +402,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7MessageObjectRequest) isS7MessageObjectRequest() bool {
@@ -417,7 +414,7 @@ func (m *_S7MessageObjectRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

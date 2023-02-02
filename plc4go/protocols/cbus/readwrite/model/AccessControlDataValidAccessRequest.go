@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_AccessControlDataValidAccessRequest) GetTypeName() string {
 	return "AccessControlDataValidAccessRequest"
 }
 
-func (m *_AccessControlDataValidAccessRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AccessControlDataValidAccessRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AccessControlDataValidAccessRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (accessControlDirection)
 	lengthInBits += 8
@@ -133,15 +130,15 @@ func (m *_AccessControlDataValidAccessRequest) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AccessControlDataValidAccessRequestParse(theBytes []byte, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
-	return AccessControlDataValidAccessRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return AccessControlDataValidAccessRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func AccessControlDataValidAccessRequestParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
+func AccessControlDataValidAccessRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataValidAccessRequest"); pullErr != nil {
@@ -154,7 +151,7 @@ func AccessControlDataValidAccessRequestParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("accessControlDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlDirection")
 	}
-	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(readBuffer)
+	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(ctx, readBuffer)
 	if _accessControlDirectionErr != nil {
 		return nil, errors.Wrap(_accessControlDirectionErr, "Error parsing 'accessControlDirection' field of AccessControlDataValidAccessRequest")
 	}
@@ -184,14 +181,14 @@ func AccessControlDataValidAccessRequestParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_AccessControlDataValidAccessRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -203,7 +200,7 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("accessControlDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessControlDirection")
 		}
-		_accessControlDirectionErr := writeBuffer.WriteSerializable(m.GetAccessControlDirection())
+		_accessControlDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlDirection())
 		if popErr := writeBuffer.PopContext("accessControlDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessControlDirection")
 		}
@@ -222,7 +219,7 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AccessControlDataValidAccessRequest) isAccessControlDataValidAccessRequest() bool {
@@ -234,7 +231,7 @@ func (m *_AccessControlDataValidAccessRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

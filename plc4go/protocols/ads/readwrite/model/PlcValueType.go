@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -261,19 +262,19 @@ func CastPlcValueType(structType interface{}) PlcValueType {
 	return castFunc(structType)
 }
 
-func (m PlcValueType) GetLengthInBits() uint16 {
+func (m PlcValueType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m PlcValueType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m PlcValueType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func PlcValueTypeParse(theBytes []byte) (PlcValueType, error) {
-	return PlcValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func PlcValueTypeParse(ctx context.Context, theBytes []byte) (PlcValueType, error) {
+	return PlcValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func PlcValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (PlcValueType, error) {
+func PlcValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PlcValueType, error) {
 	val, err := readBuffer.ReadUint8("PlcValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PlcValueType")
@@ -288,13 +289,13 @@ func PlcValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (PlcValueType, err
 
 func (e PlcValueType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e PlcValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e PlcValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PlcValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

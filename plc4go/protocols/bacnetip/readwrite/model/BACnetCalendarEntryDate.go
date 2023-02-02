@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetCalendarEntryDate) GetTypeName() string {
 	return "BACnetCalendarEntryDate"
 }
 
-func (m *_BACnetCalendarEntryDate) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetCalendarEntryDate) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetCalendarEntryDate) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dateValue)
-	lengthInBits += m.DateValue.GetLengthInBits()
+	lengthInBits += m.DateValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetCalendarEntryDate) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetCalendarEntryDate) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetCalendarEntryDateParse(theBytes []byte) (BACnetCalendarEntryDate, error) {
-	return BACnetCalendarEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetCalendarEntryDateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCalendarEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
+func BACnetCalendarEntryDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDate"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetCalendarEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
+	_dateValue, _dateValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetCalendarEntryDate")
 	}
@@ -162,14 +159,14 @@ func BACnetCalendarEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetCalendarEntryDate) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dateValue")
 		}
-		_dateValueErr := writeBuffer.WriteSerializable(m.GetDateValue())
+		_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
 		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dateValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetCalendarEntryDate) isBACnetCalendarEntryDate() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetCalendarEntryDate) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

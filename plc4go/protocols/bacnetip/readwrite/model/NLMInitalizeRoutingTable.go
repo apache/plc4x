@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,36 +117,34 @@ func (m *_NLMInitalizeRoutingTable) GetTypeName() string {
 	return "NLMInitalizeRoutingTable"
 }
 
-func (m *_NLMInitalizeRoutingTable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMInitalizeRoutingTable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMInitalizeRoutingTable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.PortMappings) > 0 {
-		for i, element := range m.PortMappings {
-			last := i == len(m.PortMappings)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.PortMappings {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.PortMappings), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMInitalizeRoutingTable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMInitalizeRoutingTable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMInitalizeRoutingTableParse(theBytes []byte, apduLength uint16) (NLMInitalizeRoutingTable, error) {
-	return NLMInitalizeRoutingTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMInitalizeRoutingTableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMInitalizeRoutingTableParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitalizeRoutingTable, error) {
+func NLMInitalizeRoutingTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitalizeRoutingTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTable"); pullErr != nil {
@@ -171,12 +171,16 @@ func NLMInitalizeRoutingTableParseWithBuffer(readBuffer utils.ReadBuffer, apduLe
 		portMappings = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
-			_item, _err := NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer)
+		_numItems := uint16(numberOfPorts)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := NLMInitalizeRoutingTablePortMappingParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitalizeRoutingTable")
 			}
-			portMappings[curItem] = _item.(NLMInitalizeRoutingTablePortMapping)
+			portMappings[_curItem] = _item.(NLMInitalizeRoutingTablePortMapping)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("portMappings", utils.WithRenderAsList(true)); closeErr != nil {
@@ -200,14 +204,14 @@ func NLMInitalizeRoutingTableParseWithBuffer(readBuffer utils.ReadBuffer, apduLe
 }
 
 func (m *_NLMInitalizeRoutingTable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -226,8 +230,11 @@ func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for portMappings")
 		}
-		for _, _element := range m.GetPortMappings() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetPortMappings() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetPortMappings()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
 			}
@@ -241,7 +248,7 @@ func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMInitalizeRoutingTable) isNLMInitalizeRoutingTable() bool {
@@ -253,7 +260,7 @@ func (m *_NLMInitalizeRoutingTable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

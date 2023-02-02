@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -55,12 +56,11 @@ type _ReplyOrConfirmation struct {
 
 type _ReplyOrConfirmationChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type ReplyOrConfirmationParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ReplyOrConfirmation, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ReplyOrConfirmation, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -92,6 +92,8 @@ func (m *_ReplyOrConfirmation) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((bool((m.GetPeekedByte()) >= (0x67)))) && bool((bool((m.GetPeekedByte()) <= (0x7A)))))
 }
 
@@ -120,7 +122,7 @@ func (m *_ReplyOrConfirmation) GetTypeName() string {
 	return "ReplyOrConfirmation"
 }
 
-func (m *_ReplyOrConfirmation) GetParentLengthInBits() uint16 {
+func (m *_ReplyOrConfirmation) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -128,15 +130,15 @@ func (m *_ReplyOrConfirmation) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ReplyOrConfirmation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ReplyOrConfirmation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ReplyOrConfirmationParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
-	return ReplyOrConfirmationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyOrConfirmationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ReplyOrConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
+func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmation"); pullErr != nil {
@@ -170,11 +172,11 @@ func ReplyOrConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions
 	var typeSwitchError error
 	switch {
 	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ServerErrorReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v, peekedByte=%v]", isAlpha, peekedByte)
 	}
@@ -192,7 +194,7 @@ func ReplyOrConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions
 	return _child, nil
 }
 
-func (pm *_ReplyOrConfirmation) SerializeParent(writeBuffer utils.WriteBuffer, child ReplyOrConfirmation, serializeChildFunction func() error) error {
+func (pm *_ReplyOrConfirmation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ReplyOrConfirmation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -202,7 +204,7 @@ func (pm *_ReplyOrConfirmation) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmation")
 	}
 	// Virtual field
-	if _isAlphaErr := writeBuffer.WriteVirtual("isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
+	if _isAlphaErr := writeBuffer.WriteVirtual(ctx, "isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
 		return errors.Wrap(_isAlphaErr, "Error serializing 'isAlpha' field")
 	}
 
@@ -239,7 +241,7 @@ func (m *_ReplyOrConfirmation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetFaultHighLimit() BA
 ///////////////////////
 
 func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetFaultHighLimit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetTypeName() string {
 	return "BACnetConstructedDataAnalogValueFaultHighLimit"
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (faultHighLimit)
-	lengthInBits += m.FaultHighLimit.GetLengthInBits()
+	lengthInBits += m.FaultHighLimit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAnalogValueFaultHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
-	return BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
+func BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueFaultHighLimit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
-	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _faultHighLimitErr != nil {
 		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataAnalogValueFaultHighLimit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
 		}
-		_faultHighLimitErr := writeBuffer.WriteSerializable(m.GetFaultHighLimit())
+		_faultHighLimitErr := writeBuffer.WriteSerializable(ctx, m.GetFaultHighLimit())
 		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for faultHighLimit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) SerializeWithWriteBuff
 			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) isBACnetConstructedDataAnalogValueFaultHighLimit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

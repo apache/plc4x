@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -88,33 +89,29 @@ func (m *_BACnetReadAccessResult) GetTypeName() string {
 	return "BACnetReadAccessResult"
 }
 
-func (m *_BACnetReadAccessResult) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetReadAccessResult) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetReadAccessResult) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (listOfResults)
 	if m.ListOfResults != nil {
-		lengthInBits += m.ListOfResults.GetLengthInBits()
+		lengthInBits += m.ListOfResults.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessResult) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetReadAccessResult) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetReadAccessResultParse(theBytes []byte) (BACnetReadAccessResult, error) {
-	return BACnetReadAccessResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetReadAccessResultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetReadAccessResultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
+func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResult"); pullErr != nil {
@@ -127,7 +124,7 @@ func BACnetReadAccessResultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetR
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessResult")
 	}
@@ -143,7 +140,7 @@ func BACnetReadAccessResultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetR
 		if pullErr := readBuffer.PullContext("listOfResults"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfResults")
 		}
-		_val, _err := BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer, uint8(1), objectIdentifier.GetObjectType())
+		_val, _err := BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, uint8(1), objectIdentifier.GetObjectType())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -170,14 +167,14 @@ func BACnetReadAccessResultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetR
 }
 
 func (m *_BACnetReadAccessResult) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessResult"); pushErr != nil {
@@ -188,7 +185,7 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+	_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -203,7 +200,7 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for listOfResults")
 		}
 		listOfResults = m.GetListOfResults()
-		_listOfResultsErr := writeBuffer.WriteSerializable(listOfResults)
+		_listOfResultsErr := writeBuffer.WriteSerializable(ctx, listOfResults)
 		if popErr := writeBuffer.PopContext("listOfResults"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfResults")
 		}
@@ -227,7 +224,7 @@ func (m *_BACnetReadAccessResult) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

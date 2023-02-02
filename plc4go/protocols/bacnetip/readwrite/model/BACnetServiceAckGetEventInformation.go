@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_BACnetServiceAckGetEventInformation) GetTypeName() string {
 	return "BACnetServiceAckGetEventInformation"
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckGetEventInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (listOfEventSummaries)
-	lengthInBits += m.ListOfEventSummaries.GetLengthInBits()
+	lengthInBits += m.ListOfEventSummaries.GetLengthInBits(ctx)
 
 	// Simple field (moreEvents)
-	lengthInBits += m.MoreEvents.GetLengthInBits()
+	lengthInBits += m.MoreEvents.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckGetEventInformationParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
-	return BACnetServiceAckGetEventInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+	return BACnetServiceAckGetEventInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
-func BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
+func BACnetServiceAckGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
@@ -152,7 +149,7 @@ func BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("listOfEventSummaries"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
 	}
-	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _listOfEventSummariesErr != nil {
 		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field of BACnetServiceAckGetEventInformation")
 	}
@@ -165,7 +162,7 @@ func BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("moreEvents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for moreEvents")
 	}
-	_moreEvents, _moreEventsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_moreEvents, _moreEventsErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _moreEventsErr != nil {
 		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field of BACnetServiceAckGetEventInformation")
 	}
@@ -191,14 +188,14 @@ func BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetServiceAckGetEventInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("listOfEventSummaries"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
 		}
-		_listOfEventSummariesErr := writeBuffer.WriteSerializable(m.GetListOfEventSummaries())
+		_listOfEventSummariesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfEventSummaries())
 		if popErr := writeBuffer.PopContext("listOfEventSummaries"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
 		}
@@ -222,7 +219,7 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("moreEvents"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for moreEvents")
 		}
-		_moreEventsErr := writeBuffer.WriteSerializable(m.GetMoreEvents())
+		_moreEventsErr := writeBuffer.WriteSerializable(ctx, m.GetMoreEvents())
 		if popErr := writeBuffer.PopContext("moreEvents"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for moreEvents")
 		}
@@ -235,7 +232,7 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckGetEventInformation) isBACnetServiceAckGetEventInformation() bool {
@@ -247,7 +244,7 @@ func (m *_BACnetServiceAckGetEventInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

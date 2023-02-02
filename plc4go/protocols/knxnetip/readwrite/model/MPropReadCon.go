@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,12 +148,8 @@ func (m *_MPropReadCon) GetTypeName() string {
 	return "MPropReadCon"
 }
 
-func (m *_MPropReadCon) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MPropReadCon) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -175,15 +172,15 @@ func (m *_MPropReadCon) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_MPropReadCon) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MPropReadCon) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MPropReadConParse(theBytes []byte, size uint16) (MPropReadCon, error) {
-	return MPropReadConParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+	return MPropReadConParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
 }
 
-func MPropReadConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
+func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
@@ -255,14 +252,14 @@ func MPropReadConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPro
 }
 
 func (m *_MPropReadCon) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MPropReadCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -317,7 +314,7 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MPropReadCon) isMPropReadCon() bool {
@@ -329,7 +326,7 @@ func (m *_MPropReadCon) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

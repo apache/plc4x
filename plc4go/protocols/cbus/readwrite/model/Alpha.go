@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,11 +81,7 @@ func (m *_Alpha) GetTypeName() string {
 	return "Alpha"
 }
 
-func (m *_Alpha) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_Alpha) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_Alpha) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (character)
@@ -93,15 +90,15 @@ func (m *_Alpha) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_Alpha) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Alpha) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AlphaParse(theBytes []byte) (Alpha, error) {
-	return AlphaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AlphaParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AlphaParseWithBuffer(readBuffer utils.ReadBuffer) (Alpha, error) {
+func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Alpha"); pullErr != nil {
@@ -133,14 +130,14 @@ func AlphaParseWithBuffer(readBuffer utils.ReadBuffer) (Alpha, error) {
 }
 
 func (m *_Alpha) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_Alpha) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Alpha"); pushErr != nil {
@@ -169,7 +166,7 @@ func (m *_Alpha) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,12 +54,11 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 
 type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetFaultParameterFaultExtendedParametersEntryParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultExtendedParametersEntry, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultExtendedParametersEntry, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,10 +90,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedTagHeader()
 ///////////////////////
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextTag() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
 }
 
@@ -122,7 +126,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetTypeName() string
 	return "BACnetFaultParameterFaultExtendedParametersEntry"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetParentLengthInBits() uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -132,15 +136,15 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetParentLengthInBit
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntry"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(readBuffer 
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -183,33 +187,33 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(readBuffer 
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryNull
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryNullParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryNullParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryReal
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryUnsignedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryUnsignedParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBoolean
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryInteger
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryIntegerParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryIntegerParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDouble
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryOctetString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryOctetStringParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryOctetStringParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBitString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBitStringParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBitStringParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDate
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryTime
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetFaultParameterFaultExtendedParametersEntryReference
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
@@ -227,7 +231,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(readBuffer 
 	return _child, nil
 }
 
-func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultExtendedParametersEntry, serializeChildFunction func() error) error {
+func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultExtendedParametersEntry, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -237,11 +241,11 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(wri
 		return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntry")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
-	if _peekedIsContextTagErr := writeBuffer.WriteVirtual("peekedIsContextTag", m.GetPeekedIsContextTag()); _peekedIsContextTagErr != nil {
+	if _peekedIsContextTagErr := writeBuffer.WriteVirtual(ctx, "peekedIsContextTag", m.GetPeekedIsContextTag()); _peekedIsContextTagErr != nil {
 		return errors.Wrap(_peekedIsContextTagErr, "Error serializing 'peekedIsContextTag' field")
 	}
 
@@ -265,7 +269,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

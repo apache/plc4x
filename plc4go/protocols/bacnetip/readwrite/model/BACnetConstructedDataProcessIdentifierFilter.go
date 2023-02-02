@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetProcessIdentifierFilt
 ///////////////////////
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) GetActualValue() BACnetProcessIdSelection {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetProcessIdSelection(m.GetProcessIdentifierFilter())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetTypeName() string {
 	return "BACnetConstructedDataProcessIdentifierFilter"
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (processIdentifierFilter)
-	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits()
+	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataProcessIdentifierFilterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
-	return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
+func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("processIdentifierFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifierFilter")
 	}
-	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParseWithBuffer(readBuffer)
+	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParseWithBuffer(ctx, readBuffer)
 	if _processIdentifierFilterErr != nil {
 		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field of BACnetConstructedDataProcessIdentifierFilter")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("processIdentifierFilter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for processIdentifierFilter")
 		}
-		_processIdentifierFilterErr := writeBuffer.WriteSerializable(m.GetProcessIdentifierFilter())
+		_processIdentifierFilterErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifierFilter())
 		if popErr := writeBuffer.PopContext("processIdentifierFilter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for processIdentifierFilter")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 			return errors.Wrap(_processIdentifierFilterErr, "Error serializing 'processIdentifierFilter' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) isBACnetConstructedDataProcessIdentifierFilter() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

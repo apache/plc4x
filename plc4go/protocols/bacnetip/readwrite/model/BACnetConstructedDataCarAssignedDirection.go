@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetAssignedDirection() BACn
 ///////////////////////
 
 func (m *_BACnetConstructedDataCarAssignedDirection) GetActualValue() BACnetLiftCarDirectionTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLiftCarDirectionTagged(m.GetAssignedDirection())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetTypeName() string {
 	return "BACnetConstructedDataCarAssignedDirection"
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (assignedDirection)
-	lengthInBits += m.AssignedDirection.GetLengthInBits()
+	lengthInBits += m.AssignedDirection.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCarAssignedDirectionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
-	return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
+func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarAssignedDirection"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("assignedDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedDirection")
 	}
-	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _assignedDirectionErr != nil {
 		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field of BACnetConstructedDataCarAssignedDirection")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataCarAssignedDirection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("assignedDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for assignedDirection")
 		}
-		_assignedDirectionErr := writeBuffer.WriteSerializable(m.GetAssignedDirection())
+		_assignedDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAssignedDirection())
 		if popErr := writeBuffer.PopContext("assignedDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for assignedDirection")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_assignedDirectionErr, "Error serializing 'assignedDirection' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCarAssignedDirection) isBACnetConstructedDataCarAssignedDirection() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

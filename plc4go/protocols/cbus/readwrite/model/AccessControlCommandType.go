@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -173,19 +174,19 @@ func CastAccessControlCommandType(structType interface{}) AccessControlCommandTy
 	return castFunc(structType)
 }
 
-func (m AccessControlCommandType) GetLengthInBits() uint16 {
+func (m AccessControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m AccessControlCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AccessControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlCommandTypeParse(theBytes []byte) (AccessControlCommandType, error) {
-	return AccessControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AccessControlCommandTypeParse(ctx context.Context, theBytes []byte) (AccessControlCommandType, error) {
+	return AccessControlCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCommandType, error) {
+func AccessControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCommandType")
@@ -200,13 +201,13 @@ func AccessControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Acces
 
 func (e AccessControlCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AccessControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

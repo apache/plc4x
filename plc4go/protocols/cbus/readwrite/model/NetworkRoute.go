@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,36 +89,34 @@ func (m *_NetworkRoute) GetTypeName() string {
 	return "NetworkRoute"
 }
 
-func (m *_NetworkRoute) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NetworkRoute) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (networkPCI)
-	lengthInBits += m.NetworkPCI.GetLengthInBits()
+	lengthInBits += m.NetworkPCI.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.AdditionalBridgeAddresses) > 0 {
-		for i, element := range m.AdditionalBridgeAddresses {
-			last := i == len(m.AdditionalBridgeAddresses)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.AdditionalBridgeAddresses {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.AdditionalBridgeAddresses), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_NetworkRoute) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NetworkRouteParse(theBytes []byte) (NetworkRoute, error) {
-	return NetworkRouteParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return NetworkRouteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
@@ -129,7 +129,7 @@ func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, err
 	if pullErr := readBuffer.PullContext("networkPCI"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPCI")
 	}
-	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(readBuffer)
+	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(ctx, readBuffer)
 	if _networkPCIErr != nil {
 		return nil, errors.Wrap(_networkPCIErr, "Error parsing 'networkPCI' field of NetworkRoute")
 	}
@@ -149,12 +149,16 @@ func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, err
 		additionalBridgeAddresses = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(networkPCI.GetStackDepth())-uint16(uint16(1))); curItem++ {
-			_item, _err := BridgeAddressParseWithBuffer(readBuffer)
+		_numItems := uint16(uint16(networkPCI.GetStackDepth()) - uint16(uint16(1)))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := BridgeAddressParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of NetworkRoute")
 			}
-			additionalBridgeAddresses[curItem] = _item.(BridgeAddress)
+			additionalBridgeAddresses[_curItem] = _item.(BridgeAddress)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); closeErr != nil {
@@ -173,14 +177,14 @@ func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, err
 }
 
 func (m *_NetworkRoute) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NetworkRoute) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkRoute"); pushErr != nil {
@@ -191,7 +195,7 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("networkPCI"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkPCI")
 	}
-	_networkPCIErr := writeBuffer.WriteSerializable(m.GetNetworkPCI())
+	_networkPCIErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPCI())
 	if popErr := writeBuffer.PopContext("networkPCI"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkPCI")
 	}
@@ -203,8 +207,11 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
 	}
-	for _, _element := range m.GetAdditionalBridgeAddresses() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetAdditionalBridgeAddresses() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdditionalBridgeAddresses()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
 		}
@@ -228,7 +235,7 @@ func (m *_NetworkRoute) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

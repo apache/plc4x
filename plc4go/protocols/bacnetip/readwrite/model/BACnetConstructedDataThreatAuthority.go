@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataThreatAuthority) GetThreatAuthority() BACnetAcces
 ///////////////////////
 
 func (m *_BACnetConstructedDataThreatAuthority) GetActualValue() BACnetAccessThreatLevel {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAccessThreatLevel(m.GetThreatAuthority())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataThreatAuthority) GetTypeName() string {
 	return "BACnetConstructedDataThreatAuthority"
 }
 
-func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (threatAuthority)
-	lengthInBits += m.ThreatAuthority.GetLengthInBits()
+	lengthInBits += m.ThreatAuthority.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataThreatAuthorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataThreatAuthority, error) {
-	return BACnetConstructedDataThreatAuthorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataThreatAuthorityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataThreatAuthorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataThreatAuthority, error) {
+func BACnetConstructedDataThreatAuthorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataThreatAuthority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatAuthority"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataThreatAuthorityParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("threatAuthority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for threatAuthority")
 	}
-	_threatAuthority, _threatAuthorityErr := BACnetAccessThreatLevelParseWithBuffer(readBuffer)
+	_threatAuthority, _threatAuthorityErr := BACnetAccessThreatLevelParseWithBuffer(ctx, readBuffer)
 	if _threatAuthorityErr != nil {
 		return nil, errors.Wrap(_threatAuthorityErr, "Error parsing 'threatAuthority' field of BACnetConstructedDataThreatAuthority")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataThreatAuthorityParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataThreatAuthority) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("threatAuthority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for threatAuthority")
 		}
-		_threatAuthorityErr := writeBuffer.WriteSerializable(m.GetThreatAuthority())
+		_threatAuthorityErr := writeBuffer.WriteSerializable(ctx, m.GetThreatAuthority())
 		if popErr := writeBuffer.PopContext("threatAuthority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for threatAuthority")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_threatAuthorityErr, "Error serializing 'threatAuthority' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataThreatAuthority) isBACnetConstructedDataThreatAuthority() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataThreatAuthority) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

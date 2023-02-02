@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -164,6 +165,8 @@ func (m *_APDUConfirmedRequest) GetSegment() []byte {
 ///////////////////////
 
 func (m *_APDUConfirmedRequest) GetApduHeaderReduction() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	sequenceNumber := m.SequenceNumber
 	_ = sequenceNumber
 	proposedWindowSize := m.ProposedWindowSize
@@ -176,6 +179,8 @@ func (m *_APDUConfirmedRequest) GetApduHeaderReduction() uint16 {
 }
 
 func (m *_APDUConfirmedRequest) GetSegmentReduction() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	sequenceNumber := m.SequenceNumber
 	_ = sequenceNumber
 	proposedWindowSize := m.ProposedWindowSize
@@ -227,12 +232,8 @@ func (m *_APDUConfirmedRequest) GetTypeName() string {
 	return "APDUConfirmedRequest"
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUConfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -269,7 +270,7 @@ func (m *_APDUConfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16
 
 	// Optional Field (serviceRequest)
 	if m.ServiceRequest != nil {
-		lengthInBits += m.ServiceRequest.GetLengthInBits()
+		lengthInBits += m.ServiceRequest.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (segmentServiceChoice)
@@ -287,15 +288,15 @@ func (m *_APDUConfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUConfirmedRequestParse(theBytes []byte, apduLength uint16) (APDUConfirmedRequest, error) {
-	return APDUConfirmedRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUConfirmedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUConfirmedRequest, error) {
+func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUConfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {
@@ -346,7 +347,7 @@ func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength
 	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
 	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParseWithBuffer(readBuffer)
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParseWithBuffer(ctx, readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of APDUConfirmedRequest")
 	}
@@ -359,7 +360,7 @@ func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength
 	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
 	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParseWithBuffer(readBuffer)
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParseWithBuffer(ctx, readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of APDUConfirmedRequest")
 	}
@@ -407,7 +408,7 @@ func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength
 		if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 		}
-		_val, _err := BACnetConfirmedServiceRequestParseWithBuffer(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
+		_val, _err := BACnetConfirmedServiceRequestParseWithBuffer(ctx, readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -433,7 +434,7 @@ func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength
 		if pullErr := readBuffer.PullContext("segmentServiceChoice"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for segmentServiceChoice")
 		}
-		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
+		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUConfirmedRequest")
 		}
@@ -483,14 +484,14 @@ func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength
 }
 
 func (m *_APDUConfirmedRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -539,7 +540,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
 		}
-		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(m.GetMaxSegmentsAccepted())
+		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxSegmentsAccepted())
 		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
 		}
@@ -551,7 +552,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
 		}
-		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(m.GetMaxApduLengthAccepted())
+		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxApduLengthAccepted())
 		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
 		}
@@ -586,7 +587,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 			}
 		}
 		// Virtual field
-		if _apduHeaderReductionErr := writeBuffer.WriteVirtual("apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
+		if _apduHeaderReductionErr := writeBuffer.WriteVirtual(ctx, "apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
@@ -597,7 +598,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for serviceRequest")
 			}
 			serviceRequest = m.GetServiceRequest()
-			_serviceRequestErr := writeBuffer.WriteSerializable(serviceRequest)
+			_serviceRequestErr := writeBuffer.WriteSerializable(ctx, serviceRequest)
 			if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for serviceRequest")
 			}
@@ -613,7 +614,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for segmentServiceChoice")
 			}
 			segmentServiceChoice = m.GetSegmentServiceChoice()
-			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(segmentServiceChoice)
+			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(ctx, segmentServiceChoice)
 			if popErr := writeBuffer.PopContext("segmentServiceChoice"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for segmentServiceChoice")
 			}
@@ -622,7 +623,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 			}
 		}
 		// Virtual field
-		if _segmentReductionErr := writeBuffer.WriteVirtual("segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
+		if _segmentReductionErr := writeBuffer.WriteVirtual(ctx, "segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
 			return errors.Wrap(_segmentReductionErr, "Error serializing 'segmentReduction' field")
 		}
 
@@ -637,7 +638,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUConfirmedRequest) isAPDUConfirmedRequest() bool {
@@ -649,7 +650,7 @@ func (m *_APDUConfirmedRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

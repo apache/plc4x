@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetLogMultipleRecord) GetTypeName() string {
 	return "BACnetLogMultipleRecord"
 }
 
-func (m *_BACnetLogMultipleRecord) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogMultipleRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLogMultipleRecord) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
-	lengthInBits += m.Timestamp.GetLengthInBits()
+	lengthInBits += m.Timestamp.GetLengthInBits(ctx)
 
 	// Simple field (logData)
-	lengthInBits += m.LogData.GetLengthInBits()
+	lengthInBits += m.LogData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogMultipleRecord) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogMultipleRecord) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogMultipleRecordParse(theBytes []byte) (BACnetLogMultipleRecord, error) {
-	return BACnetLogMultipleRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLogMultipleRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLogMultipleRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
+func BACnetLogMultipleRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogMultipleRecord"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetLogMultipleRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogMultipleRecord")
 	}
@@ -137,7 +134,7 @@ func BACnetLogMultipleRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("logData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
-	_logData, _logDataErr := BACnetLogDataParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_logData, _logDataErr := BACnetLogDataParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _logDataErr != nil {
 		return nil, errors.Wrap(_logDataErr, "Error parsing 'logData' field of BACnetLogMultipleRecord")
 	}
@@ -158,14 +155,14 @@ func BACnetLogMultipleRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetLogMultipleRecord) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogMultipleRecord"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := writeBuffer.WriteSerializable(m.GetTimestamp())
+	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("logData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for logData")
 	}
-	_logDataErr := writeBuffer.WriteSerializable(m.GetLogData())
+	_logDataErr := writeBuffer.WriteSerializable(ctx, m.GetLogData())
 	if popErr := writeBuffer.PopContext("logData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for logData")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetLogMultipleRecord) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

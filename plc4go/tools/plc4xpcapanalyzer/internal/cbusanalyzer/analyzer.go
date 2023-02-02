@@ -21,6 +21,9 @@ package cbusanalyzer
 
 import (
 	"fmt"
+	"net"
+	"reflect"
+
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -30,8 +33,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"net"
-	"reflect"
 )
 
 type Analyzer struct {

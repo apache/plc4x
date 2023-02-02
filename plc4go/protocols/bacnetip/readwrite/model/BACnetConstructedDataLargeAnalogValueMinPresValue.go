@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetMinPresValue() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetActualValue() BACnetApplicationTagDouble {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagDouble(m.GetMinPresValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetTypeName() strin
 	return "BACnetConstructedDataLargeAnalogValueMinPresValue"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (minPresValue)
-	lengthInBits += m.MinPresValue.GetLengthInBits()
+	lengthInBits += m.MinPresValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLargeAnalogValueMinPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueMinPresValue, error) {
-	return BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueMinPresValue, error) {
+func BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueMinPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueMinPresValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("minPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minPresValue")
 	}
-	_minPresValue, _minPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_minPresValue, _minPresValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _minPresValueErr != nil {
 		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field of BACnetConstructedDataLargeAnalogValueMinPresValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLargeAnalogValueMinPresValueParseWithBuffer(readBuffer
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("minPresValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minPresValue")
 		}
-		_minPresValueErr := writeBuffer.WriteSerializable(m.GetMinPresValue())
+		_minPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMinPresValue())
 		if popErr := writeBuffer.PopContext("minPresValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minPresValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteB
 			return errors.Wrap(_minPresValueErr, "Error serializing 'minPresValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) isBACnetConstructedDataLargeAnalogValueMinPresValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

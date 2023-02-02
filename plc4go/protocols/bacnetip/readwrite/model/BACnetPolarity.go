@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastBACnetPolarity(structType interface{}) BACnetPolarity {
 	return castFunc(structType)
 }
 
-func (m BACnetPolarity) GetLengthInBits() uint16 {
+func (m BACnetPolarity) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetPolarity) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetPolarity) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPolarityParse(theBytes []byte) (BACnetPolarity, error) {
-	return BACnetPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetPolarityParse(ctx context.Context, theBytes []byte) (BACnetPolarity, error) {
+	return BACnetPolarityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetPolarityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
+func BACnetPolarityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	val, err := readBuffer.ReadUint8("BACnetPolarity", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPolarity")
@@ -114,13 +115,13 @@ func BACnetPolarityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPolarity,
 
 func (e BACnetPolarity) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetPolarity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetPolarity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

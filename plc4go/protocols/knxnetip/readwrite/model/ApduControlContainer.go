@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,28 +111,24 @@ func (m *_ApduControlContainer) GetTypeName() string {
 	return "ApduControlContainer"
 }
 
-func (m *_ApduControlContainer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduControlContainer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduControlContainer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (controlApdu)
-	lengthInBits += m.ControlApdu.GetLengthInBits()
+	lengthInBits += m.ControlApdu.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ApduControlContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduControlContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduControlContainerParse(theBytes []byte, dataLength uint8) (ApduControlContainer, error) {
-	return ApduControlContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+	return ApduControlContainerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
-func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
+func ApduControlContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
@@ -144,7 +141,7 @@ func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlApdu")
 	}
-	_controlApdu, _controlApduErr := ApduControlParseWithBuffer(readBuffer)
+	_controlApdu, _controlApduErr := ApduControlParseWithBuffer(ctx, readBuffer)
 	if _controlApduErr != nil {
 		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field of ApduControlContainer")
 	}
@@ -169,14 +166,14 @@ func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength
 }
 
 func (m *_ApduControlContainer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduControlContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduControlContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -188,7 +185,7 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("controlApdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlApdu")
 		}
-		_controlApduErr := writeBuffer.WriteSerializable(m.GetControlApdu())
+		_controlApduErr := writeBuffer.WriteSerializable(ctx, m.GetControlApdu())
 		if popErr := writeBuffer.PopContext("controlApdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlApdu")
 		}
@@ -201,7 +198,7 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduControlContainer) isApduControlContainer() bool {
@@ -213,7 +210,7 @@ func (m *_ApduControlContainer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

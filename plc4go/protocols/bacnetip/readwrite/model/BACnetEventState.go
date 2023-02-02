@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetEventState(structType interface{}) BACnetEventState {
 	return castFunc(structType)
 }
 
-func (m BACnetEventState) GetLengthInBits() uint16 {
+func (m BACnetEventState) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetEventState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetEventState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventStateParse(theBytes []byte) (BACnetEventState, error) {
-	return BACnetEventStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetEventStateParse(ctx context.Context, theBytes []byte) (BACnetEventState, error) {
+	return BACnetEventStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventState, error) {
+func BACnetEventStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventState, error) {
 	val, err := readBuffer.ReadUint16("BACnetEventState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventState")
@@ -144,13 +145,13 @@ func BACnetEventStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventSt
 
 func (e BACnetEventState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetEventState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEventState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

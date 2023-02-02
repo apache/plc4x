@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,12 +140,8 @@ func (m *_ApduDataExtPropertyValueResponse) GetTypeName() string {
 	return "ApduDataExtPropertyValueResponse"
 }
 
-func (m *_ApduDataExtPropertyValueResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataExtPropertyValueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataExtPropertyValueResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -166,15 +163,15 @@ func (m *_ApduDataExtPropertyValueResponse) GetLengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtPropertyValueResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExtPropertyValueResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtPropertyValueResponseParse(theBytes []byte, length uint8) (ApduDataExtPropertyValueResponse, error) {
-	return ApduDataExtPropertyValueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtPropertyValueResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtPropertyValueResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueResponse, error) {
+func ApduDataExtPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueResponse"); pullErr != nil {
@@ -237,14 +234,14 @@ func ApduDataExtPropertyValueResponseParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_ApduDataExtPropertyValueResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -291,7 +288,7 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataExtPropertyValueResponse) isApduDataExtPropertyValueResponse() bool {
@@ -303,7 +300,7 @@ func (m *_ApduDataExtPropertyValueResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

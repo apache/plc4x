@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +102,7 @@ func (m *_SerialNumber) GetTypeName() string {
 	return "SerialNumber"
 }
 
-func (m *_SerialNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SerialNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_SerialNumber) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (octet1)
@@ -123,15 +120,15 @@ func (m *_SerialNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_SerialNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SerialNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SerialNumberParse(theBytes []byte) (SerialNumber, error) {
-	return SerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SerialNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SerialNumberParseWithBuffer(readBuffer utils.ReadBuffer) (SerialNumber, error) {
+func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialNumber"); pullErr != nil {
@@ -182,14 +179,14 @@ func SerialNumberParseWithBuffer(readBuffer utils.ReadBuffer) (SerialNumber, err
 }
 
 func (m *_SerialNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SerialNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SerialNumber"); pushErr != nil {
@@ -239,7 +236,7 @@ func (m *_SerialNumber) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

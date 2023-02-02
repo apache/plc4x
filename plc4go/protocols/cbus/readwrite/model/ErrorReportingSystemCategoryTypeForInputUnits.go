@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastErrorReportingSystemCategoryTypeForInputUnits(structType interface{}) E
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForInputUnits) GetLengthInBits() uint16 {
+func (m ErrorReportingSystemCategoryTypeForInputUnits) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForInputUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingSystemCategoryTypeForInputUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeForInputUnitsParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForInputUnits, error) {
-	return ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingSystemCategoryTypeForInputUnitsParse(ctx context.Context, theBytes []byte) (ErrorReportingSystemCategoryTypeForInputUnits, error) {
+	return ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForInputUnits, error) {
+func ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForInputUnits, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForInputUnits", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForInputUnits")
@@ -198,13 +199,13 @@ func ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(readBuffer uti
 
 func (e ErrorReportingSystemCategoryTypeForInputUnits) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingSystemCategoryTypeForInputUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForInputUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForInputUnits", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

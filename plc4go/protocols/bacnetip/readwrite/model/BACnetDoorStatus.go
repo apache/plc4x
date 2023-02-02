@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,19 +142,19 @@ func CastBACnetDoorStatus(structType interface{}) BACnetDoorStatus {
 	return castFunc(structType)
 }
 
-func (m BACnetDoorStatus) GetLengthInBits() uint16 {
+func (m BACnetDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetDoorStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetDoorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDoorStatusParse(theBytes []byte) (BACnetDoorStatus, error) {
-	return BACnetDoorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetDoorStatusParse(ctx context.Context, theBytes []byte) (BACnetDoorStatus, error) {
+	return BACnetDoorStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorStatus, error) {
+func BACnetDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDoorStatus, error) {
 	val, err := readBuffer.ReadUint16("BACnetDoorStatus", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorStatus")
@@ -168,13 +169,13 @@ func BACnetDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorSta
 
 func (e BACnetDoorStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDoorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetDoorStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

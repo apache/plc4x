@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesAction) GetTypeName() string {
 	return "BACnetPropertyStatesAction"
 }
 
-func (m *_BACnetPropertyStatesAction) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesAction) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesAction) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (action)
-	lengthInBits += m.Action.GetLengthInBits()
+	lengthInBits += m.Action.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesAction) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesAction) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesActionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAction, error) {
-	return BACnetPropertyStatesActionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesActionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesActionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAction, error) {
+func BACnetPropertyStatesActionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesActionParseWithBuffer(readBuffer utils.ReadBuffer, peek
 	if pullErr := readBuffer.PullContext("action"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for action")
 	}
-	_action, _actionErr := BACnetActionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_action, _actionErr := BACnetActionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _actionErr != nil {
 		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field of BACnetPropertyStatesAction")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesActionParseWithBuffer(readBuffer utils.ReadBuffer, peek
 }
 
 func (m *_BACnetPropertyStatesAction) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("action"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for action")
 		}
-		_actionErr := writeBuffer.WriteSerializable(m.GetAction())
+		_actionErr := writeBuffer.WriteSerializable(ctx, m.GetAction())
 		if popErr := writeBuffer.PopContext("action"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for action")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesAction) isBACnetPropertyStatesAction() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesAction) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

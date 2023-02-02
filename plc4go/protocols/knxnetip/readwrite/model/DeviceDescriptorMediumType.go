@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMedi
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptorMediumType) GetLengthInBits() uint16 {
+func (m DeviceDescriptorMediumType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m DeviceDescriptorMediumType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DeviceDescriptorMediumType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceDescriptorMediumTypeParse(theBytes []byte) (DeviceDescriptorMediumType, error) {
-	return DeviceDescriptorMediumTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DeviceDescriptorMediumTypeParse(ctx context.Context, theBytes []byte) (DeviceDescriptorMediumType, error) {
+	return DeviceDescriptorMediumTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceDescriptorMediumTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
+func DeviceDescriptorMediumTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
 	val, err := readBuffer.ReadUint8("DeviceDescriptorMediumType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
@@ -138,13 +139,13 @@ func DeviceDescriptorMediumTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Dev
 
 func (e DeviceDescriptorMediumType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DeviceDescriptorMediumType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DeviceDescriptorMediumType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

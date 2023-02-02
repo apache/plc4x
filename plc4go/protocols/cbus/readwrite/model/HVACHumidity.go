@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -67,6 +68,8 @@ func (m *_HVACHumidity) GetHumidityValue() uint16 {
 ///////////////////////
 
 func (m *_HVACHumidity) GetHumidityInPercent() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetHumidityValue()) / float32(float32(65535)))
 }
 
@@ -95,11 +98,7 @@ func (m *_HVACHumidity) GetTypeName() string {
 	return "HVACHumidity"
 }
 
-func (m *_HVACHumidity) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACHumidity) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACHumidity) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (humidityValue)
@@ -110,15 +109,15 @@ func (m *_HVACHumidity) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACHumidity) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACHumidity) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACHumidityParse(theBytes []byte) (HVACHumidity, error) {
-	return HVACHumidityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACHumidityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACHumidityParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidity, error) {
+func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidity"); pullErr != nil {
@@ -150,14 +149,14 @@ func HVACHumidityParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidity, err
 }
 
 func (m *_HVACHumidity) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACHumidity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACHumidity"); pushErr != nil {
@@ -171,7 +170,7 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(_humidityValueErr, "Error serializing 'humidityValue' field")
 	}
 	// Virtual field
-	if _humidityInPercentErr := writeBuffer.WriteVirtual("humidityInPercent", m.GetHumidityInPercent()); _humidityInPercentErr != nil {
+	if _humidityInPercentErr := writeBuffer.WriteVirtual(ctx, "humidityInPercent", m.GetHumidityInPercent()); _humidityInPercentErr != nil {
 		return errors.Wrap(_humidityInPercentErr, "Error serializing 'humidityInPercent' field")
 	}
 
@@ -190,7 +189,7 @@ func (m *_HVACHumidity) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()
