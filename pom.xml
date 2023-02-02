@@ -124,7 +124,7 @@
     <commons-net.version>3.9.0</commons-net.version>
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <commons-text.version>1.10.0</commons-text.version>
-    <commons-csv.version>1.9.0</commons-csv.version>
+    <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.12.4</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
