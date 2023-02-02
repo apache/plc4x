@@ -79,7 +79,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		.description("Read timeout in miliseconds")
 		.defaultValue("10000")
 		.required(true)
-		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
 
 	Integer readTimeout;

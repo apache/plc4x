@@ -79,10 +79,10 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			.build();
 
 	public static final PropertyDescriptor PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-write-timeout").displayName("Write timeout (miliseconds)")
-			.description("Read timeout in miliseconds")
+			.description("Write timeout in miliseconds")
 			.defaultValue("10000")
 			.required(true)
-			.addValidator(StandardValidators.INTEGER_VALIDATOR)
+			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 			.build();
 	
 
