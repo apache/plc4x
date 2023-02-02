@@ -23,20 +23,25 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
+import org.apache.plc4x.java.profinet.device.ProfinetChannel;
+import org.apache.plc4x.java.profinet.device.ProfinetDevices;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
-import org.apache.plc4x.java.profinet.tag.ProfinetTag;
-import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.pcap4j.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.function.ToIntFunction;
 
 public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
@@ -65,7 +70,14 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
-        return new DefaultPlcDiscoveryRequest.Builder(new ProfinetPlcDiscoverer());
+        try {
+            ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs(), new ProfinetDevices(new HashMap<>()));
+            ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(channel);
+            channel.setDiscoverer(discoverer);
+            return new DefaultPlcDiscoveryRequest.Builder(discoverer);
+        } catch (PcapNativeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -78,17 +90,14 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
         return "raw";
     }
 
-    /**
-     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
     protected boolean awaitSetupComplete() {
-        return false;
+        return true;
     }
 
     /**
      * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     *
      * @return false
      */
     @Override
@@ -98,11 +107,21 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     protected boolean canRead() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
+    protected boolean canBrowse() {
         return true;
     }
 
@@ -117,8 +136,8 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
+    protected  org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
     }
 
     @Override
@@ -131,7 +150,9 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             .build();
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -140,11 +161,12 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             }
             return -1;
         }
+
     }
 
     @Override
-    public ProfinetTag prepareTag(String tagAddress){
-        return ProfinetTag.of(tagAddress);
+    public ProfinetTag prepareTag(String query) {
+        return ProfinetTag.of(query);
     }
 
 }
