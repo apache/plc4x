@@ -49,9 +49,13 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
   // Properties.
   protected final byte[] nameOfStation;
 
-  public PnDcp_Block_DevicePropertiesNameOfStation(byte[] nameOfStation) {
+  // Arguments.
+  protected final Integer blockLength;
+
+  public PnDcp_Block_DevicePropertiesNameOfStation(byte[] nameOfStation, Integer blockLength) {
     super();
     this.nameOfStation = nameOfStation;
+    this.blockLength = blockLength;
   }
 
   public byte[] getNameOfStation() {
@@ -64,9 +68,6 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesNameOfStation");
-
-    // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (nameOfStation)
     writeByteArrayField("nameOfStation", nameOfStation, writeByteArray(writeBuffer, 8));
@@ -95,9 +96,6 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
     PnDcp_Block_DevicePropertiesNameOfStation _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Reserved Field (reserved)
-    lengthInBits += 16;
-
     // Array field
     if (nameOfStation != null) {
       lengthInBits += 8 * nameOfStation.length;
@@ -124,9 +122,6 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
-
     byte[] nameOfStation =
         readBuffer.readByteArray("nameOfStation", Math.toIntExact((blockLength) - (2)));
 
@@ -139,20 +134,23 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesNameOfStation");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(nameOfStation);
+    return new PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(nameOfStation, blockLength);
   }
 
   public static class PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] nameOfStation;
+    private final Integer blockLength;
 
-    public PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(byte[] nameOfStation) {
+    public PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(
+        byte[] nameOfStation, Integer blockLength) {
       this.nameOfStation = nameOfStation;
+      this.blockLength = blockLength;
     }
 
     public PnDcp_Block_DevicePropertiesNameOfStation build() {
       PnDcp_Block_DevicePropertiesNameOfStation pnDcp_Block_DevicePropertiesNameOfStation =
-          new PnDcp_Block_DevicePropertiesNameOfStation(nameOfStation);
+          new PnDcp_Block_DevicePropertiesNameOfStation(nameOfStation, blockLength);
       return pnDcp_Block_DevicePropertiesNameOfStation;
     }
   }

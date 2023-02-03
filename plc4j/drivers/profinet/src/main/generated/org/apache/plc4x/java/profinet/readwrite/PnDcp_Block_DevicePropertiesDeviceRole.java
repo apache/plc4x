@@ -52,6 +52,10 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
   protected final boolean pnioController;
   protected final boolean pnioDevice;
 
+  // Reserved Fields
+  private Long reservedField0;
+  private Short reservedField1;
+
   public PnDcp_Block_DevicePropertiesDeviceRole(
       boolean pnioSupervisor, boolean pnioMultidevive, boolean pnioController, boolean pnioDevice) {
     super();
@@ -85,7 +89,10 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceRole");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (long) 0x000000, writeUnsignedLong(writeBuffer, 20));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (long) 0x000000,
+        writeUnsignedLong(writeBuffer, 20));
 
     // Simple Field (pnioSupervisor)
     writeSimpleField("pnioSupervisor", pnioSupervisor, writeBoolean(writeBuffer));
@@ -100,7 +107,10 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     writeSimpleField("pnioDevice", pnioDevice, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField1 != null ? reservedField1 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesDeviceRole");
   }
@@ -162,7 +172,12 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceRole");
     // Create the instance
     return new PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl(
-        pnioSupervisor, pnioMultidevive, pnioController, pnioDevice);
+        pnioSupervisor,
+        pnioMultidevive,
+        pnioController,
+        pnioDevice,
+        reservedField0,
+        reservedField1);
   }
 
   public static class PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl
@@ -171,22 +186,30 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     private final boolean pnioMultidevive;
     private final boolean pnioController;
     private final boolean pnioDevice;
+    private final Long reservedField0;
+    private final Short reservedField1;
 
     public PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl(
         boolean pnioSupervisor,
         boolean pnioMultidevive,
         boolean pnioController,
-        boolean pnioDevice) {
+        boolean pnioDevice,
+        Long reservedField0,
+        Short reservedField1) {
       this.pnioSupervisor = pnioSupervisor;
       this.pnioMultidevive = pnioMultidevive;
       this.pnioController = pnioController;
       this.pnioDevice = pnioDevice;
+      this.reservedField0 = reservedField0;
+      this.reservedField1 = reservedField1;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceRole build() {
       PnDcp_Block_DevicePropertiesDeviceRole pnDcp_Block_DevicePropertiesDeviceRole =
           new PnDcp_Block_DevicePropertiesDeviceRole(
               pnioSupervisor, pnioMultidevive, pnioController, pnioDevice);
+      pnDcp_Block_DevicePropertiesDeviceRole.reservedField0 = reservedField0;
+      pnDcp_Block_DevicePropertiesDeviceRole.reservedField1 = reservedField1;
       return pnDcp_Block_DevicePropertiesDeviceRole;
     }
   }

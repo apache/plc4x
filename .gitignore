@@ -1,6 +1,6 @@
 # User-specific stuff:
-.idea/**
-*/.idea/**
+.idea/*.xml
+*/.idea/*.xml
 *.iml
 .vscode/**
 .java-version
@@ -196,3 +196,5 @@ link.txt*/
 CMakeFiles/
 CMakeCache.txt
 DartConfiguration.tcl
+/.idea/libraries/
+/.idea/inspectionProfiles/

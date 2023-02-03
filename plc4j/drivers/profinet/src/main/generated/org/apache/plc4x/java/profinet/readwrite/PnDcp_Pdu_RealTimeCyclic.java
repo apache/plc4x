@@ -40,6 +40,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  protected final PnIo_CyclicServiceDataUnit dataUnit;
   protected final int cycleCounter;
   protected final boolean ignore;
   protected final boolean stationProblemIndicatorOk;
@@ -48,8 +49,14 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   protected final boolean redundancy;
   protected final boolean statePrimary;
 
+  // Reserved Fields
+  private Boolean reservedField0;
+  private Boolean reservedField1;
+  private Short reservedField2;
+
   public PnDcp_Pdu_RealTimeCyclic(
       int frameIdValue,
+      PnIo_CyclicServiceDataUnit dataUnit,
       int cycleCounter,
       boolean ignore,
       boolean stationProblemIndicatorOk,
@@ -58,6 +65,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       boolean redundancy,
       boolean statePrimary) {
     super(frameIdValue);
+    this.dataUnit = dataUnit;
     this.cycleCounter = cycleCounter;
     this.ignore = ignore;
     this.stationProblemIndicatorOk = stationProblemIndicatorOk;
@@ -65,6 +73,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     this.dataValid = dataValid;
     this.redundancy = redundancy;
     this.statePrimary = statePrimary;
+  }
+
+  public PnIo_CyclicServiceDataUnit getDataUnit() {
+    return dataUnit;
   }
 
   public int getCycleCounter() {
@@ -102,6 +114,14 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_RealTimeCyclic");
 
+    // Manual Field (dataUnit)
+    writeManualField(
+        "dataUnit",
+        () ->
+            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.writeDataUnit(
+                writeBuffer, dataUnit),
+        writeBuffer);
+
     // Simple Field (cycleCounter)
     writeSimpleField("cycleCounter", cycleCounter, writeUnsignedInt(writeBuffer, 16));
 
@@ -109,7 +129,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("ignore", ignore, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (boolean) false,
+        writeBoolean(writeBuffer));
 
     // Simple Field (stationProblemIndicatorOk)
     writeSimpleField(
@@ -119,7 +142,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("providerStateRun", providerStateRun, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
+    writeReservedField(
+        "reserved",
+        reservedField1 != null ? reservedField1 : (boolean) false,
+        writeBoolean(writeBuffer));
 
     // Simple Field (dataValid)
     writeSimpleField("dataValid", dataValid, writeBoolean(writeBuffer));
@@ -131,7 +157,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     writeSimpleField("statePrimary", statePrimary, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        reservedField2 != null ? reservedField2 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("PnDcp_Pdu_RealTimeCyclic");
   }
@@ -146,6 +175,9 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_RealTimeCyclic _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Manual Field (dataUnit)
+    lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
 
     // Simple field (cycleCounter)
     lengthInBits += 16;
@@ -188,6 +220,15 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    PnIo_CyclicServiceDataUnit dataUnit =
+        readManualField(
+            "dataUnit",
+            readBuffer,
+            () ->
+                (PnIo_CyclicServiceDataUnit)
+                    (org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.readDataUnit(
+                        readBuffer)));
+
     int cycleCounter = readSimpleField("cycleCounter", readUnsignedInt(readBuffer, 16));
 
     boolean ignore = readSimpleField("ignore", readBoolean(readBuffer));
@@ -215,16 +256,21 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     readBuffer.closeContext("PnDcp_Pdu_RealTimeCyclic");
     // Create the instance
     return new PnDcp_Pdu_RealTimeCyclicBuilderImpl(
+        dataUnit,
         cycleCounter,
         ignore,
         stationProblemIndicatorOk,
         providerStateRun,
         dataValid,
         redundancy,
-        statePrimary);
+        statePrimary,
+        reservedField0,
+        reservedField1,
+        reservedField2);
   }
 
   public static class PnDcp_Pdu_RealTimeCyclicBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
+    private final PnIo_CyclicServiceDataUnit dataUnit;
     private final int cycleCounter;
     private final boolean ignore;
     private final boolean stationProblemIndicatorOk;
@@ -232,15 +278,23 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     private final boolean dataValid;
     private final boolean redundancy;
     private final boolean statePrimary;
+    private final Boolean reservedField0;
+    private final Boolean reservedField1;
+    private final Short reservedField2;
 
     public PnDcp_Pdu_RealTimeCyclicBuilderImpl(
+        PnIo_CyclicServiceDataUnit dataUnit,
         int cycleCounter,
         boolean ignore,
         boolean stationProblemIndicatorOk,
         boolean providerStateRun,
         boolean dataValid,
         boolean redundancy,
-        boolean statePrimary) {
+        boolean statePrimary,
+        Boolean reservedField0,
+        Boolean reservedField1,
+        Short reservedField2) {
+      this.dataUnit = dataUnit;
       this.cycleCounter = cycleCounter;
       this.ignore = ignore;
       this.stationProblemIndicatorOk = stationProblemIndicatorOk;
@@ -248,12 +302,16 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       this.dataValid = dataValid;
       this.redundancy = redundancy;
       this.statePrimary = statePrimary;
+      this.reservedField0 = reservedField0;
+      this.reservedField1 = reservedField1;
+      this.reservedField2 = reservedField2;
     }
 
     public PnDcp_Pdu_RealTimeCyclic build(int frameIdValue) {
       PnDcp_Pdu_RealTimeCyclic pnDcp_Pdu_RealTimeCyclic =
           new PnDcp_Pdu_RealTimeCyclic(
               frameIdValue,
+              dataUnit,
               cycleCounter,
               ignore,
               stationProblemIndicatorOk,
@@ -261,6 +319,9 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
               dataValid,
               redundancy,
               statePrimary);
+      pnDcp_Pdu_RealTimeCyclic.reservedField0 = reservedField0;
+      pnDcp_Pdu_RealTimeCyclic.reservedField1 = reservedField1;
+      pnDcp_Pdu_RealTimeCyclic.reservedField2 = reservedField2;
       return pnDcp_Pdu_RealTimeCyclic;
     }
   }
@@ -274,7 +335,8 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       return false;
     }
     PnDcp_Pdu_RealTimeCyclic that = (PnDcp_Pdu_RealTimeCyclic) o;
-    return (getCycleCounter() == that.getCycleCounter())
+    return (getDataUnit() == that.getDataUnit())
+        && (getCycleCounter() == that.getCycleCounter())
         && (getIgnore() == that.getIgnore())
         && (getStationProblemIndicatorOk() == that.getStationProblemIndicatorOk())
         && (getProviderStateRun() == that.getProviderStateRun())
@@ -289,6 +351,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
+        getDataUnit(),
         getCycleCounter(),
         getIgnore(),
         getStationProblemIndicatorOk(),

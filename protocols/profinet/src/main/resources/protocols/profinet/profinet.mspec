@@ -56,7 +56,9 @@
             // Length of the header + payload
             [implicit uint 16             totalLength                     '28 + payload.lengthInBytes']
             [simple   uint 16             identification                                             ]
-            [const    uint 3              flags                           0x00                       ]
+            [reserved bit                                                 'false'                    ]
+            [simple   bit                 dontFragment                                               ]
+            [simple   bit                 moreFragments                                              ]
             [const    uint 13             fragmentOffset                  0x00                       ]
             [simple   uint 8              timeToLive                                                 ]
             // Protocol: UDP
@@ -69,8 +71,8 @@
             // Begin of the UDP packet part
             [simple   uint 16             sourcePort                                                 ]
             [simple   uint 16             destinationPort                                            ]
-            [implicit uint 16             packetLength    'lengthInBytes'                            ]
-            //[implicit uint 16             headerChecksum  'STATIC_CALL("calculateUdpChecksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength)'                               ]
+            [implicit uint 16             packetLength    '8 + payload.lengthInBytes'                ]
+            [implicit uint 16             bodyChecksum                    'STATIC_CALL("calculateUdpChecksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength, payload)']
             [simple   DceRpc_Packet       payload                                                    ]
         ]
         ['0x8100' Ethernet_FramePayload_VirtualLan
@@ -82,7 +84,82 @@
         ['0x8892' Ethernet_FramePayload_PnDcp
             [simple PnDcp_Pdu             pdu                                                        ]
         ]
+        ['0x88cc' Ethernet_FramePayload_LLDP
+            [simple Lldp_Pdu      pdu                                               ]
+        ]
     ]
+]
+
+[type Lldp_Pdu
+    [manualArray LldpUnit lldpParameters terminated 'STATIC_CALL("isSysexEnd", readBuffer)' 'STATIC_CALL("parseSysexString", readBuffer)' 'STATIC_CALL("serializeSysexString", writeBuffer, _value)' 'STATIC_CALL("lengthSysexString", lldpParameters)']
+]
+
+[discriminatedType LldpUnit
+    [discriminator     TlvType                  tlvId                                ]
+    [simple            uint 9                   tlvIdLength                          ]
+    [typeSwitch tlvId
+        ['END_OF_LLDP'  EndOfLldp
+        ]
+        ['CHASSIS_ID'   TlvChassisId(uint 9 tlvIdLength)
+            [simple     uint 8                        chassisIdSubType               ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId                      ]
+        ]
+        ['PORT_ID'   TlvPortId(uint 9 tlvIdLength)
+            [simple     uint 8          portIdSubType                              ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' portId                           ]
+        ]
+        ['TIME_TO_LIVE'   TlvTimeToLive
+            [simple     uint 16         tlvTimeToLiveUnit                          ]
+        ]
+        ['MANAGEMENT_ADDRESS' TlvManagementAddress
+            [implicit   uint 8          addressStringLength    '5' ]
+            [simple     ManagementAddressSubType  addressSubType                   ]
+            [simple     IpAddress       ipAddress                                  ]
+            [simple     uint 8          interfaceSubType                           ]
+            [simple     uint 32         interfaceNumber                            ]
+            [simple     uint 8          oidStringLength                            ]
+        ]
+        ['ORGANIZATION_SPECIFIC' TlvOrganizationSpecific
+            [simple     TlvOrganizationSpecificUnit     organizationSpecificUnit   ]
+        ]
+    ]
+]
+
+[discriminatedType TlvOrganizationSpecificUnit
+    [discriminator      uint 24         uniqueCode]
+    [typeSwitch uniqueCode
+        ['0x000ECF' TlvOrgSpecificProfibus
+            [simple     TlvOrgSpecificProfibusUnit      specificUnit               ]
+        ]
+        ['0x00120F' TlvOrgSpecificIeee8023
+            [simple     uint 8                          subType                    ]
+            [simple     uint 8                          negotiationSupport         ]
+            [simple     uint 16                         negotiationCapability      ]
+            [simple     uint 16                         operationalMauType         ]
+        ]
+    ]
+]
+
+[discriminatedType TlvOrgSpecificProfibusUnit
+    [discriminator  TlvProfibusSubType  subType]
+    [typeSwitch subType
+        ['PORT_STATUS'  TlvProfibusSubTypePortStatus
+            [simple     uint 16                         rtClass2PortStatus]
+            [reserved   uint 2                          '0x00'           ]
+            [simple     bit                             preample         ]
+            [simple     bit                             fragmentation    ]
+            [reserved   uint 9                          '0x00'           ]
+            [simple     uint 3                          rtClass3PortStatus]
+        ]
+        ['CHASSIS_MAC'  TlvProfibusSubTypeChassisMac
+            [simple     MacAddress                      macAddress]
+        ]
+    ]
+]
+
+[enum  uint 8 TlvProfibusSubType
+    ['0x02' PORT_STATUS]
+    ['0x05' CHASSIS_MAC]
 ]
 
 // 4.10.3.2
@@ -237,6 +314,25 @@
     ['0x0A' CANCEL_ACKNOWLEDGE   ]
 ]
 
+//LLDP Specific
+[enum uint 7 TlvType
+    ['0x00' END_OF_LLDP          ]
+    ['0x01' CHASSIS_ID           ]
+    ['0x02' PORT_ID              ]
+    ['0x03' TIME_TO_LIVE         ]
+    ['0x04' PORT_DESCRIPTION     ]
+    ['0x05' SYSTEM_NAME          ]
+    ['0x06' SYSTEM_DESCRIPTION   ]
+    ['0x07' SYSTEM_CAPABILITIES  ]
+    ['0x08' MANAGEMENT_ADDRESS    ]
+    ['0x7F' ORGANIZATION_SPECIFIC]
+]
+
+[enum uint 8 ManagementAddressSubType
+    ['0x00' UNKNOWN              ]
+    ['0x01' IPV4                 ]
+]
+
 // 4.10.3.2.14
 [enum uint 16 DceRpc_Operation
     ['0x0000' CONNECT      ]
@@ -273,8 +369,11 @@
     [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
     [typeSwitch frameId
         ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
-            // TODO: This type needs to be implemented ...
-//            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
+            [manual   PnIo_CyclicServiceDataUnit
+                                          dataUnit
+                                                'STATIC_CALL("readDataUnit", readBuffer)'
+                                                'STATIC_CALL("writeDataUnit", writeBuffer, dataUnit)'
+                                                '(dataUnit.lengthInBytes)*8'      ]
             [simple   uint 16                    cycleCounter             ]
             // Data Status Start (4.7.2.1.3)
             [simple   bit                        ignore                   ]
@@ -308,6 +407,18 @@
             [const    uint 9     endLength       0]
             // Delay Parameter End
         ]
+        ['Alarm_Low' PnDcp_Pdu_AlarmLow
+                    [simple uint 16 alarmDstEndpoint]
+                    [simple uint 16 alarmSrcEndpoint]
+                    [simple uint 4  version]
+                    [simple uint 4  errorType]
+                    [simple uint 4  tAck]
+                    [simple uint 4  windowSize]
+                    [simple uint 16 senSeqNum]
+                    [simple uint 16 ackSeqNum]
+                    [implicit uint 16 varPartLen 'COUNT(varPart)']
+                    [array    byte varPart                        length              'varPartLen']
+                ]
         ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq
             [const    uint 8      serviceId                    0x05                                ]
             // ServiceType Start
@@ -399,8 +510,9 @@
     ]
 ]
 
-//[discriminatedType PnIo_CyclicServiceDataUnit
-//]
+[type PnIo_CyclicServiceDataUnit(int 16 dataUnitLength)
+    [array    byte   data       count 'dataUnitLength'                 ]
+]
 
 [discriminatedType PnDcp_Block
     [discriminator PnDcp_BlockOptions option                   ]
@@ -442,7 +554,6 @@
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", deviceVendorValue) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 blockLength)
-            [reserved uint 16     '0x0000'                                            ]
             [array    byte        nameOfStation count 'blockLength-2'                 ]
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", nameOfStation) % 2']
         ]
@@ -651,10 +762,10 @@
     [typeSwitch packetType
         ['REQUEST' PnIoCm_Packet_Req
             [simple uint 32      argsMaximum                          ]
-            [simple uint 32      argsLength                           ]
+            [implicit uint 32    argsLength       'lengthInBytes - 20']
             [simple uint 32      arrayMaximumCount                    ]
             [simple uint 32      arrayOffset                          ]
-            [simple uint 32      arrayActualCount                     ]
+            [implicit uint 32    arrayActualCount  'lengthInBytes - 20']
             [array  PnIoCm_Block blocks            length 'argsLength']
         ]
         ['RESPONSE' PnIoCm_Packet_Res
@@ -662,10 +773,10 @@
             [simple uint 8       errorCode1                           ]
             [simple uint 8       errorDecode                          ]
             [simple uint 8       errorCode                            ]
-            [simple uint 32      argsLength                           ]
+            [implicit uint 32    argsLength       'lengthInBytes - 1 - 1 - 1 - 1 - 4 - 4 - 4 - 4']
             [simple uint 32      arrayMaximumCount                    ]
             [simple uint 32      arrayOffset                          ]
-            [simple uint 32      arrayActualCount                     ]
+            [implicit uint 32    arrayActualCount  'lengthInBytes - 1 - 1 - 1 - 1 - 4 - 4 - 4 - 4'    ]
             [array  PnIoCm_Block blocks            length 'argsLength']
         ]
         ['REJECT'   PnIoCm_Packet_Rej
@@ -674,19 +785,78 @@
     ]
 ]
 
+[type UserData(uint 32 recordDataLength)
+    [array              byte      data count         'recordDataLength'       ]
+]
+
 // Big Endian
 [discriminatedType PnIoCm_Block byteOrder='BIG_ENDIAN'
     [discriminator PnIoCm_BlockType blockType                           ]
-    [implicit      uint 16          blockLength      'lengthInBytes - 4']
-    [simple        uint 8           blockVersionHigh                    ]
-    [simple        uint 8           blockVersionLow                     ]
     [typeSwitch blockType
+        ['IOD_WRITE_REQUEST_HEADER' IODWriteRequestHeader
+            [implicit      uint 16          blockLength      'index < 0x8000 ? lengthInBytes - 4 - recordDataLength : lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [simple   uint 16                         sequenceNumber                                         ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 32                         api                                                    ]
+            [simple   uint 16                         slotNumber                                             ]
+            [simple   uint 16                         subSlotNumber                                          ]
+            [const    uint 16                         padField                  0x0000                       ]
+            [simple   uint 16                         index                                                  ]
+            [simple   uint 32                         recordDataLength                                       ]
+            [padding  uint 8      pad '0x00'          'index < 0x8000 ? 64 - 6 - 2 - 16 - 4 - 2 - 2 - 2 - 2 - 4 : 64 - 6 - 2 - 16 - 4 - 2 - 2 - 2 - 2 - 4']
+            [optional UserData('recordDataLength')     userData          'index < 0x8000'                    ]
+        ]
+        ['IOD_WRITE_RESPONSE_HEADER' IODWriteResponseHeader
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [simple   uint 16                         sequenceNumber                                         ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 32                         api                                                    ]
+            [simple   uint 16                         slotNumber                                             ]
+            [simple   uint 16                         subSlotNumber                                          ]
+            [const    uint 16                         padField                  0x0000                       ]
+            [simple   uint 16                         index                                                  ]
+            [simple   uint 32                         recordDataLength                                       ]
+            [padding  uint 8      pad '0x00'          '64 - 6 - 2 - 16 - 4 - 2 - 2 - 2 - 2 - 4']
+        ]
+        ['PD_INTERFACE_ADJUST' PDInterfaceAdjust
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [const    uint 16                         padField                  0x0000                       ]
+            [const    uint 16                         multipleInterfaceModeReserved2                  0x0000 ]
+            [const    uint 15                         multipleInterfaceModeReserved1                  0x0000 ]
+            [simple   MultipleInterfaceModeNameOfDevice multipleInterfaceModeNameOfDevice                    ]
+        ]
+        ['PD_PORT_DATA_CHECK' PDPortDataCheck
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [const    uint 16                         padField                  0x0000                       ]
+            [simple   uint 16                         slotNumber                                             ]
+            [simple   uint 16                         subSlotNumber                                          ]
+            [simple   PnIoCm_Block                    checkPeers                                             ]
+        ]
+        ['CHECK_PEERS'  CheckPeers
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [const    uint 8                          noOfPeers                 0x01                         ]
+            [simple   PascalString                    peerPortId                                             ]
+            [simple   PascalString                    peerChassisId                                          ]
+        ]
         ['AR_BLOCK_REQ' PnIoCm_Block_ArReq
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [simple   PnIoCm_ArType                   arType                                                 ]
             [simple   Uuid                            arUuid                                                 ]
             [simple   uint 16                         sessionKey                                             ]
             [simple   MacAddress                      cmInitiatorMacAddr                                     ]
-            [simple   Uuid                            cmInitiatorObjectUuid                                  ]
+            [simple   DceRpc_ObjectUuid               cmInitiatorObjectUuid                                  ]
             // Begin ARProperties
             [simple   bit                             pullModuleAlarmAllowed                                 ]
             [simple   bit                             nonLegacyStartupMode                                   ]
@@ -706,13 +876,63 @@
             [simple   vstring 'stationNameLength * 8' cmInitiatorStationName                                 ]
         ]
         ['AR_BLOCK_RES' PnIoCm_Block_ArRes
-            [simple   PnIoCm_ArType          arType                                                 ]
-            [simple   Uuid                   arUuid                                                 ]
-            [simple   uint 16                sessionKey                                             ]
-            [simple   MacAddress             cmResponderMacAddr                                     ]
-            [simple   uint 16                responderUDPRTPort                                     ]
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [simple   PnIoCm_ArType          arType                                                          ]
+            [simple   Uuid                   arUuid                                                          ]
+            [simple   uint 16                sessionKey                                                      ]
+            [simple   MacAddress             cmResponderMacAddr                                              ]
+            [simple   uint 16                responderUDPRTPort                                              ]
+        ]
+        ['IOD_CONTROL_REQ' PnIoCm_Control_Request
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
+        ]
+        ['IOX_BLOCK_REQ'    PnIoCM_Block_Request
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
+        ]
+        ['IOX_BLOCK_RES'    PnIoCM_Block_Response
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
+        ]
+        ['IOD_CONTROL_RES' PnIoCm_Control_Response
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
         ]
         ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [simple PnIoCm_IoCrType          ioCrType                                               ]
             [simple uint 16                  ioCrReference                                          ]
             [simple uint 16                  lt                                                     ]
@@ -740,11 +960,17 @@
             [array    PnIoCm_IoCrBlockReqApi apis                count         'numberOfApis'       ]
         ]
         ['IO_CR_BLOCK_RES' PnIoCm_Block_IoCrRes
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [simple PnIoCm_IoCrType          ioCrType                                               ]
             [simple uint 16                  ioCrReference                                          ]
             [simple   uint 16                frameId                                                ]
         ]
         ['ALARM_CR_BLOCK_REQ' PnIoCm_Block_AlarmCrReq
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [simple   PnIoCm_AlarmCrType     alarmType                                              ]
             [simple   uint 16                lt                                                     ]
             // Begin AlarmCrProperties
@@ -760,24 +986,41 @@
             [simple   uint 16                alarmCtrTagHeaderLow                                   ]
         ]
         ['ALARM_CR_BLOCK_RES' PnIoCm_Block_AlarmCrRes
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [simple   PnIoCm_AlarmCrType     alarmType                                              ]
             [simple   uint 16                localAlarmReference                                    ]
             [simple   uint 16                maxAlarmDataLength                                     ]
         ]
         ['EXPECTED_SUBMODULE_BLOCK_REQ' PnIoCm_Block_ExpectedSubmoduleReq
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [implicit uint 16                numberOfApis         'COUNT(apis)'                     ]
             [array    PnIoCm_ExpectedSubmoduleBlockReqApi apis   count         'numberOfApis'       ]
         ]
         ['MODULE_DIFF_BLOCK' PnIoCm_Block_ModuleDiff
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
             [implicit uint 16                numberOfApis         'COUNT(apis)'                     ]
             [array    PnIoCm_ModuleDiffBlockApi apis              count         'numberOfApis'      ]
         ]
         ['AR_SERVER_BLOCK' PnIoCm_Block_ArServer
-            //[implicit uint 16                         stationNameLength      'STR_LEN(cmInitiatorStationName)']
-            //[simple   vstring 'stationNameLength * 8' cmInitiatorStationName                                  ]
-            //[padding  byte 0x00                                                                               ]
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [simple   PascalString                    stationName                                   ]
+            [padding  uint 8      pad '0x00'          '20 - 6 - (stationName.stringLength)'              ]
         ]
     ]
+]
+
+[type PascalString
+    [implicit int 8 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
+    [virtual  int 8 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
 [type PnIoCm_IoCrBlockReqApi
@@ -798,6 +1041,18 @@
     [simple   uint 16 slotNumber   ]
     [simple   uint 16 subSlotNumber]
     [simple   uint 16 ioFrameOffset]
+]
+
+[type PnIoCm_DataUnitIoCs
+    [simple   bit               dataState]
+    [simple   uint 2            instance ]
+    [reserved uint 4            '0x00'   ]
+    [simple   bit               extension]
+]
+
+[type PnIoCm_DataUnitDataObject(uint 16 dataObjectLength)
+    [array    byte              dataState   count  'dataObjectLength']
+    [simple   PnIoCm_DataUnitIoCs iops   ]
 ]
 
 [type PnIoCm_ExpectedSubmoduleBlockReqApi
@@ -854,6 +1109,18 @@
             [const    uint 8              lengthIoCs            0x01  ]
             [const    uint 8              lengthIoPs            0x01  ]
         ]
+        ['INPUT_DATA' PnIoCm_Submodule_InputData
+            [const    uint 16             inputDataDescription  0x0001]
+            [simple   uint 16             inputSubmoduleDataLength      ]
+            [simple   uint 8              inputLengthIoCs               ]
+            [simple   uint 8              inputLengthIoPs               ]
+        ]
+        ['OUTPUT_DATA' PnIoCm_Submodule_OutputData
+            [const    uint 16             inputDataDescription  0x0002]
+            [simple   uint 16             inputSubmoduleDataLength      ]
+            [simple   uint 8              inputLengthIoCs               ]
+            [simple   uint 8              inputLengthIoPs               ]
+        ]
         ['INPUT_AND_OUTPUT_DATA' PnIoCm_Submodule_InputAndOutputData
             [const    uint 16             inputDataDescription  0x0001]
             [simple   uint 16             inputSubmoduleDataLength      ]
@@ -872,15 +1139,34 @@
 ]
 
 [enum uint 16 PnIoCm_BlockType
+    ['0x0008' IOD_WRITE_REQUEST_HEADER    ]
     ['0x0101' AR_BLOCK_REQ                ]
-    ['0x8101' AR_BLOCK_RES                ]
     ['0x0102' IO_CR_BLOCK_REQ             ]
-    ['0x8102' IO_CR_BLOCK_RES             ]
     ['0x0103' ALARM_CR_BLOCK_REQ          ]
-    ['0x8103' ALARM_CR_BLOCK_RES          ]
     ['0x0104' EXPECTED_SUBMODULE_BLOCK_REQ]
+    ['0x0110' IOD_CONTROL_REQ             ]
+    ['0x0112' IOX_BLOCK_REQ               ]
+    ['0x0200' PD_PORT_DATA_CHECK          ]
+    ['0x020a' CHECK_PEERS                 ]
+    ['0x0250' PD_INTERFACE_ADJUST         ]
+    ['0x8008' IOD_WRITE_RESPONSE_HEADER    ]
+    ['0x8101' AR_BLOCK_RES                ]
+    ['0x8102' IO_CR_BLOCK_RES             ]
+    ['0x8103' ALARM_CR_BLOCK_RES          ]
     ['0x8104' MODULE_DIFF_BLOCK           ]
     ['0x8106' AR_SERVER_BLOCK             ]
+    ['0x8110' IOD_CONTROL_RES             ]
+    ['0x8112' IOX_BLOCK_RES               ]
+]
+
+[enum uint 8 ProfinetDeviceState
+    ['0x00'     IDLE]
+    ['0x01'     STARTUP]
+    ['0x02'     PREMED]
+    ['0x03'     WAITAPPLRDY]
+    ['0x04'     APPLRDY]
+    ['0x05'     CYCLICDATA]
+    ['0xFF'     ABORT]
 ]
 
 [enum uint 16 PnIoCm_ArType
@@ -914,7 +1200,14 @@
 
 [enum uint 2 PnIoCm_SubmoduleType
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
+    ['0x1' INPUT_DATA]
+    ['0x2' OUTPUT_DATA]
     ['0x3' INPUT_AND_OUTPUT_DATA]
+]
+
+[enum bit MultipleInterfaceModeNameOfDevice
+    ['false' PORT_PROVIDED_BY_LLDP]
+    ['true'  NAME_PROVIDED_BY_LLDP]
 ]
 
 [enum uint 16 PnIoCm_DescriptionType
@@ -948,4 +1241,133 @@
     ['0x01' VAX ]
     ['0x02' CRAY]
     ['0x03' IBM ]
+]
+
+
+[dataIo DataItem(ProfinetDataType dataType, uint 16 numberOfValues)
+    [typeSwitch dataType,numberOfValues
+        ['BOOL','1'  BOOL
+            [simple   bit     value                            ]
+        ]
+        ['BOOL'      List
+            [array    bit     value count 'numberOfValues'     ]
+        ]
+        ['BYTE','1'  BYTE
+            [simple uint 8 value]
+        ]
+        ['BYTE' List
+            [array    bit     value count 'numberOfValues * 8' ]
+        ]
+        ['WORD'      WORD
+            [simple   uint 16 value]
+        ]
+        ['DWORD'     DWORD
+            [simple   uint 32 value]
+        ]
+        ['LWORD'     LWORD
+            [simple   uint 64 value]
+        ]
+        ['SINT','1' SINT
+            [simple   int 8   value ]
+        ]
+        ['SINT' List
+            [array int 8 value count 'numberOfValues']
+        ]
+        ['INT','1' INT
+            [simple int 16 value]
+        ]
+        ['INT' List
+            [array int 16 value count 'numberOfValues']
+        ]
+        ['DINT','1' DINT
+            [simple int 32 value]
+        ]
+        ['DINT' List
+            [array int 32 value count 'numberOfValues']
+        ]
+        ['LINT','1' LINT
+            [simple int 64 value]
+        ]
+        ['LINT' List
+            [array int 64 value count 'numberOfValues']
+        ]
+        ['USINT','1' USINT
+            [simple   uint 8 value ]
+        ]
+        ['USINT' List
+            [array uint 8 value count 'numberOfValues']
+        ]
+        ['UINT','1' UINT
+            [simple uint 16 value]
+        ]
+        ['UINT' List
+            [array uint 16 value count 'numberOfValues']
+        ]
+        ['UDINT','1' UDINT
+            [simple uint 32 value]
+        ]
+        ['UDINT' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['ULINT','1' ULINT
+            [simple uint 64 value]
+        ]
+        ['ULINT' List
+            [array uint 64 value count 'numberOfValues']
+        ]
+        ['REAL','1' REAL
+            [simple float 32  value]
+        ]
+        ['REAL' List
+            [array float 32 value count 'numberOfValues']
+        ]
+        ['LREAL','1' LREAL
+            [simple float 64  value]
+        ]
+        ['LREAL' List
+            [array float 64 value count 'numberOfValues']
+        ]
+        ['CHAR','1' CHAR
+            [simple string 8 value encoding='"UTF-8"']
+        ]
+        ['CHAR' List
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+        ]
+        ['WCHAR','1' WCHAR
+            [simple string 16 value encoding='"UTF-16"']
+        ]
+        ['WCHAR' List
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
+        ]
+    ]
+]
+
+[enum uint 8 ProfinetDataType(uint 8 dataTypeSize, string 16 conversion)
+    ['1' BOOL ['1','BOOLEAN']]
+    ['2' BYTE ['1','BYTE']]
+    ['3' WORD ['2','WORD']]
+    ['4' DWORD ['4','DWORD']]
+    ['5' LWORD ['8','LWORD']]
+    ['6' SINT ['1','SIGNED8']]
+    ['7' INT ['2','SIGNED16']]
+    ['8' DINT ['4','SIGNED32']]
+    ['9' LINT ['8','SIGNED64']]
+    ['10' USINT ['1','UNSIGNED8']]
+    ['11' UINT ['2','UNSIGNED16']]
+    ['12' UDINT ['4','UNSIGNED32']]
+    ['13' ULINT ['8','UNSIGNED64']]
+    ['14' REAL ['4','FLOAT32']]
+    ['15' LREAL ['8','FLOAT64']]
+    ['16' TIME ['8','TIME']]
+    ['17' LTIME ['8','LTIME']]
+    ['18' DATE ['8','DATE']]
+    ['19' LDATE ['8','LDATE']]
+    ['20' TIME_OF_DAY ['8','TIME_OF_DAY']]
+    ['21' LTIME_OF_DAY ['8','LTIME_OF_DAY']]
+    ['22' DATE_AND_TIME ['8','DATE_AND_TIME']]
+    ['23' LDATE_AND_TIME ['8','LDATE_AND_TIME']]
+    ['24' CHAR ['1','CHAR']]
+    ['25' WCHAR ['2','WCHAR']]
+    ['26' STRING ['1','STRING']]
+    ['27' WSTRING ['2','WSTRING']]
 ]

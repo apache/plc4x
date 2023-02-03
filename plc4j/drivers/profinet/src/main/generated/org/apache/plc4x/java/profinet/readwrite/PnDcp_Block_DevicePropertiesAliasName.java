@@ -49,9 +49,15 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
   // Properties.
   protected final byte[] aliasNameValue;
 
-  public PnDcp_Block_DevicePropertiesAliasName(byte[] aliasNameValue) {
+  // Arguments.
+  protected final Integer blockLength;
+  // Reserved Fields
+  private Integer reservedField0;
+
+  public PnDcp_Block_DevicePropertiesAliasName(byte[] aliasNameValue, Integer blockLength) {
     super();
     this.aliasNameValue = aliasNameValue;
+    this.blockLength = blockLength;
   }
 
   public byte[] getAliasNameValue() {
@@ -66,7 +72,10 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesAliasName");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (aliasNameValue)
     writeByteArrayField("aliasNameValue", aliasNameValue, writeByteArray(writeBuffer, 8));
@@ -139,20 +148,27 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesAliasName");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(aliasNameValue);
+    return new PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
+        aliasNameValue, blockLength, reservedField0);
   }
 
   public static class PnDcp_Block_DevicePropertiesAliasNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] aliasNameValue;
+    private final Integer blockLength;
+    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(byte[] aliasNameValue) {
+    public PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
+        byte[] aliasNameValue, Integer blockLength, Integer reservedField0) {
       this.aliasNameValue = aliasNameValue;
+      this.blockLength = blockLength;
+      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesAliasName build() {
       PnDcp_Block_DevicePropertiesAliasName pnDcp_Block_DevicePropertiesAliasName =
-          new PnDcp_Block_DevicePropertiesAliasName(aliasNameValue);
+          new PnDcp_Block_DevicePropertiesAliasName(aliasNameValue, blockLength);
+      pnDcp_Block_DevicePropertiesAliasName.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesAliasName;
     }
   }

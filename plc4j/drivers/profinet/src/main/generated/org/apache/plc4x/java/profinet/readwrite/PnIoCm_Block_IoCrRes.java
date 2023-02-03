@@ -43,6 +43,8 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final PnIoCm_IoCrType ioCrType;
   protected final int ioCrReference;
   protected final int frameId;
@@ -53,10 +55,20 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
       PnIoCm_IoCrType ioCrType,
       int ioCrReference,
       int frameId) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.ioCrType = ioCrType;
     this.ioCrReference = ioCrReference;
     this.frameId = frameId;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
   }
 
   public PnIoCm_IoCrType getIoCrType() {
@@ -77,6 +89,29 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_IoCrRes");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ioCrType)
     writeSimpleEnumField(
@@ -115,6 +150,15 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
     PnIoCm_Block_IoCrRes _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
+
     // Simple field (ioCrType)
     lengthInBits += 16;
 
@@ -134,6 +178,24 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_IoCrType ioCrType =
         readEnumField(
@@ -157,22 +219,31 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_IoCrRes");
     // Create the instance
-    return new PnIoCm_Block_IoCrResBuilderImpl(ioCrType, ioCrReference, frameId);
+    return new PnIoCm_Block_IoCrResBuilderImpl(
+        blockVersionHigh, blockVersionLow, ioCrType, ioCrReference, frameId);
   }
 
   public static class PnIoCm_Block_IoCrResBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final PnIoCm_IoCrType ioCrType;
     private final int ioCrReference;
     private final int frameId;
 
     public PnIoCm_Block_IoCrResBuilderImpl(
-        PnIoCm_IoCrType ioCrType, int ioCrReference, int frameId) {
+        short blockVersionHigh,
+        short blockVersionLow,
+        PnIoCm_IoCrType ioCrType,
+        int ioCrReference,
+        int frameId) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.ioCrType = ioCrType;
       this.ioCrReference = ioCrReference;
       this.frameId = frameId;
     }
 
-    public PnIoCm_Block_IoCrRes build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_IoCrRes build() {
       PnIoCm_Block_IoCrRes pnIoCm_Block_IoCrRes =
           new PnIoCm_Block_IoCrRes(
               blockVersionHigh, blockVersionLow, ioCrType, ioCrReference, frameId);
@@ -189,7 +260,9 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_IoCrRes that = (PnIoCm_Block_IoCrRes) o;
-    return (getIoCrType() == that.getIoCrType())
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getIoCrType() == that.getIoCrType())
         && (getIoCrReference() == that.getIoCrReference())
         && (getFrameId() == that.getFrameId())
         && super.equals(that)
@@ -198,7 +271,13 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getIoCrType(), getIoCrReference(), getFrameId());
+    return Objects.hash(
+        super.hashCode(),
+        getBlockVersionHigh(),
+        getBlockVersionLow(),
+        getIoCrType(),
+        getIoCrReference(),
+        getFrameId());
   }
 
   @Override
