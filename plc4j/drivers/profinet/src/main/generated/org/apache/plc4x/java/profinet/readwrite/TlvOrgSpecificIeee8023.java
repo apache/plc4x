@@ -77,6 +77,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
   protected void serializeTlvOrganizationSpecificUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrgSpecificIeee8023");
 
@@ -105,6 +106,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvOrgSpecificIeee8023 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subType)
     lengthInBits += 8;
@@ -127,6 +129,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short subType = readSimpleField("subType", readUnsignedShort(readBuffer, 8));
 

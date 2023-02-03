@@ -68,7 +68,6 @@ plc4c_return_code plc4c_s7_read_write_associated_value_type_parse(plc4x_spi_cont
     // Count array
     uint16_t itemCount = (uint16_t) plc4c_s7_read_write_event_item_length(readBuffer, valueLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       uint8_t* _value = malloc(sizeof(uint8_t));
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _value);
       if(_res != OK) {
@@ -107,7 +106,6 @@ plc4c_return_code plc4c_s7_read_write_associated_value_type_serialize(plc4x_spi_
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       uint8_t* _value = (uint8_t*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_value);
     }

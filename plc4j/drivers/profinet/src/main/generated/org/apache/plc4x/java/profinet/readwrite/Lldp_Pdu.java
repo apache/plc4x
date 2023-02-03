@@ -51,6 +51,7 @@ public class Lldp_Pdu implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Lldp_Pdu");
 
@@ -75,6 +76,7 @@ public class Lldp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Lldp_Pdu _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Array Field (lldpParameters)
     lengthInBits +=
@@ -95,6 +97,7 @@ public class Lldp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<LldpUnit> lldpParameters =
         readManualArrayField(

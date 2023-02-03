@@ -92,6 +92,7 @@ public class PnIoCm_Submodule_OutputData extends PnIoCm_Submodule implements Mes
   protected void serializePnIoCm_SubmoduleChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule_OutputData");
 
@@ -121,6 +122,7 @@ public class PnIoCm_Submodule_OutputData extends PnIoCm_Submodule implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Submodule_OutputData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (inputDataDescription)
     lengthInBits += 16;
@@ -143,6 +145,7 @@ public class PnIoCm_Submodule_OutputData extends PnIoCm_Submodule implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int inputDataDescription =
         readConstField(

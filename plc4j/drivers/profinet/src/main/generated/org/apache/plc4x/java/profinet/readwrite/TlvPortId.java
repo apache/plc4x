@@ -63,6 +63,7 @@ public class TlvPortId extends LldpUnit implements Message {
   @Override
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvPortId");
 
@@ -84,6 +85,7 @@ public class TlvPortId extends LldpUnit implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvPortId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (portIdSubType)
     lengthInBits += 8;
@@ -100,6 +102,7 @@ public class TlvPortId extends LldpUnit implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short portIdSubType = readSimpleField("portIdSubType", readUnsignedShort(readBuffer, 8));
 

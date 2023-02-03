@@ -64,7 +64,6 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_parse(plc4
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       uint8_t* _value = malloc(sizeof(uint8_t));
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _value);
       if(_res != OK) {
@@ -97,7 +96,6 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_serialize(
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       uint8_t* _value = (uint8_t*) plc4c_utils_list_get_value(_message->message_objects, curItem);
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_value);
     }

@@ -72,9 +72,8 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_push_type_parse(plc4x_spi_co
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_push_type* _value = NULL;
-      _res = plc4c_s7_read_write_alarm_message_object_push_type_parse(ctx, readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_alarm_message_object_push_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -111,9 +110,8 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_push_type_serialize(plc4x_sp
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_push_type* _value = (plc4c_s7_read_write_alarm_message_object_push_type*) plc4c_utils_list_get_value(_message->message_objects, curItem);
-      _res = plc4c_s7_read_write_alarm_message_object_push_type_serialize(ctx, writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_alarm_message_object_push_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -141,10 +139,10 @@ uint16_t plc4c_s7_read_write_alarm_message_push_type_length_in_bits(plc4x_spi_co
 
   // Array field
   if(_message->message_objects != NULL) {
-    plc4c_list_element* curElement = _message->message_objects->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_alarm_message_object_push_type_length_in_bits(ctx, (plc4c_s7_read_write_alarm_message_object_push_type*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->message_objects);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->message_objects, curItem);
+      lengthInBits += plc4c_s7_read_write_alarm_message_object_push_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_alarm_message_object_push_type*) curElement);
     }
   }
 

@@ -140,7 +140,6 @@ if( parameterType == 0xE0 ) { /* COTPParameterDisconnectAdditionalInformation */
     // Count array
     uint16_t itemCount = (uint16_t) rest;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       char* _value = malloc(sizeof(char));
       _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
@@ -215,7 +214,6 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4x_spi_context
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       char* _value = (char*) plc4c_utils_list_get_value(_message->cotp_parameter_disconnect_additional_information_data, curItem);
       plc4c_spi_write_char(writeBuffer, *_value);
     }

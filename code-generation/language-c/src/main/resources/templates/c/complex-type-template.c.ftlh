@@ -140,7 +140,6 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
     // Count array
     uint16_t itemCount = (uint16_t) ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)};
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      <#if !elementTypeReference.isSimpleTypeReference()>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if elementTypeReference.isSimpleTypeReference()>
     <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
@@ -154,7 +153,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
     <#assign nonSimpleTypeReference = elementTypeReference.asNonSimpleTypeReference().orElseThrow()>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
       ${helper.getCTypeName(nonSimpleTypeReference.name)}* _value = NULL;
-      _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(ctx, readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -471,12 +470,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4x_spi_context 
     uint8_t itemCount = plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
     for(int curItem = 0; curItem < itemCount; curItem++) {
             <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
-<#if !elementTypeReference.isSimpleTypeReference()>      bool lastItem = curItem == (itemCount - 1);</#if>
       ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}* _value = (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}*) plc4c_utils_list_get_value(_message-><@fieldName baseType=baseType field=arrayField/>, curItem);
             <#if elementTypeReference.isSimpleTypeReference()>
       ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "*_value", arrayField)};
             <#else>
-      _res = ${helper.getCTypeName(elementTypeReference.asNonSimpleTypeReference().orElseThrow().name)}_serialize(ctx, writeBuffer, (void*) _value<#--#if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElse(null)) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, parserArguments)}<#sep>, </#sep></#list></#if-->);
+      _res = ${helper.getCTypeName(elementTypeReference.asNonSimpleTypeReference().orElseThrow().name)}_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value<#--#if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElse(null)) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, parserArguments)}<#sep>, </#sep></#list></#if-->);
       if(_res != OK) {
         return _res;
       }
@@ -656,10 +654,10 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(plc4x_spi_context ctx,
   lengthInBits += ${simpleTypeReference.sizeInBits} * plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
                 <#else>
   if(_message-><@fieldName baseType=baseType field=arrayField/> != NULL) {
-    plc4c_list_element* curElement = _message-><@fieldName baseType=baseType field=arrayField/>->tail;
-    while (curElement != NULL) {
-      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}(ctx, (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message-><@fieldName baseType=baseType field=arrayField/>, curItem);
+      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}*) curElement);
     }
   }
                 </#if>

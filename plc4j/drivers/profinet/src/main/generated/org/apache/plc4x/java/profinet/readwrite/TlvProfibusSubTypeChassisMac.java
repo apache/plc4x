@@ -58,6 +58,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
   protected void serializeTlvOrgSpecificProfibusUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypeChassisMac");
 
@@ -76,6 +77,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvProfibusSubTypeChassisMac _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (macAddress)
     lengthInBits += macAddress.getLengthInBits();
@@ -89,6 +91,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     MacAddress macAddress =
         readSimpleField(

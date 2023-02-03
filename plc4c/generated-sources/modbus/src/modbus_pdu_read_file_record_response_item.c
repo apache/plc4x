@@ -96,7 +96,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       char* _value = (char*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_char(writeBuffer, *_value);
     }

@@ -360,9 +360,8 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
     // Count array
     uint16_t itemCount = (uint16_t) szlItemCount;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_szl_data_tree_item* _value = NULL;
-      _res = plc4c_s7_read_write_szl_data_tree_item_parse(ctx, readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_szl_data_tree_item_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -535,9 +534,8 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_ack_type* _value = NULL;
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(ctx, readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -576,7 +574,6 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       uint8_t* _value = malloc(sizeof(uint8_t));
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _value);
       if(_res != OK) {
@@ -933,9 +930,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_szl_data_tree_item* _value = (plc4c_s7_read_write_szl_data_tree_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
-      _res = plc4c_s7_read_write_szl_data_tree_item_serialize(ctx, writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_szl_data_tree_item_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1054,9 +1050,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_ack_type* _value = (plc4c_s7_read_write_alarm_message_object_ack_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects, curItem);
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(ctx, writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1083,7 +1078,6 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_response_message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       uint8_t* _value = (uint8_t*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_response_message_objects, curItem);
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_value);
     }
@@ -1299,10 +1293,10 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
 
   // Array field
   if(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits(ctx, (plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
+      lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_szl_data_tree_item*) curElement);
     }
   }
 
@@ -1385,10 +1379,10 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
 
   // Array field
   if(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits(ctx, (plc4c_s7_read_write_alarm_message_object_ack_type*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects, curItem);
+      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_alarm_message_object_ack_type*) curElement);
     }
   }
 

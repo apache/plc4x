@@ -63,7 +63,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_device_information_object_parse
     // Count array
     uint16_t itemCount = (uint16_t) objectLength;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       char* _value = malloc(sizeof(char));
       _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
@@ -96,7 +95,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_device_information_object_seria
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       char* _value = (char*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_char(writeBuffer, *_value);
     }

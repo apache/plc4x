@@ -57,6 +57,7 @@ public abstract class LldpUnit implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LldpUnit");
 
@@ -86,6 +87,7 @@ public abstract class LldpUnit implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LldpUnit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (tlvId)
     lengthInBits += 7;
@@ -108,6 +110,7 @@ public abstract class LldpUnit implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvType tlvId =
         readDiscriminatorField(
