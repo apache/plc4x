@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -60,7 +61,7 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_message** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -174,7 +175,7 @@ if( messageType == 0x07 ) { /* S7MessageUserData */
   // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_parameter* parameter = NULL;
   if((parameterLength) > (0)) {
-    _res = plc4c_s7_read_write_s7_parameter_parse(readBuffer, messageType, &parameter);
+    _res = plc4c_s7_read_write_s7_parameter_parse(ctx, readBuffer, messageType, &parameter);
     if(_res != OK) {
       return _res;
     }
@@ -186,7 +187,7 @@ if( messageType == 0x07 ) { /* S7MessageUserData */
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
   if((payloadLength) > (0)) {
-    _res = plc4c_s7_read_write_s7_payload_parse(readBuffer, messageType, parameter, &payload);
+    _res = plc4c_s7_read_write_s7_payload_parse(ctx, readBuffer, messageType, parameter, &payload);
     if(_res != OK) {
       return _res;
     }
@@ -198,7 +199,7 @@ if( messageType == 0x07 ) { /* S7MessageUserData */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_message* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_message* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (protocolId)
@@ -220,13 +221,13 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
   }
 
   // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->parameter) != (NULL)) ? plc4c_s7_read_write_s7_parameter_length_in_bytes(_message->parameter) : 0));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->parameter) != (NULL)) ? plc4c_s7_read_write_s7_parameter_length_in_bytes(ctx, _message->parameter) : 0));
   if(_res != OK) {
     return _res;
   }
 
   // Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->payload) != (NULL)) ? plc4c_s7_read_write_s7_payload_length_in_bytes(_message->payload) : 0));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->payload) != (NULL)) ? plc4c_s7_read_write_s7_payload_length_in_bytes(ctx, _message->payload) : 0));
   if(_res != OK) {
     return _res;
   }
@@ -277,7 +278,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
-    _res = plc4c_s7_read_write_s7_parameter_serialize(writeBuffer, _message->parameter);
+    _res = plc4c_s7_read_write_s7_parameter_serialize(ctx, writeBuffer, _message->parameter);
     if(_res != OK) {
       return _res;
     }
@@ -285,7 +286,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    _res = plc4c_s7_read_write_s7_payload_serialize(writeBuffer, _message->payload);
+    _res = plc4c_s7_read_write_s7_payload_serialize(ctx, writeBuffer, _message->payload);
     if(_res != OK) {
       return _res;
     }
@@ -294,11 +295,11 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_message_length_in_bytes(plc4c_s7_read_write_s7_message* _message) {
-  return plc4c_s7_read_write_s7_message_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_message_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_message* _message) {
+  return plc4c_s7_read_write_s7_message_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_message* _message) {
+uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_message* _message) {
   uint16_t lengthInBits = 0;
 
   // Const Field (protocolId)
@@ -355,12 +356,12 @@ uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_me
 
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
-    lengthInBits += plc4c_s7_read_write_s7_parameter_length_in_bits(_message->parameter);
+    lengthInBits += plc4c_s7_read_write_s7_parameter_length_in_bits(ctx, _message->parameter);
   }
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    lengthInBits += plc4c_s7_read_write_s7_payload_length_in_bits(_message->payload);
+    lengthInBits += plc4c_s7_read_write_s7_payload_length_in_bits(ctx, _message->payload);
   }
 
   return lengthInBits;

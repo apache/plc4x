@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_plc4x_static.h>
 
@@ -64,7 +65,7 @@ uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_message** _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -101,7 +102,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4c_spi_read_buff
   (*_message)->request_id = requestId;
   // Discriminator Field (requestType)
   plc4c_plc4x_read_write_plc4x_request_type requestType;
-  _res = plc4c_plc4x_read_write_plc4x_request_type_parse(readBuffer, &requestType);
+  _res = plc4c_plc4x_read_write_plc4x_request_type_parse(ctx, readBuffer, &requestType);
   if(_res != OK) {
     return _res;
   }
@@ -140,7 +141,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_CONNECT_RESPONSE ) 
 
   // Simple Field (responseCode)
   plc4c_plc4x_read_write_plc4x_response_code responseCode;
-  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(readBuffer, (void*) &responseCode);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(ctx, readBuffer, (void*) &responseCode);
   if(_res != OK) {
     return _res;
   }
@@ -178,7 +179,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_REQUEST ) { /*
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_request* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_tag_request_parse(readBuffer, (void*) &_value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_request_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -201,7 +202,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_RESPONSE ) { /
 
   // Simple Field (responseCode)
   plc4c_plc4x_read_write_plc4x_response_code responseCode;
-  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(readBuffer, (void*) &responseCode);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(ctx, readBuffer, (void*) &responseCode);
   if(_res != OK) {
     return _res;
   }
@@ -228,7 +229,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_RESPONSE ) { /
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_value_response* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_parse(readBuffer, (void*) &_value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -269,7 +270,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_REQUEST ) { /
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_value_request* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_parse(readBuffer, (void*) &_value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -292,7 +293,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_RESPONSE ) { 
 
   // Simple Field (responseCode)
   plc4c_plc4x_read_write_plc4x_response_code responseCode;
-  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(readBuffer, (void*) &responseCode);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(ctx, readBuffer, (void*) &responseCode);
   if(_res != OK) {
     return _res;
   }
@@ -319,7 +320,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_RESPONSE ) { 
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_response* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_tag_response_parse(readBuffer, (void*) &_value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_response_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -332,14 +333,14 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_RESPONSE ) { 
   return OK;
 }
 
-plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_message* _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_message* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (version)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION());
 
   // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, plc4c_plc4x_read_write_plc4x_message_length_in_bytes(_message));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, plc4c_plc4x_read_write_plc4x_message_length_in_bytes(ctx, _message));
   if(_res != OK) {
     return _res;
   }
@@ -352,7 +353,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
 
   // Enumerated Discriminator Field (requestType)
   plc4c_plc4x_read_write_plc4x_request_type _requestType = plc4c_plc4x_read_write_plc4x_message_get_discriminator(_message->_type).requestType;
-  _res = plc4c_plc4x_read_write_plc4x_request_type_serialize(writeBuffer, &_requestType);
+  _res = plc4c_plc4x_read_write_plc4x_request_type_serialize(ctx, writeBuffer, &_requestType);
   if(_res != OK) {
     return _res;
   }
@@ -384,7 +385,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   }
 
   // Simple Field (responseCode)
-  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(writeBuffer, &_message->plc4x_connect_response_response_code);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(ctx, writeBuffer, &_message->plc4x_connect_response_response_code);
   if(_res != OK) {
     return _res;
   }
@@ -411,7 +412,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_request* _value = (plc4c_plc4x_read_write_plc4x_tag_request*) plc4c_utils_list_get_value(_message->plc4x_read_request_tags, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_tag_request_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_request_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -429,7 +430,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   }
 
   // Simple Field (responseCode)
-  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(writeBuffer, &_message->plc4x_read_response_response_code);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(ctx, writeBuffer, &_message->plc4x_read_response_response_code);
   if(_res != OK) {
     return _res;
   }
@@ -446,7 +447,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_value_response* _value = (plc4c_plc4x_read_write_plc4x_tag_value_response*) plc4c_utils_list_get_value(_message->plc4x_read_response_tags, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -475,7 +476,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_value_request* _value = (plc4c_plc4x_read_write_plc4x_tag_value_request*) plc4c_utils_list_get_value(_message->plc4x_write_request_tags, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -493,7 +494,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   }
 
   // Simple Field (responseCode)
-  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(writeBuffer, &_message->plc4x_write_response_response_code);
+  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(ctx, writeBuffer, &_message->plc4x_write_response_response_code);
   if(_res != OK) {
     return _res;
   }
@@ -510,7 +511,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_plc4x_read_write_plc4x_tag_response* _value = (plc4c_plc4x_read_write_plc4x_tag_response*) plc4c_utils_list_get_value(_message->plc4x_write_response_tags, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_tag_response_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_plc4x_read_write_plc4x_tag_response_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -524,11 +525,11 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   return OK;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bytes(plc4c_plc4x_read_write_plc4x_message* _message) {
-  return plc4c_plc4x_read_write_plc4x_message_length_in_bits(_message) / 8;
+uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bytes(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_message* _message) {
+  return plc4c_plc4x_read_write_plc4x_message_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_write_plc4x_message* _message) {
+uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_message* _message) {
   uint16_t lengthInBits = 0;
 
   // Const Field (version)
@@ -563,7 +564,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
 
 
   // Simple field (responseCode)
-  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(&_message->plc4x_connect_response_response_code);
+  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(ctx, &_message->plc4x_connect_response_response_code);
 
       break;
     }
@@ -581,7 +582,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   if(_message->plc4x_read_request_tags != NULL) {
     plc4c_list_element* curElement = _message->plc4x_read_request_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_request_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_request*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_request_length_in_bits(ctx, (plc4c_plc4x_read_write_plc4x_tag_request*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -595,7 +596,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
 
 
   // Simple field (responseCode)
-  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(&_message->plc4x_read_response_response_code);
+  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(ctx, &_message->plc4x_read_response_response_code);
 
 
   // Implicit Field (numTags)
@@ -606,7 +607,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   if(_message->plc4x_read_response_tags != NULL) {
     plc4c_list_element* curElement = _message->plc4x_read_response_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_response_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_value_response*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_response_length_in_bits(ctx, (plc4c_plc4x_read_write_plc4x_tag_value_response*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -627,7 +628,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   if(_message->plc4x_write_request_tags != NULL) {
     plc4c_list_element* curElement = _message->plc4x_write_request_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_value_request*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits(ctx, (plc4c_plc4x_read_write_plc4x_tag_value_request*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -641,7 +642,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
 
 
   // Simple field (responseCode)
-  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(&_message->plc4x_write_response_response_code);
+  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(ctx, &_message->plc4x_write_response_response_code);
 
 
   // Implicit Field (numTags)
@@ -652,7 +653,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   if(_message->plc4x_write_response_tags != NULL) {
     plc4c_list_element* curElement = _message->plc4x_write_response_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_response_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_response*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_response_length_in_bits(ctx, (plc4c_plc4x_read_write_plc4x_tag_response*) curElement->value);
       curElement = curElement->next;
     }
   }

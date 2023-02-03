@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -33,7 +34,7 @@ uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_query_type** _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_query_type** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -61,7 +62,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_r
 
   // Simple Field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -69,7 +70,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_r
 
   // Simple Field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -98,7 +99,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_r
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_query_type* _value = NULL;
-      _res = plc4c_s7_read_write_alarm_message_object_query_type_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_alarm_message_object_query_type_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -110,7 +111,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_r
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_query_type* _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_query_type* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (functionId)
@@ -126,13 +127,13 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4c_s
   }
 
   // Simple Field (returnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
@@ -146,7 +147,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4c_s
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_query_type* _value = (plc4c_s7_read_write_alarm_message_object_query_type*) plc4c_utils_list_get_value(_message->message_objects, curItem);
-      _res = plc4c_s7_read_write_alarm_message_object_query_type_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_alarm_message_object_query_type_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -156,11 +157,11 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4c_s
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bytes(plc4c_s7_read_write_alarm_message_query_type* _message) {
-  return plc4c_s7_read_write_alarm_message_query_type_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_query_type* _message) {
+  return plc4c_s7_read_write_alarm_message_query_type_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bits(plc4c_s7_read_write_alarm_message_query_type* _message) {
+uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_query_type* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (functionId)
@@ -170,10 +171,10 @@ uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bits(plc4c_s7_re
   lengthInBits += 8;
 
   // Simple field (returnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->return_code);
 
   // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
   // Const Field (DataLength)
   lengthInBits += 16;
@@ -182,7 +183,7 @@ uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bits(plc4c_s7_re
   if(_message->message_objects != NULL) {
     plc4c_list_element* curElement = _message->message_objects->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_alarm_message_object_query_type_length_in_bits((plc4c_s7_read_write_alarm_message_object_query_type*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_alarm_message_object_query_type_length_in_bits(ctx, (plc4c_s7_read_write_alarm_message_object_query_type*) curElement->value);
       curElement = curElement->next;
     }
   }

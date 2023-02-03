@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -62,9 +63,9 @@ typedef enum plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_si
 // Get an empty NULL-struct
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_null();
 
-plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_transport_size* message);
+plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_transport_size* message);
 
-plc4c_return_code plc4c_s7_read_write_transport_size_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_transport_size* message);
+plc4c_return_code plc4c_s7_read_write_transport_size_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_transport_size* message);
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_for_value(uint8_t value);
 
@@ -107,9 +108,9 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_type(plc4c_s7_read_write_transport_size value);
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_base_type(plc4c_s7_read_write_transport_size value);
 
-uint16_t plc4c_s7_read_write_transport_size_length_in_bytes(plc4c_s7_read_write_transport_size* message);
+uint16_t plc4c_s7_read_write_transport_size_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_transport_size* message);
 
-uint16_t plc4c_s7_read_write_transport_size_length_in_bits(plc4c_s7_read_write_transport_size* message);
+uint16_t plc4c_s7_read_write_transport_size_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_transport_size* message);
 
 
 #endif  // PLC4C_S7_READ_WRITE_TRANSPORT_SIZE_H_

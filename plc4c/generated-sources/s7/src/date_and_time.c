@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -27,7 +28,7 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_date_and_time_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_date_and_time** _message) {
+plc4c_return_code plc4c_s7_read_write_date_and_time_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_date_and_time** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -76,7 +77,7 @@ plc4c_return_code plc4c_s7_read_write_date_and_time_parse(plc4c_spi_read_buffer*
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_date_and_time_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_date_and_time* _message) {
+plc4c_return_code plc4c_s7_read_write_date_and_time_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_date_and_time* _message) {
   plc4c_return_code _res = OK;
 
   // Manual Field (year)  {
@@ -130,11 +131,11 @@ plc4c_return_code plc4c_s7_read_write_date_and_time_serialize(plc4c_spi_write_bu
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_date_and_time_length_in_bytes(plc4c_s7_read_write_date_and_time* _message) {
-  return plc4c_s7_read_write_date_and_time_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_date_and_time_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_date_and_time* _message) {
+  return plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_date_and_time_length_in_bits(plc4c_s7_read_write_date_and_time* _message) {
+uint16_t plc4c_s7_read_write_date_and_time_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_date_and_time* _message) {
   uint16_t lengthInBits = 0;
 
   // Manual Field (year)

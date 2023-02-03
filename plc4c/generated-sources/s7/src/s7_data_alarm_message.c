@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -68,7 +69,7 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, plc4c_s7_read_write_s7_data_alarm_message** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, plc4c_s7_read_write_s7_data_alarm_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -130,7 +131,7 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
   // Simple Field (syntaxId)
   plc4c_s7_read_write_syntax_id_type syntaxId;
-  _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
+  _res = plc4c_s7_read_write_syntax_id_type_parse(ctx, readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
@@ -152,7 +153,7 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
   // Simple Field (queryType)
   plc4c_s7_read_write_query_type queryType;
-  _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
+  _res = plc4c_s7_read_write_query_type_parse(ctx, readBuffer, (void*) &queryType);
   if(_res != OK) {
     return _res;
   }
@@ -174,7 +175,7 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
   // Simple Field (alarmType)
   plc4c_s7_read_write_alarm_type alarmType;
-  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  _res = plc4c_s7_read_write_alarm_type_parse(ctx, readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
@@ -185,7 +186,7 @@ if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
 
   // Simple Field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -194,7 +195,7 @@ if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
 
   // Simple Field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -217,7 +218,7 @@ if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_data_alarm_message* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_data_alarm_message* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (functionId)
@@ -237,7 +238,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH());
 
   // Simple Field (syntaxId)
-  _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_message_object_request_syntax_id);
+  _res = plc4c_s7_read_write_syntax_id_type_serialize(ctx, writeBuffer, &_message->s7_message_object_request_syntax_id);
   if(_res != OK) {
     return _res;
   }
@@ -249,7 +250,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   }
 
   // Simple Field (queryType)
-  _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_message_object_request_query_type);
+  _res = plc4c_s7_read_write_query_type_serialize(ctx, writeBuffer, &_message->s7_message_object_request_query_type);
   if(_res != OK) {
     return _res;
   }
@@ -261,7 +262,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   }
 
   // Simple Field (alarmType)
-  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_message_object_request_alarm_type);
+  _res = plc4c_s7_read_write_alarm_type_serialize(ctx, writeBuffer, &_message->s7_message_object_request_alarm_type);
   if(_res != OK) {
     return _res;
   }
@@ -271,13 +272,13 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response: {
 
   // Simple Field (returnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_message_object_response_return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->s7_message_object_response_return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_message_object_response_transport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->s7_message_object_response_transport_size);
   if(_res != OK) {
     return _res;
   }
@@ -295,11 +296,11 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bytes(plc4c_s7_read_write_s7_data_alarm_message* _message) {
-  return plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_data_alarm_message* _message) {
+  return plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_write_s7_data_alarm_message* _message) {
+uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_data_alarm_message* _message) {
   uint16_t lengthInBits = 0;
 
   // Const Field (functionId)
@@ -321,7 +322,7 @@ uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_
 
 
   // Simple field (syntaxId)
-  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_message_object_request_syntax_id);
+  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(ctx, &_message->s7_message_object_request_syntax_id);
 
 
   // Reserved Field (reserved)
@@ -329,7 +330,7 @@ uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_
 
 
   // Simple field (queryType)
-  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_message_object_request_query_type);
+  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(ctx, &_message->s7_message_object_request_query_type);
 
 
   // Reserved Field (reserved)
@@ -337,18 +338,18 @@ uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_
 
 
   // Simple field (alarmType)
-  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_message_object_request_alarm_type);
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(ctx, &_message->s7_message_object_request_alarm_type);
 
       break;
     }
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response: {
 
   // Simple field (returnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_message_object_response_return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->s7_message_object_response_return_code);
 
 
   // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_message_object_response_transport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->s7_message_object_response_transport_size);
 
 
   // Reserved Field (reserved)

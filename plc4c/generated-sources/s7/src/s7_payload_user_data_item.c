@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -112,7 +113,7 @@ uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_R
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, uint8_t cpuSubfunction, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, uint8_t cpuSubfunction, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -124,7 +125,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -132,7 +133,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -205,7 +206,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDi
 
   // Simple Field (TimeStamp)
   plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(readBuffer, (void*) &TimeStamp);
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
   if(_res != OK) {
     return _res;
   }
@@ -216,7 +217,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadAl
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -227,7 +228,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x06 ) ) { /* S7PayloadNo
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -238,7 +239,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x0c ) ) { /* S7PayloadAl
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_ack_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_ack_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_ack_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -249,7 +250,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x11 ) ) { /* S7PayloadAl
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -260,7 +261,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x12 ) ) { /* S7PayloadAl
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -271,7 +272,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadAl
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -282,7 +283,7 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x16 ) ) { /* S7PayloadNo
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
@@ -293,7 +294,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
 
   // Simple Field (szlId)
   plc4c_s7_read_write_szl_id* szlId;
-  _res = plc4c_s7_read_write_szl_id_parse(readBuffer, (void*) &szlId);
+  _res = plc4c_s7_read_write_szl_id_parse(ctx, readBuffer, (void*) &szlId);
   if(_res != OK) {
     return _res;
   }
@@ -313,7 +314,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
 
   // Simple Field (szlId)
   plc4c_s7_read_write_szl_id* szlId;
-  _res = plc4c_s7_read_write_szl_id_parse(readBuffer, (void*) &szlId);
+  _res = plc4c_s7_read_write_szl_id_parse(ctx, readBuffer, (void*) &szlId);
   if(_res != OK) {
     return _res;
   }
@@ -361,7 +362,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_szl_data_tree_item* _value = NULL;
-      _res = plc4c_s7_read_write_szl_data_tree_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_szl_data_tree_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -407,7 +408,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUs
   // Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_alarm_state_type* Alarmtype = NULL;
   if((Subscription) >= (128)) {
-    _res = plc4c_s7_read_write_alarm_state_type_parse(readBuffer, &Alarmtype);
+    _res = plc4c_s7_read_write_alarm_state_type_parse(ctx, readBuffer, &Alarmtype);
     if(_res != OK) {
       return _res;
     }
@@ -480,7 +481,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength ==
 
   // Simple Field (alarmType)
   plc4c_s7_read_write_alarm_type alarmType;
-  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  _res = plc4c_s7_read_write_alarm_type_parse(ctx, readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
@@ -536,7 +537,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_ack_type* _value = NULL;
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -639,7 +640,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (syntaxId)
   plc4c_s7_read_write_syntax_id_type syntaxId;
-  _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
+  _res = plc4c_s7_read_write_syntax_id_type_parse(ctx, readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
@@ -661,7 +662,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (queryType)
   plc4c_s7_read_write_query_type queryType;
-  _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
+  _res = plc4c_s7_read_write_query_type_parse(ctx, readBuffer, (void*) &queryType);
   if(_res != OK) {
     return _res;
   }
@@ -683,7 +684,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (alarmType)
   plc4c_s7_read_write_alarm_type alarmType;
-  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  _res = plc4c_s7_read_write_alarm_type_parse(ctx, readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
@@ -718,7 +719,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (pudicfReturnCode)
   plc4c_s7_read_write_data_transport_error_code pudicfReturnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &pudicfReturnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &pudicfReturnCode);
   if(_res != OK) {
     return _res;
   }
@@ -727,7 +728,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (pudicftransportSize)
   plc4c_s7_read_write_data_transport_size pudicftransportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &pudicftransportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &pudicftransportSize);
   if(_res != OK) {
     return _res;
   }
@@ -750,23 +751,23 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (returnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
 
   // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(_message)) - (4));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(ctx, _message)) - (4));
   if(_res != OK) {
     return _res;
   }
@@ -812,7 +813,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (TimeStamp)
-  _res = plc4c_s7_read_write_date_and_time_serialize(writeBuffer, _message->s7_payload_diagnostic_message_time_stamp);
+  _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_diagnostic_message_time_stamp);
   if(_res != OK) {
     return _res;
   }
@@ -822,7 +823,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm8_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm8_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -832,7 +833,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_notify_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_notify_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -842,7 +843,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_ack_ind: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_ack_push_type_serialize(writeBuffer, _message->s7_payload_alarm_ack_ind_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_ack_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_ack_ind_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -852,7 +853,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sq: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_sq_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_sq_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -862,7 +863,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_s: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_s_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_s_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -872,7 +873,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sc: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_sc_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_sc_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -882,7 +883,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify8: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_notify8_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_notify8_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -892,7 +893,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request: {
 
   // Simple Field (szlId)
-  _res = plc4c_s7_read_write_szl_id_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
+  _res = plc4c_s7_read_write_szl_id_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
   if(_res != OK) {
     return _res;
   }
@@ -908,7 +909,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
 
   // Simple Field (szlId)
-  _res = plc4c_s7_read_write_szl_id_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
+  _res = plc4c_s7_read_write_szl_id_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
   if(_res != OK) {
     return _res;
   }
@@ -934,7 +935,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_szl_data_tree_item* _value = (plc4c_s7_read_write_szl_data_tree_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
-      _res = plc4c_s7_read_write_szl_data_tree_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_szl_data_tree_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -965,7 +966,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
   // Optional Field (Alarmtype)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype != NULL) {
-    _res = plc4c_s7_read_write_alarm_state_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
+    _res = plc4c_s7_read_write_alarm_state_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
     if(_res != OK) {
       return _res;
     }
@@ -1016,7 +1017,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (alarmType)
-  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+  _res = plc4c_s7_read_write_alarm_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
   if(_res != OK) {
     return _res;
   }
@@ -1055,7 +1056,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_ack_type* _value = (plc4c_s7_read_write_alarm_message_object_ack_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects, curItem);
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1105,7 +1106,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH());
 
   // Simple Field (syntaxId)
-  _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
+  _res = plc4c_s7_read_write_syntax_id_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
   if(_res != OK) {
     return _res;
   }
@@ -1117,7 +1118,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (queryType)
-  _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
+  _res = plc4c_s7_read_write_query_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
   if(_res != OK) {
     return _res;
   }
@@ -1129,7 +1130,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (alarmType)
-  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
+  _res = plc4c_s7_read_write_alarm_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
   if(_res != OK) {
     return _res;
   }
@@ -1145,13 +1146,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ());
 
   // Simple Field (pudicfReturnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (pudicftransportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
   if(_res != OK) {
     return _res;
   }
@@ -1169,18 +1170,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
-  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (returnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->return_code);
 
   // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
   // Implicit Field (dataLength)
   lengthInBits += 16;
@@ -1214,63 +1215,63 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (TimeStamp)
-  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(_message->s7_payload_diagnostic_message_time_stamp);
+  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_diagnostic_message_time_stamp);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm8_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm8_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_notify_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_notify_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_ack_ind: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_ack_push_type_length_in_bits(_message->s7_payload_alarm_ack_ind_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_ack_push_type_length_in_bits(ctx, _message->s7_payload_alarm_ack_ind_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sq: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_sq_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_sq_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_s: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_s_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_s_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sc: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_sc_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_sc_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify8: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_notify8_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_notify8_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request: {
 
   // Simple field (szlId)
-  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(_message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
+  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
 
 
   // Simple field (szlIndex)
@@ -1281,7 +1282,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
 
   // Simple field (szlId)
-  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(_message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
+  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
 
 
   // Simple field (szlIndex)
@@ -1300,7 +1301,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
   if(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items != NULL) {
     plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits((plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits(ctx, (plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -1323,7 +1324,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
   // Optional Field (Alarmtype)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype != NULL) {
-    lengthInBits += plc4c_s7_read_write_alarm_state_type_length_in_bits(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
+    lengthInBits += plc4c_s7_read_write_alarm_state_type_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
   }
 
 
@@ -1360,7 +1361,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (alarmType)
-  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
 
 
   // Simple field (reserved02)
@@ -1386,7 +1387,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
   if(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects != NULL) {
     plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits((plc4c_s7_read_write_alarm_message_object_ack_type*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits(ctx, (plc4c_s7_read_write_alarm_message_object_ack_type*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -1427,7 +1428,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (syntaxId)
-  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
+  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
 
 
   // Reserved Field (reserved)
@@ -1435,7 +1436,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (queryType)
-  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
+  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
 
 
   // Reserved Field (reserved)
@@ -1443,7 +1444,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (alarmType)
-  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
 
       break;
     }
@@ -1458,11 +1459,11 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (pudicfReturnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
 
 
   // Simple field (pudicftransportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
 
 
   // Reserved Field (reserved)

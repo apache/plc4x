@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -60,7 +61,7 @@ plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* readBuffer, uint8_t messageType, plc4c_s7_read_write_s7_parameter** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t messageType, plc4c_s7_read_write_s7_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -144,7 +145,7 @@ if( ( parameterType == 0x04 ) && ( messageType == 0x01 ) ) { /* S7ParameterReadV
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_request_parameter_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -187,7 +188,7 @@ if( ( parameterType == 0x05 ) && ( messageType == 0x01 ) ) { /* S7ParameterWrite
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_request_parameter_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -230,7 +231,7 @@ if( ( parameterType == 0x00 ) && ( messageType == 0x07 ) ) { /* S7ParameterUserD
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_parameter_user_data_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_parameter_user_data_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_parameter_user_data_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -311,7 +312,7 @@ if( ( parameterType == 0x01 ) && ( messageType == 0x07 ) ) { /* S7ParameterModeT
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_parameter* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_parameter* _message) {
   plc4c_return_code _res = OK;
 
   // Discriminator Field (parameterType)
@@ -361,7 +362,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_request_parameter_item* _value = (plc4c_s7_read_write_s7_var_request_parameter_item*) plc4c_utils_list_get_value(_message->s7_parameter_read_var_request_items, curItem);
-      _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -394,7 +395,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_request_parameter_item* _value = (plc4c_s7_read_write_s7_var_request_parameter_item*) plc4c_utils_list_get_value(_message->s7_parameter_write_var_request_items, curItem);
-      _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -427,7 +428,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_parameter_user_data_item* _value = (plc4c_s7_read_write_s7_parameter_user_data_item*) plc4c_utils_list_get_value(_message->s7_parameter_user_data_items, curItem);
-      _res = plc4c_s7_read_write_s7_parameter_user_data_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_parameter_user_data_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -445,7 +446,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
   }
 
   // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_s7_parameter_length_in_bytes(_message)) - (2));
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_s7_parameter_length_in_bytes(ctx, _message)) - (2));
   if(_res != OK) {
     return _res;
   }
@@ -487,11 +488,11 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_parameter_length_in_bytes(plc4c_s7_read_write_s7_parameter* _message) {
-  return plc4c_s7_read_write_s7_parameter_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_parameter_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_parameter* _message) {
+  return plc4c_s7_read_write_s7_parameter_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_parameter* _message) {
+uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_parameter* _message) {
   uint16_t lengthInBits = 0;
 
   // Discriminator Field (parameterType)
@@ -528,7 +529,7 @@ uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_
   if(_message->s7_parameter_read_var_request_items != NULL) {
     plc4c_list_element* curElement = _message->s7_parameter_read_var_request_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits((plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(ctx, (plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -552,7 +553,7 @@ uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_
   if(_message->s7_parameter_write_var_request_items != NULL) {
     plc4c_list_element* curElement = _message->s7_parameter_write_var_request_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits((plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(ctx, (plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -576,7 +577,7 @@ uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_
   if(_message->s7_parameter_user_data_items != NULL) {
     plc4c_list_element* curElement = _message->s7_parameter_user_data_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits((plc4c_s7_read_write_s7_parameter_user_data_item*) curElement->value);
+      lengthInBits += plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits(ctx, (plc4c_s7_read_write_s7_parameter_user_data_item*) curElement->value);
       curElement = curElement->next;
     }
   }

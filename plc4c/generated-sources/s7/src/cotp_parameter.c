@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -56,7 +57,7 @@ plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* readBuffer, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -87,7 +88,7 @@ if( parameterType == 0xC0 ) { /* COTPParameterTpduSize */
 
   // Simple Field (tpduSize)
   plc4c_s7_read_write_cotp_tpdu_size tpduSize;
-  _res = plc4c_s7_read_write_cotp_tpdu_size_parse(readBuffer, (void*) &tpduSize);
+  _res = plc4c_s7_read_write_cotp_tpdu_size_parse(ctx, readBuffer, (void*) &tpduSize);
   if(_res != OK) {
     return _res;
   }
@@ -154,14 +155,14 @@ if( parameterType == 0xE0 ) { /* COTPParameterDisconnectAdditionalInformation */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_parameter* _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_parameter* _message) {
   plc4c_return_code _res = OK;
 
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
 
   // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(_message)) - (2));
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(ctx, _message)) - (2));
   if(_res != OK) {
     return _res;
   }
@@ -171,7 +172,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
   // Simple Field (tpduSize)
-  _res = plc4c_s7_read_write_cotp_tpdu_size_serialize(writeBuffer, &_message->cotp_parameter_tpdu_size_tpdu_size);
+  _res = plc4c_s7_read_write_cotp_tpdu_size_serialize(ctx, writeBuffer, &_message->cotp_parameter_tpdu_size_tpdu_size);
   if(_res != OK) {
     return _res;
   }
@@ -227,11 +228,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* _message) {
-  return plc4c_s7_read_write_cotp_parameter_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_cotp_parameter* _message) {
+  return plc4c_s7_read_write_cotp_parameter_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* _message) {
+uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_cotp_parameter* _message) {
   uint16_t lengthInBits = 0;
 
   // Discriminator Field (parameterType)
@@ -245,7 +246,7 @@ uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_c
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
   // Simple field (tpduSize)
-  lengthInBits += plc4c_s7_read_write_cotp_tpdu_size_length_in_bits(&_message->cotp_parameter_tpdu_size_tpdu_size);
+  lengthInBits += plc4c_s7_read_write_cotp_tpdu_size_length_in_bits(ctx, &_message->cotp_parameter_tpdu_size_tpdu_size);
 
       break;
     }

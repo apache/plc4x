@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_modbus_static.h>
 
@@ -134,7 +135,7 @@ uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_M
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* readBuffer, bool response, plc4c_modbus_read_write_modbus_pdu** _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, bool response, plc4c_modbus_read_write_modbus_pdu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -166,7 +167,7 @@ if( errorFlag == true ) { /* ModbusPDUError */
 
   // Simple Field (exceptionCode)
   plc4c_modbus_read_write_modbus_error_code exceptionCode;
-  _res = plc4c_modbus_read_write_modbus_error_code_parse(readBuffer, (void*) &exceptionCode);
+  _res = plc4c_modbus_read_write_modbus_error_code_parse(ctx, readBuffer, (void*) &exceptionCode);
   if(_res != OK) {
     return _res;
   }
@@ -832,7 +833,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == false ) 
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(readBuffer) + _itemsLength;
     while(plc4c_spi_read_get_pos(readBuffer) < itemsEndPos) {
       plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* _value = NULL;
-      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -864,7 +865,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == true ) )
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(readBuffer) + _itemsLength;
     while(plc4c_spi_read_get_pos(readBuffer) < itemsEndPos) {
       plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _value = NULL;
-      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -896,7 +897,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x15 ) && ( response == false ) 
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(readBuffer) + _itemsLength;
     while(plc4c_spi_read_get_pos(readBuffer) < itemsEndPos) {
       plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* _value = NULL;
-      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -928,7 +929,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x15 ) && ( response == true ) )
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(readBuffer) + _itemsLength;
     while(plc4c_spi_read_get_pos(readBuffer) < itemsEndPos) {
       plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item* _value = NULL;
-      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -1128,7 +1129,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == false ) 
 
   // Simple Field (level)
   plc4c_modbus_read_write_modbus_device_information_level level;
-  _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
+  _res = plc4c_modbus_read_write_modbus_device_information_level_parse(ctx, readBuffer, (void*) &level);
   if(_res != OK) {
     return _res;
   }
@@ -1160,7 +1161,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
 
   // Simple Field (level)
   plc4c_modbus_read_write_modbus_device_information_level level;
-  _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
+  _res = plc4c_modbus_read_write_modbus_device_information_level_parse(ctx, readBuffer, (void*) &level);
   if(_res != OK) {
     return _res;
   }
@@ -1178,7 +1179,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
 
   // Simple Field (conformityLevel)
   plc4c_modbus_read_write_modbus_device_information_conformity_level conformityLevel;
-  _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_parse(readBuffer, (void*) &conformityLevel);
+  _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_parse(ctx, readBuffer, (void*) &conformityLevel);
   if(_res != OK) {
     return _res;
   }
@@ -1187,7 +1188,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
 
   // Simple Field (moreFollows)
   plc4c_modbus_read_write_modbus_device_information_more_follows moreFollows;
-  _res = plc4c_modbus_read_write_modbus_device_information_more_follows_parse(readBuffer, (void*) &moreFollows);
+  _res = plc4c_modbus_read_write_modbus_device_information_more_follows_parse(ctx, readBuffer, (void*) &moreFollows);
   if(_res != OK) {
     return _res;
   }
@@ -1223,7 +1224,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_device_information_object* _value = NULL;
-      _res = plc4c_modbus_read_write_modbus_device_information_object_parse(readBuffer, (void*) &_value);
+      _res = plc4c_modbus_read_write_modbus_device_information_object_parse(ctx, readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -1236,7 +1237,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_pdu* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_pdu* _message) {
   plc4c_return_code _res = OK;
 
   // Discriminator Field (errorFlag)
@@ -1250,7 +1251,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
   // Simple Field (exceptionCode)
-  _res = plc4c_modbus_read_write_modbus_error_code_serialize(writeBuffer, &_message->modbus_pdu_error_exception_code);
+  _res = plc4c_modbus_read_write_modbus_error_code_serialize(ctx, writeBuffer, &_message->modbus_pdu_error_exception_code);
   if(_res != OK) {
     return _res;
   }
@@ -1719,7 +1720,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* _value = (plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item*) plc4c_utils_list_get_value(_message->modbus_pdu_read_file_record_request_items, curItem);
-      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1742,7 +1743,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _value = (plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item*) plc4c_utils_list_get_value(_message->modbus_pdu_read_file_record_response_items, curItem);
-      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1765,7 +1766,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* _value = (plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item*) plc4c_utils_list_get_value(_message->modbus_pdu_write_file_record_request_items, curItem);
-      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1788,7 +1789,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item* _value = (plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item*) plc4c_utils_list_get_value(_message->modbus_pdu_write_file_record_response_items, curItem);
-      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -1935,7 +1936,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE());
 
   // Simple Field (level)
-  _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_request_level);
+  _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(ctx, writeBuffer, &_message->modbus_pdu_read_device_identification_request_level);
   if(_res != OK) {
     return _res;
   }
@@ -1954,7 +1955,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE());
 
   // Simple Field (level)
-  _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_level);
+  _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(ctx, writeBuffer, &_message->modbus_pdu_read_device_identification_response_level);
   if(_res != OK) {
     return _res;
   }
@@ -1966,13 +1967,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (conformityLevel)
-  _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_conformity_level);
+  _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_serialize(ctx, writeBuffer, &_message->modbus_pdu_read_device_identification_response_conformity_level);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (moreFollows)
-  _res = plc4c_modbus_read_write_modbus_device_information_more_follows_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_more_follows);
+  _res = plc4c_modbus_read_write_modbus_device_information_more_follows_serialize(ctx, writeBuffer, &_message->modbus_pdu_read_device_identification_response_more_follows);
   if(_res != OK) {
     return _res;
   }
@@ -1995,7 +1996,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_modbus_read_write_modbus_device_information_object* _value = (plc4c_modbus_read_write_modbus_device_information_object*) plc4c_utils_list_get_value(_message->modbus_pdu_read_device_identification_response_objects, curItem);
-      _res = plc4c_modbus_read_write_modbus_device_information_object_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_modbus_read_write_modbus_device_information_object_serialize(ctx, writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -2009,11 +2010,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   return OK;
 }
 
-uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bytes(plc4c_modbus_read_write_modbus_pdu* _message) {
-  return plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message) / 8;
+uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_pdu* _message) {
+  return plc4c_modbus_read_write_modbus_pdu_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_write_modbus_pdu* _message) {
+uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_pdu* _message) {
   uint16_t lengthInBits = 0;
 
   // Discriminator Field (errorFlag)
@@ -2027,7 +2028,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
   // Simple field (exceptionCode)
-  lengthInBits += plc4c_modbus_read_write_modbus_error_code_length_in_bits(&_message->modbus_pdu_error_exception_code);
+  lengthInBits += plc4c_modbus_read_write_modbus_error_code_length_in_bits(ctx, &_message->modbus_pdu_error_exception_code);
 
       break;
     }
@@ -2323,7 +2324,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   if(_message->modbus_pdu_read_file_record_request_items != NULL) {
     plc4c_list_element* curElement = _message->modbus_pdu_read_file_record_request_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_length_in_bits((plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item*) curElement->value);
+      lengthInBits += plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_length_in_bits(ctx, (plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -2340,7 +2341,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   if(_message->modbus_pdu_read_file_record_response_items != NULL) {
     plc4c_list_element* curElement = _message->modbus_pdu_read_file_record_response_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bits((plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item*) curElement->value);
+      lengthInBits += plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bits(ctx, (plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -2357,7 +2358,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   if(_message->modbus_pdu_write_file_record_request_items != NULL) {
     plc4c_list_element* curElement = _message->modbus_pdu_write_file_record_request_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits((plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item*) curElement->value);
+      lengthInBits += plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits(ctx, (plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -2374,7 +2375,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   if(_message->modbus_pdu_write_file_record_response_items != NULL) {
     plc4c_list_element* curElement = _message->modbus_pdu_write_file_record_response_items->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_length_in_bits((plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item*) curElement->value);
+      lengthInBits += plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_length_in_bits(ctx, (plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -2478,7 +2479,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (level)
-  lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(&_message->modbus_pdu_read_device_identification_request_level);
+  lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(ctx, &_message->modbus_pdu_read_device_identification_request_level);
 
 
   // Simple field (objectId)
@@ -2493,7 +2494,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (level)
-  lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(&_message->modbus_pdu_read_device_identification_response_level);
+  lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(ctx, &_message->modbus_pdu_read_device_identification_response_level);
 
 
   // Simple field (individualAccess)
@@ -2501,11 +2502,11 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (conformityLevel)
-  lengthInBits += plc4c_modbus_read_write_modbus_device_information_conformity_level_length_in_bits(&_message->modbus_pdu_read_device_identification_response_conformity_level);
+  lengthInBits += plc4c_modbus_read_write_modbus_device_information_conformity_level_length_in_bits(ctx, &_message->modbus_pdu_read_device_identification_response_conformity_level);
 
 
   // Simple field (moreFollows)
-  lengthInBits += plc4c_modbus_read_write_modbus_device_information_more_follows_length_in_bits(&_message->modbus_pdu_read_device_identification_response_more_follows);
+  lengthInBits += plc4c_modbus_read_write_modbus_device_information_more_follows_length_in_bits(ctx, &_message->modbus_pdu_read_device_identification_response_more_follows);
 
 
   // Simple field (nextObjectId)
@@ -2520,7 +2521,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   if(_message->modbus_pdu_read_device_identification_response_objects != NULL) {
     plc4c_list_element* curElement = _message->modbus_pdu_read_device_identification_response_objects->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_modbus_read_write_modbus_device_information_object_length_in_bits((plc4c_modbus_read_write_modbus_device_information_object*) curElement->value);
+      lengthInBits += plc4c_modbus_read_write_modbus_device_information_object_length_in_bits(ctx, (plc4c_modbus_read_write_modbus_device_information_object*) curElement->value);
       curElement = curElement->next;
     }
   }

@@ -64,7 +64,7 @@ void internal_parse_serialize_test(uint8_t* payload,
   }
 
   plc4c_s7_read_write_tpkt_packet* message = NULL;
-  return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
+  return_code = plc4c_s7_read_write_tpkt_packet_parse(plc4x_spi_context_background(), read_buffer, &message);
   if (return_code != OK) {
     TEST_FAIL_MESSAGE("Error parsing packet");
   }
@@ -76,7 +76,7 @@ void internal_parse_serialize_test(uint8_t* payload,
   }
 
   return_code =
-      plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, message);
+      plc4c_s7_read_write_tpkt_packet_serialize(plc4x_spi_context_background(), write_buffer, message);
 
   if (return_code != OK) {
     TEST_FAIL_MESSAGE("Error serializing");
