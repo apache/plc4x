@@ -71,8 +71,8 @@ public class HelloAdsTelemetry {
                 logger.info("TwinCat Version: {}.{}.{}", twinCatMainVersion, twinCatMinorVersion, twinCatBuildVersion);
             }
             // Read the CPU Frequency and Utilization.
-            if(moduleTypeIdMap.containsKey(DeviceManagerConstants.COU.typeNumber)) {
-                Integer mdpId = moduleTypeIdMap.get(DeviceManagerConstants.COU.typeNumber);
+            if(moduleTypeIdMap.containsKey(DeviceManagerConstants.CPU.typeNumber)) {
+                Integer mdpId = moduleTypeIdMap.get(DeviceManagerConstants.CPU.typeNumber);
                 int addrCpuFrequency = (mdpId << 20) | 0x80010001;
                 int addrCpuUsage = (mdpId << 20) | 0x80010002;
                 int cpuFrequency = connection.readRequestBuilder().addTagAddress("value", String.format("0x0000F302/0x%8X:UDINT", addrCpuFrequency)).build().execute().get().getInteger("value");

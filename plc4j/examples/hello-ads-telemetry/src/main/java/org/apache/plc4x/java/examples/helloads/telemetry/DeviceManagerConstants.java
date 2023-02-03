@@ -29,7 +29,7 @@ public enum DeviceManagerConstants {
     SMB(0x00000007),
     TwinCat(0x00000008),
     Software(0x0000000A),
-    COU(0x0000000B),
+    CPU(0x0000000B),
     Memory(0x0000000C),
     FirewallWinCE(0x0000000E),
     FileSystemObject(0x00000010),
