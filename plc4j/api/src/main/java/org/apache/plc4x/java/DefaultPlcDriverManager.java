@@ -71,16 +71,21 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(this.classLoader);
         PlcConnection connection;
-        try {
+        if (this.classLoader == null) {
             PlcDriver driver = getDriverForUrl(url);
             connection = driver.getConnection(url);
-            connection.connect();
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        } else {
+            final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
+            try {
+                PlcDriver driver = getDriverForUrl(url);
+                connection = driver.getConnection(url);
+            } finally {
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
+            }
         }
+        connection.connect();
         return connection;
     }
 
@@ -93,17 +98,27 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(this.classLoader);
         PlcConnection connection;
-        try {
+        if (this.classLoader == null) {
             PlcDriver driver = getDriverForUrl(url);
-            connection = driver.getConnection(url, authentication);
-            connection.connect();
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+            connection = driver.getConnection(url);
+        } else {
+            final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
+            try {
+                PlcDriver driver = getDriverForUrl(url);
+                connection = driver.getConnection(url, authentication);
+            } finally {
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
+            }
         }
+        connection.connect();
         return connection;
+    }
+
+    @Override
+    public PlcDriverManager getDriverManager() {
+        return this;
     }
 
     /**

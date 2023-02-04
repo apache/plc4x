@@ -61,7 +61,7 @@ public class HelloInflux {
 
     public void run() {
         InfluxDBClient dbConnection = connectToDb();
-        WriteApi writeApi = dbConnection.getWriteApi();
+        WriteApi writeApi = dbConnection.makeWriteApi();
         try {
             PlcConnection plcConnection = connectToPlc();
 

@@ -53,7 +53,7 @@ uint16_t plc4c_s7_read_write_s7msec_to_int(plc4c_spi_read_buffer* io) {
 
 char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io,
                                           int32_t stringLength,
-                                          char* encoding) {
+                                          char* encoding, char* stringEncoding) {
   if (strcmp(encoding, "UTF-8") == 0) {
     // Read the max length (which is not interesting for us.
     uint8_t maxLen;
@@ -89,7 +89,7 @@ char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io,
 }
 
 char* plc4c_s7_read_write_parse_s7_char(plc4c_spi_read_buffer* io,
-                                        char* encoding) {
+                                        char* encoding, char* stringEncoding) {
   if (strcmp(encoding, "UTF-8") == 0) {
     char* result = malloc(sizeof(char) * 2);
     if (result == NULL) {

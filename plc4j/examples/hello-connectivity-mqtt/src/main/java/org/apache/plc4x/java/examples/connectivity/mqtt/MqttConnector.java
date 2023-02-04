@@ -24,10 +24,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
-import com.hivemq.client.mqtt.mqtt3.Mqtt3RxClient;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
-import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5RxClient;
+import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -53,14 +54,18 @@ public class MqttConnector {
     private Configuration config;
 
     private MqttConnector(String propsPath) {
-        if(StringUtils.isEmpty(propsPath)) {
+        if (StringUtils.isEmpty(propsPath)) {
             logger.error("Empty configuration file parameter");
             throw new IllegalArgumentException("Empty configuration file parameter");
         }
         File propsFile = new File(propsPath);
-        if(!(propsFile.exists() && propsFile.isFile())) {
-            logger.error("Invalid configuration file {}", propsFile.getPath());
-            throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
+        if (!(propsFile.exists() && propsFile.isFile())) {
+            URL url = getClass().getClassLoader().getResource(propsPath);
+            if (url == null) {
+                logger.error("Invalid configuration file {}", propsFile.getPath());
+                throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
+            }
+            propsFile = new File(url.getFile());
         }
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
@@ -72,15 +77,15 @@ public class MqttConnector {
 
     private void run() throws PlcException {
         // Create a new MQTT client.
-        final Mqtt3RxClient client = MqttClient.builder()
+        final Mqtt5RxClient client = MqttClient.builder()
             .identifier(UUID.randomUUID().toString())
             .serverHost(config.getMqttConfig().getServerHost())
             .serverPort(config.getMqttConfig().getServerPort())
-            .useMqttVersion3()
+            .useMqttVersion5()
             .buildRx();
 
         // Connect to the MQTT broker.
-        final Single<Mqtt3ConnAck> connAckSingle = client.connect().timeout(10, TimeUnit.SECONDS);
+        final Single<Mqtt5ConnAck> connAckSingle = client.connect().timeout(10, TimeUnit.SECONDS);
 
         // Connect to the PLC.
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(config.getPlcConfig().getConnection())) {
@@ -99,30 +104,36 @@ public class MqttConnector {
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
-            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
-                PlcReadResponse response = readRequest.execute().get();
-                String jsonPayload = getPayload(response);
-                final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
-                    .topic(config.getMqttConfig().getTopicName())
-                    .qos(MqttQos.AT_LEAST_ONCE)
-                    .payload(jsonPayload.getBytes())
-                    .build();
-                emitter.onNext(publishMessage);
+            Flowable<Mqtt5Publish> messagesToPublish = Flowable.generate(emitter -> {
+                readRequest.execute().whenComplete((response, err) -> {
+                    String jsonPayload = new JsonObject().toString();
+                    if (err == null) {
+                        jsonPayload = getPayload(response);
+                    }
+
+                    final Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+                        .topic(config.getMqttConfig().getTopicName())
+                        .qos(MqttQos.AT_LEAST_ONCE)
+                        .payload(jsonPayload.getBytes())
+                        .build();
+                    emitter.onNext(publishMessage);
+                });
+
             });
 
             // Emit 1 message only every 100 milliseconds.
             messagesToPublish = messagesToPublish.zipWith(Flowable.interval(
                 config.getPollingInterval(), TimeUnit.MILLISECONDS), (publish, aLong) -> publish);
 
-            final Single<Mqtt3ConnAck> connectScenario = connAckSingle
-                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReturnCode()))
+            final Single<Mqtt5ConnAck> connectScenario = connAckSingle
+                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReasonCode()))
                 .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()));
 
-            final Flowable<Mqtt3PublishResult> publishScenario = client.publish(messagesToPublish)
+            final Flowable<Mqtt5PublishResult> publishScenario = client.publish(messagesToPublish)
                 .doOnNext(publishResult -> System.out.println(
                     "Publish acknowledged: " + new String(publishResult.getPublish().getPayloadAsBytes())));
 
-            connectScenario.toCompletable().andThen(publishScenario).blockingSubscribe();
+            connectScenario.ignoreElement().andThen(publishScenario).blockingSubscribe();
         } catch (Exception e) {
             throw new PlcException("Error creating connection to " + config.getPlcConfig().getConnection(), e);
         }
@@ -143,10 +154,11 @@ public class MqttConnector {
     }
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 1) {
-            System.out.println("Usage: MqttConnector {path-to-mqtt-connector.yml}");
+        String fileName = "mqtt-connector.yml";
+        if (args.length >= 1) {
+            fileName = args[0];
         }
-        MqttConnector mqttConnector = new MqttConnector(args[0]);
+        MqttConnector mqttConnector = new MqttConnector(fileName);
         mqttConnector.run();
     }
 

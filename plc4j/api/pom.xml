@@ -42,6 +42,9 @@
               com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
+            <SPI-Consumer>
+              *
+            </SPI-Consumer>
           </instructions>
         </configuration>
       </plugin>

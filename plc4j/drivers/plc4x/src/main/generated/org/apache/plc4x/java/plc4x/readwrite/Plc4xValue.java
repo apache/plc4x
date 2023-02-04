@@ -159,6 +159,24 @@ public class Plc4xValue {
           readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"));
 
       return new PlcSTRING(value);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.parseString(
+                  readBuffer, "UTF-8"));
+
+      return new PlcSTRING(value);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.parseString(
+                  readBuffer, "UTF-16"));
+
+      return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
 
       // Simple Field (milliseconds)
@@ -325,6 +343,14 @@ public class Plc4xValue {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
           "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+      // Manual Field (value)
+      org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.serializeString(
+          writeBuffer, _value, "UTF-8");
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.serializeString(
+          writeBuffer, _value, "UTF-16");
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
       long milliseconds = (long) _value.getLong();
@@ -436,6 +462,12 @@ public class Plc4xValue {
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WCHAR)) { // STRING
       // Simple Field (value)
       sizeInBits += 16;
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+      // Manual Field (value)
+      sizeInBits += (((STR_LEN(_value)) + (1))) * (8);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      sizeInBits += (((STR_LEN(_value)) + (1))) * (16);
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;

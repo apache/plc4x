@@ -145,7 +145,7 @@ func TestReader_Read(t *testing.T) {
 			},
 			args: args{
 				fields: map[string]model.PlcTag{
-					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
+					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL, "UTF-8"),
 				},
 				fieldNames: []string{"test"},
 			},

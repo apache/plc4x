@@ -56,6 +56,8 @@ public class PlcUSINT extends PlcIECValue<Short> {
             return new PlcUSINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcUSINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcUSINT(((Number) value).intValue());
         } else {
             return new PlcUSINT((String) value);
         }

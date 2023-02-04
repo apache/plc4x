@@ -203,6 +203,7 @@ plc4c_return_code plc4c_driver_s7_parse_read_response(
   plc4c_data* data_item;
   plc4c_response_value_item* response_value_item;
   char* data_protocol_id;
+  char* string_encoding;
   uint16_t num_elements;
   int32_t string_length;
   uint8_t* byte_array;
@@ -225,11 +226,13 @@ plc4c_return_code plc4c_driver_s7_parse_read_response(
 
     // Get the protocol id for the current item from the corresponding
     // request item. Also get the number of elements, if it's an array.
-    request_address = request_item->address;
+    plc4c_s7_read_write_s7_var_request_parameter_item_field* field = request_item->address;
+    request_address = field->parameter_item;
     transport_size = request_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
     num_elements = request_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
     data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
-    
+    string_encoding = field->s7_address_any_encoding_of_string;
+
     if (transport_size == plc4c_s7_read_write_transport_size_STRING) {
       // TODO: This needs to be changed to read arrays of strings.
       string_length = num_elements;
@@ -257,12 +260,12 @@ plc4c_return_code plc4c_driver_s7_parse_read_response(
       all_data_item = plc4c_data_create_list_data(all_list);
       free(all_list);
       for (idx = 0; idx < num_elements ; idx++) {
-        plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
-        plc4c_utils_list_insert_head_value(all_data_item->data.list_value, (void*)data_item);
+        plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, string_encoding, &data_item);
+        plc4c_utils_list_insert_head_value(&all_data_item->data.list_value, (void*)data_item);
       }
       data_item = all_data_item;
     } else {
-      plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+      plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length,string_encoding, &data_item);
     }
 
     // Create a new response value-item

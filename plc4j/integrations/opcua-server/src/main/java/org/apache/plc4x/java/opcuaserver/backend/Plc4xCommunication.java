@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -53,9 +55,7 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 
 public class Plc4xCommunication extends AbstractLifecycle {
-
-    private PlcDriverManager driverManager;
-    private CachedPlcConnectionManager cachedPlcConnectionManager;
+    private PlcConnectionManager plcConnectionManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
@@ -71,7 +71,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     @Override
     protected void onStartup() {
-        setDriverManager(PlcDriverManager.getDefault());
+        setConnectionManager(CachedPlcConnectionManager.getBuilder(new DefaultPlcDriverManager()).build());
     }
 
     @Override
@@ -79,17 +79,16 @@ public class Plc4xCommunication extends AbstractLifecycle {
         //Do Nothing
     }
 
-    public PlcDriverManager getDriverManager() {
-        return driverManager;
+    public PlcConnectionManager getConnectionManager() {
+        return plcConnectionManager;
     }
 
-    public void setDriverManager(PlcDriverManager driverManager) {
-        this.driverManager = driverManager;
-        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager.getConnectionManager()).build();
+    public void setConnectionManager(PlcConnectionManager connectionManager) {
+        this.plcConnectionManager = connectionManager;
     }
 
     public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
+        return plcConnectionManager.getDriverManager().getDriverForUrl(connectionString).prepareTag(tag);
     }
 
     public void addTag(DataItem item) {
@@ -156,7 +155,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
             //Try to connect to PLC
             try {
-                connection = cachedPlcConnectionManager.getConnection(connectionString);
+                connection = plcConnectionManager.getConnection(connectionString);
                 logger.debug(connectionString + " Connected");
             } catch (PlcConnectionException e) {
                 logger.error("Failed to connect to device, error raised - " + e);
@@ -248,7 +247,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public void setValue(String tag, String value, String connectionString) {
-        try (PlcConnection connection = cachedPlcConnectionManager.getConnection(connectionString)) {
+        try (PlcConnection connection = plcConnectionManager.getConnection(connectionString)) {
             if (!connection.getMetadata().canWrite()) {
                 logger.error("This connection doesn't support writing.");
                 return;

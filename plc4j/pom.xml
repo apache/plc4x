@@ -126,6 +126,9 @@
               <goal>check</goal>
             </goals>
             <configuration>
+              <excludes>
+                <exclude>**/Identifiers</exclude>
+              </excludes>
               <!-- TODO: Turn this on as soon as possible. -->
               <haltOnFailure>false</haltOnFailure>
               <rules>

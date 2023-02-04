@@ -57,6 +57,8 @@ public class PlcDWORD extends PlcIECValue<Long> {
             return new PlcDWORD((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcDWORD((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcDWORD(((Number) value).longValue());
         } else {
             return new PlcDWORD((String) value);
         }

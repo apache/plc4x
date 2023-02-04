@@ -56,6 +56,8 @@ public class PlcLREAL extends PlcIECValue<Double> {
             return new PlcLREAL((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcLREAL((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcLREAL(((Number) value).doubleValue());
         } else {
             return new PlcLREAL((String) value);
         }

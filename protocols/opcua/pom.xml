@@ -114,8 +114,9 @@
         </executions>
         <configuration>
           <transformationSets>
+            <!-- TODO: (cdutz) It seems that this transformation can't work, if the path to this directory contains spaces -->
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -131,7 +132,7 @@
                 </parameter>
                 <parameter>
                   <name>servicesEnum</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                  <value>${project.basedir}/downloads/Opc.Ua.NodeIds.Services.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -142,7 +143,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -158,7 +159,7 @@
                 </parameter>
                 <parameter>
                   <name>statusCodes</name>
-                  <value>${project.build.directory}/downloads/StatusCode.csv</value>
+                  <value>${project.basedir}/downloads/StatusCode.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -169,7 +170,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -185,7 +186,7 @@
                 </parameter>
                 <parameter>
                   <name>services</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                  <value>${project.basedir}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -196,7 +197,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -219,10 +220,19 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
             <version>12.0</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <!-- TODO: (cdutz) Excluded this for now as we will not be keeping the files in "download" and they would be breaking the build -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>**/downloads/**</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>

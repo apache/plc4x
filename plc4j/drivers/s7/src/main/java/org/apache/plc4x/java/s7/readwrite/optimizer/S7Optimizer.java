@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.tag.S7StringTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
@@ -65,7 +66,12 @@ public class S7Optimizer extends BaseOptimizer {
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
-            int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes());
+            int length = 1;
+            if(tag instanceof S7StringTag)
+            {
+                length = (((S7StringTag)tag).getStringLength() +2) * 8;
+            }
+            int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
             if (readResponseItemSize % 2 == 1) {
                 readResponseItemSize++;
@@ -83,8 +89,10 @@ public class S7Optimizer extends BaseOptimizer {
             // If they would exceed, start a new request.
             else {
                 // Create a new PlcReadRequest containing the current tag item.
-                processedRequests.add(new DefaultPlcReadRequest(
-                    ((DefaultPlcReadRequest) readRequest).getReader(), curTags));
+                if(!curTags.isEmpty()) {
+                    processedRequests.add(new DefaultPlcReadRequest(
+                        ((DefaultPlcReadRequest) readRequest).getReader(), curTags));
+                }
 
                 // Reset the size and item lists.
                 curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
@@ -130,7 +138,12 @@ public class S7Optimizer extends BaseOptimizer {
             if (tag.getDataType() == TransportSize.BOOL) {
                 writeRequestItemSize += Math.ceil((double) tag.getNumberOfElements() / 8);
             } else {
-                writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes());
+                int length = 1;
+                if(tag instanceof S7StringTag)
+                {
+                    length = (((S7StringTag)tag).getStringLength() + 2) * 8;
+                }
+                writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             }
             // If it's an odd number of bytes, add one to make it even
             if (writeRequestItemSize % 2 == 1) {
@@ -150,8 +163,10 @@ public class S7Optimizer extends BaseOptimizer {
             // If adding them would exceed, start a new request.
             else {
                 // Create a new PlcWriteRequest containing the current tag item.
-                processedRequests.add(new DefaultPlcWriteRequest(
-                    ((DefaultPlcWriteRequest) writeRequest).getWriter(), curTags));
+                if(!curTags.isEmpty()) {
+                    processedRequests.add(new DefaultPlcWriteRequest(
+                        ((DefaultPlcWriteRequest) writeRequest).getWriter(), curTags));
+                }
 
                 // Reset the size and item lists.
                 curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;

@@ -179,7 +179,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 return new PlcStruct(${field.name});
                             <#break-->
                         <#case "STRING">
+                                <#if (parserArguments?filter(parserArgument->parserArgument.name=="stringLength"))?has_content>
                 *data_item = plc4c_data_create_string_data(stringLength, ${manualField.name});
+                                <#else>
+                *data_item = plc4c_data_create_string_data(strlen(value), ${manualField.name});
+                                </#if>
                             <#break>
                         <#default>
                 *data_item = plc4c_data_create_${case.name?lower_case}_data(${manualField.name});

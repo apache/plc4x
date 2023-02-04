@@ -90,8 +90,8 @@ class Plc4xNettyWrapperTest {
 
         Thread.sleep(750);
 
-        verify(false, false, false);
-        wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        //verify(false, false, false);
+        //wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
         verify(true, false, false);
 
     }

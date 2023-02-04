@@ -231,7 +231,7 @@ func serializePlcValue(tag model.PlcTag, plcValue values.PlcValue) (readWriteMod
 	if s7StringTag, ok := tag.(*PlcStringTag); ok {
 		stringLength = s7StringTag.stringLength
 	}
-	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength))
+	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength), s7Tag.GetStringEncoding())
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
 	}

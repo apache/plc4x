@@ -19,7 +19,7 @@
 
 module github.com/apache/plc4x/plc4go
 
-go 1.18
+go 1.19
 
 require (
 	github.com/IBM/netaddr v1.5.0

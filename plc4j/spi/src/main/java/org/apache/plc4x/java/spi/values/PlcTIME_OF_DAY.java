@@ -29,7 +29,9 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
@@ -39,6 +41,8 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
             return new PlcTIME_OF_DAY((LocalTime) value);
         } else if(value instanceof Long) {
             return new PlcTIME_OF_DAY((Long) value);
+        } else if (value instanceof Number) {
+            return new PlcTIME_OF_DAY(((Number) value).longValue());
         }
         throw new PlcRuntimeException("Invalid value type");
     }
