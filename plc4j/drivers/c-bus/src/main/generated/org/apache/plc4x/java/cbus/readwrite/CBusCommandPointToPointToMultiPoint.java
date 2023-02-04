@@ -59,6 +59,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
   @Override
   protected void serializeCBusCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusCommandPointToPointToMultiPoint");
 
@@ -77,6 +78,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusCommandPointToPointToMultiPoint _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += command.getLengthInBits();
@@ -90,6 +92,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CBusPointToPointToMultiPointCommand command =
         readSimpleField(

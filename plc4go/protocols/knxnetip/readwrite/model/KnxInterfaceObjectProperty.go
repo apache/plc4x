@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -4902,19 +4903,19 @@ func CastKnxInterfaceObjectProperty(structType interface{}) KnxInterfaceObjectPr
 	return castFunc(structType)
 }
 
-func (m KnxInterfaceObjectProperty) GetLengthInBits() uint16 {
+func (m KnxInterfaceObjectProperty) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m KnxInterfaceObjectProperty) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxInterfaceObjectProperty) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxInterfaceObjectPropertyParse(theBytes []byte) (KnxInterfaceObjectProperty, error) {
-	return KnxInterfaceObjectPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxInterfaceObjectPropertyParse(ctx context.Context, theBytes []byte) (KnxInterfaceObjectProperty, error) {
+	return KnxInterfaceObjectPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxInterfaceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
 	val, err := readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")
@@ -4929,13 +4930,13 @@ func KnxInterfaceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer) (Knx
 
 func (e KnxInterfaceObjectProperty) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxInterfaceObjectProperty) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxInterfaceObjectProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

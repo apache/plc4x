@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastKnxLayer(structType interface{}) KnxLayer {
 	return castFunc(structType)
 }
 
-func (m KnxLayer) GetLengthInBits() uint16 {
+func (m KnxLayer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m KnxLayer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxLayer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxLayerParse(theBytes []byte) (KnxLayer, error) {
-	return KnxLayerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxLayerParse(ctx context.Context, theBytes []byte) (KnxLayer, error) {
+	return KnxLayerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxLayerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxLayer")
@@ -120,13 +121,13 @@ func KnxLayerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 
 func (e KnxLayer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxLayer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxLayer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

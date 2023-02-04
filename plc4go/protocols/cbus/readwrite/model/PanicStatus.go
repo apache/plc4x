@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -71,14 +72,20 @@ func (m *_PanicStatus) GetStatus() uint8 {
 ///////////////////////
 
 func (m *_PanicStatus) GetIsNoPanic() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStatus()) == (0x00)))
 }
 
 func (m *_PanicStatus) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetStatus()) >= (0x01))) && bool(bool((m.GetStatus()) <= (0xFE))))
 }
 
 func (m *_PanicStatus) GetIsPanicCurrentlyActive() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStatus()) > (0xFE)))
 }
 
@@ -107,11 +114,7 @@ func (m *_PanicStatus) GetTypeName() string {
 	return "PanicStatus"
 }
 
-func (m *_PanicStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_PanicStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (status)
@@ -126,15 +129,15 @@ func (m *_PanicStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_PanicStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func PanicStatusParse(theBytes []byte) (PanicStatus, error) {
-	return PanicStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return PanicStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func PanicStatusParseWithBuffer(readBuffer utils.ReadBuffer) (PanicStatus, error) {
+func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PanicStatus"); pullErr != nil {
@@ -176,14 +179,14 @@ func PanicStatusParseWithBuffer(readBuffer utils.ReadBuffer) (PanicStatus, error
 }
 
 func (m *_PanicStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_PanicStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PanicStatus"); pushErr != nil {
@@ -197,15 +200,15 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 	// Virtual field
-	if _isNoPanicErr := writeBuffer.WriteVirtual("isNoPanic", m.GetIsNoPanic()); _isNoPanicErr != nil {
+	if _isNoPanicErr := writeBuffer.WriteVirtual(ctx, "isNoPanic", m.GetIsNoPanic()); _isNoPanicErr != nil {
 		return errors.Wrap(_isNoPanicErr, "Error serializing 'isNoPanic' field")
 	}
 	// Virtual field
-	if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}
 	// Virtual field
-	if _isPanicCurrentlyActiveErr := writeBuffer.WriteVirtual("isPanicCurrentlyActive", m.GetIsPanicCurrentlyActive()); _isPanicCurrentlyActiveErr != nil {
+	if _isPanicCurrentlyActiveErr := writeBuffer.WriteVirtual(ctx, "isPanicCurrentlyActive", m.GetIsPanicCurrentlyActive()); _isPanicCurrentlyActiveErr != nil {
 		return errors.Wrap(_isPanicCurrentlyActiveErr, "Error serializing 'isPanicCurrentlyActive' field")
 	}
 
@@ -224,7 +227,7 @@ func (m *_PanicStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

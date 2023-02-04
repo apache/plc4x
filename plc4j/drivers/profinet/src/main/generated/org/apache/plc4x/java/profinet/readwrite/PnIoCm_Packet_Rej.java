@@ -58,6 +58,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
   protected void serializePnIoCm_PacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet_Rej");
 
@@ -76,6 +77,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Packet_Rej _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (status)
     lengthInBits += 32;
@@ -89,6 +91,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long status = readSimpleField("status", readUnsignedLong(readBuffer, 32));
 

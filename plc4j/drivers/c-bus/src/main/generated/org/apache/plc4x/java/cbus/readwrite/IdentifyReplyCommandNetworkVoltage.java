@@ -81,6 +81,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandNetworkVoltage");
 
@@ -108,6 +109,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandNetworkVoltage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (volts)
     lengthInBits += 16;
@@ -130,6 +132,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String volts = readSimpleField("volts", readString(readBuffer, 16));
 

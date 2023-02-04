@@ -87,6 +87,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateMonitoredItemsRequest");
 
@@ -124,6 +125,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateMonitoredItemsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     if (itemsToCreate != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : itemsToCreate) {
-        boolean last = ++i >= itemsToCreate.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= itemsToCreate.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -155,6 +157,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

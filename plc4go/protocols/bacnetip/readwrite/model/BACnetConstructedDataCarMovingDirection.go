@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCarMovingDirection) GetCarMovingDirection() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataCarMovingDirection) GetActualValue() BACnetLiftCarDirectionTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLiftCarDirectionTagged(m.GetCarMovingDirection())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCarMovingDirection) GetTypeName() string {
 	return "BACnetConstructedDataCarMovingDirection"
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (carMovingDirection)
-	lengthInBits += m.CarMovingDirection.GetLengthInBits()
+	lengthInBits += m.CarMovingDirection.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCarMovingDirectionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
-	return BACnetConstructedDataCarMovingDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCarMovingDirectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCarMovingDirectionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
+func BACnetConstructedDataCarMovingDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMovingDirection"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCarMovingDirectionParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("carMovingDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carMovingDirection")
 	}
-	_carMovingDirection, _carMovingDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_carMovingDirection, _carMovingDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carMovingDirectionErr != nil {
 		return nil, errors.Wrap(_carMovingDirectionErr, "Error parsing 'carMovingDirection' field of BACnetConstructedDataCarMovingDirection")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCarMovingDirectionParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataCarMovingDirection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCarMovingDirection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("carMovingDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for carMovingDirection")
 		}
-		_carMovingDirectionErr := writeBuffer.WriteSerializable(m.GetCarMovingDirection())
+		_carMovingDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetCarMovingDirection())
 		if popErr := writeBuffer.PopContext("carMovingDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for carMovingDirection")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_carMovingDirectionErr, "Error serializing 'carMovingDirection' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCarMovingDirection) isBACnetConstructedDataCarMovingDirection() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetHostNPort) GetTypeName() string {
 	return "BACnetHostNPort"
 }
 
-func (m *_BACnetHostNPort) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetHostNPort) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (host)
-	lengthInBits += m.Host.GetLengthInBits()
+	lengthInBits += m.Host.GetLengthInBits(ctx)
 
 	// Simple field (port)
-	lengthInBits += m.Port.GetLengthInBits()
+	lengthInBits += m.Port.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetHostNPort) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetHostNPortParse(theBytes []byte) (BACnetHostNPort, error) {
-	return BACnetHostNPortParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetHostNPortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetHostNPortParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
+func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostNPort"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetHostNPortParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostNPor
 	if pullErr := readBuffer.PullContext("host"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for host")
 	}
-	_host, _hostErr := BACnetHostAddressEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_host, _hostErr := BACnetHostAddressEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _hostErr != nil {
 		return nil, errors.Wrap(_hostErr, "Error parsing 'host' field of BACnetHostNPort")
 	}
@@ -137,7 +134,7 @@ func BACnetHostNPortParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostNPor
 	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for port")
 	}
-	_port, _portErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_port, _portErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetHostNPort")
 	}
@@ -158,14 +155,14 @@ func BACnetHostNPortParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostNPor
 }
 
 func (m *_BACnetHostNPort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetHostNPort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostNPort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetHostNPort"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetHostNPort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("host"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for host")
 	}
-	_hostErr := writeBuffer.WriteSerializable(m.GetHost())
+	_hostErr := writeBuffer.WriteSerializable(ctx, m.GetHost())
 	if popErr := writeBuffer.PopContext("host"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for host")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetHostNPort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("port"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for port")
 	}
-	_portErr := writeBuffer.WriteSerializable(m.GetPort())
+	_portErr := writeBuffer.WriteSerializable(ctx, m.GetPort())
 	if popErr := writeBuffer.PopContext("port"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for port")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetHostNPort) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataEnableControl) GetTypeName() string {
 	return "SALDataEnableControl"
 }
 
-func (m *_SALDataEnableControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataEnableControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataEnableControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (enableControlData)
-	lengthInBits += m.EnableControlData.GetLengthInBits()
+	lengthInBits += m.EnableControlData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataEnableControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataEnableControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataEnableControlParse(theBytes []byte, applicationId ApplicationId) (SALDataEnableControl, error) {
-	return SALDataEnableControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataEnableControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataEnableControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
+func SALDataEnableControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataEnableControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataEnableControlParseWithBuffer(readBuffer utils.ReadBuffer, applicatio
 	if pullErr := readBuffer.PullContext("enableControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enableControlData")
 	}
-	_enableControlData, _enableControlDataErr := EnableControlDataParseWithBuffer(readBuffer)
+	_enableControlData, _enableControlDataErr := EnableControlDataParseWithBuffer(ctx, readBuffer)
 	if _enableControlDataErr != nil {
 		return nil, errors.Wrap(_enableControlDataErr, "Error parsing 'enableControlData' field of SALDataEnableControl")
 	}
@@ -166,14 +163,14 @@ func SALDataEnableControlParseWithBuffer(readBuffer utils.ReadBuffer, applicatio
 }
 
 func (m *_SALDataEnableControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataEnableControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataEnableControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("enableControlData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enableControlData")
 		}
-		_enableControlDataErr := writeBuffer.WriteSerializable(m.GetEnableControlData())
+		_enableControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetEnableControlData())
 		if popErr := writeBuffer.PopContext("enableControlData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enableControlData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataEnableControl) isSALDataEnableControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataEnableControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

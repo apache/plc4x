@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastNLMRejectRouterToNetworkRejectReason(structType interface{}) NLMRejectR
 	return castFunc(structType)
 }
 
-func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBits() uint16 {
+func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMRejectRouterToNetworkRejectReasonParse(theBytes []byte) (NLMRejectRouterToNetworkRejectReason, error) {
-	return NLMRejectRouterToNetworkRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func NLMRejectRouterToNetworkRejectReasonParse(ctx context.Context, theBytes []byte) (NLMRejectRouterToNetworkRejectReason, error) {
+	return NLMRejectRouterToNetworkRejectReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
+func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
 	val, err := readBuffer.ReadUint8("NLMRejectRouterToNetworkRejectReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
@@ -144,13 +145,13 @@ func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer utils.ReadBu
 
 func (e NLMRejectRouterToNetworkRejectReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e NLMRejectRouterToNetworkRejectReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e NLMRejectRouterToNetworkRejectReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

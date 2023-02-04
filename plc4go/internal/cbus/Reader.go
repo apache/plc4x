@@ -379,7 +379,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							}
 						default:
 							wbpcb := spiValues.NewWriteBufferPlcValueBased()
-							if err := calData.SerializeWithWriteBuffer(wbpcb); err != nil {
+							if err := calData.SerializeWithWriteBuffer(context.Background(), wbpcb); err != nil {
 								log.Warn().Err(err).Msgf("Unmapped cal data type %T. Returning raw to string", calData)
 								addPlcValue(tagNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 							} else {

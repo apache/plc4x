@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetTypeName() string {
 	return "BACnetPropertyStatesEscalatorFault"
 }
 
-func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (escalatorFault)
-	lengthInBits += m.EscalatorFault.GetLengthInBits()
+	lengthInBits += m.EscalatorFault.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesEscalatorFaultParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
-	return BACnetPropertyStatesEscalatorFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesEscalatorFaultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
+func BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorFault"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("escalatorFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorFault")
 	}
-	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorFaultErr != nil {
 		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field of BACnetPropertyStatesEscalatorFault")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("escalatorFault"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorFault")
 		}
-		_escalatorFaultErr := writeBuffer.WriteSerializable(m.GetEscalatorFault())
+		_escalatorFaultErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorFault())
 		if popErr := writeBuffer.PopContext("escalatorFault"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorFault")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) isBACnetPropertyStatesEscalatorFault() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesEscalatorFault) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -64,6 +64,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SignedSoftwareCertificate");
 
@@ -86,6 +87,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SignedSoftwareCertificate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (certificateData)
     lengthInBits += certificateData.getLengthInBits();
@@ -102,6 +104,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString certificateData =
         readSimpleField(

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,18 +102,26 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetStart(
 ///////////////////////
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsListCategories() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetEnumerateType()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsListSelections() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetEnumerateType()) == (0x01)))
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsListTracks() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetEnumerateType()) == (0x02)))
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool(!(m.GetIsListCategories())) && bool(!(m.GetIsListSelections()))) && bool(!(m.GetIsListTracks())))
 }
 
@@ -147,12 +156,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetTypeNa
 	return "MediaTransportControlDataEnumerateCategoriesSelectionTracks"
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (enumerateType)
 	lengthInBits += 8
@@ -171,15 +176,15 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
-	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); pullErr != nil {
@@ -237,14 +242,14 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -259,19 +264,19 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 			return errors.Wrap(_enumerateTypeErr, "Error serializing 'enumerateType' field")
 		}
 		// Virtual field
-		if _isListCategoriesErr := writeBuffer.WriteVirtual("isListCategories", m.GetIsListCategories()); _isListCategoriesErr != nil {
+		if _isListCategoriesErr := writeBuffer.WriteVirtual(ctx, "isListCategories", m.GetIsListCategories()); _isListCategoriesErr != nil {
 			return errors.Wrap(_isListCategoriesErr, "Error serializing 'isListCategories' field")
 		}
 		// Virtual field
-		if _isListSelectionsErr := writeBuffer.WriteVirtual("isListSelections", m.GetIsListSelections()); _isListSelectionsErr != nil {
+		if _isListSelectionsErr := writeBuffer.WriteVirtual(ctx, "isListSelections", m.GetIsListSelections()); _isListSelectionsErr != nil {
 			return errors.Wrap(_isListSelectionsErr, "Error serializing 'isListSelections' field")
 		}
 		// Virtual field
-		if _isListTracksErr := writeBuffer.WriteVirtual("isListTracks", m.GetIsListTracks()); _isListTracksErr != nil {
+		if _isListTracksErr := writeBuffer.WriteVirtual(ctx, "isListTracks", m.GetIsListTracks()); _isListTracksErr != nil {
 			return errors.Wrap(_isListTracksErr, "Error serializing 'isListTracks' field")
 		}
 		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
@@ -287,7 +292,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) isMediaTransportControlDataEnumerateCategoriesSelectionTracks() bool {
@@ -299,7 +304,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) String() 
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

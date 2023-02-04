@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -52,13 +53,12 @@ type _ModbusADU struct {
 
 type _ModbusADUChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetDriverType() DriverType
 }
 
 type ModbusADUParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ModbusADU, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ModbusADU, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -91,21 +91,21 @@ func (m *_ModbusADU) GetTypeName() string {
 	return "ModbusADU"
 }
 
-func (m *_ModbusADU) GetParentLengthInBits() uint16 {
+func (m *_ModbusADU) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_ModbusADU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusADU, error) {
-	return ModbusADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
+	return ModbusADUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
-func ModbusADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {
+func ModbusADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusADU"); pullErr != nil {
@@ -125,11 +125,11 @@ func ModbusADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType
 	var typeSwitchError error
 	switch {
 	case driverType == DriverType_MODBUS_TCP: // ModbusTcpADU
-		_childTemp, typeSwitchError = ModbusTcpADUParseWithBuffer(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusTcpADUParseWithBuffer(ctx, readBuffer, driverType, response)
 	case driverType == DriverType_MODBUS_RTU: // ModbusRtuADU
-		_childTemp, typeSwitchError = ModbusRtuADUParseWithBuffer(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusRtuADUParseWithBuffer(ctx, readBuffer, driverType, response)
 	case driverType == DriverType_MODBUS_ASCII: // ModbusAsciiADU
-		_childTemp, typeSwitchError = ModbusAsciiADUParseWithBuffer(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusAsciiADUParseWithBuffer(ctx, readBuffer, driverType, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [driverType=%v]", driverType)
 	}
@@ -147,7 +147,7 @@ func ModbusADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType
 	return _child, nil
 }
 
-func (pm *_ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child ModbusADU, serializeChildFunction func() error) error {
+func (pm *_ModbusADU) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ModbusADU, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -187,7 +187,7 @@ func (m *_ModbusADU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

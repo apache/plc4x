@@ -58,6 +58,7 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockOsData");
 
@@ -81,6 +82,7 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockOsData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (osDataLen)
     lengthInBits += 16;
@@ -99,6 +101,7 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int osDataLen = readImplicitField("osDataLen", readUnsignedInt(readBuffer, 16));
 

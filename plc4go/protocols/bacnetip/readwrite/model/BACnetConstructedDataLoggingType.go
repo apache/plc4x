@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLoggingType) GetLoggingType() BACnetLoggingTypeTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataLoggingType) GetActualValue() BACnetLoggingTypeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLoggingTypeTagged(m.GetLoggingType())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLoggingType) GetTypeName() string {
 	return "BACnetConstructedDataLoggingType"
 }
 
-func (m *_BACnetConstructedDataLoggingType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLoggingType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLoggingType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (loggingType)
-	lengthInBits += m.LoggingType.GetLengthInBits()
+	lengthInBits += m.LoggingType.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLoggingType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLoggingType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLoggingTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingType, error) {
-	return BACnetConstructedDataLoggingTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLoggingTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingType, error) {
+func BACnetConstructedDataLoggingTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingType"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("loggingType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for loggingType")
 	}
-	_loggingType, _loggingTypeErr := BACnetLoggingTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_loggingType, _loggingTypeErr := BACnetLoggingTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _loggingTypeErr != nil {
 		return nil, errors.Wrap(_loggingTypeErr, "Error parsing 'loggingType' field of BACnetConstructedDataLoggingType")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataLoggingType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("loggingType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for loggingType")
 		}
-		_loggingTypeErr := writeBuffer.WriteSerializable(m.GetLoggingType())
+		_loggingTypeErr := writeBuffer.WriteSerializable(ctx, m.GetLoggingType())
 		if popErr := writeBuffer.PopContext("loggingType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for loggingType")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_loggingTypeErr, "Error serializing 'loggingType' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLoggingType) isBACnetConstructedDataLoggingType() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLoggingType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

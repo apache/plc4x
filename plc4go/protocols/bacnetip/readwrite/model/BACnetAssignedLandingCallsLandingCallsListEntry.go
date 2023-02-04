@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetTypeName() string 
 	return "BACnetAssignedLandingCallsLandingCallsListEntry"
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (floorNumber)
-	lengthInBits += m.FloorNumber.GetLengthInBits()
+	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
 
 	// Simple field (direction)
-	lengthInBits += m.Direction.GetLengthInBits()
+	lengthInBits += m.Direction.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAssignedLandingCallsLandingCallsListEntryParse(theBytes []byte) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
-	return BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
@@ -137,7 +134,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for direction")
 	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
 		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
@@ -158,14 +155,14 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuf
 	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for floorNumber")
 	}
-	_floorNumberErr := writeBuffer.WriteSerializable(m.GetFloorNumber())
+	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
 	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for floorNumber")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuf
 	if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for direction")
 	}
-	_directionErr := writeBuffer.WriteSerializable(m.GetDirection())
+	_directionErr := writeBuffer.WriteSerializable(ctx, m.GetDirection())
 	if popErr := writeBuffer.PopContext("direction"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for direction")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

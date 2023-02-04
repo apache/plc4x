@@ -753,11 +753,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 lengthType = typeReferenceForProperty.asNonSimpleTypeReference().orElseThrow().getTypeDefinition();
                 lengthExpression = variableExpressionGenerator.apply(variableLiteral);
             }
-            return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
-        } else if (variableLiteral.getName().equals("lastItem")) {
-            tracer = tracer.dive("lastItem");
-            return tracer + "lastItem";
-            // If this literal references an Enum type, then we have to output it differently.
+            return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(ctx, " + lengthExpression + ")";
+        } else if (variableLiteral.getName().equals("_lastItem")) {
+            tracer = tracer.dive("_lastItem");
+            return tracer + "plc4x_spi_context_get_last_item_from_context(ctx)";
+        // If this literal references an Enum type, then we have to output it differently.
         } else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
             tracer = tracer.dive("enum type definition");
             return tracer + getCTypeName(variableLiteral.getName()) + "_" + variableLiteral.getChild().map(VariableLiteral::getName).orElseThrow(() -> new FreemarkerException("child required"));
@@ -1095,7 +1095,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If it wasn't an enum, treat it as a normal property.
         if (variableLiteral.getName().equals("lengthInBits")) {
             tracer = tracer.dive("is length in bits");
-            return tracer + getCTypeName(baseType.getName()) + "_length_in_bits(_message)";
+            return tracer + getCTypeName(baseType.getName()) + "_length_in_bits(ctx, _message)";
         }
         if (variableLiteral.getChild().isPresent() && "length".equals(variableLiteral.getChild().get().getName())) {
             tracer = tracer.dive("is length");

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +103,7 @@ func (m *_BVLCForeignDeviceTableEntry) GetTypeName() string {
 	return "BVLCForeignDeviceTableEntry"
 }
 
-func (m *_BVLCForeignDeviceTableEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BVLCForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -125,15 +123,15 @@ func (m *_BVLCForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_BVLCForeignDeviceTableEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCForeignDeviceTableEntryParse(theBytes []byte) (BVLCForeignDeviceTableEntry, error) {
-	return BVLCForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BVLCForeignDeviceTableEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForeignDeviceTableEntry"); pullErr != nil {
@@ -153,12 +151,16 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BV
 		ip = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+		_numItems := uint16(uint16(4))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForeignDeviceTableEntry")
 			}
-			ip[curItem] = _item
+			ip[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
@@ -200,14 +202,14 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BV
 }
 
 func (m *_BVLCForeignDeviceTableEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCForeignDeviceTableEntry"); pushErr != nil {
@@ -218,7 +220,8 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffer util
 	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ip")
 	}
-	for _, _element := range m.GetIp() {
+	for _curItem, _element := range m.GetIp() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
@@ -264,7 +267,7 @@ func (m *_BVLCForeignDeviceTableEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

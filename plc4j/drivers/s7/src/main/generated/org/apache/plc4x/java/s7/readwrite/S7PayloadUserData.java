@@ -65,6 +65,7 @@ public class S7PayloadUserData extends S7Payload implements Message {
   @Override
   protected void serializeS7PayloadChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserData");
 
@@ -83,12 +84,13 @@ public class S7PayloadUserData extends S7Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (items != null) {
       int i = 0;
       for (S7PayloadUserDataItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -102,6 +104,7 @@ public class S7PayloadUserData extends S7Payload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<S7PayloadUserDataItem> items =
         readCountArrayField(

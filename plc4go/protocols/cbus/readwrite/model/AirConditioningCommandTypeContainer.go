@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -378,19 +379,19 @@ func CastAirConditioningCommandTypeContainer(structType interface{}) AirConditio
 	return castFunc(structType)
 }
 
-func (m AirConditioningCommandTypeContainer) GetLengthInBits() uint16 {
+func (m AirConditioningCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m AirConditioningCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AirConditioningCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningCommandTypeContainerParse(theBytes []byte) (AirConditioningCommandTypeContainer, error) {
-	return AirConditioningCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AirConditioningCommandTypeContainerParse(ctx context.Context, theBytes []byte) (AirConditioningCommandTypeContainer, error) {
+	return AirConditioningCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningCommandTypeContainer, error) {
+func AirConditioningCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("AirConditioningCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AirConditioningCommandTypeContainer")
@@ -405,13 +406,13 @@ func AirConditioningCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuf
 
 func (e AirConditioningCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AirConditioningCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AirConditioningCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AirConditioningCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

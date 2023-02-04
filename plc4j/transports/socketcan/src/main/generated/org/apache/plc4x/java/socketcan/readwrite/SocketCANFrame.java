@@ -77,6 +77,7 @@ public class SocketCANFrame implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SocketCANFrame");
 
@@ -160,6 +161,7 @@ public class SocketCANFrame implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SocketCANFrame _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (rawId)
     lengthInBits += 32;
@@ -209,6 +211,7 @@ public class SocketCANFrame implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int rawId =
         readSimpleField(

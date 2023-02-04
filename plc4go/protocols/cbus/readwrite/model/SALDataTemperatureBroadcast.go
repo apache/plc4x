@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataTemperatureBroadcast) GetTypeName() string {
 	return "SALDataTemperatureBroadcast"
 }
 
-func (m *_SALDataTemperatureBroadcast) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataTemperatureBroadcast) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataTemperatureBroadcast) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (temperatureBroadcastData)
-	lengthInBits += m.TemperatureBroadcastData.GetLengthInBits()
+	lengthInBits += m.TemperatureBroadcastData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataTemperatureBroadcast) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataTemperatureBroadcast) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataTemperatureBroadcastParse(theBytes []byte, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
-	return SALDataTemperatureBroadcastParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataTemperatureBroadcastParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
+func SALDataTemperatureBroadcastParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTemperatureBroadcast"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, app
 	if pullErr := readBuffer.PullContext("temperatureBroadcastData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for temperatureBroadcastData")
 	}
-	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParseWithBuffer(readBuffer)
+	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParseWithBuffer(ctx, readBuffer)
 	if _temperatureBroadcastDataErr != nil {
 		return nil, errors.Wrap(_temperatureBroadcastDataErr, "Error parsing 'temperatureBroadcastData' field of SALDataTemperatureBroadcast")
 	}
@@ -166,14 +163,14 @@ func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, app
 }
 
 func (m *_SALDataTemperatureBroadcast) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("temperatureBroadcastData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for temperatureBroadcastData")
 		}
-		_temperatureBroadcastDataErr := writeBuffer.WriteSerializable(m.GetTemperatureBroadcastData())
+		_temperatureBroadcastDataErr := writeBuffer.WriteSerializable(ctx, m.GetTemperatureBroadcastData())
 		if popErr := writeBuffer.PopContext("temperatureBroadcastData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for temperatureBroadcastData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataTemperatureBroadcast) isSALDataTemperatureBroadcast() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataTemperatureBroadcast) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -69,6 +69,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantExpandedNodeId");
 
@@ -90,6 +91,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantExpandedNodeId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -100,7 +102,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
     if (value != null) {
       int i = 0;
       for (ExpandedNodeId element : value) {
-        boolean last = ++i >= value.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= value.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -114,6 +116,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);

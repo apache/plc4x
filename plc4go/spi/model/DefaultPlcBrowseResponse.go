@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -61,19 +62,19 @@ func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcB
 
 func (d DefaultPlcBrowseResponse) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcBrowseResponse"); err != nil {
 		return err
 	}
 
 	if serializableRequest, ok := d.request.(utils.Serializable); ok {
-		if err := serializableRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
+		if err := serializableRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 			return err
 		}
 	} else {
@@ -89,7 +90,7 @@ func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		for _, tag := range foundTags {
 			if serializableTag, ok := tag.(utils.Serializable); ok {
-				if err := serializableTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
+				if err := serializableTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 					return err
 				}
 			} else {
@@ -111,7 +112,7 @@ func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.Wri
 
 func (d DefaultPlcBrowseResponse) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

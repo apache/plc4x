@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetPrescale) GetTypeName() string {
 	return "BACnetPrescale"
 }
 
-func (m *_BACnetPrescale) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPrescale) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPrescale) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (multiplier)
-	lengthInBits += m.Multiplier.GetLengthInBits()
+	lengthInBits += m.Multiplier.GetLengthInBits(ctx)
 
 	// Simple field (moduloDivide)
-	lengthInBits += m.ModuloDivide.GetLengthInBits()
+	lengthInBits += m.ModuloDivide.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPrescale) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPrescale) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPrescaleParse(theBytes []byte) (BACnetPrescale, error) {
-	return BACnetPrescaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetPrescaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetPrescaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
+func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPrescale"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetPrescaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPrescale,
 	if pullErr := readBuffer.PullContext("multiplier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for multiplier")
 	}
-	_multiplier, _multiplierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_multiplier, _multiplierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _multiplierErr != nil {
 		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of BACnetPrescale")
 	}
@@ -137,7 +134,7 @@ func BACnetPrescaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPrescale,
 	if pullErr := readBuffer.PullContext("moduloDivide"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for moduloDivide")
 	}
-	_moduloDivide, _moduloDivideErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_moduloDivide, _moduloDivideErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _moduloDivideErr != nil {
 		return nil, errors.Wrap(_moduloDivideErr, "Error parsing 'moduloDivide' field of BACnetPrescale")
 	}
@@ -158,14 +155,14 @@ func BACnetPrescaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPrescale,
 }
 
 func (m *_BACnetPrescale) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPrescale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPrescale) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPrescale"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetPrescale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 	if pushErr := writeBuffer.PushContext("multiplier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for multiplier")
 	}
-	_multiplierErr := writeBuffer.WriteSerializable(m.GetMultiplier())
+	_multiplierErr := writeBuffer.WriteSerializable(ctx, m.GetMultiplier())
 	if popErr := writeBuffer.PopContext("multiplier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for multiplier")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetPrescale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 	if pushErr := writeBuffer.PushContext("moduloDivide"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for moduloDivide")
 	}
-	_moduloDivideErr := writeBuffer.WriteSerializable(m.GetModuloDivide())
+	_moduloDivideErr := writeBuffer.WriteSerializable(ctx, m.GetModuloDivide())
 	if popErr := writeBuffer.PopContext("moduloDivide"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for moduloDivide")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetPrescale) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

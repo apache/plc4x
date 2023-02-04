@@ -78,6 +78,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProgramChange");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProgramChange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (programChange)
     lengthInBits += programChange.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProgramRequestTagged programChange =
         readSimpleField(

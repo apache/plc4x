@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,28 +109,24 @@ func (m *_DeviceConfigurationAck) GetTypeName() string {
 	return "DeviceConfigurationAck"
 }
 
-func (m *_DeviceConfigurationAck) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DeviceConfigurationAck) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DeviceConfigurationAck) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deviceConfigurationAckDataBlock)
-	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits()
+	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationAck) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DeviceConfigurationAck) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DeviceConfigurationAckParse(theBytes []byte) (DeviceConfigurationAck, error) {
-	return DeviceConfigurationAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DeviceConfigurationAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
+func DeviceConfigurationAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
@@ -142,7 +139,7 @@ func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceC
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationAckDataBlock")
 	}
-	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer)
+	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParseWithBuffer(ctx, readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field of DeviceConfigurationAck")
 	}
@@ -165,14 +162,14 @@ func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceC
 }
 
 func (m *_DeviceConfigurationAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("deviceConfigurationAckDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationAckDataBlock")
 		}
-		_deviceConfigurationAckDataBlockErr := writeBuffer.WriteSerializable(m.GetDeviceConfigurationAckDataBlock())
+		_deviceConfigurationAckDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceConfigurationAckDataBlock())
 		if popErr := writeBuffer.PopContext("deviceConfigurationAckDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceConfigurationAckDataBlock")
 		}
@@ -197,7 +194,7 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DeviceConfigurationAck) isDeviceConfigurationAck() bool {
@@ -209,7 +206,7 @@ func (m *_DeviceConfigurationAck) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

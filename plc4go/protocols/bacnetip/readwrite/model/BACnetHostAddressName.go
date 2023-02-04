@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetHostAddressName) GetTypeName() string {
 	return "BACnetHostAddressName"
 }
 
-func (m *_BACnetHostAddressName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetHostAddressName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetHostAddressName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (name)
-	lengthInBits += m.Name.GetLengthInBits()
+	lengthInBits += m.Name.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetHostAddressName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetHostAddressName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetHostAddressNameParse(theBytes []byte) (BACnetHostAddressName, error) {
-	return BACnetHostAddressNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetHostAddressNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetHostAddressNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
+func BACnetHostAddressNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressName"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetHostAddressNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHo
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
-	_name, _nameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_name, _nameErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetHostAddressName")
 	}
@@ -162,14 +159,14 @@ func BACnetHostAddressNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHo
 }
 
 func (m *_BACnetHostAddressName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for name")
 		}
-		_nameErr := writeBuffer.WriteSerializable(m.GetName())
+		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
 		if popErr := writeBuffer.PopContext("name"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for name")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetHostAddressName) isBACnetHostAddressName() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetHostAddressName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

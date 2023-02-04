@@ -79,6 +79,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIHave");
 
@@ -105,6 +106,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestIHave _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceIdentifier)
     lengthInBits += deviceIdentifier.getLengthInBits();
@@ -125,6 +127,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(

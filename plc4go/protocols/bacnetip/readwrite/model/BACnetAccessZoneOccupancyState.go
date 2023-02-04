@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,19 +124,19 @@ func CastBACnetAccessZoneOccupancyState(structType interface{}) BACnetAccessZone
 	return castFunc(structType)
 }
 
-func (m BACnetAccessZoneOccupancyState) GetLengthInBits() uint16 {
+func (m BACnetAccessZoneOccupancyState) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetAccessZoneOccupancyState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessZoneOccupancyState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessZoneOccupancyStateParse(theBytes []byte) (BACnetAccessZoneOccupancyState, error) {
-	return BACnetAccessZoneOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessZoneOccupancyStateParse(ctx context.Context, theBytes []byte) (BACnetAccessZoneOccupancyState, error) {
+	return BACnetAccessZoneOccupancyStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessZoneOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
+func BACnetAccessZoneOccupancyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessZoneOccupancyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
@@ -150,13 +151,13 @@ func BACnetAccessZoneOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer) 
 
 func (e BACnetAccessZoneOccupancyState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessZoneOccupancyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessZoneOccupancyState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetType
 	return "BACnetNotificationParametersChangeOfValueNewValueChangedValue"
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (changedValue)
-	lengthInBits += m.ChangedValue.GetLengthInBits()
+	lengthInBits += m.ChangedValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
-	return BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber)
+	return BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber)
 }
 
-func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffe
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
-	_changedValue, _changedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
+	_changedValue, _changedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _changedValueErr != nil {
 		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field of BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 	}
@@ -166,14 +163,14 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffe
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) Seriali
 		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changedValue")
 		}
-		_changedValueErr := writeBuffer.WriteSerializable(m.GetChangedValue())
+		_changedValueErr := writeBuffer.WriteSerializable(ctx, m.GetChangedValue())
 		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changedValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) Seriali
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) isBACnetNotificationParametersChangeOfValueNewValueChangedValue() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) String(
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

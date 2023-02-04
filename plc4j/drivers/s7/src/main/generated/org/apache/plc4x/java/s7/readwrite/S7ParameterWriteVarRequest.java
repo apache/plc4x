@@ -61,6 +61,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
   @Override
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterWriteVarRequest");
 
@@ -84,6 +85,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterWriteVarRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (numItems)
     lengthInBits += 8;
@@ -92,7 +94,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
     if (items != null) {
       int i = 0;
       for (S7VarRequestParameterItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -106,6 +108,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numItems = readImplicitField("numItems", readUnsignedShort(readBuffer, 8));
 

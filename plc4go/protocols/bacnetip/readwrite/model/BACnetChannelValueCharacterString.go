@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetChannelValueCharacterString) GetTypeName() string {
 	return "BACnetChannelValueCharacterString"
 }
 
-func (m *_BACnetChannelValueCharacterString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetChannelValueCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetChannelValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
-	lengthInBits += m.CharacterStringValue.GetLengthInBits()
+	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueCharacterString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetChannelValueCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueCharacterStringParse(theBytes []byte) (BACnetChannelValueCharacterString, error) {
-	return BACnetChannelValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetChannelValueCharacterStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueCharacterString, error) {
+func BACnetChannelValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueCharacterString"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _characterStringValueErr != nil {
 		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetChannelValueCharacterString")
 	}
@@ -162,14 +159,14 @@ func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetChannelValueCharacterString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetChannelValueCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueCharacterString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetChannelValueCharacterString) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(m.GetCharacterStringValue())
+		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetChannelValueCharacterString) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetChannelValueCharacterString) isBACnetChannelValueCharacterString() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetChannelValueCharacterString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

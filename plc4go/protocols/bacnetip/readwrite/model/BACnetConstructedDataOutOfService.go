@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataOutOfService) GetOutOfService() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataOutOfService) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetOutOfService())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataOutOfService) GetTypeName() string {
 	return "BACnetConstructedDataOutOfService"
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataOutOfService) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataOutOfService) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (outOfService)
-	lengthInBits += m.OutOfService.GetLengthInBits()
+	lengthInBits += m.OutOfService.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataOutOfServiceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
-	return BACnetConstructedDataOutOfServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataOutOfServiceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataOutOfServiceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
+func BACnetConstructedDataOutOfServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOutOfService"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataOutOfServiceParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("outOfService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for outOfService")
 	}
-	_outOfService, _outOfServiceErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_outOfService, _outOfServiceErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _outOfServiceErr != nil {
 		return nil, errors.Wrap(_outOfServiceErr, "Error parsing 'outOfService' field of BACnetConstructedDataOutOfService")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataOutOfServiceParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataOutOfService) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("outOfService"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for outOfService")
 		}
-		_outOfServiceErr := writeBuffer.WriteSerializable(m.GetOutOfService())
+		_outOfServiceErr := writeBuffer.WriteSerializable(ctx, m.GetOutOfService())
 		if popErr := writeBuffer.PopContext("outOfService"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for outOfService")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataOutOfService) isBACnetConstructedDataOutOfService() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataOutOfService) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

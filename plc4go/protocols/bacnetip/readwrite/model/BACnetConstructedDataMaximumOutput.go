@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMaximumOutput) GetMaximumOutput() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataMaximumOutput) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetMaximumOutput())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMaximumOutput) GetTypeName() string {
 	return "BACnetConstructedDataMaximumOutput"
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maximumOutput)
-	lengthInBits += m.MaximumOutput.GetLengthInBits()
+	lengthInBits += m.MaximumOutput.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMaximumOutputParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
-	return BACnetConstructedDataMaximumOutputParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMaximumOutputParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMaximumOutputParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
+func BACnetConstructedDataMaximumOutputParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumOutput"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMaximumOutputParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("maximumOutput"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maximumOutput")
 	}
-	_maximumOutput, _maximumOutputErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maximumOutput, _maximumOutputErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maximumOutputErr != nil {
 		return nil, errors.Wrap(_maximumOutputErr, "Error parsing 'maximumOutput' field of BACnetConstructedDataMaximumOutput")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMaximumOutputParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataMaximumOutput) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("maximumOutput"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maximumOutput")
 		}
-		_maximumOutputErr := writeBuffer.WriteSerializable(m.GetMaximumOutput())
+		_maximumOutputErr := writeBuffer.WriteSerializable(ctx, m.GetMaximumOutput())
 		if popErr := writeBuffer.PopContext("maximumOutput"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maximumOutput")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_maximumOutputErr, "Error serializing 'maximumOutput' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMaximumOutput) isBACnetConstructedDataMaximumOutput() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMaximumOutput) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

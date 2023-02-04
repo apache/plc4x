@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,40 +141,36 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetTypeName
 	return "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (initiatingDeviceIdentifier)
-	lengthInBits += m.InitiatingDeviceIdentifier.GetLengthInBits()
+	lengthInBits += m.InitiatingDeviceIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (monitoredObjectIdentifier)
-	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (lifetimeInSeconds)
-	lengthInBits += m.LifetimeInSeconds.GetLengthInBits()
+	lengthInBits += m.LifetimeInSeconds.GetLengthInBits(ctx)
 
 	// Simple field (listOfValues)
-	lengthInBits += m.ListOfValues.GetLengthInBits()
+	lengthInBits += m.ListOfValues.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
-	return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
@@ -186,7 +183,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -199,7 +196,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
 		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -212,7 +209,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -225,7 +222,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifetimeInSeconds")
 	}
-	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _lifetimeInSecondsErr != nil {
 		return nil, errors.Wrap(_lifetimeInSecondsErr, "Error parsing 'lifetimeInSeconds' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -238,7 +235,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -267,14 +264,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(re
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -286,7 +283,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.GetSubscriberProcessIdentifier())
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -298,7 +295,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
 		}
-		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(m.GetInitiatingDeviceIdentifier())
+		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
 		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
-		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.GetMonitoredObjectIdentifier())
+		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
@@ -322,7 +319,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		if pushErr := writeBuffer.PushContext("lifetimeInSeconds"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
 		}
-		_lifetimeInSecondsErr := writeBuffer.WriteSerializable(m.GetLifetimeInSeconds())
+		_lifetimeInSecondsErr := writeBuffer.WriteSerializable(ctx, m.GetLifetimeInSeconds())
 		if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
 		}
@@ -334,7 +331,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
-		_listOfValuesErr := writeBuffer.WriteSerializable(m.GetListOfValues())
+		_listOfValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfValues())
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
@@ -347,7 +344,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() bool {
@@ -359,7 +356,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() st
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

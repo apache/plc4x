@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetTrackingValue() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetTrackingValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetTypeName() string
 	return "BACnetConstructedDataLightingOutputTrackingValue"
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (trackingValue)
-	lengthInBits += m.TrackingValue.GetLengthInBits()
+	lengthInBits += m.TrackingValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLightingOutputTrackingValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
-	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputTrackingValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(readBuffer 
 	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
 	}
-	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _trackingValueErr != nil {
 		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(readBuffer 
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 		if pushErr := writeBuffer.PushContext("trackingValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for trackingValue")
 		}
-		_trackingValueErr := writeBuffer.WriteSerializable(m.GetTrackingValue())
+		_trackingValueErr := writeBuffer.WriteSerializable(ctx, m.GetTrackingValue())
 		if popErr := writeBuffer.PopContext("trackingValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for trackingValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 			return errors.Wrap(_trackingValueErr, "Error serializing 'trackingValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) isBACnetConstructedDataLightingOutputTrackingValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

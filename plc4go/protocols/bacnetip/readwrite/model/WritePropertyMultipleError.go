@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_WritePropertyMultipleError) GetTypeName() string {
 	return "WritePropertyMultipleError"
 }
 
-func (m *_WritePropertyMultipleError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_WritePropertyMultipleError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_WritePropertyMultipleError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (errorType)
-	lengthInBits += m.ErrorType.GetLengthInBits()
+	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
 
 	// Simple field (firstFailedWriteAttempt)
-	lengthInBits += m.FirstFailedWriteAttempt.GetLengthInBits()
+	lengthInBits += m.FirstFailedWriteAttempt.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_WritePropertyMultipleError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func WritePropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
-	return WritePropertyMultipleErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorChoice)
+	return WritePropertyMultipleErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
-func WritePropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
+func WritePropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("WritePropertyMultipleError"); pullErr != nil {
@@ -152,7 +149,7 @@ func WritePropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, erro
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of WritePropertyMultipleError")
 	}
@@ -165,7 +162,7 @@ func WritePropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, erro
 	if pullErr := readBuffer.PullContext("firstFailedWriteAttempt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedWriteAttempt")
 	}
-	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _firstFailedWriteAttemptErr != nil {
 		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field of WritePropertyMultipleError")
 	}
@@ -189,14 +186,14 @@ func WritePropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, erro
 }
 
 func (m *_WritePropertyMultipleError) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := writeBuffer.WriteSerializable(m.GetErrorType())
+		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -220,7 +217,7 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("firstFailedWriteAttempt"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firstFailedWriteAttempt")
 		}
-		_firstFailedWriteAttemptErr := writeBuffer.WriteSerializable(m.GetFirstFailedWriteAttempt())
+		_firstFailedWriteAttemptErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedWriteAttempt())
 		if popErr := writeBuffer.PopContext("firstFailedWriteAttempt"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firstFailedWriteAttempt")
 		}
@@ -233,7 +230,7 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_WritePropertyMultipleError) isWritePropertyMultipleError() bool {
@@ -245,7 +242,7 @@ func (m *_WritePropertyMultipleError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

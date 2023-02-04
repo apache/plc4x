@@ -74,6 +74,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandReportFirmwareResponse");
 
@@ -104,6 +105,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandReportFirmwareResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (majorVersion)
     lengthInBits += 8;
@@ -124,6 +126,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short majorVersion = readSimpleField("majorVersion", readUnsignedShort(readBuffer, 8));
 

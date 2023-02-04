@@ -79,6 +79,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFailedAttemptsTime");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFailedAttemptsTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (failedAttemptsTime)
     lengthInBits += failedAttemptsTime.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger failedAttemptsTime =
         readSimpleField(

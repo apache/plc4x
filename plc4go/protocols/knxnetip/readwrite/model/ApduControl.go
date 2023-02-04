@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _ApduControl struct {
 
 type _ApduControlChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetControlType() uint8
 }
 
 type ApduControlParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ApduControl, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduControl, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_ApduControl) GetTypeName() string {
 	return "ApduControl"
 }
 
-func (m *_ApduControl) GetParentLengthInBits() uint16 {
+func (m *_ApduControl) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2
@@ -95,15 +95,15 @@ func (m *_ApduControl) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduControlParse(theBytes []byte) (ApduControl, error) {
-	return ApduControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ApduControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApduControlParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControl, error) {
+func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
@@ -129,13 +129,13 @@ func ApduControlParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControl, error
 	var typeSwitchError error
 	switch {
 	case controlType == 0x0: // ApduControlConnect
-		_childTemp, typeSwitchError = ApduControlConnectParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ApduControlConnectParseWithBuffer(ctx, readBuffer)
 	case controlType == 0x1: // ApduControlDisconnect
-		_childTemp, typeSwitchError = ApduControlDisconnectParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ApduControlDisconnectParseWithBuffer(ctx, readBuffer)
 	case controlType == 0x2: // ApduControlAck
-		_childTemp, typeSwitchError = ApduControlAckParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ApduControlAckParseWithBuffer(ctx, readBuffer)
 	case controlType == 0x3: // ApduControlNack
-		_childTemp, typeSwitchError = ApduControlNackParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ApduControlNackParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [controlType=%v]", controlType)
 	}
@@ -153,7 +153,7 @@ func ApduControlParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControl, error
 	return _child, nil
 }
 
-func (pm *_ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child ApduControl, serializeChildFunction func() error) error {
+func (pm *_ApduControl) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduControl, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -191,7 +191,7 @@ func (m *_ApduControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

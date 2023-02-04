@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastPriority) GetLastPriority() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastPriority) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetLastPriority())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastPriority) GetTypeName() string {
 	return "BACnetConstructedDataLastPriority"
 }
 
-func (m *_BACnetConstructedDataLastPriority) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastPriority) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastPriority) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastPriority)
-	lengthInBits += m.LastPriority.GetLengthInBits()
+	lengthInBits += m.LastPriority.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastPriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastPriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastPriorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastPriority, error) {
-	return BACnetConstructedDataLastPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastPriorityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastPriorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastPriority, error) {
+func BACnetConstructedDataLastPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastPriority"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastPriorityParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("lastPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastPriority")
 	}
-	_lastPriority, _lastPriorityErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_lastPriority, _lastPriorityErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _lastPriorityErr != nil {
 		return nil, errors.Wrap(_lastPriorityErr, "Error parsing 'lastPriority' field of BACnetConstructedDataLastPriority")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastPriorityParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataLastPriority) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("lastPriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastPriority")
 		}
-		_lastPriorityErr := writeBuffer.WriteSerializable(m.GetLastPriority())
+		_lastPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetLastPriority())
 		if popErr := writeBuffer.PopContext("lastPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastPriority")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_lastPriorityErr, "Error serializing 'lastPriority' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastPriority) isBACnetConstructedDataLastPriority() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastPriority) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

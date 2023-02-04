@@ -53,6 +53,7 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandCapabilityResponse");
 
@@ -68,6 +69,7 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandCapabilityResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -78,6 +80,7 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandCapabilityResponse");
     // Create the instance

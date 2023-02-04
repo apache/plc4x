@@ -51,6 +51,7 @@ public class TwoByteNodeId implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TwoByteNodeId");
 
@@ -69,6 +70,7 @@ public class TwoByteNodeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     TwoByteNodeId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (identifier)
     lengthInBits += 8;
@@ -87,6 +89,7 @@ public class TwoByteNodeId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short identifier = readSimpleField("identifier", readUnsignedShort(readBuffer, 8));
 

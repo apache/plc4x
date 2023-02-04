@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastAccessControlCategory(structType interface{}) AccessControlCategory {
 	return castFunc(structType)
 }
 
-func (m AccessControlCategory) GetLengthInBits() uint16 {
+func (m AccessControlCategory) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m AccessControlCategory) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AccessControlCategory) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlCategoryParse(theBytes []byte) (AccessControlCategory, error) {
-	return AccessControlCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AccessControlCategoryParse(ctx context.Context, theBytes []byte) (AccessControlCategory, error) {
+	return AccessControlCategoryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
+func AccessControlCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCategory", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCategory")
@@ -114,13 +115,13 @@ func AccessControlCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (AccessCo
 
 func (e AccessControlCategory) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AccessControlCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCategory) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCategory", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

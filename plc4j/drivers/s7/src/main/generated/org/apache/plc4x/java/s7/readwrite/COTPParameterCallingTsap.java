@@ -62,6 +62,7 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
   protected void serializeCOTPParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterCallingTsap");
 
@@ -80,6 +81,7 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     COTPParameterCallingTsap _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tsapId)
     lengthInBits += 16;
@@ -93,6 +95,7 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int tsapId = readSimpleField("tsapId", readUnsignedInt(readBuffer, 16));
 

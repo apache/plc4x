@@ -79,6 +79,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectPropertyReference");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectPropertyReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (propertyReference)
     lengthInBits += propertyReference.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectPropertyReference propertyReference =
         readSimpleField(

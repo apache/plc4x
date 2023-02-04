@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastDriverType(structType interface{}) DriverType {
 	return castFunc(structType)
 }
 
-func (m DriverType) GetLengthInBits() uint16 {
+func (m DriverType) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m DriverType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DriverType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DriverTypeParse(theBytes []byte) (DriverType, error) {
-	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DriverTypeParse(ctx context.Context, theBytes []byte) (DriverType, error) {
+	return DriverTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) {
+func DriverTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DriverType, error) {
 	val, err := readBuffer.ReadUint32("DriverType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DriverType")
@@ -120,13 +121,13 @@ func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) 
 
 func (e DriverType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DriverType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DriverType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -79,6 +79,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSlaveProxyEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSlaveProxyEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (slaveProxyEnable)
     lengthInBits += slaveProxyEnable.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean slaveProxyEnable =
         readSimpleField(

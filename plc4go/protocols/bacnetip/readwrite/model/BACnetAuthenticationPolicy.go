@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,34 +95,30 @@ func (m *_BACnetAuthenticationPolicy) GetTypeName() string {
 	return "BACnetAuthenticationPolicy"
 }
 
-func (m *_BACnetAuthenticationPolicy) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAuthenticationPolicy) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAuthenticationPolicy) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (policy)
-	lengthInBits += m.Policy.GetLengthInBits()
+	lengthInBits += m.Policy.GetLengthInBits(ctx)
 
 	// Simple field (orderEnforced)
-	lengthInBits += m.OrderEnforced.GetLengthInBits()
+	lengthInBits += m.OrderEnforced.GetLengthInBits(ctx)
 
 	// Simple field (timeout)
-	lengthInBits += m.Timeout.GetLengthInBits()
+	lengthInBits += m.Timeout.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationPolicy) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAuthenticationPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAuthenticationPolicyParse(theBytes []byte) (BACnetAuthenticationPolicy, error) {
-	return BACnetAuthenticationPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAuthenticationPolicyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
+func BACnetAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicy"); pullErr != nil {
@@ -134,7 +131,7 @@ func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("policy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for policy")
 	}
-	_policy, _policyErr := BACnetAuthenticationPolicyListParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_policy, _policyErr := BACnetAuthenticationPolicyListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _policyErr != nil {
 		return nil, errors.Wrap(_policyErr, "Error parsing 'policy' field of BACnetAuthenticationPolicy")
 	}
@@ -147,7 +144,7 @@ func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("orderEnforced"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for orderEnforced")
 	}
-	_orderEnforced, _orderEnforcedErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_orderEnforced, _orderEnforcedErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _orderEnforcedErr != nil {
 		return nil, errors.Wrap(_orderEnforcedErr, "Error parsing 'orderEnforced' field of BACnetAuthenticationPolicy")
 	}
@@ -160,7 +157,7 @@ func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("timeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeout")
 	}
-	_timeout, _timeoutErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeout, _timeoutErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeoutErr != nil {
 		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of BACnetAuthenticationPolicy")
 	}
@@ -182,14 +179,14 @@ func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 }
 
 func (m *_BACnetAuthenticationPolicy) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationPolicy"); pushErr != nil {
@@ -200,7 +197,7 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("policy"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for policy")
 	}
-	_policyErr := writeBuffer.WriteSerializable(m.GetPolicy())
+	_policyErr := writeBuffer.WriteSerializable(ctx, m.GetPolicy())
 	if popErr := writeBuffer.PopContext("policy"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for policy")
 	}
@@ -212,7 +209,7 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("orderEnforced"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for orderEnforced")
 	}
-	_orderEnforcedErr := writeBuffer.WriteSerializable(m.GetOrderEnforced())
+	_orderEnforcedErr := writeBuffer.WriteSerializable(ctx, m.GetOrderEnforced())
 	if popErr := writeBuffer.PopContext("orderEnforced"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for orderEnforced")
 	}
@@ -224,7 +221,7 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("timeout"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeout")
 	}
-	_timeoutErr := writeBuffer.WriteSerializable(m.GetTimeout())
+	_timeoutErr := writeBuffer.WriteSerializable(ctx, m.GetTimeout())
 	if popErr := writeBuffer.PopContext("timeout"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeout")
 	}
@@ -247,7 +244,7 @@ func (m *_BACnetAuthenticationPolicy) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

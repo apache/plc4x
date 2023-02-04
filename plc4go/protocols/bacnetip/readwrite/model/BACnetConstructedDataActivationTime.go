@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataActivationTime) GetActivationTime() BACnetDateTim
 ///////////////////////
 
 func (m *_BACnetConstructedDataActivationTime) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetActivationTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataActivationTime) GetTypeName() string {
 	return "BACnetConstructedDataActivationTime"
 }
 
-func (m *_BACnetConstructedDataActivationTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataActivationTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataActivationTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (activationTime)
-	lengthInBits += m.ActivationTime.GetLengthInBits()
+	lengthInBits += m.ActivationTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataActivationTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataActivationTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataActivationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
-	return BACnetConstructedDataActivationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataActivationTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataActivationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
+func BACnetConstructedDataActivationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActivationTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataActivationTimeParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
 	}
-	_activationTime, _activationTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_activationTime, _activationTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _activationTimeErr != nil {
 		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetConstructedDataActivationTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataActivationTimeParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataActivationTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("activationTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for activationTime")
 		}
-		_activationTimeErr := writeBuffer.WriteSerializable(m.GetActivationTime())
+		_activationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetActivationTime())
 		if popErr := writeBuffer.PopContext("activationTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for activationTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_activationTimeErr, "Error serializing 'activationTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataActivationTime) isBACnetConstructedDataActivationTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataActivationTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

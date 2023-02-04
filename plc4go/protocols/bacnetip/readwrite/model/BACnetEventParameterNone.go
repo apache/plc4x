@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetEventParameterNone) GetTypeName() string {
 	return "BACnetEventParameterNone"
 }
 
-func (m *_BACnetEventParameterNone) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterNone) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterNone) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (none)
-	lengthInBits += m.None.GetLengthInBits()
+	lengthInBits += m.None.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterNone) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterNone) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterNoneParse(theBytes []byte) (BACnetEventParameterNone, error) {
-	return BACnetEventParameterNoneParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterNoneParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterNoneParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterNone, error) {
+func BACnetEventParameterNoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterNone, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterNone"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetEventParameterNoneParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for none")
 	}
-	_none, _noneErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(20)), BACnetDataType(BACnetDataType_NULL))
+	_none, _noneErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(20)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
 		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetEventParameterNone")
 	}
@@ -162,14 +159,14 @@ func BACnetEventParameterNoneParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 }
 
 func (m *_BACnetEventParameterNone) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("none"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for none")
 		}
-		_noneErr := writeBuffer.WriteSerializable(m.GetNone())
+		_noneErr := writeBuffer.WriteSerializable(ctx, m.GetNone())
 		if popErr := writeBuffer.PopContext("none"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for none")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterNone) isBACnetEventParameterNone() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetEventParameterNone) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

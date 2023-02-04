@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -83,10 +84,14 @@ func (m *_TemperatureBroadcastData) GetTemperatureByte() byte {
 ///////////////////////
 
 func (m *_TemperatureBroadcastData) GetCommandType() TemperatureBroadcastCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastTemperatureBroadcastCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 func (m *_TemperatureBroadcastData) GetTemperatureInCelsius() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetTemperatureByte()) / float32(float32(4)))
 }
 
@@ -115,11 +120,7 @@ func (m *_TemperatureBroadcastData) GetTypeName() string {
 	return "TemperatureBroadcastData"
 }
 
-func (m *_TemperatureBroadcastData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TemperatureBroadcastData) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_TemperatureBroadcastData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -138,15 +139,15 @@ func (m *_TemperatureBroadcastData) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_TemperatureBroadcastData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TemperatureBroadcastData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TemperatureBroadcastDataParse(theBytes []byte) (TemperatureBroadcastData, error) {
-	return TemperatureBroadcastDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TemperatureBroadcastDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TemperatureBroadcastDataParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
+func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TemperatureBroadcastData"); pullErr != nil {
@@ -164,7 +165,7 @@ func TemperatureBroadcastDataParseWithBuffer(readBuffer utils.ReadBuffer) (Tempe
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TemperatureBroadcastData")
 	}
@@ -210,14 +211,14 @@ func TemperatureBroadcastDataParseWithBuffer(readBuffer utils.ReadBuffer) (Tempe
 }
 
 func (m *_TemperatureBroadcastData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TemperatureBroadcastData"); pushErr != nil {
@@ -228,7 +229,7 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(writeBuffer utils.W
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -236,7 +237,7 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -254,7 +255,7 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_temperatureByteErr, "Error serializing 'temperatureByte' field")
 	}
 	// Virtual field
-	if _temperatureInCelsiusErr := writeBuffer.WriteVirtual("temperatureInCelsius", m.GetTemperatureInCelsius()); _temperatureInCelsiusErr != nil {
+	if _temperatureInCelsiusErr := writeBuffer.WriteVirtual(ctx, "temperatureInCelsius", m.GetTemperatureInCelsius()); _temperatureInCelsiusErr != nil {
 		return errors.Wrap(_temperatureInCelsiusErr, "Error serializing 'temperatureInCelsius' field")
 	}
 
@@ -273,7 +274,7 @@ func (m *_TemperatureBroadcastData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

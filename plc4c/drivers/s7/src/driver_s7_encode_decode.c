@@ -443,7 +443,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     //   parse the byte array
     //   - directly add the resulting struct to the request
     plc4c_s7_read_write_s7_address_parse(
-        read_buffer, &s7_item->s7_var_request_parameter_item_address_address);
+        plc4x_spi_context_background(), read_buffer, &s7_item->s7_var_request_parameter_item_address_address);
 
     free(read_buffer);
     free(raw_data);

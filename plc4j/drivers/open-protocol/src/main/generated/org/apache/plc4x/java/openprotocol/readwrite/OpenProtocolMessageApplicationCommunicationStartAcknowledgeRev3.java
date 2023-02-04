@@ -153,6 +153,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
   protected void serializeOpenProtocolMessageApplicationCommunicationStartAcknowledgeChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3");
 
@@ -263,6 +264,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (blockIdCellId)
     lengthInBits += 16;
@@ -316,6 +318,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdCellId =
         readConstField(

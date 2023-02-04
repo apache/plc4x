@@ -55,6 +55,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAction");
 
@@ -73,6 +74,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAction _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (action)
     lengthInBits += action.getLengthInBits();
@@ -86,6 +88,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetActionTagged action =
         readSimpleField(

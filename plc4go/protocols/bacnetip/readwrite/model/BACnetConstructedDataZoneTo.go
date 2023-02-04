@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataZoneTo) GetZoneTo() BACnetDeviceObjectReference {
 ///////////////////////
 
 func (m *_BACnetConstructedDataZoneTo) GetActualValue() BACnetDeviceObjectReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectReference(m.GetZoneTo())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataZoneTo) GetTypeName() string {
 	return "BACnetConstructedDataZoneTo"
 }
 
-func (m *_BACnetConstructedDataZoneTo) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataZoneTo) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataZoneTo) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneTo)
-	lengthInBits += m.ZoneTo.GetLengthInBits()
+	lengthInBits += m.ZoneTo.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataZoneTo) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataZoneTo) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataZoneToParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneTo, error) {
-	return BACnetConstructedDataZoneToParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataZoneToParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataZoneToParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneTo, error) {
+func BACnetConstructedDataZoneToParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneTo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneTo"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataZoneToParseWithBuffer(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("zoneTo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneTo")
 	}
-	_zoneTo, _zoneToErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
+	_zoneTo, _zoneToErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 	if _zoneToErr != nil {
 		return nil, errors.Wrap(_zoneToErr, "Error parsing 'zoneTo' field of BACnetConstructedDataZoneTo")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataZoneToParseWithBuffer(readBuffer utils.ReadBuffer, tag
 }
 
 func (m *_BACnetConstructedDataZoneTo) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("zoneTo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneTo")
 		}
-		_zoneToErr := writeBuffer.WriteSerializable(m.GetZoneTo())
+		_zoneToErr := writeBuffer.WriteSerializable(ctx, m.GetZoneTo())
 		if popErr := writeBuffer.PopContext("zoneTo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for zoneTo")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(writeBuffer util
 			return errors.Wrap(_zoneToErr, "Error serializing 'zoneTo' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataZoneTo) isBACnetConstructedDataZoneTo() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataZoneTo) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

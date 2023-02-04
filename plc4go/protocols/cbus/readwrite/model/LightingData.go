@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _LightingData struct {
 
 type _LightingDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type LightingDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child LightingData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LightingData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_LightingData) GetCommandTypeContainer() LightingCommandTypeContainer {
 ///////////////////////
 
 func (m *_LightingData) GetCommandType() LightingCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastLightingCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -116,7 +118,7 @@ func (m *_LightingData) GetTypeName() string {
 	return "LightingData"
 }
 
-func (m *_LightingData) GetParentLengthInBits() uint16 {
+func (m *_LightingData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -127,15 +129,15 @@ func (m *_LightingData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LightingData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LightingDataParse(theBytes []byte) (LightingData, error) {
-	return LightingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LightingDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, error) {
+func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingData"); pullErr != nil {
@@ -153,7 +155,7 @@ func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := LightingCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := LightingCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of LightingData")
 	}
@@ -178,15 +180,15 @@ func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, err
 	var typeSwitchError error
 	switch {
 	case commandType == LightingCommandType_OFF: // LightingDataOff
-		_childTemp, typeSwitchError = LightingDataOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LightingDataOffParseWithBuffer(ctx, readBuffer)
 	case commandType == LightingCommandType_ON: // LightingDataOn
-		_childTemp, typeSwitchError = LightingDataOnParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LightingDataOnParseWithBuffer(ctx, readBuffer)
 	case commandType == LightingCommandType_RAMP_TO_LEVEL: // LightingDataRampToLevel
-		_childTemp, typeSwitchError = LightingDataRampToLevelParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LightingDataRampToLevelParseWithBuffer(ctx, readBuffer)
 	case commandType == LightingCommandType_TERMINATE_RAMP: // LightingDataTerminateRamp
-		_childTemp, typeSwitchError = LightingDataTerminateRampParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LightingDataTerminateRampParseWithBuffer(ctx, readBuffer)
 	case commandType == LightingCommandType_LABEL: // LightingDataLabel
-		_childTemp, typeSwitchError = LightingDataLabelParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = LightingDataLabelParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -204,7 +206,7 @@ func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, err
 	return _child, nil
 }
 
-func (pm *_LightingData) SerializeParent(writeBuffer utils.WriteBuffer, child LightingData, serializeChildFunction func() error) error {
+func (pm *_LightingData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LightingData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -218,7 +220,7 @@ func (pm *_LightingData) SerializeParent(writeBuffer utils.WriteBuffer, child Li
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -226,7 +228,7 @@ func (pm *_LightingData) SerializeParent(writeBuffer utils.WriteBuffer, child Li
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -250,7 +252,7 @@ func (m *_LightingData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

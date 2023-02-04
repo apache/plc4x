@@ -75,6 +75,7 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFailedAttemptEvents");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFailedAttemptEvents _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (failedAttemptEvents != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessEventTagged> failedAttemptEvents =
         readTerminatedArrayField(

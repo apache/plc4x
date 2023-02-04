@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -109,12 +110,8 @@ func (m *_RequestNull) GetTypeName() string {
 	return "RequestNull"
 }
 
-func (m *_RequestNull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestNull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestNull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (nullIndicator)
 	lengthInBits += 32
@@ -122,15 +119,15 @@ func (m *_RequestNull) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestNull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestNull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestNullParse(theBytes []byte, cBusOptions CBusOptions) (RequestNull, error) {
-	return RequestNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func RequestNullParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
+func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {
@@ -163,14 +160,14 @@ func RequestNullParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOpt
 }
 
 func (m *_RequestNull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_RequestNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -189,7 +186,7 @@ func (m *_RequestNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestNull) isRequestNull() bool {
@@ -201,7 +198,7 @@ func (m *_RequestNull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

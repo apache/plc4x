@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -225,19 +226,19 @@ func CastBACnetLifeSafetyState(structType interface{}) BACnetLifeSafetyState {
 	return castFunc(structType)
 }
 
-func (m BACnetLifeSafetyState) GetLengthInBits() uint16 {
+func (m BACnetLifeSafetyState) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLifeSafetyState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLifeSafetyStateParse(theBytes []byte) (BACnetLifeSafetyState, error) {
-	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLifeSafetyStateParse(ctx context.Context, theBytes []byte) (BACnetLifeSafetyState, error) {
+	return BACnetLifeSafetyStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
+func BACnetLifeSafetyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")
@@ -252,13 +253,13 @@ func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLi
 
 func (e BACnetLifeSafetyState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLifeSafetyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLifeSafetyState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

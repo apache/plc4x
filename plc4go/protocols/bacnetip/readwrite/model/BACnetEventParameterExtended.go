@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,40 +138,36 @@ func (m *_BACnetEventParameterExtended) GetTypeName() string {
 	return "BACnetEventParameterExtended"
 }
 
-func (m *_BACnetEventParameterExtended) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterExtended) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.GetLengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits(ctx)
 
 	// Simple field (extendedEventType)
-	lengthInBits += m.ExtendedEventType.GetLengthInBits()
+	lengthInBits += m.ExtendedEventType.GetLengthInBits(ctx)
 
 	// Simple field (parameters)
-	lengthInBits += m.Parameters.GetLengthInBits()
+	lengthInBits += m.Parameters.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterExtended) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterExtended) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterExtendedParse(theBytes []byte) (BACnetEventParameterExtended, error) {
-	return BACnetEventParameterExtendedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterExtended, error) {
+func BACnetEventParameterExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterExtended"); pullErr != nil {
@@ -183,7 +180,7 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(9)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(9)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterExtended")
 	}
@@ -196,7 +193,7 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetEventParameterExtended")
 	}
@@ -209,7 +206,7 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("extendedEventType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for extendedEventType")
 	}
-	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedEventTypeErr != nil {
 		return nil, errors.Wrap(_extendedEventTypeErr, "Error parsing 'extendedEventType' field of BACnetEventParameterExtended")
 	}
@@ -222,7 +219,7 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("parameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
-	_parameters, _parametersErr := BACnetEventParameterExtendedParametersParseWithBuffer(readBuffer, uint8(uint8(2)))
+	_parameters, _parametersErr := BACnetEventParameterExtendedParametersParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
 	if _parametersErr != nil {
 		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field of BACnetEventParameterExtended")
 	}
@@ -235,7 +232,7 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(9)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(9)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterExtended")
 	}
@@ -262,14 +259,14 @@ func BACnetEventParameterExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (B
 }
 
 func (m *_BACnetEventParameterExtended) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -281,7 +278,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -293,7 +290,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := writeBuffer.WriteSerializable(m.GetVendorId())
+		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -305,7 +302,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("extendedEventType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for extendedEventType")
 		}
-		_extendedEventTypeErr := writeBuffer.WriteSerializable(m.GetExtendedEventType())
+		_extendedEventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedEventType())
 		if popErr := writeBuffer.PopContext("extendedEventType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for extendedEventType")
 		}
@@ -317,7 +314,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("parameters"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameters")
 		}
-		_parametersErr := writeBuffer.WriteSerializable(m.GetParameters())
+		_parametersErr := writeBuffer.WriteSerializable(ctx, m.GetParameters())
 		if popErr := writeBuffer.PopContext("parameters"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameters")
 		}
@@ -329,7 +326,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -342,7 +339,7 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterExtended) isBACnetEventParameterExtended() bool {
@@ -354,7 +351,7 @@ func (m *_BACnetEventParameterExtended) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

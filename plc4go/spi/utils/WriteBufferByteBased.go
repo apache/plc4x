@@ -21,6 +21,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"math"
 	"math/big"
@@ -275,16 +276,16 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 	return wb.writer.TryError
 }
 
-func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (wb *byteWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (wb *byteWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(wb)
+	return serializable.SerializeWithWriteBuffer(ctx, wb)
 }
 
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {

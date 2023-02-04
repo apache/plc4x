@@ -68,6 +68,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions3");
 
@@ -89,6 +90,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueInterfaceOptions3 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -107,6 +109,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("InterfaceOptions3 has exactly one byte");

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -220,6 +221,8 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetMicroPowerReset() bo
 ///////////////////////
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetNetworkVoltageInVolts() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetNetworkVoltage()) / float32(float32(6.375)))
 }
 
@@ -271,12 +274,8 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {
 	return "IdentifyReplyCommandExtendedDiagnosticSummary"
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lowApplication)
 	lengthInBits += 8
@@ -349,15 +348,15 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBitsConditio
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandExtendedDiagnosticSummaryParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
-	return IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
@@ -370,7 +369,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("lowApplication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowApplication")
 	}
-	_lowApplication, _lowApplicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_lowApplication, _lowApplicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _lowApplicationErr != nil {
 		return nil, errors.Wrap(_lowApplicationErr, "Error parsing 'lowApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
@@ -383,7 +382,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("highApplication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highApplication")
 	}
-	_highApplication, _highApplicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_highApplication, _highApplicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _highApplicationErr != nil {
 		return nil, errors.Wrap(_highApplicationErr, "Error parsing 'highApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
@@ -604,14 +603,14 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer uti
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -623,7 +622,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("lowApplication"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowApplication")
 		}
-		_lowApplicationErr := writeBuffer.WriteSerializable(m.GetLowApplication())
+		_lowApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetLowApplication())
 		if popErr := writeBuffer.PopContext("lowApplication"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowApplication")
 		}
@@ -635,7 +634,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("highApplication"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highApplication")
 		}
-		_highApplicationErr := writeBuffer.WriteSerializable(m.GetHighApplication())
+		_highApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetHighApplication())
 		if popErr := writeBuffer.PopContext("highApplication"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highApplication")
 		}
@@ -671,7 +670,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(_networkVoltageErr, "Error serializing 'networkVoltage' field")
 		}
 		// Virtual field
-		if _networkVoltageInVoltsErr := writeBuffer.WriteVirtual("networkVoltageInVolts", m.GetNetworkVoltageInVolts()); _networkVoltageInVoltsErr != nil {
+		if _networkVoltageInVoltsErr := writeBuffer.WriteVirtual(ctx, "networkVoltageInVolts", m.GetNetworkVoltageInVolts()); _networkVoltageInVoltsErr != nil {
 			return errors.Wrap(_networkVoltageInVoltsErr, "Error serializing 'networkVoltageInVolts' field")
 		}
 
@@ -819,7 +818,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) isIdentifyReplyCommandExtendedDiagnosticSummary() bool {
@@ -831,7 +830,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

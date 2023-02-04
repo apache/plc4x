@@ -61,6 +61,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandAnalogMappingQueryResponse");
 
@@ -79,6 +80,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandAnalogMappingQueryResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -92,6 +94,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 

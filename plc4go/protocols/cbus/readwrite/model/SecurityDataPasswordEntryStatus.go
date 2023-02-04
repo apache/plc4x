@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,22 +97,32 @@ func (m *_SecurityDataPasswordEntryStatus) GetCode() byte {
 ///////////////////////
 
 func (m *_SecurityDataPasswordEntryStatus) GetIsPasswordEntrySucceeded() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x01)))
 }
 
 func (m *_SecurityDataPasswordEntryStatus) GetIsPasswordEntryFailed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x02)))
 }
 
 func (m *_SecurityDataPasswordEntryStatus) GetIsPasswordEntryDisabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x03)))
 }
 
 func (m *_SecurityDataPasswordEntryStatus) GetIsPasswordEntryEnabledAgain() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x04)))
 }
 
 func (m *_SecurityDataPasswordEntryStatus) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) >= (0x05)))
 }
 
@@ -145,12 +156,8 @@ func (m *_SecurityDataPasswordEntryStatus) GetTypeName() string {
 	return "SecurityDataPasswordEntryStatus"
 }
 
-func (m *_SecurityDataPasswordEntryStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataPasswordEntryStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataPasswordEntryStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (code)
 	lengthInBits += 8
@@ -168,15 +175,15 @@ func (m *_SecurityDataPasswordEntryStatus) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataPasswordEntryStatusParse(theBytes []byte) (SecurityDataPasswordEntryStatus, error) {
-	return SecurityDataPasswordEntryStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataPasswordEntryStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataPasswordEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
+func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataPasswordEntryStatus"); pullErr != nil {
@@ -231,14 +238,14 @@ func SecurityDataPasswordEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_SecurityDataPasswordEntryStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -253,23 +260,23 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}
 		// Virtual field
-		if _isPasswordEntrySucceededErr := writeBuffer.WriteVirtual("isPasswordEntrySucceeded", m.GetIsPasswordEntrySucceeded()); _isPasswordEntrySucceededErr != nil {
+		if _isPasswordEntrySucceededErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntrySucceeded", m.GetIsPasswordEntrySucceeded()); _isPasswordEntrySucceededErr != nil {
 			return errors.Wrap(_isPasswordEntrySucceededErr, "Error serializing 'isPasswordEntrySucceeded' field")
 		}
 		// Virtual field
-		if _isPasswordEntryFailedErr := writeBuffer.WriteVirtual("isPasswordEntryFailed", m.GetIsPasswordEntryFailed()); _isPasswordEntryFailedErr != nil {
+		if _isPasswordEntryFailedErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryFailed", m.GetIsPasswordEntryFailed()); _isPasswordEntryFailedErr != nil {
 			return errors.Wrap(_isPasswordEntryFailedErr, "Error serializing 'isPasswordEntryFailed' field")
 		}
 		// Virtual field
-		if _isPasswordEntryDisabledErr := writeBuffer.WriteVirtual("isPasswordEntryDisabled", m.GetIsPasswordEntryDisabled()); _isPasswordEntryDisabledErr != nil {
+		if _isPasswordEntryDisabledErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryDisabled", m.GetIsPasswordEntryDisabled()); _isPasswordEntryDisabledErr != nil {
 			return errors.Wrap(_isPasswordEntryDisabledErr, "Error serializing 'isPasswordEntryDisabled' field")
 		}
 		// Virtual field
-		if _isPasswordEntryEnabledAgainErr := writeBuffer.WriteVirtual("isPasswordEntryEnabledAgain", m.GetIsPasswordEntryEnabledAgain()); _isPasswordEntryEnabledAgainErr != nil {
+		if _isPasswordEntryEnabledAgainErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryEnabledAgain", m.GetIsPasswordEntryEnabledAgain()); _isPasswordEntryEnabledAgainErr != nil {
 			return errors.Wrap(_isPasswordEntryEnabledAgainErr, "Error serializing 'isPasswordEntryEnabledAgain' field")
 		}
 		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
@@ -278,7 +285,7 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataPasswordEntryStatus) isSecurityDataPasswordEntryStatus() bool {
@@ -290,7 +297,7 @@ func (m *_SecurityDataPasswordEntryStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

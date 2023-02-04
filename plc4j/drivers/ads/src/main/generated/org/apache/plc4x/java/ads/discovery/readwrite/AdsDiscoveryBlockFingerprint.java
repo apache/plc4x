@@ -58,6 +58,7 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockFingerprint");
 
@@ -81,6 +82,7 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockFingerprint _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (dataLen)
     lengthInBits += 16;
@@ -99,6 +101,7 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int dataLen = readImplicitField("dataLen", readUnsignedInt(readBuffer, 16));
 

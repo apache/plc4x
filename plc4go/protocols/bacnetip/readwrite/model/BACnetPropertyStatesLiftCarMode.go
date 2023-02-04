@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesLiftCarMode) GetTypeName() string {
 	return "BACnetPropertyStatesLiftCarMode"
 }
 
-func (m *_BACnetPropertyStatesLiftCarMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesLiftCarMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesLiftCarMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (liftCarMode)
-	lengthInBits += m.LiftCarMode.GetLengthInBits()
+	lengthInBits += m.LiftCarMode.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesLiftCarMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesLiftCarMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesLiftCarModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarMode, error) {
-	return BACnetPropertyStatesLiftCarModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesLiftCarModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarMode, error) {
+func BACnetPropertyStatesLiftCarModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarMode"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("liftCarMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftCarMode")
 	}
-	_liftCarMode, _liftCarModeErr := BACnetLiftCarModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftCarMode, _liftCarModeErr := BACnetLiftCarModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarModeErr != nil {
 		return nil, errors.Wrap(_liftCarModeErr, "Error parsing 'liftCarMode' field of BACnetPropertyStatesLiftCarMode")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetPropertyStatesLiftCarMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("liftCarMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for liftCarMode")
 		}
-		_liftCarModeErr := writeBuffer.WriteSerializable(m.GetLiftCarMode())
+		_liftCarModeErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarMode())
 		if popErr := writeBuffer.PopContext("liftCarMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for liftCarMode")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesLiftCarMode) isBACnetPropertyStatesLiftCarMode() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesLiftCarMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_NLMSetMasterKey) GetTypeName() string {
 	return "NLMSetMasterKey"
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMSetMasterKey) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (key)
-	lengthInBits += m.Key.GetLengthInBits()
+	lengthInBits += m.Key.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMSetMasterKeyParse(theBytes []byte, apduLength uint16) (NLMSetMasterKey, error) {
-	return NLMSetMasterKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMSetMasterKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMSetMasterKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {
+func NLMSetMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMSetMasterKey"); pullErr != nil {
@@ -141,7 +138,7 @@ func NLMSetMasterKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint
 	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for key")
 	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(readBuffer)
+	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
 	if _keyErr != nil {
 		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMSetMasterKey")
 	}
@@ -166,14 +163,14 @@ func NLMSetMasterKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint
 }
 
 func (m *_NLMSetMasterKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for key")
 		}
-		_keyErr := writeBuffer.WriteSerializable(m.GetKey())
+		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
 		if popErr := writeBuffer.PopContext("key"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for key")
 		}
@@ -198,7 +195,7 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMSetMasterKey) isNLMSetMasterKey() bool {
@@ -210,7 +207,7 @@ func (m *_NLMSetMasterKey) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

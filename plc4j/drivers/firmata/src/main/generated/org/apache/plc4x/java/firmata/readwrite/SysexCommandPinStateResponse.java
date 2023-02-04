@@ -73,6 +73,7 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandPinStateResponse");
 
@@ -97,6 +98,7 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandPinStateResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -116,6 +118,7 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 

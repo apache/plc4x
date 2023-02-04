@@ -80,6 +80,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_ExpectedSubmoduleBlockReqApi");
 
@@ -115,6 +116,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_ExpectedSubmoduleBlockReqApi _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (api)
     lengthInBits += 32;
@@ -135,7 +137,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     if (submodules != null) {
       int i = 0;
       for (PnIoCm_Submodule element : submodules) {
-        boolean last = ++i >= submodules.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= submodules.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -155,6 +157,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long api =
         readConstField(

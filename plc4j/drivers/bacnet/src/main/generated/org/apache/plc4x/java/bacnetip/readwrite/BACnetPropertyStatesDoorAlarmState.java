@@ -56,6 +56,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesDoorAlarmState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesDoorAlarmState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorAlarmState)
     lengthInBits += doorAlarmState.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorAlarmStateTagged doorAlarmState =
         readSimpleField(

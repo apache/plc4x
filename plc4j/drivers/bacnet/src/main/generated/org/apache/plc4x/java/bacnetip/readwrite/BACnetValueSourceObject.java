@@ -56,6 +56,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
   protected void serializeBACnetValueSourceChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceObject");
 
@@ -74,6 +75,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetValueSourceObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (object)
     lengthInBits += object.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReferenceEnclosed object =
         readSimpleField(

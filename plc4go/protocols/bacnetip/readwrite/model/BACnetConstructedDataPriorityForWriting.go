@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetPriorityForWriting() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataPriorityForWriting) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetPriorityForWriting())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetTypeName() string {
 	return "BACnetConstructedDataPriorityForWriting"
 }
 
-func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (priorityForWriting)
-	lengthInBits += m.PriorityForWriting.GetLengthInBits()
+	lengthInBits += m.PriorityForWriting.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPriorityForWritingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityForWriting, error) {
-	return BACnetConstructedDataPriorityForWritingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPriorityForWritingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPriorityForWritingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityForWriting, error) {
+func BACnetConstructedDataPriorityForWritingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityForWriting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityForWriting"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPriorityForWritingParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("priorityForWriting"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priorityForWriting")
 	}
-	_priorityForWriting, _priorityForWritingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_priorityForWriting, _priorityForWritingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _priorityForWritingErr != nil {
 		return nil, errors.Wrap(_priorityForWritingErr, "Error parsing 'priorityForWriting' field of BACnetConstructedDataPriorityForWriting")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPriorityForWritingParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataPriorityForWriting) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("priorityForWriting"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for priorityForWriting")
 		}
-		_priorityForWritingErr := writeBuffer.WriteSerializable(m.GetPriorityForWriting())
+		_priorityForWritingErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityForWriting())
 		if popErr := writeBuffer.PopContext("priorityForWriting"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priorityForWriting")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_priorityForWritingErr, "Error serializing 'priorityForWriting' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPriorityForWriting) isBACnetConstructedDataPriorityForWriting() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPriorityForWriting) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

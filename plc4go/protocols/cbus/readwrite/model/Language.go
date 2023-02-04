@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -489,19 +490,19 @@ func CastLanguage(structType interface{}) Language {
 	return castFunc(structType)
 }
 
-func (m Language) GetLengthInBits() uint16 {
+func (m Language) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m Language) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m Language) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func LanguageParse(theBytes []byte) (Language, error) {
-	return LanguageParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func LanguageParse(ctx context.Context, theBytes []byte) (Language, error) {
+	return LanguageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LanguageParseWithBuffer(readBuffer utils.ReadBuffer) (Language, error) {
+func LanguageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Language, error) {
 	val, err := readBuffer.ReadUint8("Language", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Language")
@@ -516,13 +517,13 @@ func LanguageParseWithBuffer(readBuffer utils.ReadBuffer) (Language, error) {
 
 func (e Language) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e Language) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e Language) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("Language", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

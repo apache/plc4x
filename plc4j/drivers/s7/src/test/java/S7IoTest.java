@@ -37,7 +37,7 @@ public class S7IoTest {
         String wantBoxStringSerialized = ""
             + "╔═TPKTPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n"
             + "║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                               ║\n"
-            + "║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                                               ║\n"
+            + "║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                               ║\n"
             + "║╚═══════════╝╚═════════╝╚═════════╝                                                                               ║\n"
             + "║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════╗║\n"
             + "║║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════╗║║\n"
@@ -55,7 +55,7 @@ public class S7IoTest {
             + "║║║╔═payload══════════════════════════════════════════════════════════════════════════════════╗                  ║║║\n"
             + "║║║║╔═S7Message══════════════════════════════════════════════════════════════════════════════╗║                  ║║║\n"
             + "║║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗║║                  ║║║\n"
-            + "║║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║║║                  ║║║\n"
+            + "║║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║║║                  ║║║\n"
             + "║║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝║║                  ║║║\n"
             + "║║║║║╔═S7MessageResponseData═══╗╔═parameter═════════════════════════════════════╗            ║║                  ║║║\n"
             + "║║║║║║╔═errorClass╗╔═errorCode╗║║╔═S7Parameter═════════════════════════════════╗║            ║║                  ║║║\n"
@@ -77,10 +77,8 @@ public class S7IoTest {
             + "║║║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║║║║║                ║║                  ║║║\n"
             + "║║║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ║║║║║                ║║                  ║║║\n"
             + "║║║║║║║║║║╔═data═══════════════════════════════════════╗╔═padding╗      ║║║║║                ║║                  ║║║\n"
-            + "║║║║║║║║║║║0|01                            '.         '║║╔══════╗║      ║║║║║                ║║                  ║║║\n"
-            + "║║║║║║║║║║╚════════════════════════════════════════════╝║║0x00 0║║      ║║║║║                ║║                  ║║║\n"
-            + "║║║║║║║║║║                                              ║╚══════╝║      ║║║║║                ║║                  ║║║\n"
-            + "║║║║║║║║║║                                              ╚════════╝      ║║║║║                ║║                  ║║║\n"
+            + "║║║║║║║║║║║0|01                            '.         '║║        ║      ║║║║║                ║║                  ║║║\n"
+            + "║║║║║║║║║║╚════════════════════════════════════════════╝╚════════╝      ║║║║║                ║║                  ║║║\n"
             + "║║║║║║║║║╚══════════════════════════════════════════════════════════════╝║║║║                ║║                  ║║║\n"
             + "║║║║║║║║╚════════════════════════════════════════════════════════════════╝║║║                ║║                  ║║║\n"
             + "║║║║║║║╚══════════════════════════════════════════════════════════════════╝║║                ║║                  ║║║\n"
@@ -94,7 +92,7 @@ public class S7IoTest {
         String wantBoxStringSerializedCompact = ""
             + "╔═TPKTPacket═════════════════════════════════════════════════════════════════════════════════════╗\n"
             + "║╔═protocolId╗╔═reserved╗╔═len═════╗                                                             ║\n"
-            + "║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                             ║\n"
+            + "║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                             ║\n"
             + "║╚═══════════╝╚═════════╝╚═════════╝                                                             ║\n"
             + "║╔═payload/COTPPacket═══════════════════════════════════════════════════════════════════════════╗║\n"
             + "║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗                                              ║║\n"
@@ -109,7 +107,7 @@ public class S7IoTest {
             + "║║╚═════════════════════════════════════════════════════════════════════════════════════╝       ║║\n"
             + "║║╔═payload/S7Message══════════════════════════════════════════════════════════════════════════╗║║\n"
             + "║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗    ║║║\n"
-            + "║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║    ║║║\n"
+            + "║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║    ║║║\n"
             + "║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝    ║║║\n"
             + "║║║╔═S7MessageResponseData═══╗╔═parameter/S7Parameter═══════════════════════════════════╗      ║║║\n"
             + "║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse/numItems═══╗║      ║║║\n"
@@ -120,9 +118,9 @@ public class S7IoTest {
             + "║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗║║║║\n"
             + "║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║║║║\n"
             + "║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝║║║║\n"
-            + "║║║║╔═dataLength╗╔═data═══════════════════════════════════════╗╔═padding/╗                    ║║║║\n"
-            + "║║║║║ 0x0001 1  ║║0|01                            '.         '║║ 0x00 0  ║                    ║║║║\n"
-            + "║║║║╚═══════════╝╚════════════════════════════════════════════╝╚═════════╝                    ║║║║\n"
+            + "║║║║╔═dataLength╗╔═data═══════════════════════════════════════╗                               ║║║║\n"
+            + "║║║║║ 0x0001 1  ║║0|01                            '.         '║                               ║║║║\n"
+            + "║║║║╚═══════════╝╚════════════════════════════════════════════╝                               ║║║║\n"
             + "║║║╚══════════════════════════════════════════════════════════════════════════════════════════╝║║║\n"
             + "║║╚════════════════════════════════════════════════════════════════════════════════════════════╝║║\n"
             + "║╚══════════════════════════════════════════════════════════════════════════════════════════════╝║\n"
@@ -131,7 +129,7 @@ public class S7IoTest {
             "<TPKTPacket>\n" +
                 "  <protocolId dataType=\"uint\" bitLength=\"8\">3</protocolId>\n" +
                 "  <reserved dataType=\"uint\" bitLength=\"8\">0</reserved>\n" +
-                "  <len dataType=\"uint\" bitLength=\"16\">30</len>\n" +
+                "  <len dataType=\"uint\" bitLength=\"16\">29</len>\n" +
                 "  <payload>\n" +
                 "    <COTPPacket>\n" +
                 "      <headerLength dataType=\"uint\" bitLength=\"8\">5</headerLength>\n" +
@@ -158,7 +156,7 @@ public class S7IoTest {
                 "          <reserved dataType=\"uint\" bitLength=\"16\">0</reserved>\n" +
                 "          <tpduReference dataType=\"uint\" bitLength=\"16\">11</tpduReference>\n" +
                 "          <parameterLength dataType=\"uint\" bitLength=\"16\">2</parameterLength>\n" +
-                "          <payloadLength dataType=\"uint\" bitLength=\"16\">6</payloadLength>\n" +
+                "          <payloadLength dataType=\"uint\" bitLength=\"16\">5</payloadLength>\n" +
                 "          <S7MessageResponseData>\n" +
                 "            <errorClass dataType=\"uint\" bitLength=\"8\">0</errorClass>\n" +
                 "            <errorCode dataType=\"uint\" bitLength=\"8\">0</errorCode>\n" +
@@ -185,7 +183,6 @@ public class S7IoTest {
                 "                    <dataLength dataType=\"uint\" bitLength=\"16\">1</dataLength>\n" +
                 "                    <data dataType=\"byte\" bitLength=\"8\">0x01</data>\n" +
                 "                    <padding isList=\"true\">\n" +
-                "                      <value dataType=\"uint\" bitLength=\"8\">0</value>\n" +
                 "                    </padding>\n" +
                 "                  </S7VarPayloadDataItem>\n" +
                 "                </items>\n" +
@@ -199,7 +196,7 @@ public class S7IoTest {
                 "</TPKTPacket>";
         String wantJson = "{\n" +
             "  \"TPKTPacket\": {\n" +
-            "    \"len\": 30,\n" +
+            "    \"len\": 29,\n" +
             "    \"len__plc4x_bitLength\": 16,\n" +
             "    \"len__plc4x_dataType\": \"uint\",\n" +
             "    \"payload\": {\n" +
@@ -246,13 +243,6 @@ public class S7IoTest {
             "                        \"dataLength__plc4x_dataType\": \"uint\",\n" +
             "                        \"data__plc4x_bitLength\": 8,\n" +
             "                        \"data__plc4x_dataType\": \"byte\",\n" +
-            "                        \"padding\": [\n" +
-            "                          {\n" +
-            "                            \"value__plc4x_dataType\": \"uint\",\n" +
-            "                            \"value__plc4x_bitLength\": 8,\n" +
-            "                            \"value\": 0\n" +
-            "                          }\n" +
-            "                        ],\n" +
             "                        \"returnCode\": {\n" +
             "                          \"DataTransportErrorCode\": 255,\n" +
             "                          \"DataTransportErrorCode__plc4x_bitLength\": 8,\n" +
@@ -277,7 +267,7 @@ public class S7IoTest {
             "            \"parameterLength\": 2,\n" +
             "            \"parameterLength__plc4x_bitLength\": 16,\n" +
             "            \"parameterLength__plc4x_dataType\": \"uint\",\n" +
-            "            \"payloadLength\": 6,\n" +
+            "            \"payloadLength\": 5,\n" +
             "            \"payloadLength__plc4x_bitLength\": 16,\n" +
             "            \"payloadLength__plc4x_dataType\": \"uint\",\n" +
             "            \"protocolId\": 50,\n" +

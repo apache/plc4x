@@ -87,6 +87,7 @@ public class AdsDiscovery implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscovery");
 
@@ -154,6 +155,7 @@ public class AdsDiscovery implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AdsDiscovery _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (header)
     lengthInBits += 32;
@@ -177,7 +179,7 @@ public class AdsDiscovery implements Message {
     if (blocks != null) {
       int i = 0;
       for (AdsDiscoveryBlock element : blocks) {
-        boolean last = ++i >= blocks.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= blocks.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -196,6 +198,7 @@ public class AdsDiscovery implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long header =
         readConstField(

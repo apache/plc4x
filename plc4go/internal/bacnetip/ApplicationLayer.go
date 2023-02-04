@@ -20,11 +20,12 @@
 package bacnetip
 
 import (
+	"time"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type SSMState uint8
@@ -269,7 +270,8 @@ func (s *SSM) setSegmentationContext(apdu readWriteModel.APDU) error {
 }
 
 // getSegment This function returns an APDU coorisponding to a particular segment of a confirmed request or complex ack.
-//         The segmentAPDU is the context
+//
+//	The segmentAPDU is the context
 func (s *SSM) getSegment(index uint8) (segmentAPDU _PDU, moreFollows bool, err error) {
 	log.Debug().Msgf("Get segment %d", index)
 	if s.segmentAPDU == nil {
@@ -333,7 +335,8 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU _PDU, moreFollows bool, err e
 
 // TODO: check that function. looks a bit wonky to just append the payloads like that
 // appendSegment This function appends the apdu content to the end of the current APDU being built.  The segmentAPDU is
-//        the context
+//
+//	the context
 func (s *SSM) appendSegment(apdu _PDU) error {
 	log.Debug().Msgf("appendSegment\n%s", apdu)
 	switch apdu := apdu.GetMessage().(type) {
@@ -437,7 +440,8 @@ func (c *ClientSSM) Request(apdu _PDU) error {
 }
 
 // Indication This function is called after the device has bound a new transaction and wants to start the process
-//        rolling
+//
+//	rolling
 func (c *ClientSSM) Indication(apdu _PDU) error {
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
@@ -1011,7 +1015,8 @@ func (s *ServerSSM) Request(apdu _PDU) error {
 }
 
 // Indication This function is called for each downstream packet related to
-//        the transaction
+//
+//	the transaction
 func (s *ServerSSM) Indication(apdu _PDU) error { // TODO: maybe use another name for that
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
@@ -1042,7 +1047,8 @@ func (s *ServerSSM) Response(apdu _PDU) error {
 }
 
 // Confirmation This function is called when the application has provided a response and needs it to be sent to the
-//        client.
+//
+//	client.
 func (s *ServerSSM) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
@@ -1172,8 +1178,9 @@ func (s *ServerSSM) Confirmation(apdu _PDU) error {
 }
 
 // processTask This function is called when the client has failed to send all the segments of a segmented request,
-//        the application has taken too long to complete the request, or the client failed to ack the segments of a
-//        segmented response
+//
+//	the application has taken too long to complete the request, or the client failed to ack the segments of a
+//	segmented response
 func (s *ServerSSM) processTask() error {
 	log.Debug().Msg("processTask")
 	switch s.state {
@@ -1442,7 +1449,8 @@ func (s *ServerSSM) awaitResponse(apdu _PDU) error {
 }
 
 // awaitResponseTimeout This function is called when the application has taken too long to respond to a clients request.
-//         The client has probably long since given up
+//
+//	The client has probably long since given up
 func (s *ServerSSM) awaitResponseTimeout() error {
 	log.Debug().Msg("awaitResponseTimeout")
 
@@ -1859,7 +1867,8 @@ func (s *StateMachineAccessPoint) SapIndication(apdu _PDU) error {
 }
 
 // SapConfirmation This function is called when the application is responding to a request, the apdu may be a simple
-//        ack, complex ack, error, reject or abort
+//
+//	ack, complex ack, error, reject or abort
 func (s *StateMachineAccessPoint) SapConfirmation(apdu _PDU) error {
 	log.Debug().Msgf("sapConfirmation\n%s", apdu)
 	pduDestination := apdu.GetPDUDestination()

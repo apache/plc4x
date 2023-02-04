@@ -50,6 +50,7 @@ public class RequestTermination implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestTermination");
 
@@ -68,6 +69,7 @@ public class RequestTermination implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     RequestTermination _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (cr)
     lengthInBits += 8;
@@ -86,6 +88,7 @@ public class RequestTermination implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte cr = readConstField("cr", readByte(readBuffer, 8), RequestTermination.CR);
 

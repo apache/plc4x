@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastFirmwareType(structType interface{}) FirmwareType {
 	return castFunc(structType)
 }
 
-func (m FirmwareType) GetLengthInBits() uint16 {
+func (m FirmwareType) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m FirmwareType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m FirmwareType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmwareTypeParse(theBytes []byte) (FirmwareType, error) {
-	return FirmwareTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func FirmwareTypeParse(ctx context.Context, theBytes []byte) (FirmwareType, error) {
+	return FirmwareTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func FirmwareTypeParseWithBuffer(readBuffer utils.ReadBuffer) (FirmwareType, error) {
+func FirmwareTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (FirmwareType, error) {
 	val, err := readBuffer.ReadUint16("FirmwareType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading FirmwareType")
@@ -198,13 +199,13 @@ func FirmwareTypeParseWithBuffer(readBuffer utils.ReadBuffer) (FirmwareType, err
 
 func (e FirmwareType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e FirmwareType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e FirmwareType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

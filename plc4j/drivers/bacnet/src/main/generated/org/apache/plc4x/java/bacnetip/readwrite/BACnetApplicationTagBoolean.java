@@ -59,6 +59,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagBoolean");
 
@@ -81,6 +82,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -96,6 +98,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadBoolean payload =
         readSimpleField(

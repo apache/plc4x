@@ -73,6 +73,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriteRequest");
 
@@ -97,6 +98,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     WriteRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     if (nodesToWrite != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToWrite) {
-        boolean last = ++i >= nodesToWrite.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToWrite.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -122,6 +124,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

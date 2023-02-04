@@ -109,6 +109,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
   protected void serializeS7ParameterUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterUserDataItemCPUFunctions");
 
@@ -162,6 +163,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterUserDataItemCPUFunctions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (itemLength)
     lengthInBits += 8;
@@ -205,6 +207,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));
 

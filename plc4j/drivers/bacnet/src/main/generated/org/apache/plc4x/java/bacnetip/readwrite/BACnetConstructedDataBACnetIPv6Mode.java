@@ -78,6 +78,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6Mode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPv6Mode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bacnetIpv6Mode)
     lengthInBits += bacnetIpv6Mode.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetIPModeTagged bacnetIpv6Mode =
         readSimpleField(

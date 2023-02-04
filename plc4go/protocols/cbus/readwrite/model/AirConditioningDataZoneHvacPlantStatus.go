@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,24 +138,20 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) GetTypeName() string {
 	return "AirConditioningDataZoneHvacPlantStatus"
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
 
 	// Simple field (zoneList)
-	lengthInBits += m.ZoneList.GetLengthInBits()
+	lengthInBits += m.ZoneList.GetLengthInBits(ctx)
 
 	// Simple field (hvacType)
 	lengthInBits += 8
 
 	// Simple field (hvacStatus)
-	lengthInBits += m.HvacStatus.GetLengthInBits()
+	lengthInBits += m.HvacStatus.GetLengthInBits(ctx)
 
 	// Simple field (hvacErrorCode)
 	lengthInBits += 8
@@ -162,15 +159,15 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBitsConditional(las
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AirConditioningDataZoneHvacPlantStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataZoneHvacPlantStatusParse(theBytes []byte) (AirConditioningDataZoneHvacPlantStatus, error) {
-	return AirConditioningDataZoneHvacPlantStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AirConditioningDataZoneHvacPlantStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataZoneHvacPlantStatus, error) {
+func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneHvacPlantStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneHvacPlantStatus"); pullErr != nil {
@@ -190,7 +187,7 @@ func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneHvacPlantStatus")
 	}
@@ -203,7 +200,7 @@ func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("hvacType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacType")
 	}
-	_hvacType, _hvacTypeErr := HVACTypeParseWithBuffer(readBuffer)
+	_hvacType, _hvacTypeErr := HVACTypeParseWithBuffer(ctx, readBuffer)
 	if _hvacTypeErr != nil {
 		return nil, errors.Wrap(_hvacTypeErr, "Error parsing 'hvacType' field of AirConditioningDataZoneHvacPlantStatus")
 	}
@@ -216,7 +213,7 @@ func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("hvacStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacStatus")
 	}
-	_hvacStatus, _hvacStatusErr := HVACStatusFlagsParseWithBuffer(readBuffer)
+	_hvacStatus, _hvacStatusErr := HVACStatusFlagsParseWithBuffer(ctx, readBuffer)
 	if _hvacStatusErr != nil {
 		return nil, errors.Wrap(_hvacStatusErr, "Error parsing 'hvacStatus' field of AirConditioningDataZoneHvacPlantStatus")
 	}
@@ -229,7 +226,7 @@ func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("hvacErrorCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacErrorCode")
 	}
-	_hvacErrorCode, _hvacErrorCodeErr := HVACErrorParseWithBuffer(readBuffer)
+	_hvacErrorCode, _hvacErrorCodeErr := HVACErrorParseWithBuffer(ctx, readBuffer)
 	if _hvacErrorCodeErr != nil {
 		return nil, errors.Wrap(_hvacErrorCodeErr, "Error parsing 'hvacErrorCode' field of AirConditioningDataZoneHvacPlantStatus")
 	}
@@ -256,14 +253,14 @@ func AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_AirConditioningDataZoneHvacPlantStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -282,7 +279,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneList")
 		}
-		_zoneListErr := writeBuffer.WriteSerializable(m.GetZoneList())
+		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
 		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for zoneList")
 		}
@@ -294,7 +291,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("hvacType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hvacType")
 		}
-		_hvacTypeErr := writeBuffer.WriteSerializable(m.GetHvacType())
+		_hvacTypeErr := writeBuffer.WriteSerializable(ctx, m.GetHvacType())
 		if popErr := writeBuffer.PopContext("hvacType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hvacType")
 		}
@@ -306,7 +303,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("hvacStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hvacStatus")
 		}
-		_hvacStatusErr := writeBuffer.WriteSerializable(m.GetHvacStatus())
+		_hvacStatusErr := writeBuffer.WriteSerializable(ctx, m.GetHvacStatus())
 		if popErr := writeBuffer.PopContext("hvacStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hvacStatus")
 		}
@@ -318,7 +315,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("hvacErrorCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hvacErrorCode")
 		}
-		_hvacErrorCodeErr := writeBuffer.WriteSerializable(m.GetHvacErrorCode())
+		_hvacErrorCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHvacErrorCode())
 		if popErr := writeBuffer.PopContext("hvacErrorCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hvacErrorCode")
 		}
@@ -331,7 +328,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AirConditioningDataZoneHvacPlantStatus) isAirConditioningDataZoneHvacPlantStatus() bool {
@@ -343,7 +340,7 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -86,6 +86,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
   protected void serializeS7DataAlarmMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageObjectRequest");
 
@@ -143,6 +144,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7MessageObjectRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (variableSpec)
     lengthInBits += 8;
@@ -174,6 +176,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short variableSpec =
         readConstField(

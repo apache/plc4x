@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -67,6 +68,8 @@ func (m *_HVACTemperature) GetTemperatureValue() int16 {
 ///////////////////////
 
 func (m *_HVACTemperature) GetTemperatureInCelcius() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetTemperatureValue()) / float32(float32(256)))
 }
 
@@ -95,11 +98,7 @@ func (m *_HVACTemperature) GetTypeName() string {
 	return "HVACTemperature"
 }
 
-func (m *_HVACTemperature) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACTemperature) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACTemperature) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (temperatureValue)
@@ -110,15 +109,15 @@ func (m *_HVACTemperature) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACTemperature) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACTemperature) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACTemperatureParse(theBytes []byte) (HVACTemperature, error) {
-	return HVACTemperatureParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACTemperatureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACTemperatureParseWithBuffer(readBuffer utils.ReadBuffer) (HVACTemperature, error) {
+func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACTemperature"); pullErr != nil {
@@ -150,14 +149,14 @@ func HVACTemperatureParseWithBuffer(readBuffer utils.ReadBuffer) (HVACTemperatur
 }
 
 func (m *_HVACTemperature) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACTemperature) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACTemperature) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACTemperature"); pushErr != nil {
@@ -171,7 +170,7 @@ func (m *_HVACTemperature) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		return errors.Wrap(_temperatureValueErr, "Error serializing 'temperatureValue' field")
 	}
 	// Virtual field
-	if _temperatureInCelciusErr := writeBuffer.WriteVirtual("temperatureInCelcius", m.GetTemperatureInCelcius()); _temperatureInCelciusErr != nil {
+	if _temperatureInCelciusErr := writeBuffer.WriteVirtual(ctx, "temperatureInCelcius", m.GetTemperatureInCelcius()); _temperatureInCelciusErr != nil {
 		return errors.Wrap(_temperatureInCelciusErr, "Error serializing 'temperatureInCelcius' field")
 	}
 
@@ -190,7 +189,7 @@ func (m *_HVACTemperature) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -78,6 +78,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPower");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPower _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (power)
     lengthInBits += power.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal power =
         readSimpleField(

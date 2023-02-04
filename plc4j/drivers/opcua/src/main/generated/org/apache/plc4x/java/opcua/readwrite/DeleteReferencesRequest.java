@@ -73,6 +73,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeleteReferencesRequest");
 
@@ -98,6 +99,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeleteReferencesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     if (referencesToDelete != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : referencesToDelete) {
-        boolean last = ++i >= referencesToDelete.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= referencesToDelete.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -123,6 +125,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

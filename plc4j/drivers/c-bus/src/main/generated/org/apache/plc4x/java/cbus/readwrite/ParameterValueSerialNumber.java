@@ -68,6 +68,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueSerialNumber");
 
@@ -89,6 +90,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueSerialNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -107,6 +109,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (4))) {
       throw new ParseValidationException("SerialNumber has exactly four bytes");

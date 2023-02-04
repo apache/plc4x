@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLightingComman
 ///////////////////////
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetLightingCommandDefaultPriority())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetTypeName() str
 	return "BACnetConstructedDataLightingCommandDefaultPriority"
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lightingCommandDefaultPriority)
-	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits()
+	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLightingCommandDefaultPriorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
-	return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommandDefaultPriority"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(readBuff
 	if pullErr := readBuffer.PullContext("lightingCommandDefaultPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommandDefaultPriority")
 	}
-	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _lightingCommandDefaultPriorityErr != nil {
 		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field of BACnetConstructedDataLightingCommandDefaultPriority")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(readBuff
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 		if pushErr := writeBuffer.PushContext("lightingCommandDefaultPriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lightingCommandDefaultPriority")
 		}
-		_lightingCommandDefaultPriorityErr := writeBuffer.WriteSerializable(m.GetLightingCommandDefaultPriority())
+		_lightingCommandDefaultPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommandDefaultPriority())
 		if popErr := writeBuffer.PopContext("lightingCommandDefaultPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lightingCommandDefaultPriority")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 			return errors.Wrap(_lightingCommandDefaultPriorityErr, "Error serializing 'lightingCommandDefaultPriority' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) isBACnetConstructedDataLightingCommandDefaultPriority() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

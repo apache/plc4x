@@ -72,6 +72,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_IdentifyRes_Payload");
 
@@ -115,6 +116,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_Pdu_IdentifyRes_Payload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (serviceId)
     lengthInBits += 8;
@@ -148,6 +150,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_ServiceId serviceId =
         readDiscriminatorField(

@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_plc4x_static.h>
 
@@ -27,7 +28,7 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_tag_value_request** _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_tag_value_request** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -39,7 +40,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4c_spi
 
   // Simple Field (tag)
   plc4c_plc4x_read_write_plc4x_tag* tag;
-  _res = plc4c_plc4x_read_write_plc4x_tag_parse(readBuffer, (void*) &tag);
+  _res = plc4c_plc4x_read_write_plc4x_tag_parse(ctx, readBuffer, (void*) &tag);
   if(_res != OK) {
     return _res;
   }
@@ -47,7 +48,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4c_spi
 
   // Simple Field (valueType)
   plc4c_plc4x_read_write_plc4x_value_type valueType;
-  _res = plc4c_plc4x_read_write_plc4x_value_type_parse(readBuffer, (void*) &valueType);
+  _res = plc4c_plc4x_read_write_plc4x_value_type_parse(ctx, readBuffer, (void*) &valueType);
   if(_res != OK) {
     return _res;
   }
@@ -56,7 +57,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4c_spi
   // Optional Field (value) (Can be skipped, if a given expression evaluates to false)
   plc4c_data* value = NULL;
   if((valueType) != (plc4c_plc4x_read_write_plc4x_value_type_NULL)) {
-    _res = plc4c_plc4x_read_write_plc4x_value_parse(readBuffer, valueType, &value);
+    _res = plc4c_plc4x_read_write_plc4x_value_parse(ctx, readBuffer, valueType, &value);
     if(_res != OK) {
       return _res;
     }
@@ -68,24 +69,24 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_parse(plc4c_spi
   return OK;
 }
 
-plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (tag)
-  _res = plc4c_plc4x_read_write_plc4x_tag_serialize(writeBuffer, _message->tag);
+  _res = plc4c_plc4x_read_write_plc4x_tag_serialize(ctx, writeBuffer, _message->tag);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (valueType)
-  _res = plc4c_plc4x_read_write_plc4x_value_type_serialize(writeBuffer, &_message->value_type);
+  _res = plc4c_plc4x_read_write_plc4x_value_type_serialize(ctx, writeBuffer, &_message->value_type);
   if(_res != OK) {
     return _res;
   }
 
   // Optional Field (value)
   if(_message->value != NULL) {
-    _res = plc4c_plc4x_read_write_plc4x_value_serialize(writeBuffer, _message->value_type, &_message->value);
+    _res = plc4c_plc4x_read_write_plc4x_value_serialize(ctx, writeBuffer, _message->value_type, &_message->value);
     if(_res != OK) {
       return _res;
     }
@@ -94,22 +95,22 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(plc4c
   return OK;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bytes(plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
-  return plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits(_message) / 8;
+uint16_t plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bytes(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
+  return plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits(plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
+uint16_t plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_tag_value_request* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (tag)
-  lengthInBits += plc4c_plc4x_read_write_plc4x_tag_length_in_bits(_message->tag);
+  lengthInBits += plc4c_plc4x_read_write_plc4x_tag_length_in_bits(ctx, _message->tag);
 
   // Simple field (valueType)
-  lengthInBits += plc4c_plc4x_read_write_plc4x_value_type_length_in_bits(&_message->value_type);
+  lengthInBits += plc4c_plc4x_read_write_plc4x_value_type_length_in_bits(ctx, &_message->value_type);
 
   // Optional Field (value)
   if(_message->value != NULL) {
-    lengthInBits += plc4c_plc4x_read_write_plc4x_value_length_in_bits(_message->value, _message->value_type);
+    lengthInBits += plc4c_plc4x_read_write_plc4x_value_length_in_bits(ctx, _message->value, _message->value_type);
   }
 
   return lengthInBits;

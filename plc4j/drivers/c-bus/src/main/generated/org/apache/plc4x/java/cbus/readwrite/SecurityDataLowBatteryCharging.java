@@ -63,6 +63,7 @@ public class SecurityDataLowBatteryCharging extends SecurityData implements Mess
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataLowBatteryCharging");
 
@@ -89,6 +90,7 @@ public class SecurityDataLowBatteryCharging extends SecurityData implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataLowBatteryCharging _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startStop)
     lengthInBits += 8;
@@ -106,6 +108,7 @@ public class SecurityDataLowBatteryCharging extends SecurityData implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte startStop = readSimpleField("startStop", readByte(readBuffer, 8));
     boolean chargeStopped = readVirtualField("chargeStopped", boolean.class, (startStop) == (0x00));

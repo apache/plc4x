@@ -63,6 +63,7 @@ public class LightingLabelOptions implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LightingLabelOptions");
 
@@ -122,6 +123,7 @@ public class LightingLabelOptions implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LightingLabelOptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 1;
@@ -155,6 +157,7 @@ public class LightingLabelOptions implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Boolean reservedField0 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);

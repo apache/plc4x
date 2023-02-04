@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _IdentifyReplyCommand struct {
 
 type _IdentifyReplyCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetAttribute() Attribute
 }
 
 type IdentifyReplyCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IdentifyReplyCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child IdentifyReplyCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,21 +90,21 @@ func (m *_IdentifyReplyCommand) GetTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
-func (m *_IdentifyReplyCommand) GetParentLengthInBits() uint16 {
+func (m *_IdentifyReplyCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommand, error) {
-	return IdentifyReplyCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommand, error) {
+func IdentifyReplyCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommand"); pullErr != nil {
@@ -124,41 +124,41 @@ func IdentifyReplyCommandParseWithBuffer(readBuffer utils.ReadBuffer, attribute 
 	var typeSwitchError error
 	switch {
 	case attribute == Attribute_Manufacturer: // IdentifyReplyCommandManufacturer
-		_childTemp, typeSwitchError = IdentifyReplyCommandManufacturerParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandManufacturerParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_Type: // IdentifyReplyCommandType
-		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
-		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_Summary: // IdentifyReplyCommandSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandSummaryParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandSummaryParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_TerminalLevel: // IdentifyReplyCommandTerminalLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandTerminalLevelsParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkVoltage: // IdentifyReplyCommandNetworkVoltage
-		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkVoltageParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVValuesCurrent: // IdentifyReplyCommandGAVValuesCurrent
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVValuesStored: // IdentifyReplyCommandGAVValuesStored
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesStoredParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesStoredParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVPhysicalAddresses: // IdentifyReplyCommandGAVPhysicalAddresses
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_LogicalAssignment: // IdentifyReplyCommandLogicalAssignment
-		_childTemp, typeSwitchError = IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_Delays: // IdentifyReplyCommandDelays
-		_childTemp, typeSwitchError = IdentifyReplyCommandDelaysParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandDelaysParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_MinimumLevels: // IdentifyReplyCommandMinimumLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandMinimumLevelsParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_MaximumLevels: // IdentifyReplyCommandMaximumLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandMaximumLevelsParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandMaximumLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_CurrentSenseLevels: // IdentifyReplyCommandCurrentSenseLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_OutputUnitSummary: // IdentifyReplyCommandOutputUnitSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	case attribute == Attribute_DSIStatus: // IdentifyReplyCommandDSIStatus
-		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParseWithBuffer(readBuffer, attribute, numBytes)
+		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParseWithBuffer(ctx, readBuffer, attribute, numBytes)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [attribute=%v]", attribute)
 	}
@@ -176,7 +176,7 @@ func IdentifyReplyCommandParseWithBuffer(readBuffer utils.ReadBuffer, attribute 
 	return _child, nil
 }
 
-func (pm *_IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IdentifyReplyCommand, serializeChildFunction func() error) error {
+func (pm *_IdentifyReplyCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child IdentifyReplyCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -216,7 +216,7 @@ func (m *_IdentifyReplyCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

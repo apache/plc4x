@@ -108,6 +108,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ActivateSessionRequest");
 
@@ -154,6 +155,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ActivateSessionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -168,7 +170,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     if (clientSoftwareCertificates != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : clientSoftwareCertificates) {
-        boolean last = ++i >= clientSoftwareCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= clientSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -180,7 +182,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     if (localeIds != null) {
       int i = 0;
       for (PascalString element : localeIds) {
-        boolean last = ++i >= localeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= localeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -200,6 +202,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

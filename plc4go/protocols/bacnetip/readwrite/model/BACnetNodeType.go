@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -207,19 +208,19 @@ func CastBACnetNodeType(structType interface{}) BACnetNodeType {
 	return castFunc(structType)
 }
 
-func (m BACnetNodeType) GetLengthInBits() uint16 {
+func (m BACnetNodeType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetNodeType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetNodeType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNodeTypeParse(theBytes []byte) (BACnetNodeType, error) {
-	return BACnetNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetNodeTypeParse(ctx context.Context, theBytes []byte) (BACnetNodeType, error) {
+	return BACnetNodeTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
+func BACnetNodeTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNodeType")
@@ -234,13 +235,13 @@ func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType,
 
 func (e BACnetNodeType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetNodeType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetNodeType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

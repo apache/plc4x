@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_NLMReserved) GetTypeName() string {
 	return "NLMReserved"
 }
 
-func (m *_NLMReserved) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMReserved) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMReserved) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
@@ -122,15 +119,15 @@ func (m *_NLMReserved) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMReserved) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMReservedParse(theBytes []byte, apduLength uint16) (NLMReserved, error) {
-	return NLMReservedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMReservedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMReservedParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMReserved, error) {
+func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMReserved"); pullErr != nil {
@@ -161,14 +158,14 @@ func NLMReservedParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) 
 }
 
 func (m *_NLMReserved) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMReserved) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMReserved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_NLMReserved) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMReserved) isNLMReserved() bool {
@@ -199,7 +196,7 @@ func (m *_NLMReserved) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

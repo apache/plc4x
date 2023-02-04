@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastHostProtocolCode(structType interface{}) HostProtocolCode {
 	return castFunc(structType)
 }
 
-func (m HostProtocolCode) GetLengthInBits() uint16 {
+func (m HostProtocolCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m HostProtocolCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HostProtocolCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HostProtocolCodeParse(theBytes []byte) (HostProtocolCode, error) {
-	return HostProtocolCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HostProtocolCodeParse(ctx context.Context, theBytes []byte) (HostProtocolCode, error) {
+	return HostProtocolCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
+func HostProtocolCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
 	val, err := readBuffer.ReadUint8("HostProtocolCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HostProtocolCode")
@@ -114,13 +115,13 @@ func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolC
 
 func (e HostProtocolCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HostProtocolCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HostProtocolCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

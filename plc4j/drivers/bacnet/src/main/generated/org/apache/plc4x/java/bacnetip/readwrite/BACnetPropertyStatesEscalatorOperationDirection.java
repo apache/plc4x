@@ -58,6 +58,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorOperationDirection");
 
@@ -79,6 +80,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEscalatorOperationDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorOperationDirection)
     lengthInBits += escalatorOperationDirection.getLengthInBits();
@@ -92,6 +94,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorOperationDirectionTagged escalatorOperationDirection =
         readSimpleField(

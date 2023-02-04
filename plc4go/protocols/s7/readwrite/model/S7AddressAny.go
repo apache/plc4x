@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,12 +150,8 @@ func (m *_S7AddressAny) GetTypeName() string {
 	return "S7AddressAny"
 }
 
-func (m *_S7AddressAny) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7AddressAny) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -180,15 +177,15 @@ func (m *_S7AddressAny) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7AddressAny) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7AddressAnyParse(theBytes []byte) (S7AddressAny, error) {
-	return S7AddressAnyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7AddressAnyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7AddressAnyParseWithBuffer(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
+func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
@@ -231,7 +228,7 @@ func S7AddressAnyParseWithBuffer(readBuffer utils.ReadBuffer) (S7AddressAny, err
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for area")
 	}
-	_area, _areaErr := MemoryAreaParseWithBuffer(readBuffer)
+	_area, _areaErr := MemoryAreaParseWithBuffer(ctx, readBuffer)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of S7AddressAny")
 	}
@@ -291,14 +288,14 @@ func S7AddressAnyParseWithBuffer(readBuffer utils.ReadBuffer) (S7AddressAny, err
 }
 
 func (m *_S7AddressAny) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7AddressAny) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -336,7 +333,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for area")
 		}
-		_areaErr := writeBuffer.WriteSerializable(m.GetArea())
+		_areaErr := writeBuffer.WriteSerializable(ctx, m.GetArea())
 		if popErr := writeBuffer.PopContext("area"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for area")
 		}
@@ -379,7 +376,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7AddressAny) isS7AddressAny() bool {
@@ -391,7 +388,7 @@ func (m *_S7AddressAny) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

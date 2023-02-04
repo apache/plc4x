@@ -33,7 +33,7 @@ plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type_null() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_query_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_query_type* _message) {
+plc4c_return_code plc4c_s7_read_write_query_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_query_type* _message) {
     plc4c_return_code _res = OK;
 
     uint8_t value;
@@ -43,7 +43,7 @@ plc4c_return_code plc4c_s7_read_write_query_type_parse(plc4c_spi_read_buffer* re
     return _res;
 }
 
-plc4c_return_code plc4c_s7_read_write_query_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_query_type* _message) {
+plc4c_return_code plc4c_s7_read_write_query_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_query_type* _message) {
     plc4c_return_code _res = OK;
 
     _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
@@ -94,10 +94,10 @@ plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type_value_for_index(in
     }
 }
 
-uint16_t plc4c_s7_read_write_query_type_length_in_bytes(plc4c_s7_read_write_query_type* _message) {
-    return plc4c_s7_read_write_query_type_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_query_type_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_query_type* _message) {
+    return plc4c_s7_read_write_query_type_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_query_type_length_in_bits(plc4c_s7_read_write_query_type* _message) {
+uint16_t plc4c_s7_read_write_query_type_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_query_type* _message) {
     return 8;
 }

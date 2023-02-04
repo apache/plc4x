@@ -44,6 +44,7 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -79,12 +80,12 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* message);
 
 <#--
     Define the serialize-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* message);
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_for_value(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())} value);
 
@@ -106,9 +107,9 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_en
     </#list>
 </#if>
 
-uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* message);
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(plc4x_spi_context ctx, ${helper.getCTypeName(type.name)}* message);
 
-uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* message);
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(plc4x_spi_context ctx, ${helper.getCTypeName(type.name)}* message);
 
 <#--#ifdef __cplusplus
 }

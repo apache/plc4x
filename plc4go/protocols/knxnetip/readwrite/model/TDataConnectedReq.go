@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_TDataConnectedReq) GetTypeName() string {
 	return "TDataConnectedReq"
 }
 
-func (m *_TDataConnectedReq) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TDataConnectedReq) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TDataConnectedReq) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TDataConnectedReq) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TDataConnectedReq) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TDataConnectedReqParse(theBytes []byte, size uint16) (TDataConnectedReq, error) {
-	return TDataConnectedReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+	return TDataConnectedReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
 }
 
-func TDataConnectedReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (TDataConnectedReq, error) {
+func TDataConnectedReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataConnectedReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataConnectedReq"); pullErr != nil {
@@ -131,14 +128,14 @@ func TDataConnectedReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) 
 }
 
 func (m *_TDataConnectedReq) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TDataConnectedReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TDataConnectedReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_TDataConnectedReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TDataConnectedReq) isTDataConnectedReq() bool {
@@ -163,7 +160,7 @@ func (m *_TDataConnectedReq) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

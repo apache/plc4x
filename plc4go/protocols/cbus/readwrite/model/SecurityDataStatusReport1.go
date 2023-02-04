@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,42 +132,40 @@ func (m *_SecurityDataStatusReport1) GetTypeName() string {
 	return "SecurityDataStatusReport1"
 }
 
-func (m *_SecurityDataStatusReport1) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataStatusReport1) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataStatusReport1) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (armCodeType)
-	lengthInBits += m.ArmCodeType.GetLengthInBits()
+	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)
 
 	// Simple field (tamperStatus)
-	lengthInBits += m.TamperStatus.GetLengthInBits()
+	lengthInBits += m.TamperStatus.GetLengthInBits(ctx)
 
 	// Simple field (panicStatus)
-	lengthInBits += m.PanicStatus.GetLengthInBits()
+	lengthInBits += m.PanicStatus.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.ZoneStatus) > 0 {
-		for i, element := range m.ZoneStatus {
-			last := i == len(m.ZoneStatus)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.ZoneStatus {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.ZoneStatus), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataStatusReport1) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataStatusReport1) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataStatusReport1Parse(theBytes []byte) (SecurityDataStatusReport1, error) {
-	return SecurityDataStatusReport1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataStatusReport1ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
+func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataStatusReport1"); pullErr != nil {
@@ -178,7 +178,7 @@ func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (Secu
 	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
 	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(readBuffer)
+	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(ctx, readBuffer)
 	if _armCodeTypeErr != nil {
 		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataStatusReport1")
 	}
@@ -191,7 +191,7 @@ func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (Secu
 	if pullErr := readBuffer.PullContext("tamperStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tamperStatus")
 	}
-	_tamperStatus, _tamperStatusErr := TamperStatusParseWithBuffer(readBuffer)
+	_tamperStatus, _tamperStatusErr := TamperStatusParseWithBuffer(ctx, readBuffer)
 	if _tamperStatusErr != nil {
 		return nil, errors.Wrap(_tamperStatusErr, "Error parsing 'tamperStatus' field of SecurityDataStatusReport1")
 	}
@@ -204,7 +204,7 @@ func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (Secu
 	if pullErr := readBuffer.PullContext("panicStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for panicStatus")
 	}
-	_panicStatus, _panicStatusErr := PanicStatusParseWithBuffer(readBuffer)
+	_panicStatus, _panicStatusErr := PanicStatusParseWithBuffer(ctx, readBuffer)
 	if _panicStatusErr != nil {
 		return nil, errors.Wrap(_panicStatusErr, "Error parsing 'panicStatus' field of SecurityDataStatusReport1")
 	}
@@ -224,12 +224,16 @@ func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (Secu
 		zoneStatus = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(32)); curItem++ {
-			_item, _err := ZoneStatusParseWithBuffer(readBuffer)
+		_numItems := uint16(uint16(32))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := ZoneStatusParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'zoneStatus' field of SecurityDataStatusReport1")
 			}
-			zoneStatus[curItem] = _item.(ZoneStatus)
+			zoneStatus[_curItem] = _item.(ZoneStatus)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("zoneStatus", utils.WithRenderAsList(true)); closeErr != nil {
@@ -253,14 +257,14 @@ func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (Secu
 }
 
 func (m *_SecurityDataStatusReport1) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -272,7 +276,7 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("armCodeType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for armCodeType")
 		}
-		_armCodeTypeErr := writeBuffer.WriteSerializable(m.GetArmCodeType())
+		_armCodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetArmCodeType())
 		if popErr := writeBuffer.PopContext("armCodeType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for armCodeType")
 		}
@@ -284,7 +288,7 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("tamperStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tamperStatus")
 		}
-		_tamperStatusErr := writeBuffer.WriteSerializable(m.GetTamperStatus())
+		_tamperStatusErr := writeBuffer.WriteSerializable(ctx, m.GetTamperStatus())
 		if popErr := writeBuffer.PopContext("tamperStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tamperStatus")
 		}
@@ -296,7 +300,7 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("panicStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for panicStatus")
 		}
-		_panicStatusErr := writeBuffer.WriteSerializable(m.GetPanicStatus())
+		_panicStatusErr := writeBuffer.WriteSerializable(ctx, m.GetPanicStatus())
 		if popErr := writeBuffer.PopContext("panicStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for panicStatus")
 		}
@@ -308,8 +312,11 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("zoneStatus", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneStatus")
 		}
-		for _, _element := range m.GetZoneStatus() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetZoneStatus() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetZoneStatus()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'zoneStatus' field")
 			}
@@ -323,7 +330,7 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataStatusReport1) isSecurityDataStatusReport1() bool {
@@ -335,7 +342,7 @@ func (m *_SecurityDataStatusReport1) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

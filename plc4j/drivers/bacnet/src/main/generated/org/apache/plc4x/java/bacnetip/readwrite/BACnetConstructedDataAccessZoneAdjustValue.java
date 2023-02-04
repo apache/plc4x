@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAdjustValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessZoneAdjustValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (adjustValue)
     lengthInBits += adjustValue.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(

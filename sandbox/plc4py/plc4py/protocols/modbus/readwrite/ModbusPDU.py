@@ -127,14 +127,12 @@ class ModbusPDU(ABC, PlcMessage):
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusPDUBuilder = None
         if EvaluationHelper.equals(errorFlag, c_bool(True)):
-
             builder = ModbusPDUError.staticParseBuilder(read_buffer, response)
         if (
             EvaluationHelper.equals(errorFlag, c_bool(False))
             and EvaluationHelper.equals(functionFlag, c_uint8(0x02))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadDiscreteInputsRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -143,7 +141,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x02))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadDiscreteInputsResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -152,7 +149,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x01))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadCoilsRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -161,7 +157,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x01))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadCoilsResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -170,7 +165,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x05))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUWriteSingleCoilRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -179,7 +173,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x05))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUWriteSingleCoilResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -188,7 +181,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0F))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUWriteMultipleCoilsRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -197,7 +189,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0F))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUWriteMultipleCoilsResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -206,7 +197,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x04))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadInputRegistersRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -215,7 +205,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x04))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadInputRegistersResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -224,7 +213,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x03))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadHoldingRegistersRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -233,7 +221,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x03))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadHoldingRegistersResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -242,7 +229,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x06))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUWriteSingleRegisterRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -251,7 +237,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x06))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUWriteSingleRegisterResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -260,7 +245,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x10))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -269,7 +253,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x10))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -278,7 +261,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x17))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = (
                 ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseBuilder(
                     read_buffer, response
@@ -289,7 +271,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x17))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = (
                 ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseBuilder(
                     read_buffer, response
@@ -300,7 +281,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x16))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUMaskWriteHoldingRegisterRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -309,7 +289,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x16))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUMaskWriteHoldingRegisterResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -318,7 +297,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x18))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadFifoQueueRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -327,7 +305,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x18))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadFifoQueueResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -336,7 +313,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x14))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadFileRecordRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -345,7 +321,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x14))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadFileRecordResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -354,7 +329,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x15))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUWriteFileRecordRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -363,7 +337,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x15))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUWriteFileRecordResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -372,7 +345,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x07))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadExceptionStatusRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -381,7 +353,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x07))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadExceptionStatusResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -390,7 +361,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x08))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUDiagnosticRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -399,7 +369,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x08))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUDiagnosticResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -408,7 +377,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0B))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUGetComEventCounterRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -417,7 +385,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0B))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUGetComEventCounterResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -426,7 +393,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0C))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUGetComEventLogRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -435,7 +401,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x0C))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUGetComEventLogResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -444,7 +409,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x11))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReportServerIdRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -453,7 +417,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x11))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReportServerIdResponse.staticParseBuilder(
                 read_buffer, response
             )
@@ -462,7 +425,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x2B))
             and EvaluationHelper.equals(response, c_bool(False))
         ):
-
             builder = ModbusPDUReadDeviceIdentificationRequest.staticParseBuilder(
                 read_buffer, response
             )
@@ -471,7 +433,6 @@ class ModbusPDU(ABC, PlcMessage):
             and EvaluationHelper.equals(functionFlag, c_uint8(0x2B))
             and EvaluationHelper.equals(response, c_bool(True))
         ):
-
             builder = ModbusPDUReadDeviceIdentificationResponse.staticParseBuilder(
                 read_buffer, response
             )

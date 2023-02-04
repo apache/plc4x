@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPDHCPServer) GetDhcpServer() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPDHCPServer) GetActualValue() BACnetApplicationTagOctetString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagOctetString(m.GetDhcpServer())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPDHCPServer) GetTypeName() string {
 	return "BACnetConstructedDataIPDHCPServer"
 }
 
-func (m *_BACnetConstructedDataIPDHCPServer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPDHCPServer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPDHCPServer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dhcpServer)
-	lengthInBits += m.DhcpServer.GetLengthInBits()
+	lengthInBits += m.DhcpServer.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPDHCPServer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPDHCPServer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPDHCPServerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPServer, error) {
-	return BACnetConstructedDataIPDHCPServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPDHCPServerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPDHCPServerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPServer, error) {
+func BACnetConstructedDataIPDHCPServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDHCPServer"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPDHCPServerParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("dhcpServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dhcpServer")
 	}
-	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _dhcpServerErr != nil {
 		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field of BACnetConstructedDataIPDHCPServer")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPDHCPServerParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataIPDHCPServer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPDHCPServer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPDHCPServer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPDHCPServer) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("dhcpServer"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dhcpServer")
 		}
-		_dhcpServerErr := writeBuffer.WriteSerializable(m.GetDhcpServer())
+		_dhcpServerErr := writeBuffer.WriteSerializable(ctx, m.GetDhcpServer())
 		if popErr := writeBuffer.PopContext("dhcpServer"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dhcpServer")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPDHCPServer) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_dhcpServerErr, "Error serializing 'dhcpServer' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPDHCPServer) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPDHCPServer) isBACnetConstructedDataIPDHCPServer() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPDHCPServer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

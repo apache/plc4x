@@ -64,6 +64,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryData");
 
@@ -85,6 +86,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfDataValues)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     if (dataValues != null) {
       int i = 0;
       for (DataValue element : dataValues) {
-        boolean last = ++i >= dataValues.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataValues.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfDataValues = readSimpleField("noOfDataValues", readSignedInt(readBuffer, 32));
 

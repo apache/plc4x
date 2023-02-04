@@ -105,6 +105,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
 
@@ -146,6 +147,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestGetEnrollmentSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (acknowledgmentFilter)
     lengthInBits += acknowledgmentFilter.getLengthInBits();
@@ -185,6 +187,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
         acknowledgmentFilter =

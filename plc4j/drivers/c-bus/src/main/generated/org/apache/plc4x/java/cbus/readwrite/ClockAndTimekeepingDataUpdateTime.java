@@ -95,6 +95,7 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
   protected void serializeClockAndTimekeepingDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingDataUpdateTime");
 
@@ -138,6 +139,7 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ClockAndTimekeepingDataUpdateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hours)
     lengthInBits += 8;
@@ -168,6 +170,7 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short hours = readSimpleField("hours", readUnsignedShort(readBuffer, 8));
 

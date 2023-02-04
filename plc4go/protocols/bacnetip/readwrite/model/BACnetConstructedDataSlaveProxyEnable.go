@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetSlaveProxyEnable() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetSlaveProxyEnable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetTypeName() string {
 	return "BACnetConstructedDataSlaveProxyEnable"
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (slaveProxyEnable)
-	lengthInBits += m.SlaveProxyEnable.GetLengthInBits()
+	lengthInBits += m.SlaveProxyEnable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSlaveProxyEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
-	return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
+func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveProxyEnable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("slaveProxyEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for slaveProxyEnable")
 	}
-	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _slaveProxyEnableErr != nil {
 		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field of BACnetConstructedDataSlaveProxyEnable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("slaveProxyEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for slaveProxyEnable")
 		}
-		_slaveProxyEnableErr := writeBuffer.WriteSerializable(m.GetSlaveProxyEnable())
+		_slaveProxyEnableErr := writeBuffer.WriteSerializable(ctx, m.GetSlaveProxyEnable())
 		if popErr := writeBuffer.PopContext("slaveProxyEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for slaveProxyEnable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_slaveProxyEnableErr, "Error serializing 'slaveProxyEnable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) isBACnetConstructedDataSlaveProxyEnable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

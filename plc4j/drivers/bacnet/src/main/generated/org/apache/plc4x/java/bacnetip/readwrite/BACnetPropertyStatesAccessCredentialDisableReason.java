@@ -58,6 +58,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAccessCredentialDisableReason");
 
@@ -79,6 +80,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAccessCredentialDisableReason _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessCredentialDisableReason)
     lengthInBits += accessCredentialDisableReason.getLengthInBits();
@@ -92,6 +94,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason =
         readSimpleField(

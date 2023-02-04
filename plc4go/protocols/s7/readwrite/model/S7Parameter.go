@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -50,14 +51,13 @@ type _S7Parameter struct {
 
 type _S7ParameterChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetParameterType() uint8
 	GetMessageType() uint8
 }
 
 type S7ParameterParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7Parameter, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Parameter, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_S7Parameter) GetTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *_S7Parameter) GetParentLengthInBits() uint16 {
+func (m *_S7Parameter) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
@@ -98,15 +98,15 @@ func (m *_S7Parameter) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_S7Parameter) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterParse(theBytes []byte, messageType uint8) (S7Parameter, error) {
-	return S7ParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
+	return S7ParameterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
-func S7ParameterParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {
+func S7ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
@@ -132,19 +132,19 @@ func S7ParameterParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) 
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
-		_childTemp, typeSwitchError = S7ParameterSetupCommunicationParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterSetupCommunicationParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
-		_childTemp, typeSwitchError = S7ParameterReadVarRequestParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterReadVarRequestParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
-		_childTemp, typeSwitchError = S7ParameterReadVarResponseParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterReadVarResponseParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
-		_childTemp, typeSwitchError = S7ParameterWriteVarRequestParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterWriteVarRequestParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
-		_childTemp, typeSwitchError = S7ParameterWriteVarResponseParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterWriteVarResponseParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
-		_childTemp, typeSwitchError = S7ParameterUserDataParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterUserDataParseWithBuffer(ctx, readBuffer, messageType)
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
-		_childTemp, typeSwitchError = S7ParameterModeTransitionParseWithBuffer(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterModeTransitionParseWithBuffer(ctx, readBuffer, messageType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v, messageType=%v]", parameterType, messageType)
 	}
@@ -162,7 +162,7 @@ func S7ParameterParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) 
 	return _child, nil
 }
 
-func (pm *_S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child S7Parameter, serializeChildFunction func() error) error {
+func (pm *_S7Parameter) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Parameter, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -200,7 +200,7 @@ func (m *_S7Parameter) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

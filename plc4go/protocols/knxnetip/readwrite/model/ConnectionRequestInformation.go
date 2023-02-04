@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _ConnectionRequestInformation struct {
 
 type _ConnectionRequestInformationChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetConnectionType() uint8
 }
 
 type ConnectionRequestInformationParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_ConnectionRequestInformation) GetTypeName() string {
 	return "ConnectionRequestInformation"
 }
 
-func (m *_ConnectionRequestInformation) GetParentLengthInBits() uint16 {
+func (m *_ConnectionRequestInformation) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -98,15 +98,15 @@ func (m *_ConnectionRequestInformation) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ConnectionRequestInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ConnectionRequestInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionRequestInformationParse(theBytes []byte) (ConnectionRequestInformation, error) {
-	return ConnectionRequestInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ConnectionRequestInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectionRequestInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
+func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
@@ -139,9 +139,9 @@ func ConnectionRequestInformationParseWithBuffer(readBuffer utils.ReadBuffer) (C
 	var typeSwitchError error
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx, readBuffer)
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}
@@ -159,7 +159,7 @@ func ConnectionRequestInformationParseWithBuffer(readBuffer utils.ReadBuffer) (C
 	return _child, nil
 }
 
-func (pm *_ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error {
+func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -170,7 +170,7 @@ func (pm *_ConnectionRequestInformation) SerializeParent(writeBuffer utils.Write
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.GetLengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -204,7 +204,7 @@ func (m *_ConnectionRequestInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

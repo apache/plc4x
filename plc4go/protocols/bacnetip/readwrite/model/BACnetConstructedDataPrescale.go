@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPrescale) GetPrescale() BACnetPrescale {
 ///////////////////////
 
 func (m *_BACnetConstructedDataPrescale) GetActualValue() BACnetPrescale {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetPrescale(m.GetPrescale())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPrescale) GetTypeName() string {
 	return "BACnetConstructedDataPrescale"
 }
 
-func (m *_BACnetConstructedDataPrescale) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPrescale) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPrescale) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (prescale)
-	lengthInBits += m.Prescale.GetLengthInBits()
+	lengthInBits += m.Prescale.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPrescale) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPrescale) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPrescaleParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPrescale, error) {
-	return BACnetConstructedDataPrescaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPrescaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPrescaleParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPrescale, error) {
+func BACnetConstructedDataPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPrescale"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPrescaleParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("prescale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for prescale")
 	}
-	_prescale, _prescaleErr := BACnetPrescaleParseWithBuffer(readBuffer)
+	_prescale, _prescaleErr := BACnetPrescaleParseWithBuffer(ctx, readBuffer)
 	if _prescaleErr != nil {
 		return nil, errors.Wrap(_prescaleErr, "Error parsing 'prescale' field of BACnetConstructedDataPrescale")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPrescaleParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataPrescale) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("prescale"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for prescale")
 		}
-		_prescaleErr := writeBuffer.WriteSerializable(m.GetPrescale())
+		_prescaleErr := writeBuffer.WriteSerializable(ctx, m.GetPrescale())
 		if popErr := writeBuffer.PopContext("prescale"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for prescale")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_prescaleErr, "Error serializing 'prescale' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPrescale) isBACnetConstructedDataPrescale() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPrescale) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

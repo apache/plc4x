@@ -73,6 +73,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateRequest");
 
@@ -98,6 +99,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryUpdateRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     if (historyUpdateDetails != null) {
       int i = 0;
       for (ExtensionObject element : historyUpdateDetails) {
-        boolean last = ++i >= historyUpdateDetails.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= historyUpdateDetails.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -123,6 +125,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

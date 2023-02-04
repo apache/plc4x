@@ -79,6 +79,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataLabel");
 
@@ -115,6 +116,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataLabel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (triggerControlOptions)
     lengthInBits += triggerControlOptions.getLengthInBits();
@@ -142,6 +144,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TriggerControlLabelOptions triggerControlOptions =
         readSimpleField(

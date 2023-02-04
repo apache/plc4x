@@ -79,6 +79,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataControlledVariableValue");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataControlledVariableValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (controlledVariableValue)
     lengthInBits += controlledVariableValue.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal controlledVariableValue =
         readSimpleField(

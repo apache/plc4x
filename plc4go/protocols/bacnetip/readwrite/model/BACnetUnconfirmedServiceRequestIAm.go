@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,37 +133,33 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (maximumApduLengthAcceptedLength)
-	lengthInBits += m.MaximumApduLengthAcceptedLength.GetLengthInBits()
+	lengthInBits += m.MaximumApduLengthAcceptedLength.GetLengthInBits(ctx)
 
 	// Simple field (segmentationSupported)
-	lengthInBits += m.SegmentationSupported.GetLengthInBits()
+	lengthInBits += m.SegmentationSupported.GetLengthInBits(ctx)
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.GetLengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestIAmParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
-	return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
+func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
@@ -175,7 +172,7 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetUnconfirmedServiceRequestIAm")
 	}
@@ -188,7 +185,7 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("maximumApduLengthAcceptedLength"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maximumApduLengthAcceptedLength")
 	}
-	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field of BACnetUnconfirmedServiceRequestIAm")
 	}
@@ -201,7 +198,7 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for segmentationSupported")
 	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field of BACnetUnconfirmedServiceRequestIAm")
 	}
@@ -214,7 +211,7 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_APPLICATION_TAGS))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetUnconfirmedServiceRequestIAm")
 	}
@@ -242,14 +239,14 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -261,7 +258,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(m.GetDeviceIdentifier())
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -273,7 +270,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("maximumApduLengthAcceptedLength"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maximumApduLengthAcceptedLength")
 		}
-		_maximumApduLengthAcceptedLengthErr := writeBuffer.WriteSerializable(m.GetMaximumApduLengthAcceptedLength())
+		_maximumApduLengthAcceptedLengthErr := writeBuffer.WriteSerializable(ctx, m.GetMaximumApduLengthAcceptedLength())
 		if popErr := writeBuffer.PopContext("maximumApduLengthAcceptedLength"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maximumApduLengthAcceptedLength")
 		}
@@ -285,7 +282,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
 		}
-		_segmentationSupportedErr := writeBuffer.WriteSerializable(m.GetSegmentationSupported())
+		_segmentationSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentationSupported())
 		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for segmentationSupported")
 		}
@@ -297,7 +294,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := writeBuffer.WriteSerializable(m.GetVendorId())
+		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) isBACnetUnconfirmedServiceRequestIAm() bool {
@@ -322,7 +319,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

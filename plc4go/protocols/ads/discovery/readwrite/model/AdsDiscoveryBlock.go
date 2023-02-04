@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _AdsDiscoveryBlock struct {
 
 type _AdsDiscoveryBlockChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetBlockType() AdsDiscoveryBlockType
 }
 
 type AdsDiscoveryBlockParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_AdsDiscoveryBlock) GetTypeName() string {
 	return "AdsDiscoveryBlock"
 }
 
-func (m *_AdsDiscoveryBlock) GetParentLengthInBits() uint16 {
+func (m *_AdsDiscoveryBlock) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (blockType)
 	lengthInBits += 16
@@ -95,15 +95,15 @@ func (m *_AdsDiscoveryBlock) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlock) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockParse(theBytes []byte) (AdsDiscoveryBlock, error) {
-	return AdsDiscoveryBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
+func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlock"); pullErr != nil {
@@ -116,7 +116,7 @@ func AdsDiscoveryBlockParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery
 	if pullErr := readBuffer.PullContext("blockType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for blockType")
 	}
-	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParseWithBuffer(readBuffer)
+	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParseWithBuffer(ctx, readBuffer)
 	var blockType AdsDiscoveryBlockType = blockType_temp
 	if closeErr := readBuffer.CloseContext("blockType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for blockType")
@@ -136,23 +136,23 @@ func AdsDiscoveryBlockParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery
 	var typeSwitchError error
 	switch {
 	case blockType == AdsDiscoveryBlockType_STATUS: // AdsDiscoveryBlockStatus
-		_childTemp, typeSwitchError = AdsDiscoveryBlockStatusParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockStatusParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_PASSWORD: // AdsDiscoveryBlockPassword
-		_childTemp, typeSwitchError = AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockPasswordParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_VERSION: // AdsDiscoveryBlockVersion
-		_childTemp, typeSwitchError = AdsDiscoveryBlockVersionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockVersionParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_OS_DATA: // AdsDiscoveryBlockOsData
-		_childTemp, typeSwitchError = AdsDiscoveryBlockOsDataParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockOsDataParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_HOST_NAME: // AdsDiscoveryBlockHostName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockHostNameParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_AMS_NET_ID: // AdsDiscoveryBlockAmsNetId
-		_childTemp, typeSwitchError = AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_ROUTE_NAME: // AdsDiscoveryBlockRouteName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockRouteNameParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_USER_NAME: // AdsDiscoveryBlockUserName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockUserNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockUserNameParseWithBuffer(ctx, readBuffer)
 	case blockType == AdsDiscoveryBlockType_FINGERPRINT: // AdsDiscoveryBlockFingerprint
-		_childTemp, typeSwitchError = AdsDiscoveryBlockFingerprintParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockFingerprintParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [blockType=%v]", blockType)
 	}
@@ -170,7 +170,7 @@ func AdsDiscoveryBlockParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery
 	return _child, nil
 }
 
-func (pm *_AdsDiscoveryBlock) SerializeParent(writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error {
+func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -185,7 +185,7 @@ func (pm *_AdsDiscoveryBlock) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	if pushErr := writeBuffer.PushContext("blockType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for blockType")
 	}
-	_blockTypeErr := writeBuffer.WriteSerializable(blockType)
+	_blockTypeErr := writeBuffer.WriteSerializable(ctx, blockType)
 	if popErr := writeBuffer.PopContext("blockType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for blockType")
 	}
@@ -214,7 +214,7 @@ func (m *_AdsDiscoveryBlock) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

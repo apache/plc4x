@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +102,7 @@ func (m *_StatusByte) GetTypeName() string {
 	return "StatusByte"
 }
 
-func (m *_StatusByte) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_StatusByte) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_StatusByte) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (gav3)
@@ -123,15 +120,15 @@ func (m *_StatusByte) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_StatusByte) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_StatusByte) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func StatusByteParse(theBytes []byte) (StatusByte, error) {
-	return StatusByteParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return StatusByteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) {
+func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusByte"); pullErr != nil {
@@ -144,7 +141,7 @@ func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) 
 	if pullErr := readBuffer.PullContext("gav3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav3")
 	}
-	_gav3, _gav3Err := GAVStateParseWithBuffer(readBuffer)
+	_gav3, _gav3Err := GAVStateParseWithBuffer(ctx, readBuffer)
 	if _gav3Err != nil {
 		return nil, errors.Wrap(_gav3Err, "Error parsing 'gav3' field of StatusByte")
 	}
@@ -157,7 +154,7 @@ func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) 
 	if pullErr := readBuffer.PullContext("gav2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav2")
 	}
-	_gav2, _gav2Err := GAVStateParseWithBuffer(readBuffer)
+	_gav2, _gav2Err := GAVStateParseWithBuffer(ctx, readBuffer)
 	if _gav2Err != nil {
 		return nil, errors.Wrap(_gav2Err, "Error parsing 'gav2' field of StatusByte")
 	}
@@ -170,7 +167,7 @@ func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) 
 	if pullErr := readBuffer.PullContext("gav1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav1")
 	}
-	_gav1, _gav1Err := GAVStateParseWithBuffer(readBuffer)
+	_gav1, _gav1Err := GAVStateParseWithBuffer(ctx, readBuffer)
 	if _gav1Err != nil {
 		return nil, errors.Wrap(_gav1Err, "Error parsing 'gav1' field of StatusByte")
 	}
@@ -183,7 +180,7 @@ func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) 
 	if pullErr := readBuffer.PullContext("gav0"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav0")
 	}
-	_gav0, _gav0Err := GAVStateParseWithBuffer(readBuffer)
+	_gav0, _gav0Err := GAVStateParseWithBuffer(ctx, readBuffer)
 	if _gav0Err != nil {
 		return nil, errors.Wrap(_gav0Err, "Error parsing 'gav0' field of StatusByte")
 	}
@@ -206,14 +203,14 @@ func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) 
 }
 
 func (m *_StatusByte) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_StatusByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusByte"); pushErr != nil {
@@ -224,7 +221,7 @@ func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("gav3"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav3")
 	}
-	_gav3Err := writeBuffer.WriteSerializable(m.GetGav3())
+	_gav3Err := writeBuffer.WriteSerializable(ctx, m.GetGav3())
 	if popErr := writeBuffer.PopContext("gav3"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav3")
 	}
@@ -236,7 +233,7 @@ func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("gav2"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav2")
 	}
-	_gav2Err := writeBuffer.WriteSerializable(m.GetGav2())
+	_gav2Err := writeBuffer.WriteSerializable(ctx, m.GetGav2())
 	if popErr := writeBuffer.PopContext("gav2"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav2")
 	}
@@ -248,7 +245,7 @@ func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("gav1"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav1")
 	}
-	_gav1Err := writeBuffer.WriteSerializable(m.GetGav1())
+	_gav1Err := writeBuffer.WriteSerializable(ctx, m.GetGav1())
 	if popErr := writeBuffer.PopContext("gav1"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav1")
 	}
@@ -260,7 +257,7 @@ func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("gav0"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav0")
 	}
-	_gav0Err := writeBuffer.WriteSerializable(m.GetGav0())
+	_gav0Err := writeBuffer.WriteSerializable(ctx, m.GetGav0())
 	if popErr := writeBuffer.PopContext("gav0"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav0")
 	}
@@ -283,7 +280,7 @@ func (m *_StatusByte) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

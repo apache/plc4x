@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,19 +136,19 @@ func CastBACnetRestartReason(structType interface{}) BACnetRestartReason {
 	return castFunc(structType)
 }
 
-func (m BACnetRestartReason) GetLengthInBits() uint16 {
+func (m BACnetRestartReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetRestartReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetRestartReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRestartReasonParse(theBytes []byte) (BACnetRestartReason, error) {
-	return BACnetRestartReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetRestartReasonParse(ctx context.Context, theBytes []byte) (BACnetRestartReason, error) {
+	return BACnetRestartReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
+func BACnetRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRestartReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
@@ -162,13 +163,13 @@ func BACnetRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRest
 
 func (e BACnetRestartReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetRestartReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetRestartReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

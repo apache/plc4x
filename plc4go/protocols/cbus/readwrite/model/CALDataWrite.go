@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,12 +123,8 @@ func (m *_CALDataWrite) GetTypeName() string {
 	return "CALDataWrite"
 }
 
-func (m *_CALDataWrite) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALDataWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALDataWrite) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -136,20 +133,20 @@ func (m *_CALDataWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (parameterValue)
-	lengthInBits += m.ParameterValue.GetLengthInBits()
+	lengthInBits += m.ParameterValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CALDataWrite) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALDataWrite) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CALDataWriteParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
-	return CALDataWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
+	return CALDataWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
+func CALDataWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataWrite"); pullErr != nil {
@@ -162,7 +159,7 @@ func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataWrite")
 	}
@@ -182,7 +179,7 @@ func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
 	}
-	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
+	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(ctx, readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
 	if _parameterValueErr != nil {
 		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataWrite")
 	}
@@ -209,14 +206,14 @@ func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContain
 }
 
 func (m *_CALDataWrite) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CALDataWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -228,7 +225,7 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for paramNo")
 		}
-		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
 		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for paramNo")
 		}
@@ -247,7 +244,7 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameterValue")
 		}
-		_parameterValueErr := writeBuffer.WriteSerializable(m.GetParameterValue())
+		_parameterValueErr := writeBuffer.WriteSerializable(ctx, m.GetParameterValue())
 		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameterValue")
 		}
@@ -260,7 +257,7 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALDataWrite) isCALDataWrite() bool {
@@ -272,7 +269,7 @@ func (m *_CALDataWrite) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

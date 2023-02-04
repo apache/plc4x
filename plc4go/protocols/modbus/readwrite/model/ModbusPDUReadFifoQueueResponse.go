@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +117,8 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetTypeName() string {
 	return "ModbusPDUReadFifoQueueResponse"
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -136,15 +134,15 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUReadFifoQueueResponseParse(theBytes []byte, response bool) (ModbusPDUReadFifoQueueResponse, error) {
-	return ModbusPDUReadFifoQueueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUReadFifoQueueResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUReadFifoQueueResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueResponse, error) {
+func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
@@ -178,12 +176,16 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(readBuffer utils.ReadBuffer, 
 		fifoValue = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
+		_numItems := uint16(fifoCount)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field of ModbusPDUReadFifoQueueResponse")
 			}
-			fifoValue[curItem] = _item
+			fifoValue[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
@@ -204,14 +206,14 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_ModbusPDUReadFifoQueueResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -237,7 +239,8 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fifoValue")
 		}
-		for _, _element := range m.GetFifoValue() {
+		for _curItem, _element := range m.GetFifoValue() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint16("", 16, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
@@ -252,7 +255,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUReadFifoQueueResponse) isModbusPDUReadFifoQueueResponse() bool {
@@ -264,7 +267,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

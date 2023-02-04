@@ -21,12 +21,14 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
-	"github.com/icza/bitio"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"reflect"
 	"testing"
+
+	"github.com/icza/bitio"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewWriteBufferByteBased(t *testing.T) {
@@ -742,7 +744,7 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
-			if err := wb.WriteSerializable(tt.args.serializable); (err != nil) != tt.wantErr {
+			if err := wb.WriteSerializable(context.Background(), tt.args.serializable); (err != nil) != tt.wantErr {
 				t.Errorf("WriteSerializable() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -958,7 +960,7 @@ func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
-			if err := wb.WriteVirtual(tt.args.logicalName, tt.args.value, tt.args.writerArgs...); (err != nil) != tt.wantErr {
+			if err := wb.WriteVirtual(context.Background(), tt.args.logicalName, tt.args.value, tt.args.writerArgs...); (err != nil) != tt.wantErr {
 				t.Errorf("WriteVirtual() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

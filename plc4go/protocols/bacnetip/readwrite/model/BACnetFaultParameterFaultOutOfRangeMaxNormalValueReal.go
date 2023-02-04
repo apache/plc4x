@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetTypeName() s
 	return "BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (realValue)
-	lengthInBits += m.RealValue.GetLengthInBits()
+	lengthInBits += m.RealValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {
-	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(readBu
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal")
 	}
@@ -166,14 +163,14 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(readBu
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) SerializeWithWr
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
-		_realValueErr := writeBuffer.WriteSerializable(m.GetRealValue())
+		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) isBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) String() string
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -119,31 +120,27 @@ func (m *_DeviceConfigurationRequest) GetTypeName() string {
 	return "DeviceConfigurationRequest"
 }
 
-func (m *_DeviceConfigurationRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DeviceConfigurationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DeviceConfigurationRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deviceConfigurationRequestDataBlock)
-	lengthInBits += m.DeviceConfigurationRequestDataBlock.GetLengthInBits()
+	lengthInBits += m.DeviceConfigurationRequestDataBlock.GetLengthInBits(ctx)
 
 	// Simple field (cemi)
-	lengthInBits += m.Cemi.GetLengthInBits()
+	lengthInBits += m.Cemi.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DeviceConfigurationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DeviceConfigurationRequestParse(theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
-	return DeviceConfigurationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+	return DeviceConfigurationRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
-func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
+func DeviceConfigurationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
@@ -156,7 +153,7 @@ func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, tota
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationRequestDataBlock")
 	}
-	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer)
+	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParseWithBuffer(ctx, readBuffer)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field of DeviceConfigurationRequest")
 	}
@@ -169,7 +166,7 @@ func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, tota
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParseWithBuffer(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParseWithBuffer(ctx, readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes(ctx))))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of DeviceConfigurationRequest")
 	}
@@ -193,14 +190,14 @@ func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, tota
 }
 
 func (m *_DeviceConfigurationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -212,7 +209,7 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationRequestDataBlock")
 		}
-		_deviceConfigurationRequestDataBlockErr := writeBuffer.WriteSerializable(m.GetDeviceConfigurationRequestDataBlock())
+		_deviceConfigurationRequestDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceConfigurationRequestDataBlock())
 		if popErr := writeBuffer.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceConfigurationRequestDataBlock")
 		}
@@ -224,7 +221,7 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
-		_cemiErr := writeBuffer.WriteSerializable(m.GetCemi())
+		_cemiErr := writeBuffer.WriteSerializable(ctx, m.GetCemi())
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for cemi")
 		}
@@ -237,7 +234,7 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -259,7 +256,7 @@ func (m *_DeviceConfigurationRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

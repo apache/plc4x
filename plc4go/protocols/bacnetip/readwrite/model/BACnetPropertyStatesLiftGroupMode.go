@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetTypeName() string {
 	return "BACnetPropertyStatesLiftGroupMode"
 }
 
-func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (liftGroupMode)
-	lengthInBits += m.LiftGroupMode.GetLengthInBits()
+	lengthInBits += m.LiftGroupMode.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesLiftGroupModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
-	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
+func BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftGroupMode"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("liftGroupMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftGroupMode")
 	}
-	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftGroupModeErr != nil {
 		return nil, errors.Wrap(_liftGroupModeErr, "Error parsing 'liftGroupMode' field of BACnetPropertyStatesLiftGroupMode")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("liftGroupMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for liftGroupMode")
 		}
-		_liftGroupModeErr := writeBuffer.WriteSerializable(m.GetLiftGroupMode())
+		_liftGroupModeErr := writeBuffer.WriteSerializable(ctx, m.GetLiftGroupMode())
 		if popErr := writeBuffer.PopContext("liftGroupMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for liftGroupMode")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) isBACnetPropertyStatesLiftGroupMode() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesLiftGroupMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,19 +148,19 @@ func CastBACnetUnconfirmedServiceChoice(structType interface{}) BACnetUnconfirme
 	return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceChoice) GetLengthInBits() uint16 {
+func (m BACnetUnconfirmedServiceChoice) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetUnconfirmedServiceChoice) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetUnconfirmedServiceChoice) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceChoiceParse(theBytes []byte) (BACnetUnconfirmedServiceChoice, error) {
-	return BACnetUnconfirmedServiceChoiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetUnconfirmedServiceChoiceParse(ctx context.Context, theBytes []byte) (BACnetUnconfirmedServiceChoice, error) {
+	return BACnetUnconfirmedServiceChoiceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetUnconfirmedServiceChoiceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceChoice, error) {
+func BACnetUnconfirmedServiceChoiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceChoice, error) {
 	val, err := readBuffer.ReadUint8("BACnetUnconfirmedServiceChoice", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetUnconfirmedServiceChoice")
@@ -174,13 +175,13 @@ func BACnetUnconfirmedServiceChoiceParseWithBuffer(readBuffer utils.ReadBuffer) 
 
 func (e BACnetUnconfirmedServiceChoice) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetUnconfirmedServiceChoice) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetUnconfirmedServiceChoice) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetUnconfirmedServiceChoice", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

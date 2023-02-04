@@ -64,6 +64,7 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataIsolateSecondaryOutlet");
 
@@ -90,6 +91,7 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataIsolateSecondaryOutlet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (isolateStatus)
     lengthInBits += 8;
@@ -107,6 +109,7 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte isolateStatus = readSimpleField("isolateStatus", readByte(readBuffer, 8));
     boolean isBehaveNormal =

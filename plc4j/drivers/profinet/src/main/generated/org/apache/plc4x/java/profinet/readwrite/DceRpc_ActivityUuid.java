@@ -69,6 +69,7 @@ public class DceRpc_ActivityUuid implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_ActivityUuid");
 
@@ -96,6 +97,7 @@ public class DceRpc_ActivityUuid implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DceRpc_ActivityUuid _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (data1)
     lengthInBits += 32;
@@ -125,6 +127,7 @@ public class DceRpc_ActivityUuid implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long data1 = readSimpleField("data1", readUnsignedLong(readBuffer, 32));
 

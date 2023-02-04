@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,46 +109,68 @@ func (m *_SecurityDataEmulatedKeypad) GetKey() byte {
 ///////////////////////
 
 func (m *_SecurityDataEmulatedKeypad) GetIsAscii() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetKey()) >= (0x00))) && bool(bool((m.GetKey()) <= (0x7F))))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsCustom() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) >= (0x80)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsEnter() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x0D)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsShift() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x80)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsPanic() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x81)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsFire() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x82)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsARM() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x83)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsAway() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x84)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsNight() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x85)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsDay() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x86)))
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetIsVacation() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetKey()) == (0x87)))
 }
 
@@ -181,12 +204,8 @@ func (m *_SecurityDataEmulatedKeypad) GetTypeName() string {
 	return "SecurityDataEmulatedKeypad"
 }
 
-func (m *_SecurityDataEmulatedKeypad) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataEmulatedKeypad) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataEmulatedKeypad) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += 8
@@ -216,15 +235,15 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataEmulatedKeypadParse(theBytes []byte) (SecurityDataEmulatedKeypad, error) {
-	return SecurityDataEmulatedKeypadParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataEmulatedKeypadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
+func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEmulatedKeypad"); pullErr != nil {
@@ -309,14 +328,14 @@ func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (Sec
 }
 
 func (m *_SecurityDataEmulatedKeypad) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -331,47 +350,47 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(writeBuffer utils
 			return errors.Wrap(_keyErr, "Error serializing 'key' field")
 		}
 		// Virtual field
-		if _isAsciiErr := writeBuffer.WriteVirtual("isAscii", m.GetIsAscii()); _isAsciiErr != nil {
+		if _isAsciiErr := writeBuffer.WriteVirtual(ctx, "isAscii", m.GetIsAscii()); _isAsciiErr != nil {
 			return errors.Wrap(_isAsciiErr, "Error serializing 'isAscii' field")
 		}
 		// Virtual field
-		if _isCustomErr := writeBuffer.WriteVirtual("isCustom", m.GetIsCustom()); _isCustomErr != nil {
+		if _isCustomErr := writeBuffer.WriteVirtual(ctx, "isCustom", m.GetIsCustom()); _isCustomErr != nil {
 			return errors.Wrap(_isCustomErr, "Error serializing 'isCustom' field")
 		}
 		// Virtual field
-		if _isEnterErr := writeBuffer.WriteVirtual("isEnter", m.GetIsEnter()); _isEnterErr != nil {
+		if _isEnterErr := writeBuffer.WriteVirtual(ctx, "isEnter", m.GetIsEnter()); _isEnterErr != nil {
 			return errors.Wrap(_isEnterErr, "Error serializing 'isEnter' field")
 		}
 		// Virtual field
-		if _isShiftErr := writeBuffer.WriteVirtual("isShift", m.GetIsShift()); _isShiftErr != nil {
+		if _isShiftErr := writeBuffer.WriteVirtual(ctx, "isShift", m.GetIsShift()); _isShiftErr != nil {
 			return errors.Wrap(_isShiftErr, "Error serializing 'isShift' field")
 		}
 		// Virtual field
-		if _isPanicErr := writeBuffer.WriteVirtual("isPanic", m.GetIsPanic()); _isPanicErr != nil {
+		if _isPanicErr := writeBuffer.WriteVirtual(ctx, "isPanic", m.GetIsPanic()); _isPanicErr != nil {
 			return errors.Wrap(_isPanicErr, "Error serializing 'isPanic' field")
 		}
 		// Virtual field
-		if _isFireErr := writeBuffer.WriteVirtual("isFire", m.GetIsFire()); _isFireErr != nil {
+		if _isFireErr := writeBuffer.WriteVirtual(ctx, "isFire", m.GetIsFire()); _isFireErr != nil {
 			return errors.Wrap(_isFireErr, "Error serializing 'isFire' field")
 		}
 		// Virtual field
-		if _isARMErr := writeBuffer.WriteVirtual("isARM", m.GetIsARM()); _isARMErr != nil {
+		if _isARMErr := writeBuffer.WriteVirtual(ctx, "isARM", m.GetIsARM()); _isARMErr != nil {
 			return errors.Wrap(_isARMErr, "Error serializing 'isARM' field")
 		}
 		// Virtual field
-		if _isAwayErr := writeBuffer.WriteVirtual("isAway", m.GetIsAway()); _isAwayErr != nil {
+		if _isAwayErr := writeBuffer.WriteVirtual(ctx, "isAway", m.GetIsAway()); _isAwayErr != nil {
 			return errors.Wrap(_isAwayErr, "Error serializing 'isAway' field")
 		}
 		// Virtual field
-		if _isNightErr := writeBuffer.WriteVirtual("isNight", m.GetIsNight()); _isNightErr != nil {
+		if _isNightErr := writeBuffer.WriteVirtual(ctx, "isNight", m.GetIsNight()); _isNightErr != nil {
 			return errors.Wrap(_isNightErr, "Error serializing 'isNight' field")
 		}
 		// Virtual field
-		if _isDayErr := writeBuffer.WriteVirtual("isDay", m.GetIsDay()); _isDayErr != nil {
+		if _isDayErr := writeBuffer.WriteVirtual(ctx, "isDay", m.GetIsDay()); _isDayErr != nil {
 			return errors.Wrap(_isDayErr, "Error serializing 'isDay' field")
 		}
 		// Virtual field
-		if _isVacationErr := writeBuffer.WriteVirtual("isVacation", m.GetIsVacation()); _isVacationErr != nil {
+		if _isVacationErr := writeBuffer.WriteVirtual(ctx, "isVacation", m.GetIsVacation()); _isVacationErr != nil {
 			return errors.Wrap(_isVacationErr, "Error serializing 'isVacation' field")
 		}
 
@@ -380,7 +399,7 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataEmulatedKeypad) isSecurityDataEmulatedKeypad() bool {
@@ -392,7 +411,7 @@ func (m *_SecurityDataEmulatedKeypad) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

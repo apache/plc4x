@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,14 +141,20 @@ func (m *_ErrorReportingDataGeneric) GetErrorData2() uint8 {
 ///////////////////////
 
 func (m *_ErrorReportingDataGeneric) GetIsMostSevereError() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetMostSevere())
 }
 
 func (m *_ErrorReportingDataGeneric) GetIsMostRecentError() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetMostRecent())
 }
 
 func (m *_ErrorReportingDataGeneric) GetIsMostRecentAndMostSevere() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(m.GetIsMostRecentError()) && bool(m.GetIsMostSevereError()))
 }
 
@@ -188,15 +195,11 @@ func (m *_ErrorReportingDataGeneric) GetTypeName() string {
 	return "ErrorReportingDataGeneric"
 }
 
-func (m *_ErrorReportingDataGeneric) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ErrorReportingDataGeneric) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ErrorReportingDataGeneric) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (systemCategory)
-	lengthInBits += m.SystemCategory.GetLengthInBits()
+	lengthInBits += m.SystemCategory.GetLengthInBits(ctx)
 
 	// Simple field (mostRecent)
 	lengthInBits += 1
@@ -228,15 +231,15 @@ func (m *_ErrorReportingDataGeneric) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_ErrorReportingDataGeneric) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ErrorReportingDataGeneric) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingDataGenericParse(theBytes []byte) (ErrorReportingDataGeneric, error) {
-	return ErrorReportingDataGenericParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ErrorReportingDataGenericParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingDataGenericParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingDataGeneric, error) {
+func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingDataGeneric, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingDataGeneric"); pullErr != nil {
@@ -249,7 +252,7 @@ func ErrorReportingDataGenericParseWithBuffer(readBuffer utils.ReadBuffer) (Erro
 	if pullErr := readBuffer.PullContext("systemCategory"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for systemCategory")
 	}
-	_systemCategory, _systemCategoryErr := ErrorReportingSystemCategoryParseWithBuffer(readBuffer)
+	_systemCategory, _systemCategoryErr := ErrorReportingSystemCategoryParseWithBuffer(ctx, readBuffer)
 	if _systemCategoryErr != nil {
 		return nil, errors.Wrap(_systemCategoryErr, "Error parsing 'systemCategory' field of ErrorReportingDataGeneric")
 	}
@@ -303,7 +306,7 @@ func ErrorReportingDataGenericParseWithBuffer(readBuffer utils.ReadBuffer) (Erro
 	if pullErr := readBuffer.PullContext("severity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for severity")
 	}
-	_severity, _severityErr := ErrorReportingSeverityParseWithBuffer(readBuffer)
+	_severity, _severityErr := ErrorReportingSeverityParseWithBuffer(ctx, readBuffer)
 	if _severityErr != nil {
 		return nil, errors.Wrap(_severityErr, "Error parsing 'severity' field of ErrorReportingDataGeneric")
 	}
@@ -354,14 +357,14 @@ func ErrorReportingDataGenericParseWithBuffer(readBuffer utils.ReadBuffer) (Erro
 }
 
 func (m *_ErrorReportingDataGeneric) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -373,7 +376,7 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("systemCategory"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for systemCategory")
 		}
-		_systemCategoryErr := writeBuffer.WriteSerializable(m.GetSystemCategory())
+		_systemCategoryErr := writeBuffer.WriteSerializable(ctx, m.GetSystemCategory())
 		if popErr := writeBuffer.PopContext("systemCategory"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for systemCategory")
 		}
@@ -402,15 +405,15 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(writeBuffer utils.
 			return errors.Wrap(_mostSevereErr, "Error serializing 'mostSevere' field")
 		}
 		// Virtual field
-		if _isMostSevereErrorErr := writeBuffer.WriteVirtual("isMostSevereError", m.GetIsMostSevereError()); _isMostSevereErrorErr != nil {
+		if _isMostSevereErrorErr := writeBuffer.WriteVirtual(ctx, "isMostSevereError", m.GetIsMostSevereError()); _isMostSevereErrorErr != nil {
 			return errors.Wrap(_isMostSevereErrorErr, "Error serializing 'isMostSevereError' field")
 		}
 		// Virtual field
-		if _isMostRecentErrorErr := writeBuffer.WriteVirtual("isMostRecentError", m.GetIsMostRecentError()); _isMostRecentErrorErr != nil {
+		if _isMostRecentErrorErr := writeBuffer.WriteVirtual(ctx, "isMostRecentError", m.GetIsMostRecentError()); _isMostRecentErrorErr != nil {
 			return errors.Wrap(_isMostRecentErrorErr, "Error serializing 'isMostRecentError' field")
 		}
 		// Virtual field
-		if _isMostRecentAndMostSevereErr := writeBuffer.WriteVirtual("isMostRecentAndMostSevere", m.GetIsMostRecentAndMostSevere()); _isMostRecentAndMostSevereErr != nil {
+		if _isMostRecentAndMostSevereErr := writeBuffer.WriteVirtual(ctx, "isMostRecentAndMostSevere", m.GetIsMostRecentAndMostSevere()); _isMostRecentAndMostSevereErr != nil {
 			return errors.Wrap(_isMostRecentAndMostSevereErr, "Error serializing 'isMostRecentAndMostSevere' field")
 		}
 
@@ -418,7 +421,7 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("severity"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for severity")
 		}
-		_severityErr := writeBuffer.WriteSerializable(m.GetSeverity())
+		_severityErr := writeBuffer.WriteSerializable(ctx, m.GetSeverity())
 		if popErr := writeBuffer.PopContext("severity"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for severity")
 		}
@@ -452,7 +455,7 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ErrorReportingDataGeneric) isErrorReportingDataGeneric() bool {
@@ -464,7 +467,7 @@ func (m *_ErrorReportingDataGeneric) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

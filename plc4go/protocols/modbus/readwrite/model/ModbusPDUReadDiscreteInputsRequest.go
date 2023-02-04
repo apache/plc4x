@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,12 +124,8 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) GetTypeName() string {
 	return "ModbusPDUReadDiscreteInputsRequest"
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -139,15 +136,15 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUReadDiscreteInputsRequestParse(theBytes []byte, response bool) (ModbusPDUReadDiscreteInputsRequest, error) {
-	return ModbusPDUReadDiscreteInputsRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUReadDiscreteInputsRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUReadDiscreteInputsRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDiscreteInputsRequest, error) {
+func ModbusPDUReadDiscreteInputsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDiscreteInputsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDiscreteInputsRequest"); pullErr != nil {
@@ -185,14 +182,14 @@ func ModbusPDUReadDiscreteInputsRequestParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_ModbusPDUReadDiscreteInputsRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadDiscreteInputsRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -219,7 +216,7 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUReadDiscreteInputsRequest) isModbusPDUReadDiscreteInputsRequest() bool {
@@ -231,7 +228,7 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

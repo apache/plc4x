@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _BACnetError struct {
 
 type _BACnetErrorChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
 
 type BACnetErrorParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,21 +87,21 @@ func (m *_BACnetError) GetTypeName() string {
 	return "BACnetError"
 }
 
-func (m *_BACnetError) GetParentLengthInBits() uint16 {
+func (m *_BACnetError) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_BACnetError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
-	return BACnetErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorChoice)
+	return BACnetErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
-func BACnetErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
+func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
@@ -121,21 +121,21 @@ func BACnetErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	var typeSwitchError error
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
-		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
-		_childTemp, typeSwitchError = ChangeListAddErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ChangeListAddErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
-		_childTemp, typeSwitchError = ChangeListRemoveErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ChangeListRemoveErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
-		_childTemp, typeSwitchError = CreateObjectErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = CreateObjectErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
-		_childTemp, typeSwitchError = WritePropertyMultipleErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = WritePropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
-		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
-		_childTemp, typeSwitchError = VTCloseErrorParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = VTCloseErrorParseWithBuffer(ctx, readBuffer, errorChoice)
 	case 0 == 0: // BACnetErrorGeneral
-		_childTemp, typeSwitchError = BACnetErrorGeneralParseWithBuffer(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = BACnetErrorGeneralParseWithBuffer(ctx, readBuffer, errorChoice)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
 	}
@@ -153,7 +153,7 @@ func BACnetErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	return _child, nil
 }
 
-func (pm *_BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error {
+func (pm *_BACnetError) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -183,7 +183,7 @@ func (m *_BACnetError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

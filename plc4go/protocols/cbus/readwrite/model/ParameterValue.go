@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _ParameterValue struct {
 
 type _ParameterValueChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetParameterType() ParameterType
 }
 
 type ParameterValueParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,21 +90,21 @@ func (m *_ParameterValue) GetTypeName() string {
 	return "ParameterValue"
 }
 
-func (m *_ParameterValue) GetParentLengthInBits() uint16 {
+func (m *_ParameterValue) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_ParameterValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
-	return ParameterValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
+func ParameterValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValue"); pullErr != nil {
@@ -124,27 +124,27 @@ func ParameterValueParseWithBuffer(readBuffer utils.ReadBuffer, parameterType Pa
 	var typeSwitchError error
 	switch {
 	case parameterType == ParameterType_APPLICATION_ADDRESS_1: // ParameterValueApplicationAddress1
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress1ParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueApplicationAddress1ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_APPLICATION_ADDRESS_2: // ParameterValueApplicationAddress2
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress2ParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueApplicationAddress2ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1: // ParameterValueInterfaceOptions1
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1ParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_BAUD_RATE_SELECTOR: // ParameterValueBaudRateSelector
-		_childTemp, typeSwitchError = ParameterValueBaudRateSelectorParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueBaudRateSelectorParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_2: // ParameterValueInterfaceOptions2
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions2ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS: // ParameterValueInterfaceOptions1PowerUpSettings
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_3: // ParameterValueInterfaceOptions3
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions3ParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions3ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_CUSTOM_MANUFACTURER: // ParameterValueCustomManufacturer
-		_childTemp, typeSwitchError = ParameterValueCustomManufacturerParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueCustomManufacturerParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_SERIAL_NUMBER: // ParameterValueSerialNumber
-		_childTemp, typeSwitchError = ParameterValueSerialNumberParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueSerialNumberParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_CUSTOM_TYPE: // ParameterValueCustomTypes
-		_childTemp, typeSwitchError = ParameterValueCustomTypesParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueCustomTypesParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	case 0 == 0: // ParameterValueRaw
-		_childTemp, typeSwitchError = ParameterValueRawParseWithBuffer(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueRawParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}
@@ -162,7 +162,7 @@ func ParameterValueParseWithBuffer(readBuffer utils.ReadBuffer, parameterType Pa
 	return _child, nil
 }
 
-func (pm *_ParameterValue) SerializeParent(writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error {
+func (pm *_ParameterValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -202,7 +202,7 @@ func (m *_ParameterValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

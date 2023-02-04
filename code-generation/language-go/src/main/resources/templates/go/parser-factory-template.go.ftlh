@@ -48,6 +48,8 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
 package ${outputFlavor?replace("-","")}
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -76,7 +78,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}ParseWithBuffer(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}ParseWithBuffer(context.Background(), io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

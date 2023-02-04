@@ -64,6 +64,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
   protected void serializeFirmataCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandProtocolVersion");
 
@@ -85,6 +86,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataCommandProtocolVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (majorVersion)
     lengthInBits += 8;
@@ -101,6 +103,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short majorVersion = readSimpleField("majorVersion", readUnsignedShort(readBuffer, 8));
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -88,35 +89,31 @@ func (m *_BACnetVMACEntry) GetTypeName() string {
 	return "BACnetVMACEntry"
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetVMACEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (virtualMacAddress)
 	if m.VirtualMacAddress != nil {
-		lengthInBits += m.VirtualMacAddress.GetLengthInBits()
+		lengthInBits += m.VirtualMacAddress.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (nativeMacAddress)
 	if m.NativeMacAddress != nil {
-		lengthInBits += m.NativeMacAddress.GetLengthInBits()
+		lengthInBits += m.NativeMacAddress.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetVMACEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetVMACEntryParse(theBytes []byte) (BACnetVMACEntry, error) {
-	return BACnetVMACEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetVMACEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetVMACEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
+func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVMACEntry"); pullErr != nil {
@@ -132,7 +129,7 @@ func BACnetVMACEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVMACEntr
 		if pullErr := readBuffer.PullContext("virtualMacAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddress")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -154,7 +151,7 @@ func BACnetVMACEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVMACEntr
 		if pullErr := readBuffer.PullContext("nativeMacAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for nativeMacAddress")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -181,14 +178,14 @@ func BACnetVMACEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVMACEntr
 }
 
 func (m *_BACnetVMACEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVMACEntry"); pushErr != nil {
@@ -202,7 +199,7 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for virtualMacAddress")
 		}
 		virtualMacAddress = m.GetVirtualMacAddress()
-		_virtualMacAddressErr := writeBuffer.WriteSerializable(virtualMacAddress)
+		_virtualMacAddressErr := writeBuffer.WriteSerializable(ctx, virtualMacAddress)
 		if popErr := writeBuffer.PopContext("virtualMacAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for virtualMacAddress")
 		}
@@ -218,7 +215,7 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for nativeMacAddress")
 		}
 		nativeMacAddress = m.GetNativeMacAddress()
-		_nativeMacAddressErr := writeBuffer.WriteSerializable(nativeMacAddress)
+		_nativeMacAddressErr := writeBuffer.WriteSerializable(ctx, nativeMacAddress)
 		if popErr := writeBuffer.PopContext("nativeMacAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nativeMacAddress")
 		}
@@ -242,7 +239,7 @@ func (m *_BACnetVMACEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

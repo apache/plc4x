@@ -60,6 +60,7 @@ public abstract class BACnetOptionalCharacterString implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalCharacterString");
 
@@ -82,6 +83,7 @@ public abstract class BACnetOptionalCharacterString implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetOptionalCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -102,6 +104,7 @@ public abstract class BACnetOptionalCharacterString implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(

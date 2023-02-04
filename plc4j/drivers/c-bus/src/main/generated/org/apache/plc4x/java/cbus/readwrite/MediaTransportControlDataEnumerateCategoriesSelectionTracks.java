@@ -83,6 +83,7 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
 
@@ -120,6 +121,7 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataEnumerateCategoriesSelectionTracks _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumerateType)
     lengthInBits += 8;
@@ -144,6 +146,7 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte enumerateType = readSimpleField("enumerateType", readByte(readBuffer, 8));
     boolean isListCategories =

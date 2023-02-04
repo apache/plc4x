@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetAutoAddressingEnable
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetAutoAddressingEnable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetTypeName() string {
 	return "BACnetConstructedDataIPv6AutoAddressingEnable"
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (autoAddressingEnable)
-	lengthInBits += m.AutoAddressingEnable.GetLengthInBits()
+	lengthInBits += m.AutoAddressingEnable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPv6AutoAddressingEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
-	return BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6AutoAddressingEnable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("autoAddressingEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for autoAddressingEnable")
 	}
-	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _autoAddressingEnableErr != nil {
 		return nil, errors.Wrap(_autoAddressingEnableErr, "Error parsing 'autoAddressingEnable' field of BACnetConstructedDataIPv6AutoAddressingEnable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("autoAddressingEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for autoAddressingEnable")
 		}
-		_autoAddressingEnableErr := writeBuffer.WriteSerializable(m.GetAutoAddressingEnable())
+		_autoAddressingEnableErr := writeBuffer.WriteSerializable(ctx, m.GetAutoAddressingEnable())
 		if popErr := writeBuffer.PopContext("autoAddressingEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for autoAddressingEnable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffe
 			return errors.Wrap(_autoAddressingEnableErr, "Error serializing 'autoAddressingEnable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) isBACnetConstructedDataIPv6AutoAddressingEnable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

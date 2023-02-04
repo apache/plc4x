@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUsesRemaining) GetUsesRemaining() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataUsesRemaining) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetUsesRemaining())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUsesRemaining) GetTypeName() string {
 	return "BACnetConstructedDataUsesRemaining"
 }
 
-func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (usesRemaining)
-	lengthInBits += m.UsesRemaining.GetLengthInBits()
+	lengthInBits += m.UsesRemaining.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUsesRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
-	return BACnetConstructedDataUsesRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUsesRemainingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUsesRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
+func BACnetConstructedDataUsesRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUsesRemainingParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("usesRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for usesRemaining")
 	}
-	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _usesRemainingErr != nil {
 		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field of BACnetConstructedDataUsesRemaining")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUsesRemainingParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataUsesRemaining) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("usesRemaining"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for usesRemaining")
 		}
-		_usesRemainingErr := writeBuffer.WriteSerializable(m.GetUsesRemaining())
+		_usesRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetUsesRemaining())
 		if popErr := writeBuffer.PopContext("usesRemaining"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for usesRemaining")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_usesRemainingErr, "Error serializing 'usesRemaining' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUsesRemaining) isBACnetConstructedDataUsesRemaining() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUsesRemaining) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

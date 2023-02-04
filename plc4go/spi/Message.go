@@ -19,10 +19,14 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"context"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type Message interface {
 	utils.Serializable
-	GetLengthInBytes() uint16
-	GetLengthInBits() uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }

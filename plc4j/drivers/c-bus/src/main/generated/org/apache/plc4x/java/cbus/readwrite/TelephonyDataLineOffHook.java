@@ -65,6 +65,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataLineOffHook");
 
@@ -96,6 +97,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataLineOffHook _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reason)
     lengthInBits += 8;
@@ -113,6 +115,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LineOffHookReason reason =
         readEnumField(

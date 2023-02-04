@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCredentialDisable) GetCredentialDisable() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataCredentialDisable) GetActualValue() BACnetAccessCredentialDisableTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAccessCredentialDisableTagged(m.GetCredentialDisable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCredentialDisable) GetTypeName() string {
 	return "BACnetConstructedDataCredentialDisable"
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (credentialDisable)
-	lengthInBits += m.CredentialDisable.GetLengthInBits()
+	lengthInBits += m.CredentialDisable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCredentialDisableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDisable, error) {
-	return BACnetConstructedDataCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCredentialDisableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDisable, error) {
+func BACnetConstructedDataCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialDisable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCredentialDisableParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("credentialDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for credentialDisable")
 	}
-	_credentialDisable, _credentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_credentialDisable, _credentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _credentialDisableErr != nil {
 		return nil, errors.Wrap(_credentialDisableErr, "Error parsing 'credentialDisable' field of BACnetConstructedDataCredentialDisable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCredentialDisableParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataCredentialDisable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("credentialDisable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for credentialDisable")
 		}
-		_credentialDisableErr := writeBuffer.WriteSerializable(m.GetCredentialDisable())
+		_credentialDisableErr := writeBuffer.WriteSerializable(ctx, m.GetCredentialDisable())
 		if popErr := writeBuffer.PopContext("credentialDisable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for credentialDisable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(write
 			return errors.Wrap(_credentialDisableErr, "Error serializing 'credentialDisable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCredentialDisable) isBACnetConstructedDataCredentialDisable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCredentialDisable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

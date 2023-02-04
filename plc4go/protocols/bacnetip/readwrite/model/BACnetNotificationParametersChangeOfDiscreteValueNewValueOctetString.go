@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (octetStringValue)
-	lengthInBits += m.OctetStringValue.GetLengthInBits()
+	lengthInBits += m.OctetStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWi
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 	}
@@ -166,14 +163,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWi
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
-		_octetStringValueErr := writeBuffer.WriteSerializable(m.GetOctetStringValue())
+		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetOctetStringValue())
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

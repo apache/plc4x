@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastBACnetProgramError(structType interface{}) BACnetProgramError {
 	return castFunc(structType)
 }
 
-func (m BACnetProgramError) GetLengthInBits() uint16 {
+func (m BACnetProgramError) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetProgramError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetProgramError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetProgramErrorParse(theBytes []byte) (BACnetProgramError, error) {
-	return BACnetProgramErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetProgramErrorParse(ctx context.Context, theBytes []byte) (BACnetProgramError, error) {
+	return BACnetProgramErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetProgramErrorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProgramError, error) {
+func BACnetProgramErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProgramError, error) {
 	val, err := readBuffer.ReadUint16("BACnetProgramError", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProgramError")
@@ -138,13 +139,13 @@ func BACnetProgramErrorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProgr
 
 func (e BACnetProgramError) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetProgramError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetProgramError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

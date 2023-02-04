@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -37,19 +39,19 @@ func (m FirmataParserHelper) Parse(typeName string, arguments []string, io utils
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.SysexCommandParseWithBuffer(io, response)
+		return model.SysexCommandParseWithBuffer(context.Background(), io, response)
 	case "FirmataMessage":
 		response, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.FirmataMessageParseWithBuffer(io, response)
+		return model.FirmataMessageParseWithBuffer(context.Background(), io, response)
 	case "FirmataCommand":
 		response, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.FirmataCommandParseWithBuffer(io, response)
+		return model.FirmataCommandParseWithBuffer(context.Background(), io, response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

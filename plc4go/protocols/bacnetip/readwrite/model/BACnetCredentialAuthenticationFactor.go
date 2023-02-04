@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetCredentialAuthenticationFactor) GetTypeName() string {
 	return "BACnetCredentialAuthenticationFactor"
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (disable)
-	lengthInBits += m.Disable.GetLengthInBits()
+	lengthInBits += m.Disable.GetLengthInBits(ctx)
 
 	// Simple field (authenticationFactor)
-	lengthInBits += m.AuthenticationFactor.GetLengthInBits()
+	lengthInBits += m.AuthenticationFactor.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetCredentialAuthenticationFactorParse(theBytes []byte) (BACnetCredentialAuthenticationFactor, error) {
-	return BACnetCredentialAuthenticationFactorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetCredentialAuthenticationFactorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCredentialAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCredentialAuthenticationFactor"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetCredentialAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("disable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for disable")
 	}
-	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _disableErr != nil {
 		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field of BACnetCredentialAuthenticationFactor")
 	}
@@ -137,7 +134,7 @@ func BACnetCredentialAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
 	}
-	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _authenticationFactorErr != nil {
 		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetCredentialAuthenticationFactor")
 	}
@@ -158,14 +155,14 @@ func BACnetCredentialAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCredentialAuthenticationFactor"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(writeBu
 	if pushErr := writeBuffer.PushContext("disable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for disable")
 	}
-	_disableErr := writeBuffer.WriteSerializable(m.GetDisable())
+	_disableErr := writeBuffer.WriteSerializable(ctx, m.GetDisable())
 	if popErr := writeBuffer.PopContext("disable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for disable")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(writeBu
 	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
 	}
-	_authenticationFactorErr := writeBuffer.WriteSerializable(m.GetAuthenticationFactor())
+	_authenticationFactorErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationFactor())
 	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for authenticationFactor")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetCredentialAuthenticationFactor) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -144,12 +145,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetTypeName() string 
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscription"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (Subscription)
 	lengthInBits += 8
@@ -173,15 +170,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBitsCondit
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
-	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
@@ -227,7 +224,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer u
 		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for Alarmtype")
 		}
-		_val, _err := AlarmStateTypeParseWithBuffer(readBuffer)
+		_val, _err := AlarmStateTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
@@ -265,14 +262,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer u
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -317,7 +314,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) SerializeWithWriteBuf
 				return errors.Wrap(pushErr, "Error pushing for Alarmtype")
 			}
 			Alarmtype = m.GetAlarmtype()
-			_AlarmtypeErr := writeBuffer.WriteSerializable(Alarmtype)
+			_AlarmtypeErr := writeBuffer.WriteSerializable(ctx, Alarmtype)
 			if popErr := writeBuffer.PopContext("Alarmtype"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for Alarmtype")
 			}
@@ -341,7 +338,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) isS7PayloadUserDataItemCpuFunctionMsgSubscription() bool {
@@ -353,7 +350,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

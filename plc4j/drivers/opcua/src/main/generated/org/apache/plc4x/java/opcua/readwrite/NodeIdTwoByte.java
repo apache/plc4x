@@ -62,6 +62,7 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdTwoByte");
 
@@ -84,6 +85,7 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeIdTwoByte _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (id)
     lengthInBits += 8;
@@ -99,6 +101,7 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short id = readSimpleField("id", readUnsignedShort(readBuffer, 8));
     String identifier = readVirtualField("identifier", String.class, id);

@@ -79,6 +79,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExtendedTimeEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExtendedTimeEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (extendedTimeEnable)
     lengthInBits += extendedTimeEnable.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean extendedTimeEnable =
         readSimpleField(

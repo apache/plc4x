@@ -76,6 +76,7 @@ public abstract class CIPEncapsulationPacket implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationPacket");
 
@@ -145,6 +146,7 @@ public abstract class CIPEncapsulationPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CIPEncapsulationPacket _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (commandType)
     lengthInBits += 16;
@@ -185,6 +187,7 @@ public abstract class CIPEncapsulationPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int commandType =
         readDiscriminatorField(

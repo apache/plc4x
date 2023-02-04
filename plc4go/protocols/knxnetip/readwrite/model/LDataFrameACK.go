@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,25 +100,21 @@ func (m *_LDataFrameACK) GetTypeName() string {
 	return "LDataFrameACK"
 }
 
-func (m *_LDataFrameACK) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LDataFrameACK) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LDataFrameACK) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_LDataFrameACK) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LDataFrameACK) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LDataFrameACKParse(theBytes []byte) (LDataFrameACK, error) {
-	return LDataFrameACKParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LDataFrameACKParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LDataFrameACKParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
+func LDataFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
@@ -139,14 +136,14 @@ func LDataFrameACKParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrameACK, e
 }
 
 func (m *_LDataFrameACK) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LDataFrameACK) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LDataFrameACK) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -159,7 +156,7 @@ func (m *_LDataFrameACK) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LDataFrameACK) isLDataFrameACK() bool {
@@ -171,7 +168,7 @@ func (m *_LDataFrameACK) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -79,6 +79,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDatabaseRevision");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDatabaseRevision _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (databaseRevision)
     lengthInBits += databaseRevision.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger databaseRevision =
         readSimpleField(

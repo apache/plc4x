@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,14 +54,13 @@ type _S7Payload struct {
 
 type _S7PayloadChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetParameterParameterType() uint8
 	GetMessageType() uint8
 }
 
 type S7PayloadParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7Payload, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Payload, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -93,21 +93,21 @@ func (m *_S7Payload) GetTypeName() string {
 	return "S7Payload"
 }
 
-func (m *_S7Payload) GetParentLengthInBits() uint16 {
+func (m *_S7Payload) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_S7Payload) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7Payload) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7Payload, error) {
-	return S7PayloadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType, parameter)
+	return S7PayloadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType, parameter)
 }
 
-func S7PayloadParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7Payload, error) {
+func S7PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7Payload, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Payload"); pullErr != nil {
@@ -127,13 +127,13 @@ func S7PayloadParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, pa
 	var typeSwitchError error
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		_childTemp, typeSwitchError = S7PayloadReadVarResponseParseWithBuffer(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadReadVarResponseParseWithBuffer(ctx, readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		_childTemp, typeSwitchError = S7PayloadWriteVarRequestParseWithBuffer(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadWriteVarRequestParseWithBuffer(ctx, readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		_childTemp, typeSwitchError = S7PayloadWriteVarResponseParseWithBuffer(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadWriteVarResponseParseWithBuffer(ctx, readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		_childTemp, typeSwitchError = S7PayloadUserDataParseWithBuffer(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadUserDataParseWithBuffer(ctx, readBuffer, messageType, parameter)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterparameterType=%v, messageType=%v]", CastS7Parameter(parameter).GetParameterType(), messageType)
 	}
@@ -151,7 +151,7 @@ func S7PayloadParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, pa
 	return _child, nil
 }
 
-func (pm *_S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child S7Payload, serializeChildFunction func() error) error {
+func (pm *_S7Payload) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Payload, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -191,7 +191,7 @@ func (m *_S7Payload) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

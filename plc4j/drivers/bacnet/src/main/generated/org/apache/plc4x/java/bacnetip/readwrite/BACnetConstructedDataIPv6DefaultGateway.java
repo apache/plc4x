@@ -79,6 +79,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DefaultGateway");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6DefaultGateway _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipv6DefaultGateway)
     lengthInBits += ipv6DefaultGateway.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipv6DefaultGateway =
         readSimpleField(

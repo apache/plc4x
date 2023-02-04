@@ -79,6 +79,7 @@ public class BACnetAccessAuthenticationFactorDisableTagged implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAccessAuthenticationFactorDisableTagged");
 
@@ -117,6 +118,7 @@ public class BACnetAccessAuthenticationFactorDisableTagged implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetAccessAuthenticationFactorDisableTagged _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (header)
     lengthInBits += header.getLengthInBits();
@@ -168,6 +170,7 @@ public class BACnetAccessAuthenticationFactorDisableTagged implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader header =
         readSimpleField(

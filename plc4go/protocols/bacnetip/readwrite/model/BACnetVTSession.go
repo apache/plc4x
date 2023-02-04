@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,34 +95,30 @@ func (m *_BACnetVTSession) GetTypeName() string {
 	return "BACnetVTSession"
 }
 
-func (m *_BACnetVTSession) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetVTSession) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (localVtSessionId)
-	lengthInBits += m.LocalVtSessionId.GetLengthInBits()
+	lengthInBits += m.LocalVtSessionId.GetLengthInBits(ctx)
 
 	// Simple field (removeVtSessionId)
-	lengthInBits += m.RemoveVtSessionId.GetLengthInBits()
+	lengthInBits += m.RemoveVtSessionId.GetLengthInBits(ctx)
 
 	// Simple field (remoteVtAddress)
-	lengthInBits += m.RemoteVtAddress.GetLengthInBits()
+	lengthInBits += m.RemoteVtAddress.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetVTSession) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetVTSessionParse(theBytes []byte) (BACnetVTSession, error) {
-	return BACnetVTSessionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetVTSessionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
+func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVTSession"); pullErr != nil {
@@ -134,7 +131,7 @@ func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSessio
 	if pullErr := readBuffer.PullContext("localVtSessionId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionId")
 	}
-	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _localVtSessionIdErr != nil {
 		return nil, errors.Wrap(_localVtSessionIdErr, "Error parsing 'localVtSessionId' field of BACnetVTSession")
 	}
@@ -147,7 +144,7 @@ func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSessio
 	if pullErr := readBuffer.PullContext("removeVtSessionId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for removeVtSessionId")
 	}
-	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _removeVtSessionIdErr != nil {
 		return nil, errors.Wrap(_removeVtSessionIdErr, "Error parsing 'removeVtSessionId' field of BACnetVTSession")
 	}
@@ -160,7 +157,7 @@ func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSessio
 	if pullErr := readBuffer.PullContext("remoteVtAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtAddress")
 	}
-	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParseWithBuffer(readBuffer)
+	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParseWithBuffer(ctx, readBuffer)
 	if _remoteVtAddressErr != nil {
 		return nil, errors.Wrap(_remoteVtAddressErr, "Error parsing 'remoteVtAddress' field of BACnetVTSession")
 	}
@@ -182,14 +179,14 @@ func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSessio
 }
 
 func (m *_BACnetVTSession) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetVTSession) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVTSession) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVTSession"); pushErr != nil {
@@ -200,7 +197,7 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("localVtSessionId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for localVtSessionId")
 	}
-	_localVtSessionIdErr := writeBuffer.WriteSerializable(m.GetLocalVtSessionId())
+	_localVtSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetLocalVtSessionId())
 	if popErr := writeBuffer.PopContext("localVtSessionId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for localVtSessionId")
 	}
@@ -212,7 +209,7 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("removeVtSessionId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for removeVtSessionId")
 	}
-	_removeVtSessionIdErr := writeBuffer.WriteSerializable(m.GetRemoveVtSessionId())
+	_removeVtSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetRemoveVtSessionId())
 	if popErr := writeBuffer.PopContext("removeVtSessionId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for removeVtSessionId")
 	}
@@ -224,7 +221,7 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("remoteVtAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for remoteVtAddress")
 	}
-	_remoteVtAddressErr := writeBuffer.WriteSerializable(m.GetRemoteVtAddress())
+	_remoteVtAddressErr := writeBuffer.WriteSerializable(ctx, m.GetRemoteVtAddress())
 	if popErr := writeBuffer.PopContext("remoteVtAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for remoteVtAddress")
 	}
@@ -247,7 +244,7 @@ func (m *_BACnetVTSession) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

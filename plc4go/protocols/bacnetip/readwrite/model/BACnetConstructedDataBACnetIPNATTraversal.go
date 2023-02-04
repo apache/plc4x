@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetBacnetIPNATTraversal() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetBacnetIPNATTraversal())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetTypeName() string {
 	return "BACnetConstructedDataBACnetIPNATTraversal"
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bacnetIPNATTraversal)
-	lengthInBits += m.BacnetIPNATTraversal.GetLengthInBits()
+	lengthInBits += m.BacnetIPNATTraversal.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBACnetIPNATTraversalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
-	return BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
+func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPNATTraversal"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("bacnetIPNATTraversal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIPNATTraversal")
 	}
-	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _bacnetIPNATTraversalErr != nil {
 		return nil, errors.Wrap(_bacnetIPNATTraversalErr, "Error parsing 'bacnetIPNATTraversal' field of BACnetConstructedDataBACnetIPNATTraversal")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("bacnetIPNATTraversal"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bacnetIPNATTraversal")
 		}
-		_bacnetIPNATTraversalErr := writeBuffer.WriteSerializable(m.GetBacnetIPNATTraversal())
+		_bacnetIPNATTraversalErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIPNATTraversal())
 		if popErr := writeBuffer.PopContext("bacnetIPNATTraversal"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bacnetIPNATTraversal")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_bacnetIPNATTraversalErr, "Error serializing 'bacnetIPNATTraversal' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) isBACnetConstructedDataBACnetIPNATTraversal() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetTypeName() string {
 	return "SALDataPoolsSpasPondsFountainsControl"
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (poolsSpaPondsFountainsData)
-	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits()
+	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataPoolsSpasPondsFountainsControlParse(theBytes []byte, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
-	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
+func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataPoolsSpasPondsFountainsControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("poolsSpaPondsFountainsData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for poolsSpaPondsFountainsData")
 	}
-	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParseWithBuffer(readBuffer)
+	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
 	if _poolsSpaPondsFountainsDataErr != nil {
 		return nil, errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error parsing 'poolsSpaPondsFountainsData' field of SALDataPoolsSpasPondsFountainsControl")
 	}
@@ -166,14 +163,14 @@ func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("poolsSpaPondsFountainsData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for poolsSpaPondsFountainsData")
 		}
-		_poolsSpaPondsFountainsDataErr := writeBuffer.WriteSerializable(m.GetPoolsSpaPondsFountainsData())
+		_poolsSpaPondsFountainsDataErr := writeBuffer.WriteSerializable(ctx, m.GetPoolsSpaPondsFountainsData())
 		if popErr := writeBuffer.PopContext("poolsSpaPondsFountainsData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for poolsSpaPondsFountainsData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) isSALDataPoolsSpasPondsFountainsControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

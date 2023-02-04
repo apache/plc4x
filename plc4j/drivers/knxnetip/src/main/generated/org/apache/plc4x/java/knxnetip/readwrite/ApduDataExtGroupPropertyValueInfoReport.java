@@ -49,6 +49,7 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtGroupPropertyValueInfoReport");
 
@@ -64,6 +65,7 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtGroupPropertyValueInfoReport _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueInfoReport");
     // Create the instance

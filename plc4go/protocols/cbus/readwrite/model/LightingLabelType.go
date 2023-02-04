@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastLightingLabelType(structType interface{}) LightingLabelType {
 	return castFunc(structType)
 }
 
-func (m LightingLabelType) GetLengthInBits() uint16 {
+func (m LightingLabelType) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m LightingLabelType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m LightingLabelType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingLabelTypeParse(theBytes []byte) (LightingLabelType, error) {
-	return LightingLabelTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func LightingLabelTypeParse(ctx context.Context, theBytes []byte) (LightingLabelType, error) {
+	return LightingLabelTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LightingLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelType, error) {
+func LightingLabelTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelType, error) {
 	val, err := readBuffer.ReadUint8("LightingLabelType", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingLabelType")
@@ -126,13 +127,13 @@ func LightingLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabe
 
 func (e LightingLabelType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e LightingLabelType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e LightingLabelType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingLabelType", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

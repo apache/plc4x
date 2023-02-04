@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataChangesPending) GetChangesPending() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetChangesPending())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataChangesPending) GetTypeName() string {
 	return "BACnetConstructedDataChangesPending"
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataChangesPending) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataChangesPending) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (changesPending)
-	lengthInBits += m.ChangesPending.GetLengthInBits()
+	lengthInBits += m.ChangesPending.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataChangesPendingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
-	return BACnetConstructedDataChangesPendingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataChangesPendingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataChangesPendingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
+func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangesPending"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataChangesPendingParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("changesPending"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changesPending")
 	}
-	_changesPending, _changesPendingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_changesPending, _changesPendingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _changesPendingErr != nil {
 		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field of BACnetConstructedDataChangesPending")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataChangesPendingParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataChangesPending) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("changesPending"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changesPending")
 		}
-		_changesPendingErr := writeBuffer.WriteSerializable(m.GetChangesPending())
+		_changesPendingErr := writeBuffer.WriteSerializable(ctx, m.GetChangesPending())
 		if popErr := writeBuffer.PopContext("changesPending"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changesPending")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_changesPendingErr, "Error serializing 'changesPending' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataChangesPending) isBACnetConstructedDataChangesPending() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataChangesPending) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

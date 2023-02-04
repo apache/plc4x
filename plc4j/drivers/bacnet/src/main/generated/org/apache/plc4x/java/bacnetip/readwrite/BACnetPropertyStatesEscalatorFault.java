@@ -56,6 +56,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorFault");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEscalatorFault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorFault)
     lengthInBits += escalatorFault.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorFaultTagged escalatorFault =
         readSimpleField(

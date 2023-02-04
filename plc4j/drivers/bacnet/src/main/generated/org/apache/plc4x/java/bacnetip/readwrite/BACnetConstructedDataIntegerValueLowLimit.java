@@ -79,6 +79,7 @@ public class BACnetConstructedDataIntegerValueLowLimit extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueLowLimit");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataIntegerValueLowLimit extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIntegerValueLowLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowLimit)
     lengthInBits += lowLimit.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataIntegerValueLowLimit extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger lowLimit =
         readSimpleField(

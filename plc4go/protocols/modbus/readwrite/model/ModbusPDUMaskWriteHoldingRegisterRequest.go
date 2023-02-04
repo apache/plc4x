@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,12 +132,8 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetTypeName() string {
 	return "ModbusPDUMaskWriteHoldingRegisterRequest"
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -150,15 +147,15 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBitsConditional(l
 	return lengthInBits
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUMaskWriteHoldingRegisterRequestParse(theBytes []byte, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
-	return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {
@@ -204,14 +201,14 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -245,7 +242,7 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) isModbusPDUMaskWriteHoldingRegisterRequest() bool {
@@ -257,7 +254,7 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,10 +94,14 @@ func (m *_BACnetContextTagObjectIdentifier) GetPayload() BACnetTagPayloadObjectI
 ///////////////////////
 
 func (m *_BACnetContextTagObjectIdentifier) GetObjectType() BACnetObjectType {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetObjectType(m.GetPayload().GetObjectType())
 }
 
 func (m *_BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
+	ctx := context.Background()
+	_ = ctx
 	return uint32(m.GetPayload().GetInstanceNumber())
 }
 
@@ -130,15 +135,11 @@ func (m *_BACnetContextTagObjectIdentifier) GetTypeName() string {
 	return "BACnetContextTagObjectIdentifier"
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetContextTagObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetContextTagObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -147,15 +148,15 @@ func (m *_BACnetContextTagObjectIdentifier) GetLengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetContextTagObjectIdentifierParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
-	return BACnetContextTagObjectIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
+	return BACnetContextTagObjectIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
-func BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
+func BACnetContextTagObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {
@@ -168,7 +169,7 @@ func BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParseWithBuffer(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx, readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagObjectIdentifier")
 	}
@@ -203,14 +204,14 @@ func BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetContextTagObjectIdentifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -222,7 +223,7 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
-		_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
 		}
@@ -230,11 +231,11 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _objectTypeErr := writeBuffer.WriteVirtual("objectType", m.GetObjectType()); _objectTypeErr != nil {
+		if _objectTypeErr := writeBuffer.WriteVirtual(ctx, "objectType", m.GetObjectType()); _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 		// Virtual field
-		if _instanceNumberErr := writeBuffer.WriteVirtual("instanceNumber", m.GetInstanceNumber()); _instanceNumberErr != nil {
+		if _instanceNumberErr := writeBuffer.WriteVirtual(ctx, "instanceNumber", m.GetInstanceNumber()); _instanceNumberErr != nil {
 			return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 		}
 
@@ -243,7 +244,7 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetContextTagObjectIdentifier) isBACnetContextTagObjectIdentifier() bool {
@@ -255,7 +256,7 @@ func (m *_BACnetContextTagObjectIdentifier) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

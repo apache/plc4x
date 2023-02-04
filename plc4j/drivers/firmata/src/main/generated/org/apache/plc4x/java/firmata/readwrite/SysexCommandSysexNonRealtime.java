@@ -53,6 +53,7 @@ public class SysexCommandSysexNonRealtime extends SysexCommand implements Messag
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandSysexNonRealtime");
 
@@ -68,6 +69,7 @@ public class SysexCommandSysexNonRealtime extends SysexCommand implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandSysexNonRealtime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -78,6 +80,7 @@ public class SysexCommandSysexNonRealtime extends SysexCommand implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandSysexNonRealtime");
     // Create the instance

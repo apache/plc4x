@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetApduSegmentTimeout() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetApduSegmentTimeout())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetTypeName() string {
 	return "BACnetConstructedDataAPDUSegmentTimeout"
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (apduSegmentTimeout)
-	lengthInBits += m.ApduSegmentTimeout.GetLengthInBits()
+	lengthInBits += m.ApduSegmentTimeout.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAPDUSegmentTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUSegmentTimeout, error) {
-	return BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUSegmentTimeout, error) {
+func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUSegmentTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDUSegmentTimeout"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("apduSegmentTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for apduSegmentTimeout")
 	}
-	_apduSegmentTimeout, _apduSegmentTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_apduSegmentTimeout, _apduSegmentTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _apduSegmentTimeoutErr != nil {
 		return nil, errors.Wrap(_apduSegmentTimeoutErr, "Error parsing 'apduSegmentTimeout' field of BACnetConstructedDataAPDUSegmentTimeout")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("apduSegmentTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apduSegmentTimeout")
 		}
-		_apduSegmentTimeoutErr := writeBuffer.WriteSerializable(m.GetApduSegmentTimeout())
+		_apduSegmentTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetApduSegmentTimeout())
 		if popErr := writeBuffer.PopContext("apduSegmentTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apduSegmentTimeout")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_apduSegmentTimeoutErr, "Error serializing 'apduSegmentTimeout' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) isBACnetConstructedDataAPDUSegmentTimeout() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

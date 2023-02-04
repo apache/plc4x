@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -81,11 +82,7 @@ func (m *_BacnetConstants) GetTypeName() string {
 	return "BacnetConstants"
 }
 
-func (m *_BacnetConstants) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BacnetConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BacnetConstants) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetUdpDefaultPort)
@@ -94,15 +91,15 @@ func (m *_BacnetConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_BacnetConstants) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BacnetConstants) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BacnetConstantsParse(theBytes []byte) (BacnetConstants, error) {
-	return BacnetConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BacnetConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BacnetConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (BacnetConstants, error) {
+func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BacnetConstants"); pullErr != nil {
@@ -129,14 +126,14 @@ func BacnetConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (BacnetConstant
 }
 
 func (m *_BacnetConstants) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BacnetConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BacnetConstants"); pushErr != nil {
@@ -164,7 +161,7 @@ func (m *_BacnetConstants) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

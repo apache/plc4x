@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetMinimumValueTimestamp()
 ///////////////////////
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetMinimumValueTimestamp())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetTypeName() string {
 	return "BACnetConstructedDataMinimumValueTimestamp"
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (minimumValueTimestamp)
-	lengthInBits += m.MinimumValueTimestamp.GetLengthInBits()
+	lengthInBits += m.MinimumValueTimestamp.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMinimumValueTimestampParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
-	return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
+func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValueTimestamp"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("minimumValueTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumValueTimestamp")
 	}
-	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _minimumValueTimestampErr != nil {
 		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field of BACnetConstructedDataMinimumValueTimestamp")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("minimumValueTimestamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumValueTimestamp")
 		}
-		_minimumValueTimestampErr := writeBuffer.WriteSerializable(m.GetMinimumValueTimestamp())
+		_minimumValueTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumValueTimestamp())
 		if popErr := writeBuffer.PopContext("minimumValueTimestamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumValueTimestamp")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(w
 			return errors.Wrap(_minimumValueTimestampErr, "Error serializing 'minimumValueTimestamp' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) isBACnetConstructedDataMinimumValueTimestamp() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

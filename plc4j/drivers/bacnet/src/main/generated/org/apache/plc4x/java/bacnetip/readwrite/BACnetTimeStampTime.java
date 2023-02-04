@@ -55,6 +55,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
   protected void serializeBACnetTimeStampChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStampTime");
 
@@ -73,6 +74,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimeStampTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeValue)
     lengthInBits += timeValue.getLengthInBits();
@@ -86,6 +88,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagTime timeValue =
         readSimpleField(

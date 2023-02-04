@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataAccessControl) GetTypeName() string {
 	return "SALDataAccessControl"
 }
 
-func (m *_SALDataAccessControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataAccessControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataAccessControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (accessControlData)
-	lengthInBits += m.AccessControlData.GetLengthInBits()
+	lengthInBits += m.AccessControlData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataAccessControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataAccessControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataAccessControlParse(theBytes []byte, applicationId ApplicationId) (SALDataAccessControl, error) {
-	return SALDataAccessControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataAccessControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataAccessControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
+func SALDataAccessControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAccessControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataAccessControlParseWithBuffer(readBuffer utils.ReadBuffer, applicatio
 	if pullErr := readBuffer.PullContext("accessControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlData")
 	}
-	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(readBuffer)
+	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(ctx, readBuffer)
 	if _accessControlDataErr != nil {
 		return nil, errors.Wrap(_accessControlDataErr, "Error parsing 'accessControlData' field of SALDataAccessControl")
 	}
@@ -166,14 +163,14 @@ func SALDataAccessControlParseWithBuffer(readBuffer utils.ReadBuffer, applicatio
 }
 
 func (m *_SALDataAccessControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataAccessControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("accessControlData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessControlData")
 		}
-		_accessControlDataErr := writeBuffer.WriteSerializable(m.GetAccessControlData())
+		_accessControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlData())
 		if popErr := writeBuffer.PopContext("accessControlData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessControlData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataAccessControl) isSALDataAccessControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataAccessControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -56,6 +56,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueInteger");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(

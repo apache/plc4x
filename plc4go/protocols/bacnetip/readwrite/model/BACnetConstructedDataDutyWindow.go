@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDutyWindow) GetDutyWindow() BACnetApplicationTagU
 ///////////////////////
 
 func (m *_BACnetConstructedDataDutyWindow) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetDutyWindow())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDutyWindow) GetTypeName() string {
 	return "BACnetConstructedDataDutyWindow"
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDutyWindow) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDutyWindow) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dutyWindow)
-	lengthInBits += m.DutyWindow.GetLengthInBits()
+	lengthInBits += m.DutyWindow.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDutyWindow) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDutyWindowParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
-	return BACnetConstructedDataDutyWindowParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDutyWindowParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDutyWindowParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
+func BACnetConstructedDataDutyWindowParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDutyWindow"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDutyWindowParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("dutyWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dutyWindow")
 	}
-	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _dutyWindowErr != nil {
 		return nil, errors.Wrap(_dutyWindowErr, "Error parsing 'dutyWindow' field of BACnetConstructedDataDutyWindow")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDutyWindowParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataDutyWindow) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("dutyWindow"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dutyWindow")
 		}
-		_dutyWindowErr := writeBuffer.WriteSerializable(m.GetDutyWindow())
+		_dutyWindowErr := writeBuffer.WriteSerializable(ctx, m.GetDutyWindow())
 		if popErr := writeBuffer.PopContext("dutyWindow"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dutyWindow")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_dutyWindowErr, "Error serializing 'dutyWindow' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDutyWindow) isBACnetConstructedDataDutyWindow() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDutyWindow) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

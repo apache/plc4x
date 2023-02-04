@@ -83,6 +83,7 @@ public class BACnetCOVMultipleSubscription implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCOVMultipleSubscription");
 
@@ -120,6 +121,7 @@ public class BACnetCOVMultipleSubscription implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetCOVMultipleSubscription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recipient)
     lengthInBits += recipient.getLengthInBits();
@@ -151,6 +153,7 @@ public class BACnetCOVMultipleSubscription implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRecipientProcessEnclosed recipient =
         readSimpleField(

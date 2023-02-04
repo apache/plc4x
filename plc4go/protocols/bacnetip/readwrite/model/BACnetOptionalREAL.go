@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetOptionalREAL struct {
 
 type _BACnetOptionalREALChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetOptionalREALParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetOptionalREAL, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetOptionalREAL, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetOptionalREAL) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetOptionalREAL) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetOptionalREAL) GetTypeName() string {
 	return "BACnetOptionalREAL"
 }
 
-func (m *_BACnetOptionalREAL) GetParentLengthInBits() uint16 {
+func (m *_BACnetOptionalREAL) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetOptionalREAL) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalREAL) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetOptionalREAL) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalREALParse(theBytes []byte) (BACnetOptionalREAL, error) {
-	return BACnetOptionalREALParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetOptionalREALParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetOptionalREALParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalREAL, error) {
+func BACnetOptionalREALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalREAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalREAL"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetOptionalREALParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptio
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,9 +167,9 @@ func BACnetOptionalREALParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptio
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalREALNull
-		_childTemp, typeSwitchError = BACnetOptionalREALNullParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalREALNullParseWithBuffer(ctx, readBuffer)
 	case 0 == 0: // BACnetOptionalREALValue
-		_childTemp, typeSwitchError = BACnetOptionalREALValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalREALValueParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -185,7 +187,7 @@ func BACnetOptionalREALParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptio
 	return _child, nil
 }
 
-func (pm *_BACnetOptionalREAL) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetOptionalREAL, serializeChildFunction func() error) error {
+func (pm *_BACnetOptionalREAL) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetOptionalREAL, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -195,7 +197,7 @@ func (pm *_BACnetOptionalREAL) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(pushErr, "Error pushing for BACnetOptionalREAL")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -219,7 +221,7 @@ func (m *_BACnetOptionalREAL) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

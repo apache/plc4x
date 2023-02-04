@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCarDriveStatus) GetCarDriveStatus() BACnetLiftCar
 ///////////////////////
 
 func (m *_BACnetConstructedDataCarDriveStatus) GetActualValue() BACnetLiftCarDriveStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLiftCarDriveStatusTagged(m.GetCarDriveStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCarDriveStatus) GetTypeName() string {
 	return "BACnetConstructedDataCarDriveStatus"
 }
 
-func (m *_BACnetConstructedDataCarDriveStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCarDriveStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCarDriveStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (carDriveStatus)
-	lengthInBits += m.CarDriveStatus.GetLengthInBits()
+	lengthInBits += m.CarDriveStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarDriveStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCarDriveStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCarDriveStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDriveStatus, error) {
-	return BACnetConstructedDataCarDriveStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCarDriveStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCarDriveStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDriveStatus, error) {
+func BACnetConstructedDataCarDriveStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDriveStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDriveStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCarDriveStatusParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("carDriveStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carDriveStatus")
 	}
-	_carDriveStatus, _carDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_carDriveStatus, _carDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carDriveStatusErr != nil {
 		return nil, errors.Wrap(_carDriveStatusErr, "Error parsing 'carDriveStatus' field of BACnetConstructedDataCarDriveStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCarDriveStatusParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataCarDriveStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("carDriveStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for carDriveStatus")
 		}
-		_carDriveStatusErr := writeBuffer.WriteSerializable(m.GetCarDriveStatus())
+		_carDriveStatusErr := writeBuffer.WriteSerializable(ctx, m.GetCarDriveStatus())
 		if popErr := writeBuffer.PopContext("carDriveStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for carDriveStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_carDriveStatusErr, "Error serializing 'carDriveStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCarDriveStatus) isBACnetConstructedDataCarDriveStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCarDriveStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

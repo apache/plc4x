@@ -269,6 +269,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscriptionDiagnosticsDataType");
 
@@ -414,6 +415,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscriptionDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sessionId)
     lengthInBits += sessionId.getLengthInBits();
@@ -520,6 +522,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
         readSimpleField(

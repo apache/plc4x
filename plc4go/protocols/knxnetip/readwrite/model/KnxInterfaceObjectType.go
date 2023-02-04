@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -462,19 +463,19 @@ func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
 	return castFunc(structType)
 }
 
-func (m KnxInterfaceObjectType) GetLengthInBits() uint16 {
+func (m KnxInterfaceObjectType) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m KnxInterfaceObjectType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxInterfaceObjectType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxInterfaceObjectTypeParse(theBytes []byte) (KnxInterfaceObjectType, error) {
-	return KnxInterfaceObjectTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxInterfaceObjectTypeParse(ctx context.Context, theBytes []byte) (KnxInterfaceObjectType, error) {
+	return KnxInterfaceObjectTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxInterfaceObjectTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {
+func KnxInterfaceObjectTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {
 	val, err := readBuffer.ReadUint16("KnxInterfaceObjectType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectType")
@@ -489,13 +490,13 @@ func KnxInterfaceObjectTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxInte
 
 func (e KnxInterfaceObjectType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxInterfaceObjectType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxInterfaceObjectType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

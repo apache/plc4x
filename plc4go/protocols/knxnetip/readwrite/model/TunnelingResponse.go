@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,28 +109,24 @@ func (m *_TunnelingResponse) GetTypeName() string {
 	return "TunnelingResponse"
 }
 
-func (m *_TunnelingResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TunnelingResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (tunnelingResponseDataBlock)
-	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits()
+	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_TunnelingResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TunnelingResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TunnelingResponseParse(theBytes []byte) (TunnelingResponse, error) {
-	return TunnelingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return TunnelingResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
+func TunnelingResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
@@ -142,7 +139,7 @@ func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRes
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingResponseDataBlock")
 	}
-	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParseWithBuffer(readBuffer)
+	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParseWithBuffer(ctx, readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field of TunnelingResponse")
 	}
@@ -165,14 +162,14 @@ func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRes
 }
 
 func (m *_TunnelingResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TunnelingResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TunnelingResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tunnelingResponseDataBlock")
 		}
-		_tunnelingResponseDataBlockErr := writeBuffer.WriteSerializable(m.GetTunnelingResponseDataBlock())
+		_tunnelingResponseDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetTunnelingResponseDataBlock())
 		if popErr := writeBuffer.PopContext("tunnelingResponseDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tunnelingResponseDataBlock")
 		}
@@ -197,7 +194,7 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TunnelingResponse) isTunnelingResponse() bool {
@@ -209,7 +206,7 @@ func (m *_TunnelingResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

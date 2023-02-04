@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetReliabilityEvalu
 ///////////////////////
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetReliabilityEvaluationInhibit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetTypeName() strin
 	return "BACnetConstructedDataReliabilityEvaluationInhibit"
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reliabilityEvaluationInhibit)
-	lengthInBits += m.ReliabilityEvaluationInhibit.GetLengthInBits()
+	lengthInBits += m.ReliabilityEvaluationInhibit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataReliabilityEvaluationInhibitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
-	return BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
+func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliabilityEvaluationInhibit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("reliabilityEvaluationInhibit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reliabilityEvaluationInhibit")
 	}
-	_reliabilityEvaluationInhibit, _reliabilityEvaluationInhibitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_reliabilityEvaluationInhibit, _reliabilityEvaluationInhibitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _reliabilityEvaluationInhibitErr != nil {
 		return nil, errors.Wrap(_reliabilityEvaluationInhibitErr, "Error parsing 'reliabilityEvaluationInhibit' field of BACnetConstructedDataReliabilityEvaluationInhibit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(readBuffer
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("reliabilityEvaluationInhibit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reliabilityEvaluationInhibit")
 		}
-		_reliabilityEvaluationInhibitErr := writeBuffer.WriteSerializable(m.GetReliabilityEvaluationInhibit())
+		_reliabilityEvaluationInhibitErr := writeBuffer.WriteSerializable(ctx, m.GetReliabilityEvaluationInhibit())
 		if popErr := writeBuffer.PopContext("reliabilityEvaluationInhibit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reliabilityEvaluationInhibit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 			return errors.Wrap(_reliabilityEvaluationInhibitErr, "Error serializing 'reliabilityEvaluationInhibit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) isBACnetConstructedDataReliabilityEvaluationInhibit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

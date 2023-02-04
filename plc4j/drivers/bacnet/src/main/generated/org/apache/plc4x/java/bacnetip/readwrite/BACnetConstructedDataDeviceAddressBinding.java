@@ -75,6 +75,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeviceAddressBinding");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDeviceAddressBinding _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (deviceAddressBinding != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAddressBinding> deviceAddressBinding =
         readTerminatedArrayField(

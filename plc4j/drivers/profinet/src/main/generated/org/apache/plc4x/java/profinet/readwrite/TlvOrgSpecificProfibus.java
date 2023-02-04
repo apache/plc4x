@@ -58,6 +58,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
   protected void serializeTlvOrganizationSpecificUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrgSpecificProfibus");
 
@@ -76,6 +77,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvOrgSpecificProfibus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (specificUnit)
     lengthInBits += specificUnit.getLengthInBits();
@@ -89,6 +91,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvOrgSpecificProfibusUnit specificUnit =
         readSimpleField(

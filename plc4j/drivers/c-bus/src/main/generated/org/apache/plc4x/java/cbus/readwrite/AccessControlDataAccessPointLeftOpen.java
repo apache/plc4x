@@ -48,6 +48,7 @@ public class AccessControlDataAccessPointLeftOpen extends AccessControlData impl
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataAccessPointLeftOpen");
 
@@ -63,6 +64,7 @@ public class AccessControlDataAccessPointLeftOpen extends AccessControlData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataAccessPointLeftOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -73,6 +75,7 @@ public class AccessControlDataAccessPointLeftOpen extends AccessControlData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataAccessPointLeftOpen");
     // Create the instance

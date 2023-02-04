@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -165,19 +166,19 @@ func CastBACnetLiftCarMode(structType interface{}) BACnetLiftCarMode {
 	return castFunc(structType)
 }
 
-func (m BACnetLiftCarMode) GetLengthInBits() uint16 {
+func (m BACnetLiftCarMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetLiftCarMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLiftCarMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLiftCarModeParse(theBytes []byte) (BACnetLiftCarMode, error) {
-	return BACnetLiftCarModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLiftCarModeParse(ctx context.Context, theBytes []byte) (BACnetLiftCarMode, error) {
+	return BACnetLiftCarModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarMode, error) {
+func BACnetLiftCarModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarMode")
@@ -192,13 +193,13 @@ func BACnetLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCa
 
 func (e BACnetLiftCarMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLiftCarMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLiftCarMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -109,13 +109,10 @@ class ModbusADU(ABC, PlcMessage):
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
         if EvaluationHelper.equals(driverType, DriverType.MODBUS_TCP):
-
             builder = ModbusTcpADU.staticParseBuilder(read_buffer, driverType, response)
         if EvaluationHelper.equals(driverType, DriverType.MODBUS_RTU):
-
             builder = ModbusRtuADU.staticParseBuilder(read_buffer, driverType, response)
         if EvaluationHelper.equals(driverType, DriverType.MODBUS_ASCII):
-
             builder = ModbusAsciiADU.staticParseBuilder(
                 read_buffer, driverType, response
             )

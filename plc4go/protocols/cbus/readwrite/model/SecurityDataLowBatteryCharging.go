@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_SecurityDataLowBatteryCharging) GetStartStop() byte {
 ///////////////////////
 
 func (m *_SecurityDataLowBatteryCharging) GetChargeStopped() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStartStop()) == (0x00)))
 }
 
 func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetStartStop()) > (0xFE)))
 }
 
@@ -127,12 +132,8 @@ func (m *_SecurityDataLowBatteryCharging) GetTypeName() string {
 	return "SecurityDataLowBatteryCharging"
 }
 
-func (m *_SecurityDataLowBatteryCharging) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataLowBatteryCharging) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataLowBatteryCharging) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (startStop)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_SecurityDataLowBatteryCharging) GetLengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataLowBatteryChargingParse(theBytes []byte) (SecurityDataLowBatteryCharging, error) {
-	return SecurityDataLowBatteryChargingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataLowBatteryChargingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataLowBatteryChargingParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryCharging"); pullErr != nil {
@@ -192,14 +193,14 @@ func SecurityDataLowBatteryChargingParseWithBuffer(readBuffer utils.ReadBuffer) 
 }
 
 func (m *_SecurityDataLowBatteryCharging) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_startStopErr, "Error serializing 'startStop' field")
 		}
 		// Virtual field
-		if _chargeStoppedErr := writeBuffer.WriteVirtual("chargeStopped", m.GetChargeStopped()); _chargeStoppedErr != nil {
+		if _chargeStoppedErr := writeBuffer.WriteVirtual(ctx, "chargeStopped", m.GetChargeStopped()); _chargeStoppedErr != nil {
 			return errors.Wrap(_chargeStoppedErr, "Error serializing 'chargeStopped' field")
 		}
 		// Virtual field
-		if _chargeStartedErr := writeBuffer.WriteVirtual("chargeStarted", m.GetChargeStarted()); _chargeStartedErr != nil {
+		if _chargeStartedErr := writeBuffer.WriteVirtual(ctx, "chargeStarted", m.GetChargeStarted()); _chargeStartedErr != nil {
 			return errors.Wrap(_chargeStartedErr, "Error serializing 'chargeStarted' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataLowBatteryCharging) isSecurityDataLowBatteryCharging() bool {
@@ -239,7 +240,7 @@ func (m *_SecurityDataLowBatteryCharging) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

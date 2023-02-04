@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
 	return castFunc(structType)
 }
 
-func (m COTPProtocolClass) GetLengthInBits() uint16 {
+func (m COTPProtocolClass) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m COTPProtocolClass) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m COTPProtocolClass) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPProtocolClassParse(theBytes []byte) (COTPProtocolClass, error) {
-	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func COTPProtocolClassParse(ctx context.Context, theBytes []byte) (COTPProtocolClass, error) {
+	return COTPProtocolClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
 	val, err := readBuffer.ReadUint8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
@@ -132,13 +133,13 @@ func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocol
 
 func (e COTPProtocolClass) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e COTPProtocolClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e COTPProtocolClass) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

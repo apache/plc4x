@@ -64,6 +64,7 @@ public class FirmataMessageSubscribeDigitalPinValue extends FirmataMessage imple
   protected void serializeFirmataMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataMessageSubscribeDigitalPinValue");
 
@@ -100,6 +101,7 @@ public class FirmataMessageSubscribeDigitalPinValue extends FirmataMessage imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataMessageSubscribeDigitalPinValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 4;
@@ -119,6 +121,7 @@ public class FirmataMessageSubscribeDigitalPinValue extends FirmataMessage imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pin =
         readSimpleField(

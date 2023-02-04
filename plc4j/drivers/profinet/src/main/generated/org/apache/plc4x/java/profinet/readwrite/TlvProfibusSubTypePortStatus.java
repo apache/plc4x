@@ -81,6 +81,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
   protected void serializeTlvOrgSpecificProfibusUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypePortStatus");
 
@@ -120,6 +121,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvProfibusSubTypePortStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (rtClass2PortStatus)
     lengthInBits += 16;
@@ -148,6 +150,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int rtClass2PortStatus = readSimpleField("rtClass2PortStatus", readUnsignedInt(readBuffer, 16));
 

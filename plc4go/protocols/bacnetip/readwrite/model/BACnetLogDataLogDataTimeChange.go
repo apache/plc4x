@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetLogDataLogDataTimeChange) GetTypeName() string {
 	return "BACnetLogDataLogDataTimeChange"
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (timeChange)
-	lengthInBits += m.TimeChange.GetLengthInBits()
+	lengthInBits += m.TimeChange.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataTimeChangeParse(theBytes []byte, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
-	return BACnetLogDataLogDataTimeChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetLogDataLogDataTimeChangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetLogDataLogDataTimeChangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
+func BACnetLogDataLogDataTimeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataTimeChange"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetLogDataLogDataTimeChangeParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("timeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeChange")
 	}
-	_timeChange, _timeChangeErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_timeChange, _timeChangeErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _timeChangeErr != nil {
 		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field of BACnetLogDataLogDataTimeChange")
 	}
@@ -166,14 +163,14 @@ func BACnetLogDataLogDataTimeChangeParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetLogDataLogDataTimeChange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("timeChange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeChange")
 		}
-		_timeChangeErr := writeBuffer.WriteSerializable(m.GetTimeChange())
+		_timeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetTimeChange())
 		if popErr := writeBuffer.PopContext("timeChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeChange")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogDataLogDataTimeChange) isBACnetLogDataLogDataTimeChange() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetLogDataLogDataTimeChange) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

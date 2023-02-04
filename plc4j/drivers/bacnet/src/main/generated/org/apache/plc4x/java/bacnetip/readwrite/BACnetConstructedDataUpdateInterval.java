@@ -78,6 +78,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUpdateInterval");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUpdateInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (updateInterval)
     lengthInBits += updateInterval.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger updateInterval =
         readSimpleField(

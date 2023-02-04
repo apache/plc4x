@@ -64,6 +64,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TimeZoneDataType");
 
@@ -88,6 +89,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TimeZoneDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (offset)
     lengthInBits += 16;
@@ -107,6 +109,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short offset = readSimpleField("offset", readSignedShort(readBuffer, 16));
 

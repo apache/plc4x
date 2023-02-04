@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_MPropWriteReq) GetTypeName() string {
 	return "MPropWriteReq"
 }
 
-func (m *_MPropWriteReq) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MPropWriteReq) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MPropWriteReq) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MPropWriteReq) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MPropWriteReq) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MPropWriteReqParse(theBytes []byte, size uint16) (MPropWriteReq, error) {
-	return MPropWriteReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+	return MPropWriteReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
 }
 
-func MPropWriteReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPropWriteReq, error) {
+func MPropWriteReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropWriteReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropWriteReq"); pullErr != nil {
@@ -131,14 +128,14 @@ func MPropWriteReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPr
 }
 
 func (m *_MPropWriteReq) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MPropWriteReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MPropWriteReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_MPropWriteReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MPropWriteReq) isMPropWriteReq() bool {
@@ -163,7 +160,7 @@ func (m *_MPropWriteReq) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

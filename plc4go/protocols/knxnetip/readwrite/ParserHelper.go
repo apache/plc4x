@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,101 +40,101 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.KnxPropertyParseWithBuffer(io, propertyType, dataLengthInBytes)
+		return model.KnxPropertyParseWithBuffer(context.Background(), io, propertyType, dataLengthInBytes)
 	case "HPAIControlEndpoint":
-		return model.HPAIControlEndpointParseWithBuffer(io)
+		return model.HPAIControlEndpointParseWithBuffer(context.Background(), io)
 	case "TunnelingResponseDataBlock":
-		return model.TunnelingResponseDataBlockParseWithBuffer(io)
+		return model.TunnelingResponseDataBlockParseWithBuffer(context.Background(), io)
 	case "DeviceDescriptorType2":
-		return model.DeviceDescriptorType2ParseWithBuffer(io)
+		return model.DeviceDescriptorType2ParseWithBuffer(context.Background(), io)
 	case "ChannelInformation":
-		return model.ChannelInformationParseWithBuffer(io)
+		return model.ChannelInformationParseWithBuffer(context.Background(), io)
 	case "KnxDatapoint":
 		datapointType, _ := model.KnxDatapointTypeByName(arguments[0])
-		return model.KnxDatapointParseWithBuffer(io, datapointType)
+		return model.KnxDatapointParseWithBuffer(context.Background(), io, datapointType)
 	case "DeviceConfigurationAckDataBlock":
-		return model.DeviceConfigurationAckDataBlockParseWithBuffer(io)
+		return model.DeviceConfigurationAckDataBlockParseWithBuffer(context.Background(), io)
 	case "ConnectionRequestInformation":
-		return model.ConnectionRequestInformationParseWithBuffer(io)
+		return model.ConnectionRequestInformationParseWithBuffer(context.Background(), io)
 	case "Apdu":
 		dataLength, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ApduParseWithBuffer(io, dataLength)
+		return model.ApduParseWithBuffer(context.Background(), io, dataLength)
 	case "HPAIDiscoveryEndpoint":
-		return model.HPAIDiscoveryEndpointParseWithBuffer(io)
+		return model.HPAIDiscoveryEndpointParseWithBuffer(context.Background(), io)
 	case "ProjectInstallationIdentifier":
-		return model.ProjectInstallationIdentifierParseWithBuffer(io)
+		return model.ProjectInstallationIdentifierParseWithBuffer(context.Background(), io)
 	case "ServiceId":
-		return model.ServiceIdParseWithBuffer(io)
+		return model.ServiceIdParseWithBuffer(context.Background(), io)
 	case "HPAIDataEndpoint":
-		return model.HPAIDataEndpointParseWithBuffer(io)
+		return model.HPAIDataEndpointParseWithBuffer(context.Background(), io)
 	case "RelativeTimestamp":
-		return model.RelativeTimestampParseWithBuffer(io)
+		return model.RelativeTimestampParseWithBuffer(context.Background(), io)
 	case "CEMI":
 		size, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CEMIParseWithBuffer(io, size)
+		return model.CEMIParseWithBuffer(context.Background(), io, size)
 	case "KnxNetIpMessage":
-		return model.KnxNetIpMessageParseWithBuffer(io)
+		return model.KnxNetIpMessageParseWithBuffer(context.Background(), io)
 	case "DeviceStatus":
-		return model.DeviceStatusParseWithBuffer(io)
+		return model.DeviceStatusParseWithBuffer(context.Background(), io)
 	case "IPAddress":
-		return model.IPAddressParseWithBuffer(io)
+		return model.IPAddressParseWithBuffer(context.Background(), io)
 	case "GroupObjectDescriptorRealisationTypeB":
-		return model.GroupObjectDescriptorRealisationTypeBParseWithBuffer(io)
+		return model.GroupObjectDescriptorRealisationTypeBParseWithBuffer(context.Background(), io)
 	case "CEMIAdditionalInformation":
-		return model.CEMIAdditionalInformationParseWithBuffer(io)
+		return model.CEMIAdditionalInformationParseWithBuffer(context.Background(), io)
 	case "ComObjectTable":
 		firmwareType, _ := model.FirmwareTypeByName(arguments[0])
-		return model.ComObjectTableParseWithBuffer(io, firmwareType)
+		return model.ComObjectTableParseWithBuffer(context.Background(), io, firmwareType)
 	case "KnxAddress":
-		return model.KnxAddressParseWithBuffer(io)
+		return model.KnxAddressParseWithBuffer(context.Background(), io)
 	case "ConnectionResponseDataBlock":
-		return model.ConnectionResponseDataBlockParseWithBuffer(io)
+		return model.ConnectionResponseDataBlockParseWithBuffer(context.Background(), io)
 	case "TunnelingRequestDataBlock":
-		return model.TunnelingRequestDataBlockParseWithBuffer(io)
+		return model.TunnelingRequestDataBlockParseWithBuffer(context.Background(), io)
 	case "DIBDeviceInfo":
-		return model.DIBDeviceInfoParseWithBuffer(io)
+		return model.DIBDeviceInfoParseWithBuffer(context.Background(), io)
 	case "DeviceConfigurationRequestDataBlock":
-		return model.DeviceConfigurationRequestDataBlockParseWithBuffer(io)
+		return model.DeviceConfigurationRequestDataBlockParseWithBuffer(context.Background(), io)
 	case "DIBSuppSvcFamilies":
-		return model.DIBSuppSvcFamiliesParseWithBuffer(io)
+		return model.DIBSuppSvcFamiliesParseWithBuffer(context.Background(), io)
 	case "LDataFrame":
-		return model.LDataFrameParseWithBuffer(io)
+		return model.LDataFrameParseWithBuffer(context.Background(), io)
 	case "ApduDataExt":
 		length, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ApduDataExtParseWithBuffer(io, length)
+		return model.ApduDataExtParseWithBuffer(context.Background(), io, length)
 	case "ApduControl":
-		return model.ApduControlParseWithBuffer(io)
+		return model.ApduControlParseWithBuffer(context.Background(), io)
 	case "KnxGroupAddress":
 		numLevels, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.KnxGroupAddressParseWithBuffer(io, numLevels)
+		return model.KnxGroupAddressParseWithBuffer(context.Background(), io, numLevels)
 	case "GroupObjectDescriptorRealisationType6":
-		return model.GroupObjectDescriptorRealisationType6ParseWithBuffer(io)
+		return model.GroupObjectDescriptorRealisationType6ParseWithBuffer(context.Background(), io)
 	case "GroupObjectDescriptorRealisationType7":
-		return model.GroupObjectDescriptorRealisationType7ParseWithBuffer(io)
+		return model.GroupObjectDescriptorRealisationType7ParseWithBuffer(context.Background(), io)
 	case "MACAddress":
-		return model.MACAddressParseWithBuffer(io)
+		return model.MACAddressParseWithBuffer(context.Background(), io)
 	case "GroupObjectDescriptorRealisationType2":
-		return model.GroupObjectDescriptorRealisationType2ParseWithBuffer(io)
+		return model.GroupObjectDescriptorRealisationType2ParseWithBuffer(context.Background(), io)
 	case "ApduData":
 		dataLength, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ApduDataParseWithBuffer(io, dataLength)
+		return model.ApduDataParseWithBuffer(context.Background(), io, dataLength)
 	case "GroupObjectDescriptorRealisationType1":
-		return model.GroupObjectDescriptorRealisationType1ParseWithBuffer(io)
+		return model.GroupObjectDescriptorRealisationType1ParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

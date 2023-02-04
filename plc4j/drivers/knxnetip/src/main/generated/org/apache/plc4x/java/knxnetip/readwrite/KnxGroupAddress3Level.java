@@ -70,6 +70,7 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
   protected void serializeKnxGroupAddressChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxGroupAddress3Level");
 
@@ -94,6 +95,7 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxGroupAddress3Level _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (mainGroup)
     lengthInBits += 5;
@@ -113,6 +115,7 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short mainGroup = readSimpleField("mainGroup", readUnsignedShort(readBuffer, 5));
 

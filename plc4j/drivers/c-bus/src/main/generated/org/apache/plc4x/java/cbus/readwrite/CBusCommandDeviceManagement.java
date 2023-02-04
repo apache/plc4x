@@ -72,6 +72,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
   @Override
   protected void serializeCBusCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusCommandDeviceManagement");
 
@@ -101,6 +102,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusCommandDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (paramNo)
     lengthInBits += 8;
@@ -120,6 +122,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =
         readEnumField(

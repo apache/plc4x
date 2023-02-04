@@ -64,6 +64,7 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntry");
 
@@ -90,6 +91,7 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetFaultParameterFaultExtendedParametersEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -112,6 +114,7 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(

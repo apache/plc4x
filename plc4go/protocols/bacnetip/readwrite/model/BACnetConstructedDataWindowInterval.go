@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataWindowInterval) GetWindowInterval() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataWindowInterval) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetWindowInterval())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataWindowInterval) GetTypeName() string {
 	return "BACnetConstructedDataWindowInterval"
 }
 
-func (m *_BACnetConstructedDataWindowInterval) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataWindowInterval) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataWindowInterval) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (windowInterval)
-	lengthInBits += m.WindowInterval.GetLengthInBits()
+	lengthInBits += m.WindowInterval.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataWindowInterval) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataWindowInterval) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataWindowIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
-	return BACnetConstructedDataWindowIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataWindowIntervalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataWindowIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
+func BACnetConstructedDataWindowIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowInterval"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataWindowIntervalParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("windowInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for windowInterval")
 	}
-	_windowInterval, _windowIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_windowInterval, _windowIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _windowIntervalErr != nil {
 		return nil, errors.Wrap(_windowIntervalErr, "Error parsing 'windowInterval' field of BACnetConstructedDataWindowInterval")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataWindowIntervalParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataWindowInterval) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("windowInterval"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for windowInterval")
 		}
-		_windowIntervalErr := writeBuffer.WriteSerializable(m.GetWindowInterval())
+		_windowIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetWindowInterval())
 		if popErr := writeBuffer.PopContext("windowInterval"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for windowInterval")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_windowIntervalErr, "Error serializing 'windowInterval' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataWindowInterval) isBACnetConstructedDataWindowInterval() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataWindowInterval) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

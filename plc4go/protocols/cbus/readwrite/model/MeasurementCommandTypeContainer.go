@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,19 +127,19 @@ func CastMeasurementCommandTypeContainer(structType interface{}) MeasurementComm
 	return castFunc(structType)
 }
 
-func (m MeasurementCommandTypeContainer) GetLengthInBits() uint16 {
+func (m MeasurementCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m MeasurementCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MeasurementCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementCommandTypeContainerParse(theBytes []byte) (MeasurementCommandTypeContainer, error) {
-	return MeasurementCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MeasurementCommandTypeContainerParse(ctx context.Context, theBytes []byte) (MeasurementCommandTypeContainer, error) {
+	return MeasurementCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeasurementCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementCommandTypeContainer, error) {
+func MeasurementCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MeasurementCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementCommandTypeContainer")
@@ -153,13 +154,13 @@ func MeasurementCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer)
 
 func (e MeasurementCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MeasurementCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

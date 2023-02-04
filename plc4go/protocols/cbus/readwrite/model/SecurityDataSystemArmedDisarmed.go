@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,28 +107,24 @@ func (m *_SecurityDataSystemArmedDisarmed) GetTypeName() string {
 	return "SecurityDataSystemArmedDisarmed"
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (armCodeType)
-	lengthInBits += m.ArmCodeType.GetLengthInBits()
+	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataSystemArmedDisarmedParse(theBytes []byte) (SecurityDataSystemArmedDisarmed, error) {
-	return SecurityDataSystemArmedDisarmedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataSystemArmedDisarmedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataSystemArmedDisarmedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
+func SecurityDataSystemArmedDisarmedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataSystemArmedDisarmed"); pullErr != nil {
@@ -140,7 +137,7 @@ func SecurityDataSystemArmedDisarmedParseWithBuffer(readBuffer utils.ReadBuffer)
 	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
 	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(readBuffer)
+	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(ctx, readBuffer)
 	if _armCodeTypeErr != nil {
 		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataSystemArmedDisarmed")
 	}
@@ -163,14 +160,14 @@ func SecurityDataSystemArmedDisarmedParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_SecurityDataSystemArmedDisarmed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -182,7 +179,7 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("armCodeType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for armCodeType")
 		}
-		_armCodeTypeErr := writeBuffer.WriteSerializable(m.GetArmCodeType())
+		_armCodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetArmCodeType())
 		if popErr := writeBuffer.PopContext("armCodeType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for armCodeType")
 		}
@@ -195,7 +192,7 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataSystemArmedDisarmed) isSecurityDataSystemArmedDisarmed() bool {
@@ -207,7 +204,7 @@ func (m *_SecurityDataSystemArmedDisarmed) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

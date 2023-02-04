@@ -64,6 +64,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEventInformation");
 
@@ -85,6 +86,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestGetEventInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (lastReceivedObjectIdentifier)
     if (lastReceivedObjectIdentifier != null) {
@@ -101,6 +103,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier =
         readOptionalField(

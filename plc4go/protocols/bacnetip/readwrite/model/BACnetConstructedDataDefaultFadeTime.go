@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetDefaultFadeTime() BACnetAppli
 ///////////////////////
 
 func (m *_BACnetConstructedDataDefaultFadeTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetDefaultFadeTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetTypeName() string {
 	return "BACnetConstructedDataDefaultFadeTime"
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (defaultFadeTime)
-	lengthInBits += m.DefaultFadeTime.GetLengthInBits()
+	lengthInBits += m.DefaultFadeTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDefaultFadeTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
-	return BACnetConstructedDataDefaultFadeTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDefaultFadeTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
+func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultFadeTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("defaultFadeTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultFadeTime")
 	}
-	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _defaultFadeTimeErr != nil {
 		return nil, errors.Wrap(_defaultFadeTimeErr, "Error parsing 'defaultFadeTime' field of BACnetConstructedDataDefaultFadeTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataDefaultFadeTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("defaultFadeTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultFadeTime")
 		}
-		_defaultFadeTimeErr := writeBuffer.WriteSerializable(m.GetDefaultFadeTime())
+		_defaultFadeTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultFadeTime())
 		if popErr := writeBuffer.PopContext("defaultFadeTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultFadeTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_defaultFadeTimeErr, "Error serializing 'defaultFadeTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDefaultFadeTime) isBACnetConstructedDataDefaultFadeTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -64,6 +64,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EndpointUrlListDataType");
 
@@ -85,6 +86,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EndpointUrlListDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfEndpointUrlList)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     if (endpointUrlList != null) {
       int i = 0;
       for (PascalString element : endpointUrlList) {
-        boolean last = ++i >= endpointUrlList.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= endpointUrlList.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEndpointUrlList = readSimpleField("noOfEndpointUrlList", readSignedInt(readBuffer, 32));
 

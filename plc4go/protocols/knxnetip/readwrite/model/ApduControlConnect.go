@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_ApduControlConnect) GetTypeName() string {
 	return "ApduControlConnect"
 }
 
-func (m *_ApduControlConnect) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduControlConnect) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduControlConnect) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduControlConnect) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduControlConnect) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduControlConnectParse(theBytes []byte) (ApduControlConnect, error) {
-	return ApduControlConnectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ApduControlConnectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApduControlConnectParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
+func ApduControlConnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {
@@ -129,14 +126,14 @@ func ApduControlConnectParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControl
 }
 
 func (m *_ApduControlConnect) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduControlConnect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduControlConnect) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -149,7 +146,7 @@ func (m *_ApduControlConnect) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduControlConnect) isApduControlConnect() bool {
@@ -161,7 +158,7 @@ func (m *_ApduControlConnect) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

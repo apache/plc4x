@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -145,12 +146,8 @@ func (m *_S7ParameterModeTransition) GetTypeName() string {
 	return "S7ParameterModeTransition"
 }
 
-func (m *_S7ParameterModeTransition) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7ParameterModeTransition) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -176,15 +173,15 @@ func (m *_S7ParameterModeTransition) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_S7ParameterModeTransition) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterModeTransitionParse(theBytes []byte, messageType uint8) (S7ParameterModeTransition, error) {
-	return S7ParameterModeTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
+	return S7ParameterModeTransitionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
-func S7ParameterModeTransitionParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
+func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
@@ -271,14 +268,14 @@ func S7ParameterModeTransitionParseWithBuffer(readBuffer utils.ReadBuffer, messa
 }
 
 func (m *_S7ParameterModeTransition) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -303,7 +300,7 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -349,7 +346,7 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7ParameterModeTransition) isS7ParameterModeTransition() bool {
@@ -361,7 +358,7 @@ func (m *_S7ParameterModeTransition) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

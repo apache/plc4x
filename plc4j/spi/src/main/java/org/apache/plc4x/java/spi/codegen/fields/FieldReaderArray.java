@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
+import org.apache.plc4x.java.spi.codegen.ThreadLocalHelper;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -46,6 +47,7 @@ public class FieldReaderArray<T> implements FieldCommons {
         int itemCount = Math.max(0, (int) count);
         List<T> result = new ArrayList<>(itemCount);
         for (int curItem = 0; curItem < itemCount; curItem++) {
+            ThreadLocalHelper.lastItemThreadLocal.set(curItem == itemCount - 1);
             result.add(dataReader.read("", readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);

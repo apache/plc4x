@@ -79,6 +79,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer");
 
@@ -104,6 +105,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedPrivateTransfer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorId)
     lengthInBits += vendorId.getLengthInBits();
@@ -126,6 +128,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(

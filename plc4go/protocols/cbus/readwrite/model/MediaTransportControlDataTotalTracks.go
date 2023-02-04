@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,12 +131,8 @@ func (m *_MediaTransportControlDataTotalTracks) GetTypeName() string {
 	return "MediaTransportControlDataTotalTracks"
 }
 
-func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataTotalTracks) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (totalTracksMSB)
 	lengthInBits += 8
@@ -152,15 +149,15 @@ func (m *_MediaTransportControlDataTotalTracks) GetLengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataTotalTracks) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataTotalTracks) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataTotalTracksParse(theBytes []byte) (MediaTransportControlDataTotalTracks, error) {
-	return MediaTransportControlDataTotalTracksParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataTotalTracksParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataTotalTracksParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
+func MediaTransportControlDataTotalTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataTotalTracks"); pullErr != nil {
@@ -214,14 +211,14 @@ func MediaTransportControlDataTotalTracksParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_MediaTransportControlDataTotalTracks) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -262,7 +259,7 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataTotalTracks) isMediaTransportControlDataTotalTracks() bool {
@@ -274,7 +271,7 @@ func (m *_MediaTransportControlDataTotalTracks) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

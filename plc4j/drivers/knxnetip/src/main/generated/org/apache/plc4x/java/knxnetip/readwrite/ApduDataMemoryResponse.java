@@ -63,6 +63,7 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
   @Override
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataMemoryResponse");
 
@@ -89,6 +90,7 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataMemoryResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (numBytes)
     lengthInBits += 6;
@@ -110,6 +112,7 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numBytes = readImplicitField("numBytes", readUnsignedShort(readBuffer, 6));
 

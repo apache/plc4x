@@ -79,6 +79,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAllWritesSuccessful");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAllWritesSuccessful _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (allWritesSuccessful)
     lengthInBits += allWritesSuccessful.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean allWritesSuccessful =
         readSimpleField(

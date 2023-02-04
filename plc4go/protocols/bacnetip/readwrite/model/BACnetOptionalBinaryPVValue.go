@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetOptionalBinaryPVValue) GetTypeName() string {
 	return "BACnetOptionalBinaryPVValue"
 }
 
-func (m *_BACnetOptionalBinaryPVValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetOptionalBinaryPVValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetOptionalBinaryPVValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (binaryPv)
-	lengthInBits += m.BinaryPv.GetLengthInBits()
+	lengthInBits += m.BinaryPv.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalBinaryPVValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetOptionalBinaryPVValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalBinaryPVValueParse(theBytes []byte) (BACnetOptionalBinaryPVValue, error) {
-	return BACnetOptionalBinaryPVValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetOptionalBinaryPVValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetOptionalBinaryPVValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVValue, error) {
+func BACnetOptionalBinaryPVValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPVValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetOptionalBinaryPVValueParseWithBuffer(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("binaryPv"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryPv")
 	}
-	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _binaryPvErr != nil {
 		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field of BACnetOptionalBinaryPVValue")
 	}
@@ -162,14 +159,14 @@ func BACnetOptionalBinaryPVValueParseWithBuffer(readBuffer utils.ReadBuffer) (BA
 }
 
 func (m *_BACnetOptionalBinaryPVValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("binaryPv"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for binaryPv")
 		}
-		_binaryPvErr := writeBuffer.WriteSerializable(m.GetBinaryPv())
+		_binaryPvErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryPv())
 		if popErr := writeBuffer.PopContext("binaryPv"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for binaryPv")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetOptionalBinaryPVValue) isBACnetOptionalBinaryPVValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetOptionalBinaryPVValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

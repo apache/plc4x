@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetAccompanimentTime() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataAccompanimentTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetAccompanimentTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetTypeName() string {
 	return "BACnetConstructedDataAccompanimentTime"
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (accompanimentTime)
-	lengthInBits += m.AccompanimentTime.GetLengthInBits()
+	lengthInBits += m.AccompanimentTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAccompanimentTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
-	return BACnetConstructedDataAccompanimentTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAccompanimentTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAccompanimentTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
+func BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompanimentTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAccompanimentTimeParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("accompanimentTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accompanimentTime")
 	}
-	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _accompanimentTimeErr != nil {
 		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field of BACnetConstructedDataAccompanimentTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAccompanimentTimeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("accompanimentTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accompanimentTime")
 		}
-		_accompanimentTimeErr := writeBuffer.WriteSerializable(m.GetAccompanimentTime())
+		_accompanimentTimeErr := writeBuffer.WriteSerializable(ctx, m.GetAccompanimentTime())
 		if popErr := writeBuffer.PopContext("accompanimentTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accompanimentTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(write
 			return errors.Wrap(_accompanimentTimeErr, "Error serializing 'accompanimentTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) isBACnetConstructedDataAccompanimentTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

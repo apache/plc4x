@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetState() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOn() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetState()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOff() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetState()) != (0x00)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetTypeName() string {
 	return "MediaTransportControlDataSourcePowerControl"
 }
 
-func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBitsConditiona
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataSourcePowerControlParse(theBytes []byte) (MediaTransportControlDataSourcePowerControl, error) {
-	return MediaTransportControlDataSourcePowerControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataSourcePowerControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataSourcePowerControlParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
+func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSourcePowerControl"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataSourcePowerControlParseWithBuffer(readBuffer utils
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}
 		// Virtual field
-		if _isShouldPowerOnErr := writeBuffer.WriteVirtual("isShouldPowerOn", m.GetIsShouldPowerOn()); _isShouldPowerOnErr != nil {
+		if _isShouldPowerOnErr := writeBuffer.WriteVirtual(ctx, "isShouldPowerOn", m.GetIsShouldPowerOn()); _isShouldPowerOnErr != nil {
 			return errors.Wrap(_isShouldPowerOnErr, "Error serializing 'isShouldPowerOn' field")
 		}
 		// Virtual field
-		if _isShouldPowerOffErr := writeBuffer.WriteVirtual("isShouldPowerOff", m.GetIsShouldPowerOff()); _isShouldPowerOffErr != nil {
+		if _isShouldPowerOffErr := writeBuffer.WriteVirtual(ctx, "isShouldPowerOff", m.GetIsShouldPowerOff()); _isShouldPowerOffErr != nil {
 			return errors.Wrap(_isShouldPowerOffErr, "Error serializing 'isShouldPowerOff' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) isMediaTransportControlDataSourcePowerControl() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

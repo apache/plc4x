@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,40 +140,36 @@ func (m *_BACnetNotificationParametersChangeOfReliability) GetTypeName() string 
 	return "BACnetNotificationParametersChangeOfReliability"
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliability) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfReliability) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfReliability) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (reliability)
-	lengthInBits += m.Reliability.GetLengthInBits()
+	lengthInBits += m.Reliability.GetLengthInBits(ctx)
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.GetLengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
 
 	// Simple field (propertyValues)
-	lengthInBits += m.PropertyValues.GetLengthInBits()
+	lengthInBits += m.PropertyValues.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliability) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfReliability) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfReliabilityParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfReliability, error) {
-	return BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+	return BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfReliability, error) {
+func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfReliability"); pullErr != nil {
@@ -185,7 +182,7 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfReliability")
 	}
@@ -198,7 +195,7 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reliability")
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reliabilityErr != nil {
 		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetNotificationParametersChangeOfReliability")
 	}
@@ -211,7 +208,7 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfReliability")
 	}
@@ -224,7 +221,7 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("propertyValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyValues")
 	}
-	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument))
+	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument))
 	if _propertyValuesErr != nil {
 		return nil, errors.Wrap(_propertyValuesErr, "Error parsing 'propertyValues' field of BACnetNotificationParametersChangeOfReliability")
 	}
@@ -237,7 +234,7 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfReliability")
 	}
@@ -267,14 +264,14 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetNotificationParametersChangeOfReliability) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -286,7 +283,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -298,7 +295,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("reliability"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reliability")
 		}
-		_reliabilityErr := writeBuffer.WriteSerializable(m.GetReliability())
+		_reliabilityErr := writeBuffer.WriteSerializable(ctx, m.GetReliability())
 		if popErr := writeBuffer.PopContext("reliability"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reliability")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(m.GetStatusFlags())
+		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -322,7 +319,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("propertyValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyValues")
 		}
-		_propertyValuesErr := writeBuffer.WriteSerializable(m.GetPropertyValues())
+		_propertyValuesErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyValues())
 		if popErr := writeBuffer.PopContext("propertyValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyValues")
 		}
@@ -334,7 +331,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -347,7 +344,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfReliability) isBACnetNotificationParametersChangeOfReliability() bool {
@@ -359,7 +356,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

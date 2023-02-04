@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -81,6 +82,8 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////
 
 func (m *_BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetObjectType()) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE)))
 }
 
@@ -109,11 +112,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetTypeName() string {
 	return "BACnetTagPayloadObjectIdentifier"
 }
 
-func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (objectType)
@@ -130,15 +129,15 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadObjectIdentifierParse(theBytes []byte) (BACnetTagPayloadObjectIdentifier, error) {
-	return BACnetTagPayloadObjectIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTagPayloadObjectIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTagPayloadObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
+func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadObjectIdentifier"); pullErr != nil {
@@ -192,14 +191,14 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadObjectIdentifier"); pushErr != nil {
@@ -218,7 +217,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(writeBuffer
 		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
+	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
@@ -244,7 +243,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -80,6 +80,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NotificationMessage");
 
@@ -107,6 +108,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NotificationMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sequenceNumber)
     lengthInBits += 32;
@@ -121,7 +123,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     if (notificationData != null) {
       int i = 0;
       for (ExtensionObject element : notificationData) {
-        boolean last = ++i >= notificationData.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= notificationData.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -135,6 +137,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long sequenceNumber = readSimpleField("sequenceNumber", readUnsignedLong(readBuffer, 32));
 

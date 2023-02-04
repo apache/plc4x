@@ -57,6 +57,7 @@ public class SALDataTriggerControl extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataTriggerControl");
 
@@ -76,6 +77,7 @@ public class SALDataTriggerControl extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataTriggerControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (triggerControlData)
     lengthInBits += triggerControlData.getLengthInBits();
@@ -89,6 +91,7 @@ public class SALDataTriggerControl extends SALData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TriggerControlData triggerControlData =
         readSimpleField(

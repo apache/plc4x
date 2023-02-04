@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +95,7 @@ func (m *_HPAIDiscoveryEndpoint) GetTypeName() string {
 	return "HPAIDiscoveryEndpoint"
 }
 
-func (m *_HPAIDiscoveryEndpoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HPAIDiscoveryEndpoint) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HPAIDiscoveryEndpoint) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -108,7 +105,7 @@ func (m *_HPAIDiscoveryEndpoint) GetLengthInBitsConditional(lastItem bool) uint1
 	lengthInBits += 8
 
 	// Simple field (ipAddress)
-	lengthInBits += m.IpAddress.GetLengthInBits()
+	lengthInBits += m.IpAddress.GetLengthInBits(ctx)
 
 	// Simple field (ipPort)
 	lengthInBits += 16
@@ -116,15 +113,15 @@ func (m *_HPAIDiscoveryEndpoint) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_HPAIDiscoveryEndpoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HPAIDiscoveryEndpoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HPAIDiscoveryEndpointParse(theBytes []byte) (HPAIDiscoveryEndpoint, error) {
-	return HPAIDiscoveryEndpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HPAIDiscoveryEndpointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HPAIDiscoveryEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
+func HPAIDiscoveryEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIDiscoveryEndpoint"); pullErr != nil {
@@ -144,7 +141,7 @@ func HPAIDiscoveryEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDisc
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
 	}
-	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(readBuffer)
+	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(ctx, readBuffer)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field of HPAIDiscoveryEndpoint")
 	}
@@ -157,7 +154,7 @@ func HPAIDiscoveryEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDisc
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
-	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(readBuffer)
+	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(ctx, readBuffer)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of HPAIDiscoveryEndpoint")
 	}
@@ -186,14 +183,14 @@ func HPAIDiscoveryEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDisc
 }
 
 func (m *_HPAIDiscoveryEndpoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HPAIDiscoveryEndpoint"); pushErr != nil {
@@ -201,7 +198,7 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.GetLengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -211,7 +208,7 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("hostProtocolCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for hostProtocolCode")
 	}
-	_hostProtocolCodeErr := writeBuffer.WriteSerializable(m.GetHostProtocolCode())
+	_hostProtocolCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHostProtocolCode())
 	if popErr := writeBuffer.PopContext("hostProtocolCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for hostProtocolCode")
 	}
@@ -223,7 +220,7 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ipAddress")
 	}
-	_ipAddressErr := writeBuffer.WriteSerializable(m.GetIpAddress())
+	_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
 	if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ipAddress")
 	}
@@ -253,7 +250,7 @@ func (m *_HPAIDiscoveryEndpoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

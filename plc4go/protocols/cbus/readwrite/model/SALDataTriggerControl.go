@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataTriggerControl) GetTypeName() string {
 	return "SALDataTriggerControl"
 }
 
-func (m *_SALDataTriggerControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataTriggerControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataTriggerControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (triggerControlData)
-	lengthInBits += m.TriggerControlData.GetLengthInBits()
+	lengthInBits += m.TriggerControlData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataTriggerControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataTriggerControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataTriggerControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTriggerControl, error) {
-	return SALDataTriggerControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataTriggerControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataTriggerControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
+func SALDataTriggerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTriggerControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataTriggerControlParseWithBuffer(readBuffer utils.ReadBuffer, applicati
 	if pullErr := readBuffer.PullContext("triggerControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlData")
 	}
-	_triggerControlData, _triggerControlDataErr := TriggerControlDataParseWithBuffer(readBuffer)
+	_triggerControlData, _triggerControlDataErr := TriggerControlDataParseWithBuffer(ctx, readBuffer)
 	if _triggerControlDataErr != nil {
 		return nil, errors.Wrap(_triggerControlDataErr, "Error parsing 'triggerControlData' field of SALDataTriggerControl")
 	}
@@ -166,14 +163,14 @@ func SALDataTriggerControlParseWithBuffer(readBuffer utils.ReadBuffer, applicati
 }
 
 func (m *_SALDataTriggerControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("triggerControlData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for triggerControlData")
 		}
-		_triggerControlDataErr := writeBuffer.WriteSerializable(m.GetTriggerControlData())
+		_triggerControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetTriggerControlData())
 		if popErr := writeBuffer.PopContext("triggerControlData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for triggerControlData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataTriggerControl) isSALDataTriggerControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataTriggerControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

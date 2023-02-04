@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -125,12 +126,8 @@ func (m *_APDUError) GetTypeName() string {
 	return "APDUError"
 }
 
-func (m *_APDUError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -142,20 +139,20 @@ func (m *_APDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (error)
-	lengthInBits += m.Error.GetLengthInBits()
+	lengthInBits += m.Error.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_APDUError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUErrorParse(theBytes []byte, apduLength uint16) (APDUError, error) {
-	return APDUErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
+func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
@@ -192,7 +189,7 @@ func APDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (A
 	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorChoice")
 	}
-	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
+	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
 	if _errorChoiceErr != nil {
 		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field of APDUError")
 	}
@@ -205,7 +202,7 @@ func APDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (A
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
-	_error, _errorErr := BACnetErrorParseWithBuffer(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
+	_error, _errorErr := BACnetErrorParseWithBuffer(ctx, readBuffer, BACnetConfirmedServiceChoice(errorChoice))
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of APDUError")
 	}
@@ -233,14 +230,14 @@ func APDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (A
 }
 
 func (m *_APDUError) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -275,7 +272,7 @@ func (m *_APDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorChoice")
 		}
-		_errorChoiceErr := writeBuffer.WriteSerializable(m.GetErrorChoice())
+		_errorChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetErrorChoice())
 		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorChoice")
 		}
@@ -287,7 +284,7 @@ func (m *_APDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for error")
 		}
-		_errorErr := writeBuffer.WriteSerializable(m.GetError())
+		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
 		if popErr := writeBuffer.PopContext("error"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for error")
 		}
@@ -300,7 +297,7 @@ func (m *_APDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUError) isAPDUError() bool {
@@ -312,7 +309,7 @@ func (m *_APDUError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -58,6 +58,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
   protected void serializeS7VarRequestParameterItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarRequestParameterItemAddress");
 
@@ -81,6 +82,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7VarRequestParameterItemAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (itemLength)
     lengthInBits += 8;
@@ -97,6 +99,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));
 

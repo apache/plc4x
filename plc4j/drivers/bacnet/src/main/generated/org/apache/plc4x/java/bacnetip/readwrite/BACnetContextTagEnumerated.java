@@ -67,6 +67,7 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagEnumerated");
 
@@ -89,6 +90,7 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -108,6 +110,7 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadEnumerated payload =
         readSimpleField(

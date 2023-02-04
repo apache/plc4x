@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetLiftCarDirection(structType interface{}) BACnetLiftCarDirection {
 	return castFunc(structType)
 }
 
-func (m BACnetLiftCarDirection) GetLengthInBits() uint16 {
+func (m BACnetLiftCarDirection) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetLiftCarDirection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLiftCarDirection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLiftCarDirectionParse(theBytes []byte) (BACnetLiftCarDirection, error) {
-	return BACnetLiftCarDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLiftCarDirectionParse(ctx context.Context, theBytes []byte) (BACnetLiftCarDirection, error) {
+	return BACnetLiftCarDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
+func BACnetLiftCarDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarDirection", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
@@ -144,13 +145,13 @@ func BACnetLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetL
 
 func (e BACnetLiftCarDirection) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLiftCarDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarDirection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

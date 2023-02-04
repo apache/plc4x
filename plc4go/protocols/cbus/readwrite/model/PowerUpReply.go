@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_PowerUpReply) GetTypeName() string {
 	return "PowerUpReply"
 }
 
-func (m *_PowerUpReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_PowerUpReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_PowerUpReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (powerUpIndicator)
-	lengthInBits += m.PowerUpIndicator.GetLengthInBits()
+	lengthInBits += m.PowerUpIndicator.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_PowerUpReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_PowerUpReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func PowerUpReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
-	return PowerUpReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return PowerUpReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func PowerUpReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
+func PowerUpReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
@@ -139,7 +136,7 @@ func PowerUpReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	if pullErr := readBuffer.PullContext("powerUpIndicator"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for powerUpIndicator")
 	}
-	_powerUpIndicator, _powerUpIndicatorErr := PowerUpParseWithBuffer(readBuffer)
+	_powerUpIndicator, _powerUpIndicatorErr := PowerUpParseWithBuffer(ctx, readBuffer)
 	if _powerUpIndicatorErr != nil {
 		return nil, errors.Wrap(_powerUpIndicatorErr, "Error parsing 'powerUpIndicator' field of PowerUpReply")
 	}
@@ -165,14 +162,14 @@ func PowerUpReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 }
 
 func (m *_PowerUpReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_PowerUpReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("powerUpIndicator"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for powerUpIndicator")
 		}
-		_powerUpIndicatorErr := writeBuffer.WriteSerializable(m.GetPowerUpIndicator())
+		_powerUpIndicatorErr := writeBuffer.WriteSerializable(ctx, m.GetPowerUpIndicator())
 		if popErr := writeBuffer.PopContext("powerUpIndicator"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for powerUpIndicator")
 		}
@@ -197,7 +194,7 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_PowerUpReply) isPowerUpReply() bool {
@@ -209,7 +206,7 @@ func (m *_PowerUpReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

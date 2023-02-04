@@ -79,6 +79,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVendorIdentifier");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVendorIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorIdentifier)
     lengthInBits += vendorIdentifier.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorIdentifier =
         readSimpleField(

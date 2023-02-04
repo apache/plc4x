@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetEscalatorMode(structType interface{}) BACnetEscalatorMode {
 	return castFunc(structType)
 }
 
-func (m BACnetEscalatorMode) GetLengthInBits() uint16 {
+func (m BACnetEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetEscalatorMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetEscalatorMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEscalatorModeParse(theBytes []byte) (BACnetEscalatorMode, error) {
-	return BACnetEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetEscalatorModeParse(ctx context.Context, theBytes []byte) (BACnetEscalatorMode, error) {
+	return BACnetEscalatorModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
+func BACnetEscalatorModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")
@@ -144,13 +145,13 @@ func BACnetEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEsca
 
 func (e BACnetEscalatorMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEscalatorMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -57,12 +58,11 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 
 type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -102,6 +102,8 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetClosingTag() BACnetClo
 ///////////////////////
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -130,29 +132,29 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRangeRange"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetParentLengthInBits() uint16 {
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRange, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRange"); pullErr != nil {
@@ -166,14 +168,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestReadRangeRange")
 	}
@@ -198,11 +200,11 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -215,7 +217,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestReadRangeRange")
 	}
@@ -233,7 +235,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils
 	return _child, nil
 }
 
-func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error {
+func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -247,7 +249,7 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuf
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -255,7 +257,7 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuf
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -268,7 +270,7 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuf
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -291,7 +293,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

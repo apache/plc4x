@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -100,11 +101,7 @@ func (m *_TPKTPacket) GetTypeName() string {
 	return "TPKTPacket"
 }
 
-func (m *_TPKTPacket) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_TPKTPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -117,20 +114,20 @@ func (m *_TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_TPKTPacket) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TPKTPacket) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TPKTPacketParse(theBytes []byte) (TPKTPacket, error) {
-	return TPKTPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return TPKTPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
+func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
@@ -176,7 +173,7 @@ func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) 
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := COTPPacketParseWithBuffer(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
+	_payload, _payloadErr := COTPPacketParseWithBuffer(ctx, readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of TPKTPacket")
 	}
@@ -197,14 +194,14 @@ func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) 
 }
 
 func (m *_TPKTPacket) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TPKTPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TPKTPacket"); pushErr != nil {
@@ -234,7 +231,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(m.GetPayload().GetLengthInBytes()) + uint16(uint16(4)))
+	len := uint16(uint16(m.GetPayload().GetLengthInBytes(ctx)) + uint16(uint16(4)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
@@ -244,7 +241,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -267,7 +264,7 @@ func (m *_TPKTPacket) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -283,19 +284,19 @@ func CastAirConditioningCommandType(structType interface{}) AirConditioningComma
 	return castFunc(structType)
 }
 
-func (m AirConditioningCommandType) GetLengthInBits() uint16 {
+func (m AirConditioningCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m AirConditioningCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AirConditioningCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningCommandTypeParse(theBytes []byte) (AirConditioningCommandType, error) {
-	return AirConditioningCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AirConditioningCommandTypeParse(ctx context.Context, theBytes []byte) (AirConditioningCommandType, error) {
+	return AirConditioningCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningCommandType, error) {
+func AirConditioningCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningCommandType, error) {
 	val, err := readBuffer.ReadUint8("AirConditioningCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AirConditioningCommandType")
@@ -310,13 +311,13 @@ func AirConditioningCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Air
 
 func (e AirConditioningCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AirConditioningCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AirConditioningCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AirConditioningCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

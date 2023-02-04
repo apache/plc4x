@@ -75,6 +75,7 @@ public class SzlDataTreeItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SzlDataTreeItem");
 
@@ -105,6 +106,7 @@ public class SzlDataTreeItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SzlDataTreeItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemIndex)
     lengthInBits += 16;
@@ -137,6 +139,7 @@ public class SzlDataTreeItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int itemIndex = readSimpleField("itemIndex", readUnsignedInt(readBuffer, 16));
 

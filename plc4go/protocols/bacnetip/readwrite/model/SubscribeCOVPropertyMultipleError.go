@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_SubscribeCOVPropertyMultipleError) GetTypeName() string {
 	return "SubscribeCOVPropertyMultipleError"
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (errorType)
-	lengthInBits += m.ErrorType.GetLengthInBits()
+	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
 
 	// Simple field (firstFailedSubscription)
-	lengthInBits += m.FirstFailedSubscription.GetLengthInBits()
+	lengthInBits += m.FirstFailedSubscription.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SubscribeCOVPropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
-	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorChoice)
+	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
-func SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
+func SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleError"); pullErr != nil {
@@ -152,7 +149,7 @@ func SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleError")
 	}
@@ -165,7 +162,7 @@ func SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("firstFailedSubscription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedSubscription")
 	}
-	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _firstFailedSubscriptionErr != nil {
 		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field of SubscribeCOVPropertyMultipleError")
 	}
@@ -189,14 +186,14 @@ func SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := writeBuffer.WriteSerializable(m.GetErrorType())
+		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -220,7 +217,7 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("firstFailedSubscription"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firstFailedSubscription")
 		}
-		_firstFailedSubscriptionErr := writeBuffer.WriteSerializable(m.GetFirstFailedSubscription())
+		_firstFailedSubscriptionErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedSubscription())
 		if popErr := writeBuffer.PopContext("firstFailedSubscription"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firstFailedSubscription")
 		}
@@ -233,7 +230,7 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) isSubscribeCOVPropertyMultipleError() bool {
@@ -245,7 +242,7 @@ func (m *_SubscribeCOVPropertyMultipleError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

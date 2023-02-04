@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetTypeName() string {
 	return "CBusPointToPointToMultiPointCommandNormal"
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (application)
 	lengthInBits += 8
 
 	// Simple field (salData)
-	lengthInBits += m.SalData.GetLengthInBits()
+	lengthInBits += m.SalData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointToMultiPointCommandNormalParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
-	return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
+func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandNormal"); pullErr != nil {
@@ -152,7 +149,7 @@ func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToPointToMultiPointCommandNormal")
 	}
@@ -165,7 +162,7 @@ func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
-	_salData, _salDataErr := SALDataParseWithBuffer(readBuffer, ApplicationId(application.ApplicationId()))
+	_salData, _salDataErr := SALDataParseWithBuffer(ctx, readBuffer, ApplicationId(application.ApplicationId()))
 	if _salDataErr != nil {
 		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToPointToMultiPointCommandNormal")
 	}
@@ -191,14 +188,14 @@ func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -222,7 +219,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
-		_salDataErr := writeBuffer.WriteSerializable(m.GetSalData())
+		_salDataErr := writeBuffer.WriteSerializable(ctx, m.GetSalData())
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for salData")
 		}
@@ -235,7 +232,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) isCBusPointToPointToMultiPointCommandNormal() bool {
@@ -247,7 +244,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

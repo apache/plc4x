@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -75,22 +76,32 @@ func (m *_SecurityArmCode) GetCode() uint8 {
 ///////////////////////
 
 func (m *_SecurityArmCode) GetIsDisarmed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x00)))
 }
 
 func (m *_SecurityArmCode) GetIsFullyArmed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x01)))
 }
 
 func (m *_SecurityArmCode) GetIsPartiallyArmed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) == (0x02)))
 }
 
 func (m *_SecurityArmCode) GetIsArmSubtype() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetCode()) >= (0x03))) && bool(bool((m.GetCode()) <= (0x7F))))
 }
 
 func (m *_SecurityArmCode) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetCode()) > (0x7F)))
 }
 
@@ -119,11 +130,7 @@ func (m *_SecurityArmCode) GetTypeName() string {
 	return "SecurityArmCode"
 }
 
-func (m *_SecurityArmCode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityArmCode) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_SecurityArmCode) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (code)
@@ -142,15 +149,15 @@ func (m *_SecurityArmCode) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityArmCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityArmCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityArmCodeParse(theBytes []byte) (SecurityArmCode, error) {
-	return SecurityArmCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityArmCodeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
+func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityArmCode"); pullErr != nil {
@@ -202,14 +209,14 @@ func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCod
 }
 
 func (m *_SecurityArmCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityArmCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SecurityArmCode"); pushErr != nil {
@@ -223,23 +230,23 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		return errors.Wrap(_codeErr, "Error serializing 'code' field")
 	}
 	// Virtual field
-	if _isDisarmedErr := writeBuffer.WriteVirtual("isDisarmed", m.GetIsDisarmed()); _isDisarmedErr != nil {
+	if _isDisarmedErr := writeBuffer.WriteVirtual(ctx, "isDisarmed", m.GetIsDisarmed()); _isDisarmedErr != nil {
 		return errors.Wrap(_isDisarmedErr, "Error serializing 'isDisarmed' field")
 	}
 	// Virtual field
-	if _isFullyArmedErr := writeBuffer.WriteVirtual("isFullyArmed", m.GetIsFullyArmed()); _isFullyArmedErr != nil {
+	if _isFullyArmedErr := writeBuffer.WriteVirtual(ctx, "isFullyArmed", m.GetIsFullyArmed()); _isFullyArmedErr != nil {
 		return errors.Wrap(_isFullyArmedErr, "Error serializing 'isFullyArmed' field")
 	}
 	// Virtual field
-	if _isPartiallyArmedErr := writeBuffer.WriteVirtual("isPartiallyArmed", m.GetIsPartiallyArmed()); _isPartiallyArmedErr != nil {
+	if _isPartiallyArmedErr := writeBuffer.WriteVirtual(ctx, "isPartiallyArmed", m.GetIsPartiallyArmed()); _isPartiallyArmedErr != nil {
 		return errors.Wrap(_isPartiallyArmedErr, "Error serializing 'isPartiallyArmed' field")
 	}
 	// Virtual field
-	if _isArmSubtypeErr := writeBuffer.WriteVirtual("isArmSubtype", m.GetIsArmSubtype()); _isArmSubtypeErr != nil {
+	if _isArmSubtypeErr := writeBuffer.WriteVirtual(ctx, "isArmSubtype", m.GetIsArmSubtype()); _isArmSubtypeErr != nil {
 		return errors.Wrap(_isArmSubtypeErr, "Error serializing 'isArmSubtype' field")
 	}
 	// Virtual field
-	if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}
 
@@ -258,7 +265,7 @@ func (m *_SecurityArmCode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -75,6 +75,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataPasswordEntryStatus");
 
@@ -113,6 +114,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataPasswordEntryStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (code)
     lengthInBits += 8;
@@ -136,6 +138,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte code = readSimpleField("code", readByte(readBuffer, 8));
     boolean isPasswordEntrySucceeded =

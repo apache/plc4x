@@ -78,6 +78,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
 
@@ -105,6 +106,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -147,6 +149,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(

@@ -68,6 +68,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTag
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged");
@@ -96,6 +97,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTag
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (header)
     lengthInBits += header.getLengthInBits();
@@ -143,6 +145,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader header =
         readSimpleField(

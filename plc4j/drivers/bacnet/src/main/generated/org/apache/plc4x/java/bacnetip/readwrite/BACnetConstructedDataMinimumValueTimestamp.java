@@ -79,6 +79,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumValueTimestamp");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMinimumValueTimestamp _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minimumValueTimestamp)
     lengthInBits += minimumValueTimestamp.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime minimumValueTimestamp =
         readSimpleField(

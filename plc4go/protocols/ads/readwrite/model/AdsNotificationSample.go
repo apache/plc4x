@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +95,7 @@ func (m *_AdsNotificationSample) GetTypeName() string {
 	return "AdsNotificationSample"
 }
 
-func (m *_AdsNotificationSample) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsNotificationSample) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AdsNotificationSample) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (notificationHandle)
@@ -115,15 +112,15 @@ func (m *_AdsNotificationSample) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_AdsNotificationSample) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsNotificationSample) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsNotificationSampleParse(theBytes []byte) (AdsNotificationSample, error) {
-	return AdsNotificationSampleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsNotificationSampleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsNotificationSampleParseWithBuffer(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
+func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {
@@ -165,14 +162,14 @@ func AdsNotificationSampleParseWithBuffer(readBuffer utils.ReadBuffer) (AdsNotif
 }
 
 func (m *_AdsNotificationSample) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsNotificationSample) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsNotificationSample"); pushErr != nil {
@@ -214,7 +211,7 @@ func (m *_AdsNotificationSample) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

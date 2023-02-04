@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1708,19 +1709,19 @@ func CastMediaTransportControlCommandTypeContainer(structType interface{}) Media
 	return castFunc(structType)
 }
 
-func (m MediaTransportControlCommandTypeContainer) GetLengthInBits() uint16 {
+func (m MediaTransportControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m MediaTransportControlCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MediaTransportControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlCommandTypeContainerParse(theBytes []byte) (MediaTransportControlCommandTypeContainer, error) {
-	return MediaTransportControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlCommandTypeContainerParse(ctx context.Context, theBytes []byte) (MediaTransportControlCommandTypeContainer, error) {
+	return MediaTransportControlCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlCommandTypeContainer, error) {
+func MediaTransportControlCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MediaTransportControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandTypeContainer")
@@ -1735,13 +1736,13 @@ func MediaTransportControlCommandTypeContainerParseWithBuffer(readBuffer utils.R
 
 func (e MediaTransportControlCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MediaTransportControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MediaTransportControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MediaTransportControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

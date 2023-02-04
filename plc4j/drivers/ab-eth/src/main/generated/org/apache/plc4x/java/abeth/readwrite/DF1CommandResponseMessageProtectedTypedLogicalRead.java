@@ -64,6 +64,7 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
   protected void serializeDF1ResponseMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1CommandResponseMessageProtectedTypedLogicalRead");
 
@@ -82,6 +83,7 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1CommandResponseMessageProtectedTypedLogicalRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -97,6 +99,7 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Short> data =
         readLengthArrayField("data", readUnsignedShort(readBuffer, 8), (payloadLength) - (8));

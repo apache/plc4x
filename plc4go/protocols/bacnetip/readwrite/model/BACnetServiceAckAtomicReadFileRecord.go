@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,39 +125,37 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFileRecord"
 }
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fileStartRecord)
-	lengthInBits += m.FileStartRecord.GetLengthInBits()
+	lengthInBits += m.FileStartRecord.GetLengthInBits(ctx)
 
 	// Simple field (returnedRecordCount)
-	lengthInBits += m.ReturnedRecordCount.GetLengthInBits()
+	lengthInBits += m.ReturnedRecordCount.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.FileRecordData) > 0 {
-		for i, element := range m.FileRecordData {
-			last := i == len(m.FileRecordData)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.FileRecordData {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.FileRecordData), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckAtomicReadFileRecordParse(theBytes []byte) (BACnetServiceAckAtomicReadFileRecord, error) {
-	return BACnetServiceAckAtomicReadFileRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetServiceAckAtomicReadFileRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileRecord, error) {
+func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileRecord"); pullErr != nil {
@@ -168,7 +168,7 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
 	}
-	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _fileStartRecordErr != nil {
 		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetServiceAckAtomicReadFileRecord")
 	}
@@ -181,7 +181,7 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("returnedRecordCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnedRecordCount")
 	}
-	_returnedRecordCount, _returnedRecordCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_returnedRecordCount, _returnedRecordCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _returnedRecordCountErr != nil {
 		return nil, errors.Wrap(_returnedRecordCountErr, "Error parsing 'returnedRecordCount' field of BACnetServiceAckAtomicReadFileRecord")
 	}
@@ -201,12 +201,16 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBu
 		fileRecordData = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(returnedRecordCount.GetPayload().GetActualValue()); curItem++ {
-			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
+		_numItems := uint16(returnedRecordCount.GetPayload().GetActualValue())
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := BACnetApplicationTagParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field of BACnetServiceAckAtomicReadFileRecord")
 			}
-			fileRecordData[curItem] = _item.(BACnetApplicationTagOctetString)
+			fileRecordData[_curItem] = _item.(BACnetApplicationTagOctetString)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("fileRecordData", utils.WithRenderAsList(true)); closeErr != nil {
@@ -229,14 +233,14 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -248,7 +252,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("fileStartRecord"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileStartRecord")
 		}
-		_fileStartRecordErr := writeBuffer.WriteSerializable(m.GetFileStartRecord())
+		_fileStartRecordErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartRecord())
 		if popErr := writeBuffer.PopContext("fileStartRecord"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileStartRecord")
 		}
@@ -260,7 +264,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("returnedRecordCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for returnedRecordCount")
 		}
-		_returnedRecordCountErr := writeBuffer.WriteSerializable(m.GetReturnedRecordCount())
+		_returnedRecordCountErr := writeBuffer.WriteSerializable(ctx, m.GetReturnedRecordCount())
 		if popErr := writeBuffer.PopContext("returnedRecordCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for returnedRecordCount")
 		}
@@ -272,8 +276,11 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("fileRecordData", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileRecordData")
 		}
-		for _, _element := range m.GetFileRecordData() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetFileRecordData() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFileRecordData()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
 			}
@@ -287,7 +294,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) isBACnetServiceAckAtomicReadFileRecord() bool {
@@ -299,7 +306,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -92,6 +92,7 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterOutOfRange");
 
@@ -125,6 +126,7 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterOutOfRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -153,6 +155,7 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(

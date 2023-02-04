@@ -57,6 +57,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_SupportedDeviceOption");
 
@@ -85,6 +86,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_SupportedDeviceOption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (option)
     lengthInBits += 8;
@@ -107,6 +109,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =
         readEnumField(

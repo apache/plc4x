@@ -346,7 +346,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			address[tagName] = fmt.Sprintf("sal/%s/%s", applicationString, commandType)
 
 			rbvb := spiValues.NewWriteBufferPlcValueBased()
-			err := salData.SerializeWithWriteBuffer(rbvb)
+			err := salData.SerializeWithWriteBuffer(context.Background(), rbvb)
 			if err != nil {
 				log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
 				plcValues[tagName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))

@@ -55,6 +55,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataElectricityConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataElectricityConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (kWhr)
     lengthInBits += 32;
@@ -86,6 +88,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long kWhr = readSimpleField("kWhr", readUnsignedLong(readBuffer, 32));
 

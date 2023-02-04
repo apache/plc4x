@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,31 +110,27 @@ func (m *_APDUUnconfirmedRequest) GetTypeName() string {
 	return "APDUUnconfirmedRequest"
 }
 
-func (m *_APDUUnconfirmedRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUUnconfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUUnconfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.ServiceRequest.GetLengthInBits()
+	lengthInBits += m.ServiceRequest.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_APDUUnconfirmedRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUUnconfirmedRequestParse(theBytes []byte, apduLength uint16) (APDUUnconfirmedRequest, error) {
-	return APDUUnconfirmedRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUUnconfirmedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUUnconfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
+func APDUUnconfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
@@ -163,7 +160,7 @@ func APDUUnconfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLeng
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 	}
-	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParseWithBuffer(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
+	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParseWithBuffer(ctx, readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field of APDUUnconfirmedRequest")
 	}
@@ -189,14 +186,14 @@ func APDUUnconfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLeng
 }
 
 func (m *_APDUUnconfirmedRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -224,7 +221,7 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceRequest")
 		}
-		_serviceRequestErr := writeBuffer.WriteSerializable(m.GetServiceRequest())
+		_serviceRequestErr := writeBuffer.WriteSerializable(ctx, m.GetServiceRequest())
 		if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceRequest")
 		}
@@ -237,7 +234,7 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUUnconfirmedRequest) isAPDUUnconfirmedRequest() bool {
@@ -249,7 +246,7 @@ func (m *_APDUUnconfirmedRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -80,6 +80,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryNextResponse");
 
@@ -110,6 +111,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryNextResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -121,7 +123,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     if (queryDataSets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : queryDataSets) {
-        boolean last = ++i >= queryDataSets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= queryDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -138,6 +140,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

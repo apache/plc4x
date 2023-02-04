@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetNextStoppingFloor() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataNextStoppingFloor) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetNextStoppingFloor())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetTypeName() string {
 	return "BACnetConstructedDataNextStoppingFloor"
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nextStoppingFloor)
-	lengthInBits += m.NextStoppingFloor.GetLengthInBits()
+	lengthInBits += m.NextStoppingFloor.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataNextStoppingFloorParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
-	return BACnetConstructedDataNextStoppingFloorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataNextStoppingFloorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataNextStoppingFloorParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
+func BACnetConstructedDataNextStoppingFloorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataNextStoppingFloorParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("nextStoppingFloor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nextStoppingFloor")
 	}
-	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _nextStoppingFloorErr != nil {
 		return nil, errors.Wrap(_nextStoppingFloorErr, "Error parsing 'nextStoppingFloor' field of BACnetConstructedDataNextStoppingFloor")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataNextStoppingFloorParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("nextStoppingFloor"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nextStoppingFloor")
 		}
-		_nextStoppingFloorErr := writeBuffer.WriteSerializable(m.GetNextStoppingFloor())
+		_nextStoppingFloorErr := writeBuffer.WriteSerializable(ctx, m.GetNextStoppingFloor())
 		if popErr := writeBuffer.PopContext("nextStoppingFloor"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nextStoppingFloor")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(write
 			return errors.Wrap(_nextStoppingFloorErr, "Error serializing 'nextStoppingFloor' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) isBACnetConstructedDataNextStoppingFloor() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -70,6 +70,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
   protected void serializeLevelInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LevelInformationNormal");
 
@@ -113,6 +114,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LevelInformationNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pair1)
     lengthInBits += 8;
@@ -133,6 +135,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LevelInformationNibblePair pair1 =
         readEnumField(

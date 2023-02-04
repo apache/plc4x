@@ -77,6 +77,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmAck");
 
@@ -103,6 +104,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionAlarmAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (functionId)
     lengthInBits += 8;
@@ -114,7 +116,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
     if (messageObjects != null) {
       int i = 0;
       for (AlarmMessageObjectAckType element : messageObjects) {
-        boolean last = ++i >= messageObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= messageObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -128,6 +130,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 

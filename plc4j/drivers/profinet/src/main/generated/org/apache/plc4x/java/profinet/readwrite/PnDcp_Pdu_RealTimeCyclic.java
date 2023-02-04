@@ -110,6 +110,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_RealTimeCyclic");
 
@@ -173,6 +174,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_RealTimeCyclic _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Manual Field (dataUnit)
+    lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
 
     // Manual Field (dataUnit)
     lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
@@ -216,6 +221,16 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    PnIo_CyclicServiceDataUnit dataUnit =
+        readManualField(
+            "dataUnit",
+            readBuffer,
+            () ->
+                (PnIo_CyclicServiceDataUnit)
+                    (org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.readDataUnit(
+                        readBuffer)));
 
     PnIo_CyclicServiceDataUnit dataUnit =
         readManualField(

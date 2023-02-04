@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetEventAlgorithmInhibi
 ///////////////////////
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() BACnetObjectPropertyReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetObjectPropertyReference(m.GetEventAlgorithmInhibitRef())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetTypeName() string {
 	return "BACnetConstructedDataEventAlgorithmInhibitRef"
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (eventAlgorithmInhibitRef)
-	lengthInBits += m.EventAlgorithmInhibitRef.GetLengthInBits()
+	lengthInBits += m.EventAlgorithmInhibitRef.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEventAlgorithmInhibitRefParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
-	return BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventAlgorithmInhibitRef"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("eventAlgorithmInhibitRef"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventAlgorithmInhibitRef")
 	}
-	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
+	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 	if _eventAlgorithmInhibitRefErr != nil {
 		return nil, errors.Wrap(_eventAlgorithmInhibitRefErr, "Error parsing 'eventAlgorithmInhibitRef' field of BACnetConstructedDataEventAlgorithmInhibitRef")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("eventAlgorithmInhibitRef"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventAlgorithmInhibitRef")
 		}
-		_eventAlgorithmInhibitRefErr := writeBuffer.WriteSerializable(m.GetEventAlgorithmInhibitRef())
+		_eventAlgorithmInhibitRefErr := writeBuffer.WriteSerializable(ctx, m.GetEventAlgorithmInhibitRef())
 		if popErr := writeBuffer.PopContext("eventAlgorithmInhibitRef"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventAlgorithmInhibitRef")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffe
 			return errors.Wrap(_eventAlgorithmInhibitRefErr, "Error serializing 'eventAlgorithmInhibitRef' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) isBACnetConstructedDataEventAlgorithmInhibitRef() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

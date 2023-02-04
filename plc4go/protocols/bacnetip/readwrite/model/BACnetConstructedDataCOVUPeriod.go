@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetCovuPeriod() BACnetApplicationTagU
 ///////////////////////
 
 func (m *_BACnetConstructedDataCOVUPeriod) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetCovuPeriod())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetTypeName() string {
 	return "BACnetConstructedDataCOVUPeriod"
 }
 
-func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (covuPeriod)
-	lengthInBits += m.CovuPeriod.GetLengthInBits()
+	lengthInBits += m.CovuPeriod.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCOVUPeriodParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVUPeriod, error) {
-	return BACnetConstructedDataCOVUPeriodParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCOVUPeriodParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCOVUPeriodParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVUPeriod, error) {
+func BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVUPeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVUPeriod"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCOVUPeriodParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("covuPeriod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covuPeriod")
 	}
-	_covuPeriod, _covuPeriodErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_covuPeriod, _covuPeriodErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _covuPeriodErr != nil {
 		return nil, errors.Wrap(_covuPeriodErr, "Error parsing 'covuPeriod' field of BACnetConstructedDataCOVUPeriod")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCOVUPeriodParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataCOVUPeriod) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCOVUPeriod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCOVUPeriod) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCOVUPeriod) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("covuPeriod"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for covuPeriod")
 		}
-		_covuPeriodErr := writeBuffer.WriteSerializable(m.GetCovuPeriod())
+		_covuPeriodErr := writeBuffer.WriteSerializable(ctx, m.GetCovuPeriod())
 		if popErr := writeBuffer.PopContext("covuPeriod"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covuPeriod")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCOVUPeriod) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_covuPeriodErr, "Error serializing 'covuPeriod' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCOVUPeriod) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCOVUPeriod) isBACnetConstructedDataCOVUPeriod() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCOVUPeriod) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

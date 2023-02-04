@@ -48,6 +48,7 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataLockAccessPoint");
 
@@ -63,6 +64,7 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataLockAccessPoint _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -73,6 +75,7 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataLockAccessPoint");
     // Create the instance

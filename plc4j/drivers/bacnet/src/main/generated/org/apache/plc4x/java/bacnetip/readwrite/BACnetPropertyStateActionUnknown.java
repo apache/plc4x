@@ -56,6 +56,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStateActionUnknown");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStateActionUnknown _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unknownValue)
     lengthInBits += unknownValue.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnknown unknownValue =
         readSimpleField(

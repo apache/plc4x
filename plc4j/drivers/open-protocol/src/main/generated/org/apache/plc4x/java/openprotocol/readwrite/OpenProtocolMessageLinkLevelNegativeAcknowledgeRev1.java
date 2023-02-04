@@ -81,6 +81,7 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
   protected void serializeOpenProtocolMessageLinkLevelNegativeAcknowledgeChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1");
 
@@ -115,6 +116,7 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (midNumber)
     lengthInBits += 32;
@@ -132,6 +134,7 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid midNumber =
         readEnumField(

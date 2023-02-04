@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _ErrorReportingData struct {
 
 type _ErrorReportingDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type ErrorReportingDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ErrorReportingData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ErrorReportingData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_ErrorReportingData) GetCommandTypeContainer() ErrorReportingCommandTyp
 ///////////////////////
 
 func (m *_ErrorReportingData) GetCommandType() ErrorReportingCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastErrorReportingCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -116,7 +118,7 @@ func (m *_ErrorReportingData) GetTypeName() string {
 	return "ErrorReportingData"
 }
 
-func (m *_ErrorReportingData) GetParentLengthInBits() uint16 {
+func (m *_ErrorReportingData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -127,15 +129,15 @@ func (m *_ErrorReportingData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ErrorReportingData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ErrorReportingData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingDataParse(theBytes []byte) (ErrorReportingData, error) {
-	return ErrorReportingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ErrorReportingDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingData, error) {
+func ErrorReportingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingData"); pullErr != nil {
@@ -153,7 +155,7 @@ func ErrorReportingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReport
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := ErrorReportingCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of ErrorReportingData")
 	}
@@ -178,7 +180,7 @@ func ErrorReportingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReport
 	var typeSwitchError error
 	switch {
 	case 0 == 0: // ErrorReportingDataGeneric
-		_childTemp, typeSwitchError = ErrorReportingDataGenericParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ErrorReportingDataGenericParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -196,7 +198,7 @@ func ErrorReportingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReport
 	return _child, nil
 }
 
-func (pm *_ErrorReportingData) SerializeParent(writeBuffer utils.WriteBuffer, child ErrorReportingData, serializeChildFunction func() error) error {
+func (pm *_ErrorReportingData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ErrorReportingData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -210,7 +212,7 @@ func (pm *_ErrorReportingData) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -218,7 +220,7 @@ func (pm *_ErrorReportingData) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -242,7 +244,7 @@ func (m *_ErrorReportingData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

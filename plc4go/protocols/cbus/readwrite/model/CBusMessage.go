@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -52,13 +53,12 @@ type _CBusMessage struct {
 
 type _CBusMessageChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetIsResponse() bool
 }
 
 type CBusMessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CBusMessage, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusMessage, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -91,21 +91,21 @@ func (m *_CBusMessage) GetTypeName() string {
 	return "CBusMessage"
 }
 
-func (m *_CBusMessage) GetParentLengthInBits() uint16 {
+func (m *_CBusMessage) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_CBusMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusMessageParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
-	return CBusMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+	return CBusMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
-func CBusMessageParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
+func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
@@ -135,9 +135,9 @@ func CBusMessageParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, re
 	var typeSwitchError error
 	switch {
 	case isResponse == bool(false): // CBusMessageToServer
-		_childTemp, typeSwitchError = CBusMessageToServerParseWithBuffer(readBuffer, isResponse, requestContext, cBusOptions)
+		_childTemp, typeSwitchError = CBusMessageToServerParseWithBuffer(ctx, readBuffer, isResponse, requestContext, cBusOptions)
 	case isResponse == bool(true): // CBusMessageToClient
-		_childTemp, typeSwitchError = CBusMessageToClientParseWithBuffer(readBuffer, isResponse, requestContext, cBusOptions)
+		_childTemp, typeSwitchError = CBusMessageToClientParseWithBuffer(ctx, readBuffer, isResponse, requestContext, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isResponse=%v]", isResponse)
 	}
@@ -155,7 +155,7 @@ func CBusMessageParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, re
 	return _child, nil
 }
 
-func (pm *_CBusMessage) SerializeParent(writeBuffer utils.WriteBuffer, child CBusMessage, serializeChildFunction func() error) error {
+func (pm *_CBusMessage) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusMessage, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -198,7 +198,7 @@ func (m *_CBusMessage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

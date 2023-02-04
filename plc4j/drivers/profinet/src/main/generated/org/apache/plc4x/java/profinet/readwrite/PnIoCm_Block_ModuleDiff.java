@@ -70,6 +70,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ModuleDiff");
 
@@ -121,6 +122,16 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ModuleDiff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
 
     // Implicit Field (blockLength)
     lengthInBits += 16;
@@ -138,7 +149,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     if (apis != null) {
       int i = 0;
       for (PnIoCm_ModuleDiffBlockApi element : apis) {
-        boolean last = ++i >= apis.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= apis.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -152,6 +163,25 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int blockLength =
         readImplicitField(

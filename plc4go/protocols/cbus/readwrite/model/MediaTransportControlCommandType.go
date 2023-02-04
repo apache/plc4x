@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -247,19 +248,19 @@ func CastMediaTransportControlCommandType(structType interface{}) MediaTransport
 	return castFunc(structType)
 }
 
-func (m MediaTransportControlCommandType) GetLengthInBits() uint16 {
+func (m MediaTransportControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m MediaTransportControlCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MediaTransportControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlCommandTypeParse(theBytes []byte) (MediaTransportControlCommandType, error) {
-	return MediaTransportControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlCommandTypeParse(ctx context.Context, theBytes []byte) (MediaTransportControlCommandType, error) {
+	return MediaTransportControlCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlCommandType, error) {
+func MediaTransportControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("MediaTransportControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandType")
@@ -274,13 +275,13 @@ func MediaTransportControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer
 
 func (e MediaTransportControlCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MediaTransportControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MediaTransportControlCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MediaTransportControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

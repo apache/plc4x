@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetScaleIntegerScale) GetTypeName() string {
 	return "BACnetScaleIntegerScale"
 }
 
-func (m *_BACnetScaleIntegerScale) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetScaleIntegerScale) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetScaleIntegerScale) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (integerScale)
-	lengthInBits += m.IntegerScale.GetLengthInBits()
+	lengthInBits += m.IntegerScale.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetScaleIntegerScale) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetScaleIntegerScale) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetScaleIntegerScaleParse(theBytes []byte) (BACnetScaleIntegerScale, error) {
-	return BACnetScaleIntegerScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetScaleIntegerScaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetScaleIntegerScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
+func BACnetScaleIntegerScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleIntegerScale"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetScaleIntegerScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("integerScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerScale")
 	}
-	_integerScale, _integerScaleErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_integerScale, _integerScaleErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerScaleErr != nil {
 		return nil, errors.Wrap(_integerScaleErr, "Error parsing 'integerScale' field of BACnetScaleIntegerScale")
 	}
@@ -162,14 +159,14 @@ func BACnetScaleIntegerScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetScaleIntegerScale) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("integerScale"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for integerScale")
 		}
-		_integerScaleErr := writeBuffer.WriteSerializable(m.GetIntegerScale())
+		_integerScaleErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerScale())
 		if popErr := writeBuffer.PopContext("integerScale"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integerScale")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetScaleIntegerScale) isBACnetScaleIntegerScale() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetScaleIntegerScale) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

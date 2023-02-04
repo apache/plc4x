@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,31 +117,27 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestVTOpen"
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (vtClass)
-	lengthInBits += m.VtClass.GetLengthInBits()
+	lengthInBits += m.VtClass.GetLengthInBits(ctx)
 
 	// Simple field (localVtSessionIdentifier)
-	lengthInBits += m.LocalVtSessionIdentifier.GetLengthInBits()
+	lengthInBits += m.LocalVtSessionIdentifier.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestVTOpenParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
-	return BACnetConfirmedServiceRequestVTOpenParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestVTOpenParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
+func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
@@ -153,7 +150,7 @@ func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("vtClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtClass")
 	}
-	_vtClass, _vtClassErr := BACnetVTClassTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_vtClass, _vtClassErr := BACnetVTClassTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vtClassErr != nil {
 		return nil, errors.Wrap(_vtClassErr, "Error parsing 'vtClass' field of BACnetConfirmedServiceRequestVTOpen")
 	}
@@ -166,7 +163,7 @@ func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("localVtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionIdentifier")
 	}
-	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _localVtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field of BACnetConfirmedServiceRequestVTOpen")
 	}
@@ -192,14 +189,14 @@ func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -211,7 +208,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("vtClass"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtClass")
 		}
-		_vtClassErr := writeBuffer.WriteSerializable(m.GetVtClass())
+		_vtClassErr := writeBuffer.WriteSerializable(ctx, m.GetVtClass())
 		if popErr := writeBuffer.PopContext("vtClass"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtClass")
 		}
@@ -223,7 +220,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for localVtSessionIdentifier")
 		}
-		_localVtSessionIdentifierErr := writeBuffer.WriteSerializable(m.GetLocalVtSessionIdentifier())
+		_localVtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocalVtSessionIdentifier())
 		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for localVtSessionIdentifier")
 		}
@@ -236,7 +233,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) isBACnetConfirmedServiceRequestVTOpen() bool {
@@ -248,7 +245,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

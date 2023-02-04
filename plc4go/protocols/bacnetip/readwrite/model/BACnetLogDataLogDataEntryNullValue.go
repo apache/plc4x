@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetLogDataLogDataEntryNullValue) GetTypeName() string {
 	return "BACnetLogDataLogDataEntryNullValue"
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogDataLogDataEntryNullValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogDataLogDataEntryNullValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nullValue)
-	lengthInBits += m.NullValue.GetLengthInBits()
+	lengthInBits += m.NullValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogDataLogDataEntryNullValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataEntryNullValueParse(theBytes []byte) (BACnetLogDataLogDataEntryNullValue, error) {
-	return BACnetLogDataLogDataEntryNullValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLogDataLogDataEntryNullValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLogDataLogDataEntryNullValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryNullValue, error) {
+func BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryNullValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryNullValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetLogDataLogDataEntryNullValueParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_NULL))
+	_nullValue, _nullValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_NULL))
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetLogDataLogDataEntryNullValue")
 	}
@@ -162,14 +159,14 @@ func BACnetLogDataLogDataEntryNullValueParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetLogDataLogDataEntryNullValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
-		_nullValueErr := writeBuffer.WriteSerializable(m.GetNullValue())
+		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogDataLogDataEntryNullValue) isBACnetLogDataLogDataEntryNullValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetLogDataLogDataEntryNullValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

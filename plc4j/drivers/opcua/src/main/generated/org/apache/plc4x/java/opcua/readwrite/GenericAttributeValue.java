@@ -64,6 +64,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GenericAttributeValue");
 
@@ -85,6 +86,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GenericAttributeValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (attributeId)
     lengthInBits += 32;
@@ -101,6 +103,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 

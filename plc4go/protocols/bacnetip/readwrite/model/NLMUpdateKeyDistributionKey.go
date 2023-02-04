@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_NLMUpdateKeyDistributionKey) GetTypeName() string {
 	return "NLMUpdateKeyDistributionKey"
 }
 
-func (m *_NLMUpdateKeyDistributionKey) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMUpdateKeyDistributionKey) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMUpdateKeyDistributionKey) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (keyRevision)
 	lengthInBits += 8
 
 	// Simple field (key)
-	lengthInBits += m.Key.GetLengthInBits()
+	lengthInBits += m.Key.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyDistributionKey) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMUpdateKeyDistributionKey) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMUpdateKeyDistributionKeyParse(theBytes []byte, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
-	return NLMUpdateKeyDistributionKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMUpdateKeyDistributionKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMUpdateKeyDistributionKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
+func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyDistributionKey"); pullErr != nil {
@@ -159,7 +156,7 @@ func NLMUpdateKeyDistributionKeyParseWithBuffer(readBuffer utils.ReadBuffer, apd
 	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for key")
 	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(readBuffer)
+	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
 	if _keyErr != nil {
 		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMUpdateKeyDistributionKey")
 	}
@@ -185,14 +182,14 @@ func NLMUpdateKeyDistributionKeyParseWithBuffer(readBuffer utils.ReadBuffer, apd
 }
 
 func (m *_NLMUpdateKeyDistributionKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -211,7 +208,7 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for key")
 		}
-		_keyErr := writeBuffer.WriteSerializable(m.GetKey())
+		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
 		if popErr := writeBuffer.PopContext("key"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for key")
 		}
@@ -224,7 +221,7 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMUpdateKeyDistributionKey) isNLMUpdateKeyDistributionKey() bool {
@@ -236,7 +233,7 @@ func (m *_NLMUpdateKeyDistributionKey) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

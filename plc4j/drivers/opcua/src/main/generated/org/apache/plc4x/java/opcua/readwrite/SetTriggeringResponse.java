@@ -115,6 +115,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SetTriggeringResponse");
 
@@ -159,6 +160,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SetTriggeringResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -170,7 +172,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     if (addResults != null) {
       int i = 0;
       for (StatusCode element : addResults) {
-        boolean last = ++i >= addResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= addResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -182,7 +184,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     if (addDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : addDiagnosticInfos) {
-        boolean last = ++i >= addDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= addDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -194,7 +196,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     if (removeResults != null) {
       int i = 0;
       for (StatusCode element : removeResults) {
-        boolean last = ++i >= removeResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= removeResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -206,7 +208,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     if (removeDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : removeDiagnosticInfos) {
-        boolean last = ++i >= removeDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= removeDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -220,6 +222,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

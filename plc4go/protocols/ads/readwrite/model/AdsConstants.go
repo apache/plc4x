@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -81,11 +82,7 @@ func (m *_AdsConstants) GetTypeName() string {
 	return "AdsConstants"
 }
 
-func (m *_AdsConstants) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AdsConstants) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (adsTcpDefaultPort)
@@ -94,15 +91,15 @@ func (m *_AdsConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsConstants) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsConstants) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsConstantsParse(theBytes []byte) (AdsConstants, error) {
-	return AdsConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (AdsConstants, error) {
+func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsConstants"); pullErr != nil {
@@ -129,14 +126,14 @@ func AdsConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (AdsConstants, err
 }
 
 func (m *_AdsConstants) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsConstants"); pushErr != nil {
@@ -164,7 +161,7 @@ func (m *_AdsConstants) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

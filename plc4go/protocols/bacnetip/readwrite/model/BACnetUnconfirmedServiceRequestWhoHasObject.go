@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 
 type _BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetUnconfirmedServiceRequestWhoHasObjectParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetUnconfirmedServiceRequestWhoHasObject, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetUnconfirmedServiceRequestWhoHasObject, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagHeader() BACn
 ///////////////////////
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHasObject"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetParentLengthInBits() uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetParentLengthInBits() u
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
-	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObject"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,9 +167,9 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(2): // BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetUnconfirmedServiceRequestWhoHasObjectName
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -185,7 +187,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils
 	return _child, nil
 }
 
-func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetUnconfirmedServiceRequestWhoHasObject, serializeChildFunction func() error) error {
+func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetUnconfirmedServiceRequestWhoHasObject, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -195,7 +197,7 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) SerializeParent(writeBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoHasObject")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -219,7 +221,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

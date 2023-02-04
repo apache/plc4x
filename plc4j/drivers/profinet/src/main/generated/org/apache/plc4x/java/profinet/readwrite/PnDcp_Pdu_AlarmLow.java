@@ -112,6 +112,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_AlarmLow");
 
@@ -159,6 +160,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_AlarmLow _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (alarmDstEndpoint)
     lengthInBits += 16;
@@ -201,6 +203,7 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int alarmDstEndpoint = readSimpleField("alarmDstEndpoint", readUnsignedInt(readBuffer, 16));
 

@@ -51,6 +51,7 @@ public class MacAddress implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MacAddress");
 
@@ -69,6 +70,7 @@ public class MacAddress implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     MacAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (address != null) {
@@ -89,6 +91,7 @@ public class MacAddress implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] address = readBuffer.readByteArray("address", Math.toIntExact(6));
 

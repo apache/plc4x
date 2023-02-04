@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -163,12 +164,8 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
 	return "S7ParameterUserDataItemCPUFunctions"
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -206,15 +203,15 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterUserDataItemCPUFunctionsParse(theBytes []byte) (S7ParameterUserDataItemCPUFunctions, error) {
-	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
+func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
@@ -316,14 +313,14 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -332,7 +329,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(writeBuf
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -408,7 +405,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) isS7ParameterUserDataItemCPUFunctions() bool {
@@ -420,7 +417,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

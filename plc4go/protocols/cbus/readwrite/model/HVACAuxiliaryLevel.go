@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -82,18 +83,26 @@ func (m *_HVACAuxiliaryLevel) GetMode() uint8 {
 ///////////////////////
 
 func (m *_HVACAuxiliaryLevel) GetIsFanModeAutomatic() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetFanMode()))
 }
 
 func (m *_HVACAuxiliaryLevel) GetIsFanModeContinuous() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetFanMode())
 }
 
 func (m *_HVACAuxiliaryLevel) GetIsFanSpeedAtDefaultSpeed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMode()) == (0x00)))
 }
 
 func (m *_HVACAuxiliaryLevel) GetSpeedSettings() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetMode())
 }
 
@@ -122,11 +131,7 @@ func (m *_HVACAuxiliaryLevel) GetTypeName() string {
 	return "HVACAuxiliaryLevel"
 }
 
-func (m *_HVACAuxiliaryLevel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACAuxiliaryLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACAuxiliaryLevel) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -149,15 +154,15 @@ func (m *_HVACAuxiliaryLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACAuxiliaryLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACAuxiliaryLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACAuxiliaryLevelParse(theBytes []byte) (HVACAuxiliaryLevel, error) {
-	return HVACAuxiliaryLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACAuxiliaryLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACAuxiliaryLevelParseWithBuffer(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACAuxiliaryLevel"); pullErr != nil {
@@ -230,14 +235,14 @@ func HVACAuxiliaryLevelParseWithBuffer(readBuffer utils.ReadBuffer) (HVACAuxilia
 }
 
 func (m *_HVACAuxiliaryLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACAuxiliaryLevel"); pushErr != nil {
@@ -267,11 +272,11 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		return errors.Wrap(_fanModeErr, "Error serializing 'fanMode' field")
 	}
 	// Virtual field
-	if _isFanModeAutomaticErr := writeBuffer.WriteVirtual("isFanModeAutomatic", m.GetIsFanModeAutomatic()); _isFanModeAutomaticErr != nil {
+	if _isFanModeAutomaticErr := writeBuffer.WriteVirtual(ctx, "isFanModeAutomatic", m.GetIsFanModeAutomatic()); _isFanModeAutomaticErr != nil {
 		return errors.Wrap(_isFanModeAutomaticErr, "Error serializing 'isFanModeAutomatic' field")
 	}
 	// Virtual field
-	if _isFanModeContinuousErr := writeBuffer.WriteVirtual("isFanModeContinuous", m.GetIsFanModeContinuous()); _isFanModeContinuousErr != nil {
+	if _isFanModeContinuousErr := writeBuffer.WriteVirtual(ctx, "isFanModeContinuous", m.GetIsFanModeContinuous()); _isFanModeContinuousErr != nil {
 		return errors.Wrap(_isFanModeContinuousErr, "Error serializing 'isFanModeContinuous' field")
 	}
 
@@ -282,11 +287,11 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 	}
 	// Virtual field
-	if _isFanSpeedAtDefaultSpeedErr := writeBuffer.WriteVirtual("isFanSpeedAtDefaultSpeed", m.GetIsFanSpeedAtDefaultSpeed()); _isFanSpeedAtDefaultSpeedErr != nil {
+	if _isFanSpeedAtDefaultSpeedErr := writeBuffer.WriteVirtual(ctx, "isFanSpeedAtDefaultSpeed", m.GetIsFanSpeedAtDefaultSpeed()); _isFanSpeedAtDefaultSpeedErr != nil {
 		return errors.Wrap(_isFanSpeedAtDefaultSpeedErr, "Error serializing 'isFanSpeedAtDefaultSpeed' field")
 	}
 	// Virtual field
-	if _speedSettingsErr := writeBuffer.WriteVirtual("speedSettings", m.GetSpeedSettings()); _speedSettingsErr != nil {
+	if _speedSettingsErr := writeBuffer.WriteVirtual(ctx, "speedSettings", m.GetSpeedSettings()); _speedSettingsErr != nil {
 		return errors.Wrap(_speedSettingsErr, "Error serializing 'speedSettings' field")
 	}
 
@@ -305,7 +310,7 @@ func (m *_HVACAuxiliaryLevel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

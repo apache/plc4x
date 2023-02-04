@@ -56,6 +56,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEventType");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEventType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventType)
     lengthInBits += eventType.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventTypeTagged eventType =
         readSimpleField(

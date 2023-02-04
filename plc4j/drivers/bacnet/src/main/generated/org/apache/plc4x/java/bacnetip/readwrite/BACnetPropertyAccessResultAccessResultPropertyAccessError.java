@@ -73,6 +73,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
   protected void serializeBACnetPropertyAccessResultAccessResultChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
 
@@ -92,6 +93,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyAccessResultAccessResultPropertyAccessError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (propertyAccessError)
     lengthInBits += propertyAccessError.getLengthInBits();
@@ -110,6 +112,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed propertyAccessError =
         readSimpleField(

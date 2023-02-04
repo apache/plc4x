@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataGroupID) GetGroupId() BACnetApplicationTagUnsigne
 ///////////////////////
 
 func (m *_BACnetConstructedDataGroupID) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetGroupId())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataGroupID) GetTypeName() string {
 	return "BACnetConstructedDataGroupID"
 }
 
-func (m *_BACnetConstructedDataGroupID) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataGroupID) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataGroupID) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (groupId)
-	lengthInBits += m.GroupId.GetLengthInBits()
+	lengthInBits += m.GroupId.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGroupID) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataGroupID) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataGroupIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
-	return BACnetConstructedDataGroupIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataGroupIDParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataGroupIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
+func BACnetConstructedDataGroupIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupID"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataGroupIDParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("groupId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for groupId")
 	}
-	_groupId, _groupIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_groupId, _groupIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _groupIdErr != nil {
 		return nil, errors.Wrap(_groupIdErr, "Error parsing 'groupId' field of BACnetConstructedDataGroupID")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataGroupIDParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetConstructedDataGroupID) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("groupId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for groupId")
 		}
-		_groupIdErr := writeBuffer.WriteSerializable(m.GetGroupId())
+		_groupIdErr := writeBuffer.WriteSerializable(ctx, m.GetGroupId())
 		if popErr := writeBuffer.PopContext("groupId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for groupId")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(writeBuffer uti
 			return errors.Wrap(_groupIdErr, "Error serializing 'groupId' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataGroupID) isBACnetConstructedDataGroupID() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataGroupID) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

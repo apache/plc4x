@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetIpv6UdpPort() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetIpv6UdpPort())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetTypeName() string {
 	return "BACnetConstructedDataBACnetIPv6UDPPort"
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6UdpPort)
-	lengthInBits += m.Ipv6UdpPort.GetLengthInBits()
+	lengthInBits += m.Ipv6UdpPort.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBACnetIPv6UDPPortParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
-	return BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6UDPPort"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("ipv6UdpPort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6UdpPort")
 	}
-	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6UdpPortErr != nil {
 		return nil, errors.Wrap(_ipv6UdpPortErr, "Error parsing 'ipv6UdpPort' field of BACnetConstructedDataBACnetIPv6UDPPort")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("ipv6UdpPort"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6UdpPort")
 		}
-		_ipv6UdpPortErr := writeBuffer.WriteSerializable(m.GetIpv6UdpPort())
+		_ipv6UdpPortErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6UdpPort())
 		if popErr := writeBuffer.PopContext("ipv6UdpPort"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6UdpPort")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(write
 			return errors.Wrap(_ipv6UdpPortErr, "Error serializing 'ipv6UdpPort' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) isBACnetConstructedDataBACnetIPv6UDPPort() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -77,6 +78,8 @@ func (m *_BACnetAbortReasonTagged) GetProprietaryValue() uint32 {
 ///////////////////////
 
 func (m *_BACnetAbortReasonTagged) GetIsProprietary() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetValue()) == (BACnetAbortReason_VENDOR_PROPRIETARY_VALUE)))
 }
 
@@ -105,11 +108,7 @@ func (m *_BACnetAbortReasonTagged) GetTypeName() string {
 	return "BACnetAbortReasonTagged"
 }
 
-func (m *_BACnetAbortReasonTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAbortReasonTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAbortReasonTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (value)
@@ -123,15 +122,15 @@ func (m *_BACnetAbortReasonTagged) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_BACnetAbortReasonTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAbortReasonTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAbortReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetAbortReasonTagged, error) {
-	return BACnetAbortReasonTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength)
+	return BACnetAbortReasonTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
-func BACnetAbortReasonTaggedParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
+func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAbortReasonTagged"); pullErr != nil {
@@ -178,14 +177,14 @@ func BACnetAbortReasonTaggedParseWithBuffer(readBuffer utils.ReadBuffer, actualL
 }
 
 func (m *_BACnetAbortReasonTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAbortReasonTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAbortReasonTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAbortReasonTagged"); pushErr != nil {
@@ -198,7 +197,7 @@ func (m *_BACnetAbortReasonTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
+	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
@@ -233,7 +232,7 @@ func (m *_BACnetAbortReasonTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -127,6 +127,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandDSIStatus");
 
@@ -217,6 +218,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandDSIStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channelStatus1)
     lengthInBits += 8;
@@ -257,6 +259,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ChannelStatus channelStatus1 =
         readEnumField(

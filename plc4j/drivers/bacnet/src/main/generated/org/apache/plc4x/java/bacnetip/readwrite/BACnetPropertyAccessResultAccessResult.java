@@ -72,6 +72,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResult");
 
@@ -94,6 +95,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetPropertyAccessResultAccessResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -154,6 +156,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(

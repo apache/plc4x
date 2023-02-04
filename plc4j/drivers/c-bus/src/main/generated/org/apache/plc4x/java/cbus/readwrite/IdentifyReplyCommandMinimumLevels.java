@@ -62,6 +62,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandMinimumLevels");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandMinimumLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (minimumLevels != null) {
@@ -95,6 +97,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] minimumLevels = readBuffer.readByteArray("minimumLevels", Math.toIntExact(numBytes));
 

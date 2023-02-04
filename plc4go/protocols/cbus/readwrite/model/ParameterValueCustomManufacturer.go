@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_ParameterValueCustomManufacturer) GetTypeName() string {
 	return "ParameterValueCustomManufacturer"
 }
 
-func (m *_ParameterValueCustomManufacturer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterValueCustomManufacturer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterValueCustomManufacturer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ParameterValueCustomManufacturer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValueCustomManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueCustomManufacturerParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
-	return ParameterValueCustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueCustomManufacturerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueCustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
+func ParameterValueCustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueCustomManufacturer"); pullErr != nil {
@@ -141,7 +138,7 @@ func ParameterValueCustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := CustomManufacturerParseWithBuffer(readBuffer, uint8(numBytes))
+	_value, _valueErr := CustomManufacturerParseWithBuffer(ctx, readBuffer, uint8(numBytes))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueCustomManufacturer")
 	}
@@ -166,14 +163,14 @@ func ParameterValueCustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_ParameterValueCustomManufacturer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for value")
 		}
-		_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for value")
 		}
@@ -198,7 +195,7 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterValueCustomManufacturer) isParameterValueCustomManufacturer() bool {
@@ -210,7 +207,7 @@ func (m *_ParameterValueCustomManufacturer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

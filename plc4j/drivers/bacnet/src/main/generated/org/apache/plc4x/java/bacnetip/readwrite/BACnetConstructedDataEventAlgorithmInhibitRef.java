@@ -79,6 +79,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventAlgorithmInhibitRef");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventAlgorithmInhibitRef _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventAlgorithmInhibitRef)
     lengthInBits += eventAlgorithmInhibitRef.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectPropertyReference eventAlgorithmInhibitRef =
         readSimpleField(

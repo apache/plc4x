@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Get
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dateTimeValue)
-	lengthInBits += m.DateTimeValue.GetLengthInBits()
+	lengthInBits += m.DateTimeValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithB
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}
@@ -166,14 +163,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithB
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Ser
 		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
 		}
-		_dateTimeValueErr := writeBuffer.WriteSerializable(m.GetDateTimeValue())
+		_dateTimeValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateTimeValue())
 		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dateTimeValue")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Ser
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) isBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Str
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

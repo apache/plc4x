@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_CBusMessageToClient) GetTypeName() string {
 	return "CBusMessageToClient"
 }
 
-func (m *_CBusMessageToClient) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusMessageToClient) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusMessageToClient) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reply)
-	lengthInBits += m.Reply.GetLengthInBits()
+	lengthInBits += m.Reply.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusMessageToClient) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusMessageToClient) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusMessageToClientParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
-	return CBusMessageToClientParseWithBuffer(utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+	return CBusMessageToClientParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
-func CBusMessageToClientParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
+func CBusMessageToClientParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToClient"); pullErr != nil {
@@ -141,7 +138,7 @@ func CBusMessageToClientParseWithBuffer(readBuffer utils.ReadBuffer, isResponse 
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyOrConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
+	_reply, _replyErr := ReplyOrConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}
@@ -167,14 +164,14 @@ func CBusMessageToClientParseWithBuffer(readBuffer utils.ReadBuffer, isResponse 
 }
 
 func (m *_CBusMessageToClient) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusMessageToClient) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -186,7 +183,7 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reply")
 		}
-		_replyErr := writeBuffer.WriteSerializable(m.GetReply())
+		_replyErr := writeBuffer.WriteSerializable(ctx, m.GetReply())
 		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reply")
 		}
@@ -199,7 +196,7 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusMessageToClient) isCBusMessageToClient() bool {
@@ -211,7 +208,7 @@ func (m *_CBusMessageToClient) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

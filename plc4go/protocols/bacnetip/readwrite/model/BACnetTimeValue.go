@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetTimeValue) GetTypeName() string {
 	return "BACnetTimeValue"
 }
 
-func (m *_BACnetTimeValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimeValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timeValue)
-	lengthInBits += m.TimeValue.GetLengthInBits()
+	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimeValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimeValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimeValueParse(theBytes []byte) (BACnetTimeValue, error) {
-	return BACnetTimeValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTimeValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTimeValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
+func BACnetTimeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeValue"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetTimeValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeValu
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetTimeValue")
 	}
@@ -137,7 +134,7 @@ func BACnetTimeValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeValu
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := BACnetConstructedDataElementParseWithBuffer(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_value, _valueErr := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimeValue")
 	}
@@ -158,14 +155,14 @@ func BACnetTimeValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeValu
 }
 
 func (m *_BACnetTimeValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimeValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimeValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTimeValue"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetTimeValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeValue")
 	}
-	_timeValueErr := writeBuffer.WriteSerializable(m.GetTimeValue())
+	_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
 	if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeValue")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetTimeValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for value")
 	}
-	_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+	_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for value")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetTimeValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

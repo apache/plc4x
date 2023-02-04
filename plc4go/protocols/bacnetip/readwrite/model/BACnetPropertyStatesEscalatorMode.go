@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetTypeName() string {
 	return "BACnetPropertyStatesEscalatorMode"
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (escalatorMode)
-	lengthInBits += m.EscalatorMode.GetLengthInBits()
+	lengthInBits += m.EscalatorMode.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesEscalatorModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
-	return BACnetPropertyStatesEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesEscalatorModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
+func BACnetPropertyStatesEscalatorModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorMode"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
-	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorModeErr != nil {
 		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetPropertyStatesEscalatorMode")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetPropertyStatesEscalatorMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("escalatorMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorMode")
 		}
-		_escalatorModeErr := writeBuffer.WriteSerializable(m.GetEscalatorMode())
+		_escalatorModeErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorMode())
 		if popErr := writeBuffer.PopContext("escalatorMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorMode")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesEscalatorMode) isBACnetPropertyStatesEscalatorMode() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -65,6 +65,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
   protected void serializeBACnetEventParameterChangeOfValueCivCriteriaChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
 
@@ -83,6 +84,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfValueCivCriteriaBitmask _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitmask)
     lengthInBits += bitmask.getLengthInBits();
@@ -97,6 +99,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString bitmask =
         readSimpleField(

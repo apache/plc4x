@@ -63,6 +63,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
   protected void serializeDF1RequestMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1CommandRequestMessage");
 
@@ -81,6 +82,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1CommandRequestMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += command.getLengthInBits();
@@ -94,6 +96,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1RequestCommand command =
         readSimpleField(

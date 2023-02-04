@@ -79,6 +79,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLimitMonitoringInterval");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLimitMonitoringInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (limitMonitoringInterval)
     lengthInBits += limitMonitoringInterval.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger limitMonitoringInterval =
         readSimpleField(

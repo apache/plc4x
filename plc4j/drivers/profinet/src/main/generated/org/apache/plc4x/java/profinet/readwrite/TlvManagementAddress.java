@@ -87,6 +87,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
   @Override
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvManagementAddress");
 
@@ -130,6 +131,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvManagementAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (addressStringLength)
     lengthInBits += 8;
@@ -158,6 +160,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short addressStringLength =
         readImplicitField("addressStringLength", readUnsignedShort(readBuffer, 8));

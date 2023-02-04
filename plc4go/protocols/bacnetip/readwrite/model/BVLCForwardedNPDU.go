@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,12 +129,8 @@ func (m *_BVLCForwardedNPDU) GetTypeName() string {
 	return "BVLCForwardedNPDU"
 }
 
-func (m *_BVLCForwardedNPDU) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCForwardedNPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCForwardedNPDU) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -143,20 +141,20 @@ func (m *_BVLCForwardedNPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (npdu)
-	lengthInBits += m.Npdu.GetLengthInBits()
+	lengthInBits += m.Npdu.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BVLCForwardedNPDU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCForwardedNPDU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCForwardedNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
-	return BVLCForwardedNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+	return BVLCForwardedNPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
-func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
+func BVLCForwardedNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
@@ -176,12 +174,16 @@ func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLe
 		ip = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+		_numItems := uint16(uint16(4))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForwardedNPDU")
 			}
-			ip[curItem] = _item
+			ip[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
@@ -199,7 +201,7 @@ func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLe
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
-	_npdu, _npduErr := NPDUParseWithBuffer(readBuffer, uint16(uint16(bvlcPayloadLength)-uint16(uint16(6))))
+	_npdu, _npduErr := NPDUParseWithBuffer(ctx, readBuffer, uint16(uint16(bvlcPayloadLength)-uint16(uint16(6))))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCForwardedNPDU")
 	}
@@ -224,14 +226,14 @@ func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLe
 }
 
 func (m *_BVLCForwardedNPDU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -243,7 +245,8 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ip")
 		}
-		for _, _element := range m.GetIp() {
+		for _curItem, _element := range m.GetIp() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
@@ -264,7 +267,7 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for npdu")
 		}
-		_npduErr := writeBuffer.WriteSerializable(m.GetNpdu())
+		_npduErr := writeBuffer.WriteSerializable(ctx, m.GetNpdu())
 		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for npdu")
 		}
@@ -277,7 +280,7 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -299,7 +302,7 @@ func (m *_BVLCForwardedNPDU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -501,7 +501,7 @@
         <TPKTPacket>
           <protocolId dataType="uint" bitLength="8">3</protocolId>
           <reserved dataType="uint" bitLength="8">0</reserved>
-          <len dataType="uint" bitLength="16">27</len>
+          <len dataType="uint" bitLength="16">26</len>
           <payload>
             <COTPPacket>
               <headerLength dataType="uint" bitLength="8">2</headerLength>
@@ -548,7 +548,6 @@
                             <dataLength dataType="uint" bitLength="16">1</dataLength>
                             <data dataType="byte" bitLength="8">0x01</data>
                             <padding isList="true">
-                              <value dataType="uint" bitLength="8">0</value>
                             </padding>
                           </S7VarPayloadDataItem>
                         </items>

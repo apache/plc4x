@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataClientCOVIncrement) GetCovIncrement() BACnetClien
 ///////////////////////
 
 func (m *_BACnetConstructedDataClientCOVIncrement) GetActualValue() BACnetClientCOV {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetClientCOV(m.GetCovIncrement())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataClientCOVIncrement) GetTypeName() string {
 	return "BACnetConstructedDataClientCOVIncrement"
 }
 
-func (m *_BACnetConstructedDataClientCOVIncrement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataClientCOVIncrement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataClientCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (covIncrement)
-	lengthInBits += m.CovIncrement.GetLengthInBits()
+	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataClientCOVIncrement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataClientCOVIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataClientCOVIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataClientCOVIncrement, error) {
-	return BACnetConstructedDataClientCOVIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataClientCOVIncrementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataClientCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataClientCOVIncrement, error) {
+func BACnetConstructedDataClientCOVIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataClientCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataClientCOVIncrement"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataClientCOVIncrementParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
-	_covIncrement, _covIncrementErr := BACnetClientCOVParseWithBuffer(readBuffer)
+	_covIncrement, _covIncrementErr := BACnetClientCOVParseWithBuffer(ctx, readBuffer)
 	if _covIncrementErr != nil {
 		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataClientCOVIncrement")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataClientCOVIncrementParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataClientCOVIncrement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
-		_covIncrementErr := writeBuffer.WriteSerializable(m.GetCovIncrement())
+		_covIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetCovIncrement())
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataClientCOVIncrement) isBACnetConstructedDataClientCOVIncrement() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataClientCOVIncrement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

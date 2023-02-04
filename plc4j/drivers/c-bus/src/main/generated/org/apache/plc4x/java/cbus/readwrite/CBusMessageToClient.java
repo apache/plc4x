@@ -64,6 +64,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
   @Override
   protected void serializeCBusMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusMessageToClient");
 
@@ -82,6 +83,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusMessageToClient _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reply)
     lengthInBits += reply.getLengthInBits();
@@ -99,6 +101,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReplyOrConfirmation reply =
         readSimpleField(

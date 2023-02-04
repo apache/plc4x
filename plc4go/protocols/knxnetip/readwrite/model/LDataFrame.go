@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -65,14 +66,13 @@ type _LDataFrame struct {
 
 type _LDataFrameChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetNotAckFrame() bool
 	GetPolling() bool
 }
 
 type LDataFrameParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -135,7 +135,7 @@ func (m *_LDataFrame) GetTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *_LDataFrame) GetParentLengthInBits() uint16 {
+func (m *_LDataFrame) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -160,15 +160,15 @@ func (m *_LDataFrame) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_LDataFrame) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LDataFrameParse(theBytes []byte) (LDataFrame, error) {
-	return LDataFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LDataFrameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) {
+func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
@@ -207,7 +207,7 @@ func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) 
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of LDataFrame")
 	}
@@ -241,11 +241,11 @@ func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) 
 	var typeSwitchError error
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		_childTemp, typeSwitchError = LDataExtendedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LDataExtendedParseWithBuffer(ctx, readBuffer)
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		_childTemp, typeSwitchError = LPollDataParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LPollDataParseWithBuffer(ctx, readBuffer)
 	case notAckFrame == bool(false): // LDataFrameACK
-		_childTemp, typeSwitchError = LDataFrameACKParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LDataFrameACKParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [notAckFrame=%v, polling=%v]", notAckFrame, polling)
 	}
@@ -263,7 +263,7 @@ func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) 
 	return _child, nil
 }
 
-func (pm *_LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error {
+func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -307,7 +307,7 @@ func (pm *_LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child LDat
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
-	_priorityErr := writeBuffer.WriteSerializable(m.GetPriority())
+	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priority")
 	}
@@ -349,7 +349,7 @@ func (m *_LDataFrame) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -57,6 +57,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAuthenticationStatus");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAuthenticationStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (authenticationStatus)
     lengthInBits += authenticationStatus.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(

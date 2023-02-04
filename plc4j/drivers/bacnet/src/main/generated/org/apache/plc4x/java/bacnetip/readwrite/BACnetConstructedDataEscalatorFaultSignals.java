@@ -75,6 +75,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEscalatorFaultSignals");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEscalatorFaultSignals _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultSignals != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEscalatorFaultTagged> faultSignals =
         readTerminatedArrayField(

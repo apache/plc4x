@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastBACnetBinaryPV(structType interface{}) BACnetBinaryPV {
 	return castFunc(structType)
 }
 
-func (m BACnetBinaryPV) GetLengthInBits() uint16 {
+func (m BACnetBinaryPV) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetBinaryPV) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetBinaryPV) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetBinaryPVParse(theBytes []byte) (BACnetBinaryPV, error) {
-	return BACnetBinaryPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetBinaryPVParse(ctx context.Context, theBytes []byte) (BACnetBinaryPV, error) {
+	return BACnetBinaryPVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetBinaryPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
+func BACnetBinaryPVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryPV", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")
@@ -114,13 +115,13 @@ func BACnetBinaryPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryPV,
 
 func (e BACnetBinaryPV) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetBinaryPV) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetBinaryPV) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetBinaryPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

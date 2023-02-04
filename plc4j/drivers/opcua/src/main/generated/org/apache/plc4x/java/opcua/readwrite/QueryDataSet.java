@@ -80,6 +80,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryDataSet");
 
@@ -108,6 +109,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryDataSet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -122,7 +124,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     if (values != null) {
       int i = 0;
       for (Variant element : values) {
-        boolean last = ++i >= values.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= values.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -136,6 +138,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId nodeId =
         readSimpleField(

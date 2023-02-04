@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,28 +119,24 @@ func (m *_S7PayloadNotify) GetTypeName() string {
 	return "S7PayloadNotify"
 }
 
-func (m *_S7PayloadNotify) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7PayloadNotify) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7PayloadNotify) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (alarmMessage)
-	lengthInBits += m.AlarmMessage.GetLengthInBits()
+	lengthInBits += m.AlarmMessage.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_S7PayloadNotify) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadNotify) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadNotifyParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadNotify, error) {
-	return S7PayloadNotifyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadNotifyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadNotifyParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadNotify, error) {
+func S7PayloadNotifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadNotify, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadNotify"); pullErr != nil {
@@ -152,7 +149,7 @@ func S7PayloadNotifyParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
 	}
-	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParseWithBuffer(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParseWithBuffer(ctx, readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadNotify")
 	}
@@ -175,14 +172,14 @@ func S7PayloadNotifyParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType
 }
 
 func (m *_S7PayloadNotify) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7PayloadNotify) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadNotify) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -194,7 +191,7 @@ func (m *_S7PayloadNotify) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
 		}
-		_alarmMessageErr := writeBuffer.WriteSerializable(m.GetAlarmMessage())
+		_alarmMessageErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmMessage())
 		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmMessage")
 		}
@@ -207,7 +204,7 @@ func (m *_S7PayloadNotify) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7PayloadNotify) isS7PayloadNotify() bool {
@@ -219,7 +216,7 @@ func (m *_S7PayloadNotify) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

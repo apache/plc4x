@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTraceFlag) GetTraceFlag() BACnetApplicationTagBoo
 ///////////////////////
 
 func (m *_BACnetConstructedDataTraceFlag) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetTraceFlag())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTraceFlag) GetTypeName() string {
 	return "BACnetConstructedDataTraceFlag"
 }
 
-func (m *_BACnetConstructedDataTraceFlag) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTraceFlag) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTraceFlag) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (traceFlag)
-	lengthInBits += m.TraceFlag.GetLengthInBits()
+	lengthInBits += m.TraceFlag.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTraceFlag) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTraceFlag) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTraceFlagParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
-	return BACnetConstructedDataTraceFlagParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTraceFlagParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTraceFlagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
+func BACnetConstructedDataTraceFlagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTraceFlag"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTraceFlagParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("traceFlag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for traceFlag")
 	}
-	_traceFlag, _traceFlagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_traceFlag, _traceFlagErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _traceFlagErr != nil {
 		return nil, errors.Wrap(_traceFlagErr, "Error parsing 'traceFlag' field of BACnetConstructedDataTraceFlag")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTraceFlagParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataTraceFlag) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("traceFlag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for traceFlag")
 		}
-		_traceFlagErr := writeBuffer.WriteSerializable(m.GetTraceFlag())
+		_traceFlagErr := writeBuffer.WriteSerializable(ctx, m.GetTraceFlag())
 		if popErr := writeBuffer.PopContext("traceFlag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for traceFlag")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_traceFlagErr, "Error serializing 'traceFlag' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTraceFlag) isBACnetConstructedDataTraceFlag() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTraceFlag) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

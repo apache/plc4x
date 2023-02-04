@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesSilencedState) GetTypeName() string {
 	return "BACnetPropertyStatesSilencedState"
 }
 
-func (m *_BACnetPropertyStatesSilencedState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesSilencedState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesSilencedState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (silencedState)
-	lengthInBits += m.SilencedState.GetLengthInBits()
+	lengthInBits += m.SilencedState.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesSilencedState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesSilencedState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesSilencedStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
-	return BACnetPropertyStatesSilencedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesSilencedStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
+func BACnetPropertyStatesSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSilencedState"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesSilencedStateParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("silencedState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for silencedState")
 	}
-	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _silencedStateErr != nil {
 		return nil, errors.Wrap(_silencedStateErr, "Error parsing 'silencedState' field of BACnetPropertyStatesSilencedState")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesSilencedStateParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetPropertyStatesSilencedState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("silencedState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for silencedState")
 		}
-		_silencedStateErr := writeBuffer.WriteSerializable(m.GetSilencedState())
+		_silencedStateErr := writeBuffer.WriteSerializable(ctx, m.GetSilencedState())
 		if popErr := writeBuffer.PopContext("silencedState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for silencedState")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesSilencedState) isBACnetPropertyStatesSilencedState() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesSilencedState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

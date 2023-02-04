@@ -692,6 +692,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev5
   protected void serializeOpenProtocolMessageLastTighteningResultDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLastTighteningResultDataRev5");
 
@@ -1443,6 +1444,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev5
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageLastTighteningResultDataRev5 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (blockIdCellId)
     lengthInBits += 16;
@@ -1766,6 +1768,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev5
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdCellId =
         readConstField(

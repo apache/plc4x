@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLightingCommand) GetLightingCommand() BACnetLight
 ///////////////////////
 
 func (m *_BACnetConstructedDataLightingCommand) GetActualValue() BACnetLightingCommand {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLightingCommand(m.GetLightingCommand())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLightingCommand) GetTypeName() string {
 	return "BACnetConstructedDataLightingCommand"
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLightingCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lightingCommand)
-	lengthInBits += m.LightingCommand.GetLengthInBits()
+	lengthInBits += m.LightingCommand.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLightingCommandParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
-	return BACnetConstructedDataLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLightingCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
+func BACnetConstructedDataLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommand"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLightingCommandParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
 	}
-	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(readBuffer)
+	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(ctx, readBuffer)
 	if _lightingCommandErr != nil {
 		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetConstructedDataLightingCommand")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLightingCommandParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataLightingCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("lightingCommand"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lightingCommand")
 		}
-		_lightingCommandErr := writeBuffer.WriteSerializable(m.GetLightingCommand())
+		_lightingCommandErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommand())
 		if popErr := writeBuffer.PopContext("lightingCommand"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lightingCommand")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLightingCommand) isBACnetConstructedDataLightingCommand() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLightingCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,12 +130,8 @@ func (m *_S7ParameterSetupCommunication) GetTypeName() string {
 	return "S7ParameterSetupCommunication"
 }
 
-func (m *_S7ParameterSetupCommunication) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7ParameterSetupCommunication) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7ParameterSetupCommunication) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -151,15 +148,15 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBitsConditional(lastItem boo
 	return lengthInBits
 }
 
-func (m *_S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7ParameterSetupCommunication) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterSetupCommunicationParse(theBytes []byte, messageType uint8) (S7ParameterSetupCommunication, error) {
-	return S7ParameterSetupCommunicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
+	return S7ParameterSetupCommunicationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
-func S7ParameterSetupCommunicationParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
+func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
@@ -223,14 +220,14 @@ func S7ParameterSetupCommunicationParseWithBuffer(readBuffer utils.ReadBuffer, m
 }
 
 func (m *_S7ParameterSetupCommunication) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -280,7 +277,7 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7ParameterSetupCommunication) isS7ParameterSetupCommunication() bool {
@@ -292,7 +289,7 @@ func (m *_S7ParameterSetupCommunication) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

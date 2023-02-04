@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -54,12 +55,11 @@ type _SecurityData struct {
 
 type _SecurityDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type SecurityDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child SecurityData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SecurityData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -95,6 +95,8 @@ func (m *_SecurityData) GetArgument() byte {
 ///////////////////////
 
 func (m *_SecurityData) GetCommandType() SecurityCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastSecurityCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -123,7 +125,7 @@ func (m *_SecurityData) GetTypeName() string {
 	return "SecurityData"
 }
 
-func (m *_SecurityData) GetParentLengthInBits() uint16 {
+func (m *_SecurityData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -137,15 +139,15 @@ func (m *_SecurityData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataParse(theBytes []byte) (SecurityData, error) {
-	return SecurityDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityData, error) {
+func SecurityDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityData"); pullErr != nil {
@@ -163,7 +165,7 @@ func SecurityDataParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := SecurityCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := SecurityCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of SecurityData")
 	}
@@ -195,101 +197,101 @@ func SecurityDataParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityData, err
 	var typeSwitchError error
 	switch {
 	case commandType == SecurityCommandType_ON && argument == 0x80: // SecurityDataSystemArmedDisarmed
-		_childTemp, typeSwitchError = SecurityDataSystemArmedDisarmedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataSystemArmedDisarmedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x80: // SecurityDataSystemDisarmed
-		_childTemp, typeSwitchError = SecurityDataSystemDisarmedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataSystemDisarmedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x81: // SecurityDataExitDelayStarted
-		_childTemp, typeSwitchError = SecurityDataExitDelayStartedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataExitDelayStartedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x82: // SecurityDataEntryDelayStarted
-		_childTemp, typeSwitchError = SecurityDataEntryDelayStartedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataEntryDelayStartedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x83: // SecurityDataAlarmOn
-		_childTemp, typeSwitchError = SecurityDataAlarmOnParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataAlarmOnParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x83: // SecurityDataAlarmOff
-		_childTemp, typeSwitchError = SecurityDataAlarmOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataAlarmOffParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x84: // SecurityDataTamperOn
-		_childTemp, typeSwitchError = SecurityDataTamperOnParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataTamperOnParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x84: // SecurityDataTamperOff
-		_childTemp, typeSwitchError = SecurityDataTamperOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataTamperOffParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x85: // SecurityDataPanicActivated
-		_childTemp, typeSwitchError = SecurityDataPanicActivatedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataPanicActivatedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x85: // SecurityDataPanicCleared
-		_childTemp, typeSwitchError = SecurityDataPanicClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataPanicClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x86: // SecurityDataZoneUnsealed
-		_childTemp, typeSwitchError = SecurityDataZoneUnsealedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneUnsealedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x87: // SecurityDataZoneSealed
-		_childTemp, typeSwitchError = SecurityDataZoneSealedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneSealedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x88: // SecurityDataZoneOpen
-		_childTemp, typeSwitchError = SecurityDataZoneOpenParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneOpenParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x89: // SecurityDataZoneShort
-		_childTemp, typeSwitchError = SecurityDataZoneShortParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneShortParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x89: // SecurityDataZoneIsolated
-		_childTemp, typeSwitchError = SecurityDataZoneIsolatedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneIsolatedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x8B: // SecurityDataLowBatteryDetected
-		_childTemp, typeSwitchError = SecurityDataLowBatteryDetectedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataLowBatteryDetectedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x8B: // SecurityDataLowBatteryCorrected
-		_childTemp, typeSwitchError = SecurityDataLowBatteryCorrectedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataLowBatteryCorrectedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x8C: // SecurityDataLowBatteryCharging
-		_childTemp, typeSwitchError = SecurityDataLowBatteryChargingParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataLowBatteryChargingParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x8D: // SecurityDataZoneName
-		_childTemp, typeSwitchError = SecurityDataZoneNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataZoneNameParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x8E: // SecurityDataStatusReport1
-		_childTemp, typeSwitchError = SecurityDataStatusReport1ParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataStatusReport1ParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x8F: // SecurityDataStatusReport2
-		_childTemp, typeSwitchError = SecurityDataStatusReport2ParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataStatusReport2ParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x90: // SecurityDataPasswordEntryStatus
-		_childTemp, typeSwitchError = SecurityDataPasswordEntryStatusParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataPasswordEntryStatusParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x91: // SecurityDataMainsFailure
-		_childTemp, typeSwitchError = SecurityDataMainsFailureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataMainsFailureParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x91: // SecurityDataMainsRestoredOrApplied
-		_childTemp, typeSwitchError = SecurityDataMainsRestoredOrAppliedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataMainsRestoredOrAppliedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x92: // SecurityDataArmReadyNotReady
-		_childTemp, typeSwitchError = SecurityDataArmReadyNotReadyParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataArmReadyNotReadyParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0x93: // SecurityDataCurrentAlarmType
-		_childTemp, typeSwitchError = SecurityDataCurrentAlarmTypeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataCurrentAlarmTypeParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x94: // SecurityDataLineCutAlarmRaised
-		_childTemp, typeSwitchError = SecurityDataLineCutAlarmRaisedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataLineCutAlarmRaisedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x94: // SecurityDataLineCutAlarmCleared
-		_childTemp, typeSwitchError = SecurityDataLineCutAlarmClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataLineCutAlarmClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x95: // SecurityDataArmFailedRaised
-		_childTemp, typeSwitchError = SecurityDataArmFailedRaisedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataArmFailedRaisedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x95: // SecurityDataArmFailedCleared
-		_childTemp, typeSwitchError = SecurityDataArmFailedClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataArmFailedClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x96: // SecurityDataFireAlarmRaised
-		_childTemp, typeSwitchError = SecurityDataFireAlarmRaisedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataFireAlarmRaisedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x96: // SecurityDataFireAlarmCleared
-		_childTemp, typeSwitchError = SecurityDataFireAlarmClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataFireAlarmClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x97: // SecurityDataGasAlarmRaised
-		_childTemp, typeSwitchError = SecurityDataGasAlarmRaisedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataGasAlarmRaisedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x97: // SecurityDataGasAlarmCleared
-		_childTemp, typeSwitchError = SecurityDataGasAlarmClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataGasAlarmClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0x98: // SecurityDataOtherAlarmRaised
-		_childTemp, typeSwitchError = SecurityDataOtherAlarmRaisedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataOtherAlarmRaisedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0x98: // SecurityDataOtherAlarmCleared
-		_childTemp, typeSwitchError = SecurityDataOtherAlarmClearedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataOtherAlarmClearedParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0xA0: // SecurityDataStatus1Request
-		_childTemp, typeSwitchError = SecurityDataStatus1RequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataStatus1RequestParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0xA1: // SecurityDataStatus2Request
-		_childTemp, typeSwitchError = SecurityDataStatus2RequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataStatus2RequestParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0xA2: // SecurityDataArmSystem
-		_childTemp, typeSwitchError = SecurityDataArmSystemParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataArmSystemParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0xA3: // SecurityDataRaiseTamper
-		_childTemp, typeSwitchError = SecurityDataRaiseTamperParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataRaiseTamperParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF && argument == 0xA3: // SecurityDataDropTamper
-		_childTemp, typeSwitchError = SecurityDataDropTamperParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataDropTamperParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0xA4: // SecurityDataRaiseAlarm
-		_childTemp, typeSwitchError = SecurityDataRaiseAlarmParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataRaiseAlarmParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_EVENT && argument == 0xA5: // SecurityDataEmulatedKeypad
-		_childTemp, typeSwitchError = SecurityDataEmulatedKeypadParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataEmulatedKeypadParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_ON && argument == 0xA6: // SecurityDataDisplayMessage
-		_childTemp, typeSwitchError = SecurityDataDisplayMessageParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = SecurityDataDisplayMessageParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == SecurityCommandType_EVENT && argument == 0xA7: // SecurityDataRequestZoneName
-		_childTemp, typeSwitchError = SecurityDataRequestZoneNameParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = SecurityDataRequestZoneNameParseWithBuffer(ctx, readBuffer)
 	case commandType == SecurityCommandType_OFF: // SecurityDataOff
-		_childTemp, typeSwitchError = SecurityDataOffParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = SecurityDataOffParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == SecurityCommandType_ON: // SecurityDataOn
-		_childTemp, typeSwitchError = SecurityDataOnParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = SecurityDataOnParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == SecurityCommandType_EVENT: // SecurityDataEvent
-		_childTemp, typeSwitchError = SecurityDataEventParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = SecurityDataEventParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}
@@ -307,7 +309,7 @@ func SecurityDataParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityData, err
 	return _child, nil
 }
 
-func (pm *_SecurityData) SerializeParent(writeBuffer utils.WriteBuffer, child SecurityData, serializeChildFunction func() error) error {
+func (pm *_SecurityData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SecurityData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -321,7 +323,7 @@ func (pm *_SecurityData) SerializeParent(writeBuffer utils.WriteBuffer, child Se
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -329,7 +331,7 @@ func (pm *_SecurityData) SerializeParent(writeBuffer utils.WriteBuffer, child Se
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -360,7 +362,7 @@ func (m *_SecurityData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

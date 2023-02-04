@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,12 +134,8 @@ func (m *_RequestReset) GetTypeName() string {
 	return "RequestReset"
 }
 
-func (m *_RequestReset) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestReset) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestReset) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Optional Field (secondTilde)
 	if m.SecondTilde != nil {
@@ -153,15 +150,15 @@ func (m *_RequestReset) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestReset) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestReset) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestResetParse(theBytes []byte, cBusOptions CBusOptions) (RequestReset, error) {
-	return RequestResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestResetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
+func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {
@@ -175,7 +172,7 @@ func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	if pullErr := readBuffer.PullContext("tildePeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek")
 	}
-	tildePeek, _err := RequestTypeParseWithBuffer(readBuffer)
+	tildePeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tildePeek' field of RequestReset")
 	}
@@ -191,7 +188,7 @@ func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 		if pullErr := readBuffer.PullContext("secondTilde"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for secondTilde")
 		}
-		_val, _err := RequestTypeParseWithBuffer(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'secondTilde' field of RequestReset")
 		}
@@ -206,7 +203,7 @@ func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	if pullErr := readBuffer.PullContext("tildePeek2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek2")
 	}
-	tildePeek2, _err := RequestTypeParseWithBuffer(readBuffer)
+	tildePeek2, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tildePeek2' field of RequestReset")
 	}
@@ -222,7 +219,7 @@ func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 		if pullErr := readBuffer.PullContext("thirdTilde"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for thirdTilde")
 		}
-		_val, _err := RequestTypeParseWithBuffer(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'thirdTilde' field of RequestReset")
 		}
@@ -251,14 +248,14 @@ func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 }
 
 func (m *_RequestReset) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_RequestReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -273,7 +270,7 @@ func (m *_RequestReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 				return errors.Wrap(pushErr, "Error pushing for secondTilde")
 			}
 			secondTilde = m.GetSecondTilde()
-			_secondTildeErr := writeBuffer.WriteSerializable(secondTilde)
+			_secondTildeErr := writeBuffer.WriteSerializable(ctx, secondTilde)
 			if popErr := writeBuffer.PopContext("secondTilde"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for secondTilde")
 			}
@@ -289,7 +286,7 @@ func (m *_RequestReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 				return errors.Wrap(pushErr, "Error pushing for thirdTilde")
 			}
 			thirdTilde = m.GetThirdTilde()
-			_thirdTildeErr := writeBuffer.WriteSerializable(thirdTilde)
+			_thirdTildeErr := writeBuffer.WriteSerializable(ctx, thirdTilde)
 			if popErr := writeBuffer.PopContext("thirdTilde"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for thirdTilde")
 			}
@@ -303,7 +300,7 @@ func (m *_RequestReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestReset) isRequestReset() bool {
@@ -315,7 +312,7 @@ func (m *_RequestReset) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

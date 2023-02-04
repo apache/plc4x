@@ -71,6 +71,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowsePathResult");
 
@@ -95,6 +96,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowsePathResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -106,7 +108,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     if (targets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : targets) {
-        boolean last = ++i >= targets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= targets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -120,6 +122,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(

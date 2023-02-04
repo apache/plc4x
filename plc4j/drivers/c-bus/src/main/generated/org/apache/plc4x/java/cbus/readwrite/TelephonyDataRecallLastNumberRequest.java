@@ -66,6 +66,7 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRecallLastNumberRequest");
 
@@ -92,6 +93,7 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataRecallLastNumberRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recallLastNumberType)
     lengthInBits += 8;
@@ -109,6 +111,7 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte recallLastNumberType = readSimpleField("recallLastNumberType", readByte(readBuffer, 8));
     boolean isNumberOfLastOutgoingCall =

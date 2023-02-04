@@ -82,6 +82,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDeviceNotificationRequest");
 
@@ -106,6 +107,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDeviceNotificationRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (length)
     lengthInBits += 32;
@@ -117,7 +119,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     if (adsStampHeaders != null) {
       int i = 0;
       for (AdsStampHeader element : adsStampHeaders) {
-        boolean last = ++i >= adsStampHeaders.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= adsStampHeaders.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -131,6 +133,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long length = readSimpleField("length", readUnsignedLong(readBuffer, 32));
 

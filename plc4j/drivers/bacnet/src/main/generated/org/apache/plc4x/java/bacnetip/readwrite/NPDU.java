@@ -143,6 +143,7 @@ public class NPDU implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NPDU");
 
@@ -233,6 +234,7 @@ public class NPDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     NPDU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (protocolVersionNumber)
     lengthInBits += 8;
@@ -318,6 +320,7 @@ public class NPDU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short protocolVersionNumber =
         readSimpleField("protocolVersionNumber", readUnsignedShort(readBuffer, 8));

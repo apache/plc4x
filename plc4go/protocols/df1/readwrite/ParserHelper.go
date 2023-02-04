@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/df1/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -33,9 +35,9 @@ type Df1ParserHelper struct {
 func (m Df1ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "DF1Symbol":
-		return model.DF1SymbolParseWithBuffer(io)
+		return model.DF1SymbolParseWithBuffer(context.Background(), io)
 	case "DF1Command":
-		return model.DF1CommandParseWithBuffer(io)
+		return model.DF1CommandParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

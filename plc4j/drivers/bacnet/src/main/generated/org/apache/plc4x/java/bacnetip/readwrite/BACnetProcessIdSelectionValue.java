@@ -56,6 +56,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
   protected void serializeBACnetProcessIdSelectionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetProcessIdSelectionValue");
 
@@ -75,6 +76,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetProcessIdSelectionValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (processIdentifier)
     lengthInBits += processIdentifier.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(

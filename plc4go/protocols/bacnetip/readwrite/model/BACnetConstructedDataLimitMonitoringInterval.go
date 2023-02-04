@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLimitMonitoringInterv
 ///////////////////////
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetLimitMonitoringInterval())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetTypeName() string {
 	return "BACnetConstructedDataLimitMonitoringInterval"
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (limitMonitoringInterval)
-	lengthInBits += m.LimitMonitoringInterval.GetLengthInBits()
+	lengthInBits += m.LimitMonitoringInterval.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLimitMonitoringIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
-	return BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
+func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitMonitoringInterval"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("limitMonitoringInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for limitMonitoringInterval")
 	}
-	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _limitMonitoringIntervalErr != nil {
 		return nil, errors.Wrap(_limitMonitoringIntervalErr, "Error parsing 'limitMonitoringInterval' field of BACnetConstructedDataLimitMonitoringInterval")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("limitMonitoringInterval"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for limitMonitoringInterval")
 		}
-		_limitMonitoringIntervalErr := writeBuffer.WriteSerializable(m.GetLimitMonitoringInterval())
+		_limitMonitoringIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetLimitMonitoringInterval())
 		if popErr := writeBuffer.PopContext("limitMonitoringInterval"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for limitMonitoringInterval")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 			return errors.Wrap(_limitMonitoringIntervalErr, "Error serializing 'limitMonitoringInterval' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) isBACnetConstructedDataLimitMonitoringInterval() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

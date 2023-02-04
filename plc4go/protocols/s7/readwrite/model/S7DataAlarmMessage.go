@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -53,13 +54,12 @@ type _S7DataAlarmMessage struct {
 
 type _S7DataAlarmMessageChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCpuFunctionType() uint8
 }
 
 type S7DataAlarmMessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -110,7 +110,7 @@ func (m *_S7DataAlarmMessage) GetTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *_S7DataAlarmMessage) GetParentLengthInBits() uint16 {
+func (m *_S7DataAlarmMessage) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)
@@ -122,15 +122,15 @@ func (m *_S7DataAlarmMessage) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_S7DataAlarmMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7DataAlarmMessageParse(theBytes []byte, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
-	return S7DataAlarmMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+	return S7DataAlarmMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
-func S7DataAlarmMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
+func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
@@ -168,9 +168,9 @@ func S7DataAlarmMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionT
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_childTemp, typeSwitchError = S7MessageObjectRequestParseWithBuffer(readBuffer, cpuFunctionType)
+		_childTemp, typeSwitchError = S7MessageObjectRequestParseWithBuffer(ctx, readBuffer, cpuFunctionType)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_childTemp, typeSwitchError = S7MessageObjectResponseParseWithBuffer(readBuffer, cpuFunctionType)
+		_childTemp, typeSwitchError = S7MessageObjectResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v]", cpuFunctionType)
 	}
@@ -188,7 +188,7 @@ func S7DataAlarmMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionT
 	return _child, nil
 }
 
-func (pm *_S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error {
+func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -230,7 +230,7 @@ func (m *_S7DataAlarmMessage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -80,6 +80,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataChangeNotification");
 
@@ -112,6 +113,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataChangeNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (notificationLength)
     lengthInBits += 32;
@@ -123,7 +125,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     if (monitoredItems != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : monitoredItems) {
-        boolean last = ++i >= monitoredItems.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= monitoredItems.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -135,7 +137,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,6 +151,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
 

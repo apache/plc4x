@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetMaxMaster() BACnetApplic
 ///////////////////////
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxMaster())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetTypeName() string {
 	return "BACnetConstructedDataNetworkPortMaxMaster"
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maxMaster)
-	lengthInBits += m.MaxMaster.GetLengthInBits()
+	lengthInBits += m.MaxMaster.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataNetworkPortMaxMasterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
-	return BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
+func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortMaxMaster"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
 	}
-	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maxMasterErr != nil {
 		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataNetworkPortMaxMaster")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxMaster")
 		}
-		_maxMasterErr := writeBuffer.WriteSerializable(m.GetMaxMaster())
+		_maxMasterErr := writeBuffer.WriteSerializable(ctx, m.GetMaxMaster())
 		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxMaster")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) isBACnetConstructedDataNetworkPortMaxMaster() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

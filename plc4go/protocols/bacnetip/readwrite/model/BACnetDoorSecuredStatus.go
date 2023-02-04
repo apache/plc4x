@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetDoorSecuredStatus(structType interface{}) BACnetDoorSecuredStatus
 	return castFunc(structType)
 }
 
-func (m BACnetDoorSecuredStatus) GetLengthInBits() uint16 {
+func (m BACnetDoorSecuredStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetDoorSecuredStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetDoorSecuredStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDoorSecuredStatusParse(theBytes []byte) (BACnetDoorSecuredStatus, error) {
-	return BACnetDoorSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetDoorSecuredStatusParse(ctx context.Context, theBytes []byte) (BACnetDoorSecuredStatus, error) {
+	return BACnetDoorSecuredStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetDoorSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
+func BACnetDoorSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorSecuredStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorSecuredStatus")
@@ -120,13 +121,13 @@ func BACnetDoorSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 
 func (e BACnetDoorSecuredStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorSecuredStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDoorSecuredStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

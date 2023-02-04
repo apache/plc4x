@@ -108,6 +108,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApplicationDescription");
 
@@ -155,6 +156,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApplicationDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (applicationUri)
     lengthInBits += applicationUri.getLengthInBits();
@@ -181,7 +183,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     if (discoveryUrls != null) {
       int i = 0;
       for (PascalString element : discoveryUrls) {
-        boolean last = ++i >= discoveryUrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryUrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -195,6 +197,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString applicationUri =
         readSimpleField(

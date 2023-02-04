@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -157,12 +158,8 @@ func (m *_LDataExtended) GetTypeName() string {
 	return "LDataExtended"
 }
 
-func (m *_LDataExtended) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LDataExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -174,7 +171,7 @@ func (m *_LDataExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 4
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.GetLengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.DestinationAddress) > 0 {
@@ -185,20 +182,20 @@ func (m *_LDataExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (apdu)
-	lengthInBits += m.Apdu.GetLengthInBits()
+	lengthInBits += m.Apdu.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_LDataExtended) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LDataExtendedParse(theBytes []byte) (LDataExtended, error) {
-	return LDataExtendedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LDataExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LDataExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (LDataExtended, error) {
+func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
@@ -232,7 +229,7 @@ func LDataExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (LDataExtended, e
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LDataExtended")
 	}
@@ -258,7 +255,7 @@ func LDataExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (LDataExtended, e
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for apdu")
 	}
-	_apdu, _apduErr := ApduParseWithBuffer(readBuffer, uint8(dataLength))
+	_apdu, _apduErr := ApduParseWithBuffer(ctx, readBuffer, uint8(dataLength))
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field of LDataExtended")
 	}
@@ -286,14 +283,14 @@ func LDataExtendedParseWithBuffer(readBuffer utils.ReadBuffer) (LDataExtended, e
 }
 
 func (m *_LDataExtended) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LDataExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -326,7 +323,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
-		_sourceAddressErr := writeBuffer.WriteSerializable(m.GetSourceAddress())
+		_sourceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAddress())
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
@@ -341,7 +338,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes()) - uint8(uint8(1)))
+		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes(ctx)) - uint8(uint8(1)))
 		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -351,7 +348,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
-		_apduErr := writeBuffer.WriteSerializable(m.GetApdu())
+		_apduErr := writeBuffer.WriteSerializable(ctx, m.GetApdu())
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apdu")
 		}
@@ -364,7 +361,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LDataExtended) isLDataExtended() bool {
@@ -376,7 +373,7 @@ func (m *_LDataExtended) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()
