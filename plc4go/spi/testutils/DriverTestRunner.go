@@ -101,16 +101,17 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
 	connectionResult := <-connectionChan
 
-	if connectionResult.GetConnection() != nil {
+	if connectionResult.GetErr() != nil {
 		return errors.Wrap(connectionResult.GetErr(), "error getting a connection")
 	}
+	connection := connectionResult.GetConnection()
 
 	log.Info().Msgf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
 
 	// Run the setup steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
-		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
+		err := m.ExecuteStep(connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
@@ -121,7 +122,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the actual scenario steps
 	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
-		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
+		err := m.ExecuteStep(connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in step "+testStep.name)
 		}
@@ -130,7 +131,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the teardown steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
-		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
+		err := m.ExecuteStep(connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in teardown step "+testStep.name)
 		}
