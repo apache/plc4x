@@ -224,7 +224,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{failsafeArgLine}</argLine>
+          <argLine>-Xmx256m</argLine>
           <includes>
             <include>**/*IT.java</include>
           </includes>

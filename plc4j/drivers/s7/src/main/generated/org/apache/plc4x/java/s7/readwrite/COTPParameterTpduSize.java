@@ -45,13 +45,9 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
   // Properties.
   protected final COTPTpduSize tpduSize;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterTpduSize(COTPTpduSize tpduSize, Short rest) {
-    super(rest);
+  public COTPParameterTpduSize(COTPTpduSize tpduSize) {
+    super();
     this.tpduSize = tpduSize;
-    this.rest = rest;
   }
 
   public COTPTpduSize getTpduSize() {
@@ -111,22 +107,19 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterTpduSize");
     // Create the instance
-    return new COTPParameterTpduSizeBuilderImpl(tpduSize, rest);
+    return new COTPParameterTpduSizeBuilderImpl(tpduSize);
   }
 
   public static class COTPParameterTpduSizeBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final COTPTpduSize tpduSize;
-    private final Short rest;
 
-    public COTPParameterTpduSizeBuilderImpl(COTPTpduSize tpduSize, Short rest) {
+    public COTPParameterTpduSizeBuilderImpl(COTPTpduSize tpduSize) {
       this.tpduSize = tpduSize;
-      this.rest = rest;
     }
 
-    public COTPParameterTpduSize build(Short rest) {
-
-      COTPParameterTpduSize cOTPParameterTpduSize = new COTPParameterTpduSize(tpduSize, rest);
+    public COTPParameterTpduSize build() {
+      COTPParameterTpduSize cOTPParameterTpduSize = new COTPParameterTpduSize(tpduSize);
       return cOTPParameterTpduSize;
     }
   }

@@ -232,14 +232,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "UTF-8", stringEncoding));
 
-                                    *data_item = plc4c_data_create_string_data(stringLength, value);
+                *data_item = plc4c_data_create_string_data(stringLength, value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "UTF-16", stringEncoding));
 
-                                    *data_item = plc4c_data_create_string_data(stringLength, value);
+                *data_item = plc4c_data_create_string_data(stringLength, value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 

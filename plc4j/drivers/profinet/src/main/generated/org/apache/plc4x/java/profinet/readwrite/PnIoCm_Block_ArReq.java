@@ -388,15 +388,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Simple field (blockVersionLow)
     lengthInBits += 8;
 
-    // Implicit Field (blockLength)
-    lengthInBits += 16;
-
-    // Simple field (blockVersionHigh)
-    lengthInBits += 8;
-
-    // Simple field (blockVersionLow)
-    lengthInBits += 8;
-
     // Simple field (arType)
     lengthInBits += 16;
 
@@ -467,24 +458,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-
-    int blockLength =
-        readImplicitField(
-            "blockLength",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionHigh =
-        readSimpleField(
-            "blockVersionHigh",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionLow =
-        readSimpleField(
-            "blockVersionLow",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int blockLength =
         readImplicitField(

@@ -46,19 +46,14 @@ public class COTPPacketDisconnectResponse extends COTPPacket implements Message 
   protected final int destinationReference;
   protected final int sourceReference;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
   public COTPPacketDisconnectResponse(
       List<COTPParameter> parameters,
       S7Message payload,
       int destinationReference,
-      int sourceReference,
-      Integer cotpLen) {
-    super(parameters, payload, cotpLen);
+      int sourceReference) {
+    super(parameters, payload);
     this.destinationReference = destinationReference;
     this.sourceReference = sourceReference;
-    this.cotpLen = cotpLen;
   }
 
   public int getDestinationReference() {
@@ -121,28 +116,23 @@ public class COTPPacketDisconnectResponse extends COTPPacket implements Message 
 
     readBuffer.closeContext("COTPPacketDisconnectResponse");
     // Create the instance
-    return new COTPPacketDisconnectResponseBuilderImpl(
-        destinationReference, sourceReference, cotpLen);
+    return new COTPPacketDisconnectResponseBuilderImpl(destinationReference, sourceReference);
   }
 
   public static class COTPPacketDisconnectResponseBuilderImpl
       implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final int sourceReference;
-    private final Integer cotpLen;
 
-    public COTPPacketDisconnectResponseBuilderImpl(
-        int destinationReference, int sourceReference, Integer cotpLen) {
+    public COTPPacketDisconnectResponseBuilderImpl(int destinationReference, int sourceReference) {
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
-      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketDisconnectResponse build(
-        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
+    public COTPPacketDisconnectResponse build(List<COTPParameter> parameters, S7Message payload) {
       COTPPacketDisconnectResponse cOTPPacketDisconnectResponse =
           new COTPPacketDisconnectResponse(
-              parameters, payload, destinationReference, sourceReference, cotpLen);
+              parameters, payload, destinationReference, sourceReference);
       return cOTPPacketDisconnectResponse;
     }
   }

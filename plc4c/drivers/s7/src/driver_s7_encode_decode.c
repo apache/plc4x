@@ -358,7 +358,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
             plc4c_s7_read_write_transport_size_DATE_AND_TIME) {
       any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
         any_address->s7_address_any_number_of_elements =
-          plc4c_s7_read_write_transport_size_length_in_bytes(&(any_address->s7_address_any_transport_size)) *
+          plc4c_s7_read_write_transport_size_length_in_bytes(plc4x_spi_context_background(), &(any_address->s7_address_any_transport_size)) *
             any_address->s7_address_any_number_of_elements;
     } else if (any_address->s7_address_any_transport_size ==
          plc4c_s7_read_write_transport_size_STRING) {

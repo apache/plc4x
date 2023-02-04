@@ -1154,9 +1154,6 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
         case plc4c_s7_read_write_transport_size_INT: /* '0x06' */{
             return plc4c_s7_read_write_transport_size_INT;
         }
-        case plc4c_s7_read_write_transport_size_REAL: /* '0x0E' */{
-            return plc4c_s7_read_write_transport_size_REAL;
-        }
         case plc4c_s7_read_write_transport_size_LWORD: /* '0x05' */{
             return plc4c_s7_read_write_transport_size_LWORD;
         }

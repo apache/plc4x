@@ -47,21 +47,16 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
   protected final int sourceReference;
   protected final COTPProtocolClass protocolClass;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
   public COTPPacketDisconnectRequest(
       List<COTPParameter> parameters,
       S7Message payload,
       int destinationReference,
       int sourceReference,
-      COTPProtocolClass protocolClass,
-      Integer cotpLen) {
-    super(parameters, payload, cotpLen);
+      COTPProtocolClass protocolClass) {
+    super(parameters, payload);
     this.destinationReference = destinationReference;
     this.sourceReference = sourceReference;
     this.protocolClass = protocolClass;
-    this.cotpLen = cotpLen;
   }
 
   public int getDestinationReference() {
@@ -149,7 +144,7 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
     readBuffer.closeContext("COTPPacketDisconnectRequest");
     // Create the instance
     return new COTPPacketDisconnectRequestBuilderImpl(
-        destinationReference, sourceReference, protocolClass, cotpLen);
+        destinationReference, sourceReference, protocolClass);
   }
 
   public static class COTPPacketDisconnectRequestBuilderImpl
@@ -157,24 +152,18 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
     private final int destinationReference;
     private final int sourceReference;
     private final COTPProtocolClass protocolClass;
-    private final Integer cotpLen;
 
     public COTPPacketDisconnectRequestBuilderImpl(
-        int destinationReference,
-        int sourceReference,
-        COTPProtocolClass protocolClass,
-        Integer cotpLen) {
+        int destinationReference, int sourceReference, COTPProtocolClass protocolClass) {
       this.destinationReference = destinationReference;
       this.sourceReference = sourceReference;
       this.protocolClass = protocolClass;
-      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketDisconnectRequest build(
-        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
+    public COTPPacketDisconnectRequest build(List<COTPParameter> parameters, S7Message payload) {
       COTPPacketDisconnectRequest cOTPPacketDisconnectRequest =
           new COTPPacketDisconnectRequest(
-              parameters, payload, destinationReference, sourceReference, protocolClass, cotpLen);
+              parameters, payload, destinationReference, sourceReference, protocolClass);
       return cOTPPacketDisconnectRequest;
     }
   }

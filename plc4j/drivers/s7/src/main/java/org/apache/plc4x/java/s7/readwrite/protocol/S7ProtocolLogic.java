@@ -84,7 +84,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
 public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
-    private final AtomicInteger tpduGenerator = new AtomicInteger(1);
+    private final AtomicInteger tpduGenerator = new AtomicInteger(0);
 
     private S7Configuration configuration;
     /*
@@ -263,16 +263,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
      */
     private CompletableFuture<S7Message> readInternal(S7MessageRequest request) {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
-        int thisTpduId = 0;
-        if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200)
-        {
-            thisTpduId = tpduGenerator.getAndIncrement();
-        }
-        final int tpduId = thisTpduId;
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if(tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(0);
-        }
+        int tpduId = getTpduId();
 
         // Create a new Request with correct tpuId (is not known before)
         S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
@@ -324,13 +315,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 //
 //        }
 
-
-
-        final int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        int tpduId = getTpduId();
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
@@ -404,11 +389,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
             //payloadItems.add(serializePlcValue(tag, plcValue));
         }
-        final int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+
+        int tpduId = getTpduId();
 
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageUserData(tpduId,
@@ -709,7 +691,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     }
 
     private TPKTPacket createIdentifyRemoteMessage() {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(Collections.singletonList(
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(getTpduId(), new S7ParameterUserData(Collections.singletonList(
             new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
         )), new S7PayloadUserData(Collections.singletonList(
             new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
@@ -741,7 +723,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         S7ParameterSetupCommunication s7ParameterSetupCommunication =
             new S7ParameterSetupCommunication(
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
-        S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
+        S7Message s7Message = new S7MessageRequest(getTpduId(), s7ParameterSetupCommunication,
             null);
         COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
         return new TPKTPacket(cotpPacketData);
@@ -1074,4 +1056,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             future.completeExceptionally(e);
         }
     }
+
+    protected int getTpduId() {
+        int tpduId = 0;
+        // It seems an S7 200 doesn't like any TPDU-Id that's not 0
+        if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200) {
+            tpduId = tpduGenerator.getAndIncrement();
+        }
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if(tpduGenerator.get() == 0xFFFF) {
+            tpduGenerator.set(0);
+        }
+        return tpduId;
+    }
+
 }

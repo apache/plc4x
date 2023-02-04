@@ -179,9 +179,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     // Manual Field (dataUnit)
     lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
 
-    // Manual Field (dataUnit)
-    lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
-
     // Simple field (cycleCounter)
     lengthInBits += 16;
 
@@ -222,15 +219,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-
-    PnIo_CyclicServiceDataUnit dataUnit =
-        readManualField(
-            "dataUnit",
-            readBuffer,
-            () ->
-                (PnIo_CyclicServiceDataUnit)
-                    (org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.readDataUnit(
-                        readBuffer)));
 
     PnIo_CyclicServiceDataUnit dataUnit =
         readManualField(

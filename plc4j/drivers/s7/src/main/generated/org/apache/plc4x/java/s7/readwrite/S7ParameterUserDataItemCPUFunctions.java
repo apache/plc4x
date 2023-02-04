@@ -135,21 +135,13 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
 
     // Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
     writeOptionalField(
-        "dataUnitReferenceNumber",
-        dataUnitReferenceNumber,
-        writeUnsignedShort(writeBuffer, 8),
-        (getCpuFunctionType()) == (8));
+        "dataUnitReferenceNumber", dataUnitReferenceNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (lastDataUnit) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "lastDataUnit",
-        lastDataUnit,
-        writeUnsignedShort(writeBuffer, 8),
-        (getCpuFunctionType()) == (8));
+    writeOptionalField("lastDataUnit", lastDataUnit, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (errorCode) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "errorCode", errorCode, writeUnsignedInt(writeBuffer, 16), (getCpuFunctionType()) == (8));
+    writeOptionalField("errorCode", errorCode, writeUnsignedInt(writeBuffer, 16));
 
     writeBuffer.popContext("S7ParameterUserDataItemCPUFunctions");
   }
