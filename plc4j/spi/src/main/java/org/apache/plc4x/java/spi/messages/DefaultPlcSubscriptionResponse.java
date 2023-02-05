@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -39,16 +35,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, PlcResponse, Serializable {
 
     private final PlcSubscriptionRequest request;
 
     private final Map<String, ResponseItem<PlcSubscriptionHandle>> values;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcSubscriptionResponse(@JsonProperty("request") PlcSubscriptionRequest request,
-                                          @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
+    public DefaultPlcSubscriptionResponse(PlcSubscriptionRequest request,
+                                          Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
         request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
@@ -61,7 +55,6 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     }
 
     @Override
-    @JsonIgnore
     public PlcSubscriptionHandle getSubscriptionHandle(String name) {
         ResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
@@ -74,19 +67,16 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     }
 
     @Override
-    @JsonIgnore
     public Collection<String> getTagNames() {
         return values.keySet();
     }
 
     @Override
-    @JsonIgnore
     public PlcSubscriptionTag getTag(String name) {
         throw new PlcNotImplementedException("tag access not possible as these come async");
     }
 
     @Override
-    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
         ResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
@@ -101,7 +91,6 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     }
 
     @Override
-    @JsonIgnore
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
         return values.values().stream().map(ResponseItem::getValue).collect(Collectors.toList());
     }

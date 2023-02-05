@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -37,31 +36,26 @@ public abstract class PlcIECValue<T> extends PlcValueAdapter {
     }
 
     @Override
-    @JsonIgnore
     public Object getObject() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public int getLength() {
         return 1;
     }
 
     @Override
-    @JsonIgnore
     public boolean isSimple() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isNullable() {
         return isNullable;
     }
 
     @Override
-    @JsonIgnore
     public boolean isNull() {
         return isNullable && value == null;
     }
@@ -72,7 +66,6 @@ public abstract class PlcIECValue<T> extends PlcValueAdapter {
      * @return if i == 0 returns itself, otherwise throws an exception.
      */
     @Override
-    @JsonIgnore
     public PlcValue getIndex(int i) {
         if(i == 0) {
             return this;

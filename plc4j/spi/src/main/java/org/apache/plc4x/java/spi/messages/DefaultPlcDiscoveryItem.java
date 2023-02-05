@@ -18,9 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -31,7 +28,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     private final String protocolCode;
@@ -42,13 +38,12 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     private final Map<String, PlcValue> attributes;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcDiscoveryItem(@JsonProperty("protocolCode") String protocolCode,
-                                   @JsonProperty("transportCode") String transportCode,
-                                   @JsonProperty("transportUrl") String transportUrl,
-                                   @JsonProperty("options") Map<String, String> options,
-                                   @JsonProperty("name") String name,
-                                   @JsonProperty("options") Map<String, PlcValue> attributes) {
+    public DefaultPlcDiscoveryItem(String protocolCode,
+                                   String transportCode,
+                                   String transportUrl,
+                                   Map<String, String> options,
+                                   String name,
+                                   Map<String, PlcValue> attributes) {
         this.protocolCode = protocolCode;
         this.transportCode = transportCode;
         this.transportUrl = transportUrl;

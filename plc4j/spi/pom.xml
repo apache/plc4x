@@ -53,17 +53,15 @@
       <artifactId>woodstox-core</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- Currently only needed for the ReadBufferJsonBased and WriteBufferJsonBased -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <dependency>
@@ -101,7 +99,6 @@
         <configuration>
           <instructions>
             <Import-Package>
-                com.fasterxml.jackson.annotation;resolution:=optional,   
                 com.github.jinahya.bit.io;resolution:=optional,
                 *
             </Import-Package>

@@ -94,7 +94,6 @@
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.s7.readwrite.S7Driver
             </Export-Service>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
             <SPI-consumer>*</SPI-consumer>            
@@ -132,10 +131,6 @@
       <version>0.11.0-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>

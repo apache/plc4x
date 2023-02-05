@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -32,7 +28,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     public static PlcLTIME_OF_DAY of(Object value) {
@@ -52,18 +47,15 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
         return new PlcLTIME_OF_DAY(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME_OF_DAY(@JsonProperty("value") LocalTime value) {
+    public PlcLTIME_OF_DAY(LocalTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME_OF_DAY(@JsonProperty("value") Long nanosecondsSinceMidnight) {
+    public PlcLTIME_OF_DAY(Long nanosecondsSinceMidnight) {
         super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight), true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME_OF_DAY(@JsonProperty("value") BigInteger nanosecondsSinceMidnight) {
+    public PlcLTIME_OF_DAY(BigInteger nanosecondsSinceMidnight) {
         // TODO: Not 100% correct, we're loosing precision here
         super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()), true);
     }
@@ -88,31 +80,26 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

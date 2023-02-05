@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -31,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.BitSet;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcBYTE extends PlcIECValue<Short> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
@@ -145,8 +140,7 @@ public class PlcBYTE extends PlcIECValue<Short> {
         }
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcBYTE(@JsonProperty("value") short value) {
+    public PlcBYTE(short value) {
         if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
@@ -160,18 +154,15 @@ public class PlcBYTE extends PlcIECValue<Short> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isBoolean() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return (value != null) && !value.equals((short) 0);
     }
 
-    @JsonIgnore
     public boolean[] getBooleanArray() {
         boolean[] booleanValues = new boolean[8];
         BitSet bitSet = BitSet.valueOf(new long[]{this.value});
@@ -182,120 +173,100 @@ public class PlcBYTE extends PlcIECValue<Short> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isByte() {
         return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return value.byteValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isShort() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return value.intValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return value.longValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return BigInteger.valueOf(getLong());
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return value.floatValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return value.doubleValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return BigDecimal.valueOf(getFloat());
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return Short.toString(value);
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte) (value & 0xff);

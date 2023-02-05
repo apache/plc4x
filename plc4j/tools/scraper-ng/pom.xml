@@ -33,24 +33,6 @@
   <description>Utility to efficiently collect a large number of items on multiple devices by different triggers.</description>
 
   <dependencies>
-    <!--Jackson-->
-    <!--dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency-->
-
     <!-- Apache Commons -->
     <!--dependency>
       <groupId>org.apache.commons</groupId>

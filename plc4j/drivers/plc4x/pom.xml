@@ -95,7 +95,6 @@
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.readwrite.Plc4xDriver
             </Export-Service>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
             <SPI-consumer>*</SPI-consumer>            

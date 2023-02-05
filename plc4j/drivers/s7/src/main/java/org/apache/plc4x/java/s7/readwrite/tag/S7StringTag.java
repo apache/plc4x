@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.tag;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -32,11 +30,10 @@ public class S7StringTag extends S7Tag {
 
     private final int stringLength;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    protected S7StringTag(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
-                          @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
-                          @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements,
-                          @JsonProperty("stringLength") int stringLength) {
+    protected S7StringTag(TransportSize dataType, MemoryArea memoryArea,
+                          int blockNumber, int byteOffset,
+                          byte bitOffset, int numElements,
+                          int stringLength) {
         super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
         this.stringLength = stringLength;
     }

@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -31,7 +27,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
@@ -53,18 +48,16 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         return new PlcDATE_AND_TIME(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
+    public PlcDATE_AND_TIME(LocalDateTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE_AND_TIME(@JsonProperty("value") long secondsSinceEpoch) {
+    public PlcDATE_AND_TIME(long secondsSinceEpoch) {
         super(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
             ZoneOffset.UTC), true);
     }
 
-    public PlcDATE_AND_TIME(@JsonProperty("year") int year, @JsonProperty("month") int month, @JsonProperty("day") int day, @JsonProperty("hour") int hour, @JsonProperty("minutes") int minutes, @JsonProperty("seconds") int seconds, @JsonProperty("nanoseconds") int nanoseconds) {
+    public PlcDATE_AND_TIME(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
         super(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds), true);
     }
 
@@ -122,55 +115,46 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value.toLocalTime();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate() {
         return value.toLocalDate();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDateTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDateTime getDateTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }
