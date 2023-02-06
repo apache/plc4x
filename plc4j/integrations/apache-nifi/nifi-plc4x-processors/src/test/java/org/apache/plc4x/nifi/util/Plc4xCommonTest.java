@@ -44,6 +44,9 @@ public class Plc4xCommonTest {
     public static Map<String, String> addressMap = new HashMap<>();
     public static Map<String, Class<?>> typeMap = new HashMap<>();
 
+
+    // TODO: BOOL, WORD; DWORD and LWORD are commented because random generation is not working with this types 
+    // or a because a reverse type mapping between avro and PlcTypes is not implemented
     public static Schema schema = SchemaBuilder.builder()
         .record("tests").fields()
             .nullableBoolean("BOOL", true)

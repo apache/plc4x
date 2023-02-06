@@ -73,8 +73,6 @@ The Plc4xSinkRecord Processor can be configured using the common properties defi
 
 For the **Record Writer** property, any writer included in NiFi could be used, such as JSON, CSV, etc (also custom writers can be created).
 
-The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using a **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one tag will be included for each of the variables defined taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date.
-
 
 ## Plc4xSourceRecordProcessor
 
