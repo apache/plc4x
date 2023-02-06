@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +96,7 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetTypeName() string {
 	return "BVLCBroadcastDistributionTableEntry"
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -117,15 +115,15 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCBroadcastDistributionTableEntryParse(theBytes []byte) (BVLCBroadcastDistributionTableEntry, error) {
-	return BVLCBroadcastDistributionTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BVLCBroadcastDistributionTableEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
+func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCBroadcastDistributionTableEntry"); pullErr != nil {
@@ -145,12 +143,16 @@ func BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer utils.ReadBuf
 		ip = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+		_numItems := uint16(uint16(4))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCBroadcastDistributionTableEntry")
 			}
-			ip[curItem] = _item
+			ip[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
@@ -175,12 +177,16 @@ func BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer utils.ReadBuf
 		broadcastDistributionMap = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+		_numItems := uint16(uint16(4))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'broadcastDistributionMap' field of BVLCBroadcastDistributionTableEntry")
 			}
-			broadcastDistributionMap[curItem] = _item
+			broadcastDistributionMap[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("broadcastDistributionMap", utils.WithRenderAsList(true)); closeErr != nil {
@@ -200,14 +206,14 @@ func BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCBroadcastDistributionTableEntry"); pushErr != nil {
@@ -218,7 +224,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(writeBuf
 	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ip")
 	}
-	for _, _element := range m.GetIp() {
+	for _curItem, _element := range m.GetIp() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
@@ -239,7 +246,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(writeBuf
 	if pushErr := writeBuffer.PushContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for broadcastDistributionMap")
 	}
-	for _, _element := range m.GetBroadcastDistributionMap() {
+	for _curItem, _element := range m.GetBroadcastDistributionMap() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'broadcastDistributionMap' field")
@@ -264,7 +272,7 @@ func (m *_BVLCBroadcastDistributionTableEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

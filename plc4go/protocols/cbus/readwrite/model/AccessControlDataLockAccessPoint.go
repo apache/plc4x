@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_AccessControlDataLockAccessPoint) GetTypeName() string {
 	return "AccessControlDataLockAccessPoint"
 }
 
-func (m *_AccessControlDataLockAccessPoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AccessControlDataLockAccessPoint) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AccessControlDataLockAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AccessControlDataLockAccessPointParse(theBytes []byte) (AccessControlDataLockAccessPoint, error) {
-	return AccessControlDataLockAccessPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AccessControlDataLockAccessPointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlDataLockAccessPointParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
+func AccessControlDataLockAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataLockAccessPoint"); pullErr != nil {
@@ -129,14 +126,14 @@ func AccessControlDataLockAccessPointParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_AccessControlDataLockAccessPoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -149,7 +146,7 @@ func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AccessControlDataLockAccessPoint) isAccessControlDataLockAccessPoint() bool {
@@ -161,7 +158,7 @@ func (m *_AccessControlDataLockAccessPoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

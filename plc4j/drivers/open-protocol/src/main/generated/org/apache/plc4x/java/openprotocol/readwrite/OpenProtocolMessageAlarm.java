@@ -69,6 +69,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
   protected void serializeOpenProtocolMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarm");
 
@@ -87,6 +88,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageAlarm _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -99,6 +101,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageAlarmBuilder builder = null;

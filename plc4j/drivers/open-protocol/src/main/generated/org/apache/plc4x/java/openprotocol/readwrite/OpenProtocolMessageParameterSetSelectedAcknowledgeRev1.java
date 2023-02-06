@@ -65,6 +65,7 @@ public class OpenProtocolMessageParameterSetSelectedAcknowledgeRev1
   protected void serializeOpenProtocolMessageParameterSetSelectedAcknowledgeChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetSelectedAcknowledgeRev1");
 
@@ -80,6 +81,7 @@ public class OpenProtocolMessageParameterSetSelectedAcknowledgeRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageParameterSetSelectedAcknowledgeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -91,6 +93,7 @@ public class OpenProtocolMessageParameterSetSelectedAcknowledgeRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageParameterSetSelectedAcknowledgeRev1");
     // Create the instance

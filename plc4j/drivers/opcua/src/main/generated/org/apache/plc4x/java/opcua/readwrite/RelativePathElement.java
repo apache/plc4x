@@ -80,6 +80,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RelativePathElement");
 
@@ -111,6 +112,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RelativePathElement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceTypeId)
     lengthInBits += referenceTypeId.getLengthInBits();
@@ -136,6 +138,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId referenceTypeId =
         readSimpleField(

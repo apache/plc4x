@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -78,14 +79,20 @@ func (m *_BACnetAddress) GetMacAddress() BACnetApplicationTagOctetString {
 ///////////////////////
 
 func (m *_BACnetAddress) GetZero() uint64 {
+	ctx := context.Background()
+	_ = ctx
 	return uint64(uint64(0))
 }
 
 func (m *_BACnetAddress) GetIsLocalNetwork() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetNetworkNumber().GetActualValue()) == (m.GetZero())))
 }
 
 func (m *_BACnetAddress) GetIsBroadcast() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMacAddress().GetActualLength()) == (0)))
 }
 
@@ -114,37 +121,33 @@ func (m *_BACnetAddress) GetTypeName() string {
 	return "BACnetAddress"
 }
 
-func (m *_BACnetAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAddress) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (networkNumber)
-	lengthInBits += m.NetworkNumber.GetLengthInBits()
+	lengthInBits += m.NetworkNumber.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (macAddress)
-	lengthInBits += m.MacAddress.GetLengthInBits()
+	lengthInBits += m.MacAddress.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAddressParse(theBytes []byte) (BACnetAddress, error) {
-	return BACnetAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
@@ -157,7 +160,7 @@ func BACnetAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddress, e
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
-	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetAddress")
 	}
@@ -180,7 +183,7 @@ func BACnetAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddress, e
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _macAddressErr != nil {
 		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetAddress")
 	}
@@ -206,14 +209,14 @@ func BACnetAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddress, e
 }
 
 func (m *_BACnetAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAddress"); pushErr != nil {
@@ -224,7 +227,7 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkNumber")
 	}
-	_networkNumberErr := writeBuffer.WriteSerializable(m.GetNetworkNumber())
+	_networkNumberErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumber())
 	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkNumber")
 	}
@@ -232,11 +235,11 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 	}
 	// Virtual field
-	if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
+	if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 		return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 	}
 	// Virtual field
-	if _isLocalNetworkErr := writeBuffer.WriteVirtual("isLocalNetwork", m.GetIsLocalNetwork()); _isLocalNetworkErr != nil {
+	if _isLocalNetworkErr := writeBuffer.WriteVirtual(ctx, "isLocalNetwork", m.GetIsLocalNetwork()); _isLocalNetworkErr != nil {
 		return errors.Wrap(_isLocalNetworkErr, "Error serializing 'isLocalNetwork' field")
 	}
 
@@ -244,7 +247,7 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for macAddress")
 	}
-	_macAddressErr := writeBuffer.WriteSerializable(m.GetMacAddress())
+	_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
 	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for macAddress")
 	}
@@ -252,7 +255,7 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
 	}
 	// Virtual field
-	if _isBroadcastErr := writeBuffer.WriteVirtual("isBroadcast", m.GetIsBroadcast()); _isBroadcastErr != nil {
+	if _isBroadcastErr := writeBuffer.WriteVirtual(ctx, "isBroadcast", m.GetIsBroadcast()); _isBroadcastErr != nil {
 		return errors.Wrap(_isBroadcastErr, "Error serializing 'isBroadcast' field")
 	}
 
@@ -271,7 +274,7 @@ func (m *_BACnetAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

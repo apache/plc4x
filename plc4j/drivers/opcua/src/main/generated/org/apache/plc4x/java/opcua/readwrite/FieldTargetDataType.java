@@ -101,6 +101,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FieldTargetDataType");
 
@@ -146,6 +147,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FieldTargetDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dataSetFieldId)
     lengthInBits += dataSetFieldId.getLengthInBits();
@@ -177,6 +179,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     GuidValue dataSetFieldId =
         readSimpleField(

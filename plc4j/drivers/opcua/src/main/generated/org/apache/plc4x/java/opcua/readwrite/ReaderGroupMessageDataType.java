@@ -50,6 +50,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReaderGroupMessageDataType");
 
@@ -65,6 +66,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReaderGroupMessageDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -75,6 +77,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ReaderGroupMessageDataType");
     // Create the instance

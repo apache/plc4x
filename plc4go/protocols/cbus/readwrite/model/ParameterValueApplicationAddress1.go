@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,15 +116,11 @@ func (m *_ParameterValueApplicationAddress1) GetTypeName() string {
 	return "ParameterValueApplicationAddress1"
 }
 
-func (m *_ParameterValueApplicationAddress1) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterValueApplicationAddress1) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterValueApplicationAddress1) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -133,15 +130,15 @@ func (m *_ParameterValueApplicationAddress1) GetLengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *_ParameterValueApplicationAddress1) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValueApplicationAddress1) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueApplicationAddress1Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
-	return ParameterValueApplicationAddress1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueApplicationAddress1ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueApplicationAddress1"); pullErr != nil {
@@ -159,7 +156,7 @@ func ParameterValueApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := ApplicationAddress1ParseWithBuffer(readBuffer)
+	_value, _valueErr := ApplicationAddress1ParseWithBuffer(ctx, readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress1")
 	}
@@ -191,14 +188,14 @@ func ParameterValueApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_ParameterValueApplicationAddress1) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for value")
 		}
-		_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for value")
 		}
@@ -229,7 +226,7 @@ func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterValueApplicationAddress1) isParameterValueApplicationAddress1() bool {
@@ -241,7 +238,7 @@ func (m *_ParameterValueApplicationAddress1) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

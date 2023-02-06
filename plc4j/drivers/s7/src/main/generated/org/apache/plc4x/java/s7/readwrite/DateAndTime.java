@@ -101,6 +101,7 @@ public class DateAndTime implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DateAndTime");
 
@@ -161,6 +162,7 @@ public class DateAndTime implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DateAndTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Field (year)
     lengthInBits += 8;
@@ -200,6 +202,7 @@ public class DateAndTime implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short year =
         readManualField(

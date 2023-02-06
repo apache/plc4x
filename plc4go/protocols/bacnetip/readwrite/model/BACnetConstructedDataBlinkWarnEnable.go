@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetBlinkWarnEnable() BACnetAppli
 ///////////////////////
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetBlinkWarnEnable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetTypeName() string {
 	return "BACnetConstructedDataBlinkWarnEnable"
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (blinkWarnEnable)
-	lengthInBits += m.BlinkWarnEnable.GetLengthInBits()
+	lengthInBits += m.BlinkWarnEnable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBlinkWarnEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
-	return BACnetConstructedDataBlinkWarnEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBlinkWarnEnableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
+func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBlinkWarnEnable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("blinkWarnEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for blinkWarnEnable")
 	}
-	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _blinkWarnEnableErr != nil {
 		return nil, errors.Wrap(_blinkWarnEnableErr, "Error parsing 'blinkWarnEnable' field of BACnetConstructedDataBlinkWarnEnable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("blinkWarnEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for blinkWarnEnable")
 		}
-		_blinkWarnEnableErr := writeBuffer.WriteSerializable(m.GetBlinkWarnEnable())
+		_blinkWarnEnableErr := writeBuffer.WriteSerializable(ctx, m.GetBlinkWarnEnable())
 		if popErr := writeBuffer.PopContext("blinkWarnEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for blinkWarnEnable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_blinkWarnEnableErr, "Error serializing 'blinkWarnEnable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) isBACnetConstructedDataBlinkWarnEnable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

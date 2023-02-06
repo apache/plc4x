@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -85,6 +86,8 @@ func (m *_ErrorClassTagged) GetProprietaryValue() uint32 {
 ///////////////////////
 
 func (m *_ErrorClassTagged) GetIsProprietary() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetValue()) == (ErrorClass_VENDOR_PROPRIETARY_VALUE)))
 }
 
@@ -113,15 +116,11 @@ func (m *_ErrorClassTagged) GetTypeName() string {
 	return "ErrorClassTagged"
 }
 
-func (m *_ErrorClassTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ErrorClassTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ErrorClassTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
 	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
@@ -134,15 +133,15 @@ func (m *_ErrorClassTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_ErrorClassTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ErrorClassTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorClassTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
-	return ErrorClassTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return ErrorClassTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func ErrorClassTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
+func ErrorClassTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorClassTagged"); pullErr != nil {
@@ -155,7 +154,7 @@ func ErrorClassTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of ErrorClassTagged")
 	}
@@ -214,14 +213,14 @@ func ErrorClassTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint
 }
 
 func (m *_ErrorClassTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ErrorClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorClassTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorClassTagged"); pushErr != nil {
@@ -232,7 +231,7 @@ func (m *_ErrorClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -246,7 +245,7 @@ func (m *_ErrorClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
+	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
@@ -284,7 +283,7 @@ func (m *_ErrorClassTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

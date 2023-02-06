@@ -55,6 +55,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
   @Override
   protected void serializeBACnetScaleChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetScaleIntegerScale");
 
@@ -73,6 +74,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetScaleIntegerScale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerScale)
     lengthInBits += integerScale.getLengthInBits();
@@ -86,6 +88,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerScale =
         readSimpleField(

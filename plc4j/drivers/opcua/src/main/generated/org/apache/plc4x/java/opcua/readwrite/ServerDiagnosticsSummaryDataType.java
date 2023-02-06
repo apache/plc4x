@@ -136,6 +136,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerDiagnosticsSummaryDataType");
 
@@ -203,6 +204,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerDiagnosticsSummaryDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverViewCount)
     lengthInBits += 32;
@@ -249,6 +251,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long serverViewCount = readSimpleField("serverViewCount", readUnsignedLong(readBuffer, 32));
 

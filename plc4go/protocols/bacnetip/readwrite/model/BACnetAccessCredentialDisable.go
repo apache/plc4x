@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastBACnetAccessCredentialDisable(structType interface{}) BACnetAccessCrede
 	return castFunc(structType)
 }
 
-func (m BACnetAccessCredentialDisable) GetLengthInBits() uint16 {
+func (m BACnetAccessCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetAccessCredentialDisable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessCredentialDisable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessCredentialDisableParse(theBytes []byte) (BACnetAccessCredentialDisable, error) {
-	return BACnetAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessCredentialDisableParse(ctx context.Context, theBytes []byte) (BACnetAccessCredentialDisable, error) {
+	return BACnetAccessCredentialDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
+func BACnetAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessCredentialDisable", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisable")
@@ -132,13 +133,13 @@ func BACnetAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer) (
 
 func (e BACnetAccessCredentialDisable) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessCredentialDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessCredentialDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

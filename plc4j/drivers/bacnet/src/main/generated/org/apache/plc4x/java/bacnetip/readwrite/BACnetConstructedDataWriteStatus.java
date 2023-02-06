@@ -78,6 +78,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWriteStatus");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataWriteStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (writeStatus)
     lengthInBits += writeStatus.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(

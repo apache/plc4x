@@ -65,6 +65,7 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFileRecordRequest");
 
@@ -88,6 +89,7 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadFileRecordRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -108,6 +110,7 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,11 +144,7 @@ func (m *_DeviceDescriptorType2) GetTypeName() string {
 	return "DeviceDescriptorType2"
 }
 
-func (m *_DeviceDescriptorType2) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DeviceDescriptorType2) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_DeviceDescriptorType2) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (manufacturerId)
@@ -169,29 +166,29 @@ func (m *_DeviceDescriptorType2) GetLengthInBitsConditional(lastItem bool) uint1
 	lengthInBits += 6
 
 	// Simple field (channelInfo1)
-	lengthInBits += m.ChannelInfo1.GetLengthInBits()
+	lengthInBits += m.ChannelInfo1.GetLengthInBits(ctx)
 
 	// Simple field (channelInfo2)
-	lengthInBits += m.ChannelInfo2.GetLengthInBits()
+	lengthInBits += m.ChannelInfo2.GetLengthInBits(ctx)
 
 	// Simple field (channelInfo3)
-	lengthInBits += m.ChannelInfo3.GetLengthInBits()
+	lengthInBits += m.ChannelInfo3.GetLengthInBits(ctx)
 
 	// Simple field (channelInfo4)
-	lengthInBits += m.ChannelInfo4.GetLengthInBits()
+	lengthInBits += m.ChannelInfo4.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DeviceDescriptorType2) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DeviceDescriptorType2) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DeviceDescriptorType2Parse(theBytes []byte) (DeviceDescriptorType2, error) {
-	return DeviceDescriptorType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return DeviceDescriptorType2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
@@ -246,7 +243,7 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo1")
 	}
-	_channelInfo1, _channelInfo1Err := ChannelInformationParseWithBuffer(readBuffer)
+	_channelInfo1, _channelInfo1Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
 	if _channelInfo1Err != nil {
 		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field of DeviceDescriptorType2")
 	}
@@ -259,7 +256,7 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo2")
 	}
-	_channelInfo2, _channelInfo2Err := ChannelInformationParseWithBuffer(readBuffer)
+	_channelInfo2, _channelInfo2Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
 	if _channelInfo2Err != nil {
 		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field of DeviceDescriptorType2")
 	}
@@ -272,7 +269,7 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo3")
 	}
-	_channelInfo3, _channelInfo3Err := ChannelInformationParseWithBuffer(readBuffer)
+	_channelInfo3, _channelInfo3Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
 	if _channelInfo3Err != nil {
 		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field of DeviceDescriptorType2")
 	}
@@ -285,7 +282,7 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo4")
 	}
-	_channelInfo4, _channelInfo4Err := ChannelInformationParseWithBuffer(readBuffer)
+	_channelInfo4, _channelInfo4Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field of DeviceDescriptorType2")
 	}
@@ -314,14 +311,14 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 }
 
 func (m *_DeviceDescriptorType2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceDescriptorType2"); pushErr != nil {
@@ -374,7 +371,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("channelInfo1"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo1")
 	}
-	_channelInfo1Err := writeBuffer.WriteSerializable(m.GetChannelInfo1())
+	_channelInfo1Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo1())
 	if popErr := writeBuffer.PopContext("channelInfo1"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo1")
 	}
@@ -386,7 +383,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("channelInfo2"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo2")
 	}
-	_channelInfo2Err := writeBuffer.WriteSerializable(m.GetChannelInfo2())
+	_channelInfo2Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo2())
 	if popErr := writeBuffer.PopContext("channelInfo2"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo2")
 	}
@@ -398,7 +395,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("channelInfo3"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo3")
 	}
-	_channelInfo3Err := writeBuffer.WriteSerializable(m.GetChannelInfo3())
+	_channelInfo3Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo3())
 	if popErr := writeBuffer.PopContext("channelInfo3"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo3")
 	}
@@ -410,7 +407,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("channelInfo4"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo4")
 	}
-	_channelInfo4Err := writeBuffer.WriteSerializable(m.GetChannelInfo4())
+	_channelInfo4Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo4())
 	if popErr := writeBuffer.PopContext("channelInfo4"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo4")
 	}
@@ -433,7 +430,7 @@ func (m *_DeviceDescriptorType2) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

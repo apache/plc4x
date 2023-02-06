@@ -72,6 +72,7 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
   protected void serializeReplyOrConfirmationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyOrConfirmationConfirmation");
 
@@ -93,6 +94,7 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReplyOrConfirmationConfirmation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (confirmation)
     lengthInBits += confirmation.getLengthInBits();
@@ -112,6 +114,7 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Confirmation confirmation =
         readSimpleField(

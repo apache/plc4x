@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastHVACModeAndFlagsMode(structType interface{}) HVACModeAndFlagsMode {
 	return castFunc(structType)
 }
 
-func (m HVACModeAndFlagsMode) GetLengthInBits() uint16 {
+func (m HVACModeAndFlagsMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 3
 }
 
-func (m HVACModeAndFlagsMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HVACModeAndFlagsMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACModeAndFlagsModeParse(theBytes []byte) (HVACModeAndFlagsMode, error) {
-	return HVACModeAndFlagsModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HVACModeAndFlagsModeParse(ctx context.Context, theBytes []byte) (HVACModeAndFlagsMode, error) {
+	return HVACModeAndFlagsModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACModeAndFlagsMode, error) {
+func HVACModeAndFlagsModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACModeAndFlagsMode, error) {
 	val, err := readBuffer.ReadUint8("HVACModeAndFlagsMode", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACModeAndFlagsMode")
@@ -132,13 +133,13 @@ func HVACModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACModeA
 
 func (e HVACModeAndFlagsMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HVACModeAndFlagsMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HVACModeAndFlagsMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

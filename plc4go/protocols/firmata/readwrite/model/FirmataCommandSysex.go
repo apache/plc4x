@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,15 +110,11 @@ func (m *_FirmataCommandSysex) GetTypeName() string {
 	return "FirmataCommandSysex"
 }
 
-func (m *_FirmataCommandSysex) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataCommandSysex) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataCommandSysex) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	lengthInBits += m.Command.GetLengthInBits(ctx)
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -125,15 +122,15 @@ func (m *_FirmataCommandSysex) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSysex) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataCommandSysex) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataCommandSysexParse(theBytes []byte, response bool) (FirmataCommandSysex, error) {
-	return FirmataCommandSysexParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return FirmataCommandSysexParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func FirmataCommandSysexParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
+func FirmataCommandSysexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
@@ -146,7 +143,7 @@ func FirmataCommandSysexParseWithBuffer(readBuffer utils.ReadBuffer, response bo
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := SysexCommandParseWithBuffer(readBuffer, bool(response))
+	_command, _commandErr := SysexCommandParseWithBuffer(ctx, readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataCommandSysex")
 	}
@@ -189,14 +186,14 @@ func FirmataCommandSysexParseWithBuffer(readBuffer utils.ReadBuffer, response bo
 }
 
 func (m *_FirmataCommandSysex) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for command")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
+		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for command")
 		}
@@ -237,7 +234,7 @@ func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataCommandSysex) isFirmataCommandSysex() bool {
@@ -249,7 +246,7 @@ func (m *_FirmataCommandSysex) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,19 +148,19 @@ func CastPinMode(structType interface{}) PinMode {
 	return castFunc(structType)
 }
 
-func (m PinMode) GetLengthInBits() uint16 {
+func (m PinMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m PinMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m PinMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func PinModeParse(theBytes []byte) (PinMode, error) {
-	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func PinModeParse(ctx context.Context, theBytes []byte) (PinMode, error) {
+	return PinModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
+func PinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PinMode, error) {
 	val, err := readBuffer.ReadUint8("PinMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PinMode")
@@ -174,13 +175,13 @@ func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
 
 func (e PinMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e PinMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e PinMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

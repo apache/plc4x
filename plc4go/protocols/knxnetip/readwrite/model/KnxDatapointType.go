@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -6431,19 +6432,19 @@ func CastKnxDatapointType(structType interface{}) KnxDatapointType {
 	return castFunc(structType)
 }
 
-func (m KnxDatapointType) GetLengthInBits() uint16 {
+func (m KnxDatapointType) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m KnxDatapointType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxDatapointType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxDatapointTypeParse(theBytes []byte) (KnxDatapointType, error) {
-	return KnxDatapointTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxDatapointTypeParse(ctx context.Context, theBytes []byte) (KnxDatapointType, error) {
+	return KnxDatapointTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxDatapointTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
+func KnxDatapointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
 	val, err := readBuffer.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")
@@ -6458,13 +6459,13 @@ func KnxDatapointTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointT
 
 func (e KnxDatapointType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxDatapointType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxDatapointType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

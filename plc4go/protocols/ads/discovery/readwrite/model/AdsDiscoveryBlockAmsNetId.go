@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -124,31 +125,27 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetTypeName() string {
 	return "AdsDiscoveryBlockAmsNetId"
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (amsNetIdLength)
 	lengthInBits += 16
 
 	// Simple field (amsNetId)
-	lengthInBits += m.AmsNetId.GetLengthInBits()
+	lengthInBits += m.AmsNetId.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockAmsNetIdParse(theBytes []byte) (AdsDiscoveryBlockAmsNetId, error) {
-	return AdsDiscoveryBlockAmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockAmsNetIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
+func AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockAmsNetId"); pullErr != nil {
@@ -170,7 +167,7 @@ func AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
 	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
+	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
 	if _amsNetIdErr != nil {
 		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscoveryBlockAmsNetId")
 	}
@@ -193,14 +190,14 @@ func AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -218,7 +215,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("amsNetId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for amsNetId")
 		}
-		_amsNetIdErr := writeBuffer.WriteSerializable(m.GetAmsNetId())
+		_amsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetAmsNetId())
 		if popErr := writeBuffer.PopContext("amsNetId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for amsNetId")
 		}
@@ -231,7 +228,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) isAdsDiscoveryBlockAmsNetId() bool {
@@ -243,7 +240,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

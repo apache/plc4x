@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,12 +109,8 @@ func (m *_BVLCResult) GetTypeName() string {
 	return "BVLCResult"
 }
 
-func (m *_BVLCResult) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCResult) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCResult) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (code)
 	lengthInBits += 16
@@ -121,15 +118,15 @@ func (m *_BVLCResult) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_BVLCResult) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCResult) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCResultParse(theBytes []byte) (BVLCResult, error) {
-	return BVLCResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return BVLCResultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) {
+func BVLCResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
@@ -142,7 +139,7 @@ func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) 
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for code")
 	}
-	_code, _codeErr := BVLCResultCodeParseWithBuffer(readBuffer)
+	_code, _codeErr := BVLCResultCodeParseWithBuffer(ctx, readBuffer)
 	if _codeErr != nil {
 		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
 	}
@@ -165,14 +162,14 @@ func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) 
 }
 
 func (m *_BVLCResult) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("code"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for code")
 		}
-		_codeErr := writeBuffer.WriteSerializable(m.GetCode())
+		_codeErr := writeBuffer.WriteSerializable(ctx, m.GetCode())
 		if popErr := writeBuffer.PopContext("code"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for code")
 		}
@@ -197,7 +194,7 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BVLCResult) isBVLCResult() bool {
@@ -209,7 +206,7 @@ func (m *_BVLCResult) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

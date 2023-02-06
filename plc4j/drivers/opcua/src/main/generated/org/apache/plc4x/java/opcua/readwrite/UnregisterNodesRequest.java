@@ -73,6 +73,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnregisterNodesRequest");
 
@@ -98,6 +99,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UnregisterNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     if (nodesToUnregister != null) {
       int i = 0;
       for (NodeId element : nodesToUnregister) {
-        boolean last = ++i >= nodesToUnregister.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToUnregister.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -123,6 +125,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

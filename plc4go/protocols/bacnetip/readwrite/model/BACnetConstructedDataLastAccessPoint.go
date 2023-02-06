@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetLastAccessPoint() BACnetDevic
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastAccessPoint) GetActualValue() BACnetDeviceObjectReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectReference(m.GetLastAccessPoint())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetTypeName() string {
 	return "BACnetConstructedDataLastAccessPoint"
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastAccessPoint)
-	lengthInBits += m.LastAccessPoint.GetLengthInBits()
+	lengthInBits += m.LastAccessPoint.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastAccessPointParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessPoint, error) {
-	return BACnetConstructedDataLastAccessPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastAccessPointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastAccessPointParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessPoint, error) {
+func BACnetConstructedDataLastAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessPoint"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastAccessPointParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("lastAccessPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastAccessPoint")
 	}
-	_lastAccessPoint, _lastAccessPointErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
+	_lastAccessPoint, _lastAccessPointErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 	if _lastAccessPointErr != nil {
 		return nil, errors.Wrap(_lastAccessPointErr, "Error parsing 'lastAccessPoint' field of BACnetConstructedDataLastAccessPoint")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastAccessPointParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataLastAccessPoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("lastAccessPoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastAccessPoint")
 		}
-		_lastAccessPointErr := writeBuffer.WriteSerializable(m.GetLastAccessPoint())
+		_lastAccessPointErr := writeBuffer.WriteSerializable(ctx, m.GetLastAccessPoint())
 		if popErr := writeBuffer.PopContext("lastAccessPoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastAccessPoint")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_lastAccessPointErr, "Error serializing 'lastAccessPoint' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastAccessPoint) isBACnetConstructedDataLastAccessPoint() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

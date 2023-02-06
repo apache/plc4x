@@ -79,6 +79,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
   protected void serializeBACnetEventLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventLogRecordLogDatumNotification");
 
@@ -105,6 +106,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventLogRecordLogDatumNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(

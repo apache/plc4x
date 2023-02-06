@@ -93,6 +93,7 @@ public class S7AddressAny extends S7Address implements Message {
   @Override
   protected void serializeS7AddressChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7AddressAny");
 
@@ -139,6 +140,7 @@ public class S7AddressAny extends S7Address implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7AddressAny _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Enum Field (transportSize)
     lengthInBits += 8;
@@ -170,6 +172,7 @@ public class S7AddressAny extends S7Address implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TransportSize transportSize =
         readEnumField(

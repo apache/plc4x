@@ -80,6 +80,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServer2Request");
 
@@ -108,6 +109,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServer2Request _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -122,7 +124,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     if (discoveryConfiguration != null) {
       int i = 0;
       for (ExtensionObject element : discoveryConfiguration) {
-        boolean last = ++i >= discoveryConfiguration.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryConfiguration.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -136,6 +138,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

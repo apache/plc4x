@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastDialOutFailureReason(structType interface{}) DialOutFailureReason {
 	return castFunc(structType)
 }
 
-func (m DialOutFailureReason) GetLengthInBits() uint16 {
+func (m DialOutFailureReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m DialOutFailureReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DialOutFailureReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DialOutFailureReasonParse(theBytes []byte) (DialOutFailureReason, error) {
-	return DialOutFailureReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DialOutFailureReasonParse(ctx context.Context, theBytes []byte) (DialOutFailureReason, error) {
+	return DialOutFailureReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DialOutFailureReasonParseWithBuffer(readBuffer utils.ReadBuffer) (DialOutFailureReason, error) {
+func DialOutFailureReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DialOutFailureReason, error) {
 	val, err := readBuffer.ReadUint8("DialOutFailureReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DialOutFailureReason")
@@ -138,13 +139,13 @@ func DialOutFailureReasonParseWithBuffer(readBuffer utils.ReadBuffer) (DialOutFa
 
 func (e DialOutFailureReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DialOutFailureReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DialOutFailureReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DialOutFailureReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

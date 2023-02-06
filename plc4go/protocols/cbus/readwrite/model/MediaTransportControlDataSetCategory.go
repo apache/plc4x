@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_MediaTransportControlDataSetCategory) GetTypeName() string {
 	return "MediaTransportControlDataSetCategory"
 }
 
-func (m *_MediaTransportControlDataSetCategory) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataSetCategory) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataSetCategory) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (categoryNumber)
 	lengthInBits += 8
@@ -119,15 +116,15 @@ func (m *_MediaTransportControlDataSetCategory) GetLengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataSetCategory) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataSetCategory) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataSetCategoryParse(theBytes []byte) (MediaTransportControlDataSetCategory, error) {
-	return MediaTransportControlDataSetCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataSetCategoryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataSetCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
+func MediaTransportControlDataSetCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetCategory"); pullErr != nil {
@@ -157,14 +154,14 @@ func MediaTransportControlDataSetCategoryParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_MediaTransportControlDataSetCategory) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataSetCategory) isMediaTransportControlDataSetCategory() bool {
@@ -196,7 +193,7 @@ func (m *_MediaTransportControlDataSetCategory) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

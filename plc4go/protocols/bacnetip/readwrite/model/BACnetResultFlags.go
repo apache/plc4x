@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetResultFlags(structType interface{}) BACnetResultFlags {
 	return castFunc(structType)
 }
 
-func (m BACnetResultFlags) GetLengthInBits() uint16 {
+func (m BACnetResultFlags) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetResultFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetResultFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetResultFlagsParse(theBytes []byte) (BACnetResultFlags, error) {
-	return BACnetResultFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetResultFlagsParse(ctx context.Context, theBytes []byte) (BACnetResultFlags, error) {
+	return BACnetResultFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetResultFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
+func BACnetResultFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
 	val, err := readBuffer.ReadUint8("BACnetResultFlags", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetResultFlags")
@@ -120,13 +121,13 @@ func BACnetResultFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetResult
 
 func (e BACnetResultFlags) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetResultFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetResultFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetResultFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

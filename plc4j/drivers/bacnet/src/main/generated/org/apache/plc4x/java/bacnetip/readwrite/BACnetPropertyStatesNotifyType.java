@@ -56,6 +56,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNotifyType");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNotifyType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (notifyType)
     lengthInBits += notifyType.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(

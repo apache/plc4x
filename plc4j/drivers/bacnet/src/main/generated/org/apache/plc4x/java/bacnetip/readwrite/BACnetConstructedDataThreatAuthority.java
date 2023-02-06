@@ -78,6 +78,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataThreatAuthority");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataThreatAuthority _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (threatAuthority)
     lengthInBits += threatAuthority.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessThreatLevel threatAuthority =
         readSimpleField(

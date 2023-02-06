@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,15 +131,11 @@ func (m *_TriggerControlDataLabel) GetTypeName() string {
 	return "TriggerControlDataLabel"
 }
 
-func (m *_TriggerControlDataLabel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TriggerControlDataLabel) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TriggerControlDataLabel) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (triggerControlOptions)
-	lengthInBits += m.TriggerControlOptions.GetLengthInBits()
+	lengthInBits += m.TriggerControlOptions.GetLengthInBits(ctx)
 
 	// Simple field (actionSelector)
 	lengthInBits += 8
@@ -156,15 +153,15 @@ func (m *_TriggerControlDataLabel) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_TriggerControlDataLabel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TriggerControlDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TriggerControlDataLabelParse(theBytes []byte, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
-	return TriggerControlDataLabelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return TriggerControlDataLabelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func TriggerControlDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
+func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataLabel"); pullErr != nil {
@@ -177,7 +174,7 @@ func TriggerControlDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, command
 	if pullErr := readBuffer.PullContext("triggerControlOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlOptions")
 	}
-	_triggerControlOptions, _triggerControlOptionsErr := TriggerControlLabelOptionsParseWithBuffer(readBuffer)
+	_triggerControlOptions, _triggerControlOptionsErr := TriggerControlLabelOptionsParseWithBuffer(ctx, readBuffer)
 	if _triggerControlOptionsErr != nil {
 		return nil, errors.Wrap(_triggerControlOptionsErr, "Error parsing 'triggerControlOptions' field of TriggerControlDataLabel")
 	}
@@ -199,7 +196,7 @@ func TriggerControlDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, command
 		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for language")
 		}
-		_val, _err := LanguageParseWithBuffer(readBuffer)
+		_val, _err := LanguageParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of TriggerControlDataLabel")
 		}
@@ -232,14 +229,14 @@ func TriggerControlDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, command
 }
 
 func (m *_TriggerControlDataLabel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -251,7 +248,7 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("triggerControlOptions"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for triggerControlOptions")
 		}
-		_triggerControlOptionsErr := writeBuffer.WriteSerializable(m.GetTriggerControlOptions())
+		_triggerControlOptionsErr := writeBuffer.WriteSerializable(ctx, m.GetTriggerControlOptions())
 		if popErr := writeBuffer.PopContext("triggerControlOptions"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for triggerControlOptions")
 		}
@@ -273,7 +270,7 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(writeBuffer utils.Wr
 				return errors.Wrap(pushErr, "Error pushing for language")
 			}
 			language = m.GetLanguage()
-			_languageErr := writeBuffer.WriteSerializable(language)
+			_languageErr := writeBuffer.WriteSerializable(ctx, language)
 			if popErr := writeBuffer.PopContext("language"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for language")
 			}
@@ -293,7 +290,7 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TriggerControlDataLabel) isTriggerControlDataLabel() bool {
@@ -305,7 +302,7 @@ func (m *_TriggerControlDataLabel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

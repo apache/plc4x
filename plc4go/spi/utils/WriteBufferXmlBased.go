@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"math/big"
@@ -32,7 +33,7 @@ type WriteBufferXmlBased interface {
 	GetXmlString() string
 }
 
-//NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
+// NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
 func NewXmlWriteBuffer() WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
@@ -45,7 +46,7 @@ func NewXmlWriteBuffer() WriteBufferXmlBased {
 	}
 }
 
-//NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
+// NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
 func NewConfiguredXmlWriteBuffer(renderLists bool, renderAttr bool) WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
@@ -173,7 +174,7 @@ func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, valu
 	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
-//[^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]
+// [^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]
 var printableRange = &unicode.RangeTable{
 	R16: []unicode.Range16{
 		{0x0009, 0x0009, 1},
@@ -197,16 +198,16 @@ func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encod
 	return x.encodeElement(logicalName, cleanedUpString, attr, writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteVirtual(_ string, _ interface{}, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteVirtual(_ context.Context, _ string, _ interface{}, _ ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (x *xmlWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (x *xmlWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(x)
+	return serializable.SerializeWithWriteBuffer(ctx, x)
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

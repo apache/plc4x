@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _S7Address struct {
 
 type _S7AddressChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetAddressType() uint8
 }
 
 type S7AddressParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7Address, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Address, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_S7Address) GetTypeName() string {
 	return "S7Address"
 }
 
-func (m *_S7Address) GetParentLengthInBits() uint16 {
+func (m *_S7Address) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
@@ -95,15 +95,15 @@ func (m *_S7Address) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_S7Address) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7Address) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7AddressParse(theBytes []byte) (S7Address, error) {
-	return S7AddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7AddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7AddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7Address, error) {
+func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
@@ -129,7 +129,7 @@ func S7AddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7Address, error) {
 	var typeSwitchError error
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		_childTemp, typeSwitchError = S7AddressAnyParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = S7AddressAnyParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [addressType=%v]", addressType)
 	}
@@ -147,7 +147,7 @@ func S7AddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7Address, error) {
 	return _child, nil
 }
 
-func (pm *_S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child S7Address, serializeChildFunction func() error) error {
+func (pm *_S7Address) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Address, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -185,7 +185,7 @@ func (m *_S7Address) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

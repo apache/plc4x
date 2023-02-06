@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 	return "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referencedPropertyIncrement)
-	lengthInBits += m.ReferencedPropertyIncrement.GetLengthInBits()
+	lengthInBits += m.ReferencedPropertyIncrement.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
-	return BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
+func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	if pullErr := readBuffer.PullContext("referencedPropertyIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referencedPropertyIncrement")
 	}
-	_referencedPropertyIncrement, _referencedPropertyIncrementErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
+	_referencedPropertyIncrement, _referencedPropertyIncrementErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _referencedPropertyIncrementErr != nil {
 		return nil, errors.Wrap(_referencedPropertyIncrementErr, "Error parsing 'referencedPropertyIncrement' field of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 	}
@@ -166,14 +163,14 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		if pushErr := writeBuffer.PushContext("referencedPropertyIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referencedPropertyIncrement")
 		}
-		_referencedPropertyIncrementErr := writeBuffer.WriteSerializable(m.GetReferencedPropertyIncrement())
+		_referencedPropertyIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetReferencedPropertyIncrement())
 		if popErr := writeBuffer.PopContext("referencedPropertyIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referencedPropertyIncrement")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) isBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

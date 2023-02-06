@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,42 +97,62 @@ func (m *_BACnetObjectTypesSupportedTagged) GetPayload() BACnetTagPayloadBitStri
 ///////////////////////
 
 func (m *_BACnetObjectTypesSupportedTagged) GetTimeValue() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetNotificationForwarder() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetAlertEnrollment() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetChannel() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetLightingOutput() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetBinaryLightingOutput() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetNetworkPort() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetElevatorGroup() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() interface{} { return bool(m.GetPayload().GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetEscalator() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() interface{} { return bool(m.GetPayload().GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetLift() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() interface{} { return bool(m.GetPayload().GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -160,18 +181,14 @@ func (m *_BACnetObjectTypesSupportedTagged) GetTypeName() string {
 	return "BACnetObjectTypesSupportedTagged"
 }
 
-func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -196,15 +213,15 @@ func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetObjectTypesSupportedTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetObjectTypesSupportedTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetObjectTypesSupportedTagged, error) {
-	return BACnetObjectTypesSupportedTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetObjectTypesSupportedTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetObjectTypesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetObjectTypesSupportedTagged, error) {
+func BACnetObjectTypesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetObjectTypesSupportedTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetObjectTypesSupportedTagged"); pullErr != nil {
@@ -217,7 +234,7 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetObjectTypesSupportedTagged")
 	}
@@ -240,7 +257,7 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetObjectTypesSupportedTagged")
 	}
@@ -313,14 +330,14 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetObjectTypesSupportedTagged"); pushErr != nil {
@@ -331,7 +348,7 @@ func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(writeBuffer
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -343,7 +360,7 @@ func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(writeBuffer
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -351,43 +368,43 @@ func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(writeBuffer
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _timeValueErr := writeBuffer.WriteVirtual("timeValue", m.GetTimeValue()); _timeValueErr != nil {
+	if _timeValueErr := writeBuffer.WriteVirtual(ctx, "timeValue", m.GetTimeValue()); _timeValueErr != nil {
 		return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
 	}
 	// Virtual field
-	if _notificationForwarderErr := writeBuffer.WriteVirtual("notificationForwarder", m.GetNotificationForwarder()); _notificationForwarderErr != nil {
+	if _notificationForwarderErr := writeBuffer.WriteVirtual(ctx, "notificationForwarder", m.GetNotificationForwarder()); _notificationForwarderErr != nil {
 		return errors.Wrap(_notificationForwarderErr, "Error serializing 'notificationForwarder' field")
 	}
 	// Virtual field
-	if _alertEnrollmentErr := writeBuffer.WriteVirtual("alertEnrollment", m.GetAlertEnrollment()); _alertEnrollmentErr != nil {
+	if _alertEnrollmentErr := writeBuffer.WriteVirtual(ctx, "alertEnrollment", m.GetAlertEnrollment()); _alertEnrollmentErr != nil {
 		return errors.Wrap(_alertEnrollmentErr, "Error serializing 'alertEnrollment' field")
 	}
 	// Virtual field
-	if _channelErr := writeBuffer.WriteVirtual("channel", m.GetChannel()); _channelErr != nil {
+	if _channelErr := writeBuffer.WriteVirtual(ctx, "channel", m.GetChannel()); _channelErr != nil {
 		return errors.Wrap(_channelErr, "Error serializing 'channel' field")
 	}
 	// Virtual field
-	if _lightingOutputErr := writeBuffer.WriteVirtual("lightingOutput", m.GetLightingOutput()); _lightingOutputErr != nil {
+	if _lightingOutputErr := writeBuffer.WriteVirtual(ctx, "lightingOutput", m.GetLightingOutput()); _lightingOutputErr != nil {
 		return errors.Wrap(_lightingOutputErr, "Error serializing 'lightingOutput' field")
 	}
 	// Virtual field
-	if _binaryLightingOutputErr := writeBuffer.WriteVirtual("binaryLightingOutput", m.GetBinaryLightingOutput()); _binaryLightingOutputErr != nil {
+	if _binaryLightingOutputErr := writeBuffer.WriteVirtual(ctx, "binaryLightingOutput", m.GetBinaryLightingOutput()); _binaryLightingOutputErr != nil {
 		return errors.Wrap(_binaryLightingOutputErr, "Error serializing 'binaryLightingOutput' field")
 	}
 	// Virtual field
-	if _networkPortErr := writeBuffer.WriteVirtual("networkPort", m.GetNetworkPort()); _networkPortErr != nil {
+	if _networkPortErr := writeBuffer.WriteVirtual(ctx, "networkPort", m.GetNetworkPort()); _networkPortErr != nil {
 		return errors.Wrap(_networkPortErr, "Error serializing 'networkPort' field")
 	}
 	// Virtual field
-	if _elevatorGroupErr := writeBuffer.WriteVirtual("elevatorGroup", m.GetElevatorGroup()); _elevatorGroupErr != nil {
+	if _elevatorGroupErr := writeBuffer.WriteVirtual(ctx, "elevatorGroup", m.GetElevatorGroup()); _elevatorGroupErr != nil {
 		return errors.Wrap(_elevatorGroupErr, "Error serializing 'elevatorGroup' field")
 	}
 	// Virtual field
-	if _escalatorErr := writeBuffer.WriteVirtual("escalator", m.GetEscalator()); _escalatorErr != nil {
+	if _escalatorErr := writeBuffer.WriteVirtual(ctx, "escalator", m.GetEscalator()); _escalatorErr != nil {
 		return errors.Wrap(_escalatorErr, "Error serializing 'escalator' field")
 	}
 	// Virtual field
-	if _liftErr := writeBuffer.WriteVirtual("lift", m.GetLift()); _liftErr != nil {
+	if _liftErr := writeBuffer.WriteVirtual(ctx, "lift", m.GetLift()); _liftErr != nil {
 		return errors.Wrap(_liftErr, "Error serializing 'lift' field")
 	}
 
@@ -419,7 +436,7 @@ func (m *_BACnetObjectTypesSupportedTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

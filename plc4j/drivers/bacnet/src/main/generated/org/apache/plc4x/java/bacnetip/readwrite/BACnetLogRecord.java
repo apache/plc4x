@@ -66,6 +66,7 @@ public class BACnetLogRecord implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecord");
 
@@ -90,6 +91,7 @@ public class BACnetLogRecord implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetLogRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timestamp)
     lengthInBits += timestamp.getLengthInBits();
@@ -116,6 +118,7 @@ public class BACnetLogRecord implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(

@@ -87,6 +87,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionlessInvokeResponseType");
 
@@ -117,6 +118,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SessionlessInvokeResponseType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfNamespaceUris)
     lengthInBits += 32;
@@ -125,7 +127,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     if (namespaceUris != null) {
       int i = 0;
       for (PascalString element : namespaceUris) {
-        boolean last = ++i >= namespaceUris.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= namespaceUris.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -137,7 +139,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     if (serverUris != null) {
       int i = 0;
       for (PascalString element : serverUris) {
-        boolean last = ++i >= serverUris.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverUris.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -154,6 +156,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfNamespaceUris = readSimpleField("noOfNamespaceUris", readSignedInt(readBuffer, 32));
 

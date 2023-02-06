@@ -79,6 +79,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSegmentationSupported");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSegmentationSupported _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentationSupported)
     lengthInBits += segmentationSupported.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSegmentationTagged segmentationSupported =
         readSimpleField(

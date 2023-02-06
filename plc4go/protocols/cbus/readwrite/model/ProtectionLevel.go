@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,19 +134,19 @@ func CastProtectionLevel(structType interface{}) ProtectionLevel {
 	return castFunc(structType)
 }
 
-func (m ProtectionLevel) GetLengthInBits() uint16 {
+func (m ProtectionLevel) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ProtectionLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ProtectionLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ProtectionLevelParse(theBytes []byte) (ProtectionLevel, error) {
-	return ProtectionLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ProtectionLevelParse(ctx context.Context, theBytes []byte) (ProtectionLevel, error) {
+	return ProtectionLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
+func ProtectionLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
 	val, err := readBuffer.ReadUint8("ProtectionLevel", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ProtectionLevel")
@@ -160,13 +161,13 @@ func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLeve
 
 func (e ProtectionLevel) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ProtectionLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ProtectionLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ProtectionLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

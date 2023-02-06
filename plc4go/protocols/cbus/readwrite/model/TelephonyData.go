@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -54,12 +55,11 @@ type _TelephonyData struct {
 
 type _TelephonyDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type TelephonyDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child TelephonyData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child TelephonyData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -95,6 +95,8 @@ func (m *_TelephonyData) GetArgument() byte {
 ///////////////////////
 
 func (m *_TelephonyData) GetCommandType() TelephonyCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastTelephonyCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -123,7 +125,7 @@ func (m *_TelephonyData) GetTypeName() string {
 	return "TelephonyData"
 }
 
-func (m *_TelephonyData) GetParentLengthInBits() uint16 {
+func (m *_TelephonyData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -137,15 +139,15 @@ func (m *_TelephonyData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_TelephonyData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataParse(theBytes []byte) (TelephonyData, error) {
-	return TelephonyDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TelephonyDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TelephonyDataParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyData, error) {
+func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyData"); pullErr != nil {
@@ -163,7 +165,7 @@ func TelephonyDataParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyData, e
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TelephonyCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TelephonyCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TelephonyData")
 	}
@@ -195,29 +197,29 @@ func TelephonyDataParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyData, e
 	var typeSwitchError error
 	switch {
 	case commandType == TelephonyCommandType_EVENT && argument == 0x01: // TelephonyDataLineOnHook
-		_childTemp, typeSwitchError = TelephonyDataLineOnHookParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataLineOnHookParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x02: // TelephonyDataLineOffHook
-		_childTemp, typeSwitchError = TelephonyDataLineOffHookParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataLineOffHookParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x03: // TelephonyDataDialOutFailure
-		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x04: // TelephonyDataDialInFailure
-		_childTemp, typeSwitchError = TelephonyDataDialInFailureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataDialInFailureParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x05: // TelephonyDataRinging
-		_childTemp, typeSwitchError = TelephonyDataRingingParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataRingingParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x06: // TelephonyDataRecallLastNumber
-		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x07: // TelephonyDataInternetConnectionRequestMade
-		_childTemp, typeSwitchError = TelephonyDataInternetConnectionRequestMadeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x80: // TelephonyDataIsolateSecondaryOutlet
-		_childTemp, typeSwitchError = TelephonyDataIsolateSecondaryOutletParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x81: // TelephonyDataRecallLastNumberRequest
-		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x82: // TelephonyDataRejectIncomingCall
-		_childTemp, typeSwitchError = TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataRejectIncomingCallParseWithBuffer(ctx, readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x83: // TelephonyDataDivert
-		_childTemp, typeSwitchError = TelephonyDataDivertParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataDivertParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x84: // TelephonyDataClearDiversion
-		_childTemp, typeSwitchError = TelephonyDataClearDiversionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataClearDiversionParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}
@@ -235,7 +237,7 @@ func TelephonyDataParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyData, e
 	return _child, nil
 }
 
-func (pm *_TelephonyData) SerializeParent(writeBuffer utils.WriteBuffer, child TelephonyData, serializeChildFunction func() error) error {
+func (pm *_TelephonyData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child TelephonyData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -249,7 +251,7 @@ func (pm *_TelephonyData) SerializeParent(writeBuffer utils.WriteBuffer, child T
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -257,7 +259,7 @@ func (pm *_TelephonyData) SerializeParent(writeBuffer utils.WriteBuffer, child T
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -288,7 +290,7 @@ func (m *_TelephonyData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

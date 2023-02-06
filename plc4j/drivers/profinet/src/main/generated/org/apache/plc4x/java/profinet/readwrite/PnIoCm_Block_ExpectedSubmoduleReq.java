@@ -72,6 +72,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ExpectedSubmoduleReq");
 
@@ -123,6 +124,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ExpectedSubmoduleReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (blockLength)
     lengthInBits += 16;
@@ -140,7 +142,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     if (apis != null) {
       int i = 0;
       for (PnIoCm_ExpectedSubmoduleBlockReqApi element : apis) {
-        boolean last = ++i >= apis.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= apis.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -154,6 +156,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockLength =
         readImplicitField(

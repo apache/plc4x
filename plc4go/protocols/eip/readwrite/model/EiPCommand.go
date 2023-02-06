@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastEiPCommand(structType interface{}) EiPCommand {
 	return castFunc(structType)
 }
 
-func (m EiPCommand) GetLengthInBits() uint16 {
+func (m EiPCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m EiPCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m EiPCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func EiPCommandParse(theBytes []byte) (EiPCommand, error) {
-	return EiPCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func EiPCommandParse(ctx context.Context, theBytes []byte) (EiPCommand, error) {
+	return EiPCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) {
+func EiPCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	val, err := readBuffer.ReadUint16("EiPCommand", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EiPCommand")
@@ -120,13 +121,13 @@ func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) 
 
 func (e EiPCommand) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e EiPCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e EiPCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

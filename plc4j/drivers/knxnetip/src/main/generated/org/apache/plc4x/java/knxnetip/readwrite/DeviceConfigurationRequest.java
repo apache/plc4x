@@ -65,6 +65,7 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeviceConfigurationRequest");
 
@@ -94,6 +95,7 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeviceConfigurationRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceConfigurationRequestDataBlock)
     lengthInBits += deviceConfigurationRequestDataBlock.getLengthInBits();
@@ -110,6 +112,7 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock =
         readSimpleField(

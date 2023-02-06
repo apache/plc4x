@@ -63,6 +63,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicWriteFile");
 
@@ -82,6 +83,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAtomicWriteFile _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartPosition)
     lengthInBits += fileStartPosition.getLengthInBits();
@@ -95,6 +97,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger fileStartPosition =
         readSimpleField(

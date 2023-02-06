@@ -183,7 +183,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			offset := 2 + nb*2
 			for i := uint16(0); i < nb; i++ {
 				offsets[i] = offset
-				offset += items[i].GetLengthInBytes()
+				offset += items[i].GetLengthInBytes(context.Background())
 			}
 
 			serviceArr := make([]readWriteModel.CipService, nb)
@@ -331,7 +331,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 			}
 			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer(serviceBuf, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer(context.Background(), serviceBuf, length)
 			if err != nil {
 				return nil, err
 			}

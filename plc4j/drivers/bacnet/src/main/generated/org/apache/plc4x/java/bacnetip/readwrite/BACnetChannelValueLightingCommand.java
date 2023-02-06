@@ -56,6 +56,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueLightingCommand");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueLightingCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ligthingCommandValue)
     lengthInBits += ligthingCommandValue.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastBACnetAccessRuleLocationSpecifier(structType interface{}) BACnetAccessR
 	return castFunc(structType)
 }
 
-func (m BACnetAccessRuleLocationSpecifier) GetLengthInBits() uint16 {
+func (m BACnetAccessRuleLocationSpecifier) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessRuleLocationSpecifierParse(theBytes []byte) (BACnetAccessRuleLocationSpecifier, error) {
-	return BACnetAccessRuleLocationSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessRuleLocationSpecifierParse(ctx context.Context, theBytes []byte) (BACnetAccessRuleLocationSpecifier, error) {
+	return BACnetAccessRuleLocationSpecifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessRuleLocationSpecifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRuleLocationSpecifier, error) {
+func BACnetAccessRuleLocationSpecifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRuleLocationSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleLocationSpecifier", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleLocationSpecifier")
@@ -114,13 +115,13 @@ func BACnetAccessRuleLocationSpecifierParseWithBuffer(readBuffer utils.ReadBuffe
 
 func (e BACnetAccessRuleLocationSpecifier) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessRuleLocationSpecifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessRuleLocationSpecifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccessRuleLocationSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

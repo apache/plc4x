@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _FirmataCommand struct {
 
 type _FirmataCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommandCode() uint8
 }
 
 type FirmataCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_FirmataCommand) GetTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *_FirmataCommand) GetParentLengthInBits() uint16 {
+func (m *_FirmataCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4
@@ -98,15 +98,15 @@ func (m *_FirmataCommand) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_FirmataCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataCommandParse(theBytes []byte, response bool) (FirmataCommand, error) {
-	return FirmataCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return FirmataCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func FirmataCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
+func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
@@ -132,15 +132,15 @@ func FirmataCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		_childTemp, typeSwitchError = FirmataCommandSysexParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSysexParseWithBuffer(ctx, readBuffer, response)
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		_childTemp, typeSwitchError = FirmataCommandSetPinModeParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSetPinModeParseWithBuffer(ctx, readBuffer, response)
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		_childTemp, typeSwitchError = FirmataCommandSetDigitalPinValueParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSetDigitalPinValueParseWithBuffer(ctx, readBuffer, response)
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		_childTemp, typeSwitchError = FirmataCommandProtocolVersionParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandProtocolVersionParseWithBuffer(ctx, readBuffer, response)
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		_childTemp, typeSwitchError = FirmataCommandSystemResetParseWithBuffer(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSystemResetParseWithBuffer(ctx, readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
@@ -158,7 +158,7 @@ func FirmataCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (
 	return _child, nil
 }
 
-func (pm *_FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error {
+func (pm *_FirmataCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -206,7 +206,7 @@ func (m *_FirmataCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

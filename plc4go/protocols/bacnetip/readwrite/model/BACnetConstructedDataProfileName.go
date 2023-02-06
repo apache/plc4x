@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataProfileName) GetProfileName() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataProfileName) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetProfileName())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataProfileName) GetTypeName() string {
 	return "BACnetConstructedDataProfileName"
 }
 
-func (m *_BACnetConstructedDataProfileName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataProfileName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataProfileName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (profileName)
-	lengthInBits += m.ProfileName.GetLengthInBits()
+	lengthInBits += m.ProfileName.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProfileName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataProfileName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataProfileNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
-	return BACnetConstructedDataProfileNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataProfileNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataProfileNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
+func BACnetConstructedDataProfileNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProfileName"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataProfileNameParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("profileName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for profileName")
 	}
-	_profileName, _profileNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_profileName, _profileNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _profileNameErr != nil {
 		return nil, errors.Wrap(_profileNameErr, "Error parsing 'profileName' field of BACnetConstructedDataProfileName")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataProfileNameParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataProfileName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("profileName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for profileName")
 		}
-		_profileNameErr := writeBuffer.WriteSerializable(m.GetProfileName())
+		_profileNameErr := writeBuffer.WriteSerializable(ctx, m.GetProfileName())
 		if popErr := writeBuffer.PopContext("profileName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for profileName")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_profileNameErr, "Error serializing 'profileName' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataProfileName) isBACnetConstructedDataProfileName() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataProfileName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

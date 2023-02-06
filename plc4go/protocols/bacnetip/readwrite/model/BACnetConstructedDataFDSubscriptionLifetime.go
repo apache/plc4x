@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetFdSubscriptionLifetime
 ///////////////////////
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetFdSubscriptionLifetime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetTypeName() string {
 	return "BACnetConstructedDataFDSubscriptionLifetime"
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fdSubscriptionLifetime)
-	lengthInBits += m.FdSubscriptionLifetime.GetLengthInBits()
+	lengthInBits += m.FdSubscriptionLifetime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataFDSubscriptionLifetimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
-	return BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDSubscriptionLifetime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("fdSubscriptionLifetime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fdSubscriptionLifetime")
 	}
-	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _fdSubscriptionLifetimeErr != nil {
 		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field of BACnetConstructedDataFDSubscriptionLifetime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("fdSubscriptionLifetime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fdSubscriptionLifetime")
 		}
-		_fdSubscriptionLifetimeErr := writeBuffer.WriteSerializable(m.GetFdSubscriptionLifetime())
+		_fdSubscriptionLifetimeErr := writeBuffer.WriteSerializable(ctx, m.GetFdSubscriptionLifetime())
 		if popErr := writeBuffer.PopContext("fdSubscriptionLifetime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fdSubscriptionLifetime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 			return errors.Wrap(_fdSubscriptionLifetimeErr, "Error serializing 'fdSubscriptionLifetime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) isBACnetConstructedDataFDSubscriptionLifetime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -64,6 +64,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemNotification");
 
@@ -85,6 +86,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredItemNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (clientHandle)
     lengthInBits += 32;
@@ -101,6 +103,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 

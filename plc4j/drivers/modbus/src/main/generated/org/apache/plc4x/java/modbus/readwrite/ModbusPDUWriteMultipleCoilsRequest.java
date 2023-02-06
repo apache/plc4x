@@ -77,6 +77,7 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteMultipleCoilsRequest");
 
@@ -106,6 +107,7 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUWriteMultipleCoilsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startingAddress)
     lengthInBits += 16;
@@ -130,6 +132,7 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int startingAddress = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16));
 

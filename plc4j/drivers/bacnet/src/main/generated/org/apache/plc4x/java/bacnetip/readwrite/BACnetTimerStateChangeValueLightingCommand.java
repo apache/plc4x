@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueLightingCommand");
 
@@ -82,6 +83,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueLightingCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ligthingCommandValue)
     lengthInBits += ligthingCommandValue.getLengthInBits();
@@ -95,6 +97,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(

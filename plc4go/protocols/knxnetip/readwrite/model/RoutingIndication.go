@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -90,25 +91,21 @@ func (m *_RoutingIndication) GetTypeName() string {
 	return "RoutingIndication"
 }
 
-func (m *_RoutingIndication) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RoutingIndication) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RoutingIndication) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_RoutingIndication) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RoutingIndication) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RoutingIndicationParse(theBytes []byte) (RoutingIndication, error) {
-	return RoutingIndicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return RoutingIndicationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
@@ -130,14 +127,14 @@ func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndic
 }
 
 func (m *_RoutingIndication) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_RoutingIndication) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_RoutingIndication) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -150,7 +147,7 @@ func (m *_RoutingIndication) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RoutingIndication) isRoutingIndication() bool {
@@ -162,7 +159,7 @@ func (m *_RoutingIndication) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetTimeStamp struct {
 
 type _BACnetTimeStampChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetTimeStampParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetTimeStamp, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetTimeStamp, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetTimeStamp) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetTimeStamp) GetTypeName() string {
 	return "BACnetTimeStamp"
 }
 
-func (m *_BACnetTimeStamp) GetParentLengthInBits() uint16 {
+func (m *_BACnetTimeStamp) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetTimeStamp) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetTimeStamp) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimeStamp) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimeStampParse(theBytes []byte) (BACnetTimeStamp, error) {
-	return BACnetTimeStampParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTimeStampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {
+func BACnetTimeStampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStam
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,11 +167,11 @@ func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStam
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		_childTemp, typeSwitchError = BACnetTimeStampTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampTimeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		_childTemp, typeSwitchError = BACnetTimeStampSequenceParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampSequenceParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		_childTemp, typeSwitchError = BACnetTimeStampDateTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampDateTimeParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -187,7 +189,7 @@ func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStam
 	return _child, nil
 }
 
-func (pm *_BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetTimeStamp, serializeChildFunction func() error) error {
+func (pm *_BACnetTimeStamp) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetTimeStamp, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -197,7 +199,7 @@ func (pm *_BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(pushErr, "Error pushing for BACnetTimeStamp")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -221,7 +223,7 @@ func (m *_BACnetTimeStamp) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

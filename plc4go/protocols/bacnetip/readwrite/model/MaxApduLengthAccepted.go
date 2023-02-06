@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -253,19 +254,19 @@ func CastMaxApduLengthAccepted(structType interface{}) MaxApduLengthAccepted {
 	return castFunc(structType)
 }
 
-func (m MaxApduLengthAccepted) GetLengthInBits() uint16 {
+func (m MaxApduLengthAccepted) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m MaxApduLengthAccepted) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MaxApduLengthAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MaxApduLengthAcceptedParse(theBytes []byte) (MaxApduLengthAccepted, error) {
-	return MaxApduLengthAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MaxApduLengthAcceptedParse(ctx context.Context, theBytes []byte) (MaxApduLengthAccepted, error) {
+	return MaxApduLengthAcceptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MaxApduLengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
+func MaxApduLengthAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxApduLengthAccepted", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxApduLengthAccepted")
@@ -280,13 +281,13 @@ func MaxApduLengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxApduL
 
 func (e MaxApduLengthAccepted) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MaxApduLengthAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MaxApduLengthAccepted) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MaxApduLengthAccepted", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

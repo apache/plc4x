@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetCompletionTime() BACnet
 ///////////////////////
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetCompletionTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetTypeName() string {
 	return "BACnetConstructedDataRestoreCompletionTime"
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (completionTime)
-	lengthInBits += m.CompletionTime.GetLengthInBits()
+	lengthInBits += m.CompletionTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataRestoreCompletionTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
-	return BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
+func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestoreCompletionTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("completionTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for completionTime")
 	}
-	_completionTime, _completionTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_completionTime, _completionTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _completionTimeErr != nil {
 		return nil, errors.Wrap(_completionTimeErr, "Error parsing 'completionTime' field of BACnetConstructedDataRestoreCompletionTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("completionTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for completionTime")
 		}
-		_completionTimeErr := writeBuffer.WriteSerializable(m.GetCompletionTime())
+		_completionTimeErr := writeBuffer.WriteSerializable(ctx, m.GetCompletionTime())
 		if popErr := writeBuffer.PopContext("completionTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for completionTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(w
 			return errors.Wrap(_completionTimeErr, "Error serializing 'completionTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) isBACnetConstructedDataRestoreCompletionTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

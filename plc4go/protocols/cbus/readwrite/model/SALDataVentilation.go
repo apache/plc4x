@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataVentilation) GetTypeName() string {
 	return "SALDataVentilation"
 }
 
-func (m *_SALDataVentilation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataVentilation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataVentilation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ventilationData)
-	lengthInBits += m.VentilationData.GetLengthInBits()
+	lengthInBits += m.VentilationData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataVentilation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataVentilation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataVentilationParse(theBytes []byte, applicationId ApplicationId) (SALDataVentilation, error) {
-	return SALDataVentilationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataVentilationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataVentilationParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {
+func SALDataVentilationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataVentilation"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataVentilationParseWithBuffer(readBuffer utils.ReadBuffer, applicationI
 	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
 	}
-	_ventilationData, _ventilationDataErr := LightingDataParseWithBuffer(readBuffer)
+	_ventilationData, _ventilationDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
 	if _ventilationDataErr != nil {
 		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataVentilation")
 	}
@@ -166,14 +163,14 @@ func SALDataVentilationParseWithBuffer(readBuffer utils.ReadBuffer, applicationI
 }
 
 func (m *_SALDataVentilation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataVentilation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataVentilation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataVentilation) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("ventilationData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ventilationData")
 		}
-		_ventilationDataErr := writeBuffer.WriteSerializable(m.GetVentilationData())
+		_ventilationDataErr := writeBuffer.WriteSerializable(ctx, m.GetVentilationData())
 		if popErr := writeBuffer.PopContext("ventilationData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ventilationData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataVentilation) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataVentilation) isSALDataVentilation() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataVentilation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

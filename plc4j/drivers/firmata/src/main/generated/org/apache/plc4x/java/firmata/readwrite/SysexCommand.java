@@ -51,6 +51,7 @@ public abstract class SysexCommand implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommand");
 
@@ -72,6 +73,7 @@ public abstract class SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SysexCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (commandType)
     lengthInBits += 8;
@@ -107,6 +109,7 @@ public abstract class SysexCommand implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short commandType = readDiscriminatorField("commandType", readUnsignedShort(readBuffer, 8));
 

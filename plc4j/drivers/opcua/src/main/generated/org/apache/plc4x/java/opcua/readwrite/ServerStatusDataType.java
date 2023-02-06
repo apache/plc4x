@@ -94,6 +94,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerStatusDataType");
 
@@ -133,6 +134,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerStatusDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startTime)
     lengthInBits += 64;
@@ -161,6 +163,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long startTime = readSimpleField("startTime", readSignedLong(readBuffer, 64));
 

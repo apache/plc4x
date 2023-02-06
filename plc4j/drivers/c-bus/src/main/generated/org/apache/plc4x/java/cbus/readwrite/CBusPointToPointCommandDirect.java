@@ -65,6 +65,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
   protected void serializeCBusPointToPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommandDirect");
 
@@ -89,6 +90,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointCommandDirect _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unitAddress)
     lengthInBits += unitAddress.getLengthInBits();
@@ -105,6 +107,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     UnitAddress unitAddress =
         readSimpleField(

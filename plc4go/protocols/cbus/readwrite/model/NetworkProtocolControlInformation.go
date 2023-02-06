@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,11 +90,7 @@ func (m *_NetworkProtocolControlInformation) GetTypeName() string {
 	return "NetworkProtocolControlInformation"
 }
 
-func (m *_NetworkProtocolControlInformation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NetworkProtocolControlInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_NetworkProtocolControlInformation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -108,15 +105,15 @@ func (m *_NetworkProtocolControlInformation) GetLengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *_NetworkProtocolControlInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NetworkProtocolControlInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NetworkProtocolControlInformationParse(theBytes []byte) (NetworkProtocolControlInformation, error) {
-	return NetworkProtocolControlInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return NetworkProtocolControlInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func NetworkProtocolControlInformationParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkProtocolControlInformation"); pullErr != nil {
@@ -169,14 +166,14 @@ func NetworkProtocolControlInformationParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_NetworkProtocolControlInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkProtocolControlInformation"); pushErr != nil {
@@ -228,7 +225,7 @@ func (m *_NetworkProtocolControlInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -141,46 +142,42 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (issueConfirmedNotifications)
 	if m.IssueConfirmedNotifications != nil {
-		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits()
+		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (lifetime)
 	if m.Lifetime != nil {
-		lengthInBits += m.Lifetime.GetLengthInBits()
+		lengthInBits += m.Lifetime.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (maxNotificationDelay)
 	if m.MaxNotificationDelay != nil {
-		lengthInBits += m.MaxNotificationDelay.GetLengthInBits()
+		lengthInBits += m.MaxNotificationDelay.GetLengthInBits(ctx)
 	}
 
 	// Simple field (listOfCovSubscriptionSpecifications)
-	lengthInBits += m.ListOfCovSubscriptionSpecifications.GetLengthInBits()
+	lengthInBits += m.ListOfCovSubscriptionSpecifications.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
-	return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
@@ -193,7 +190,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
@@ -209,7 +206,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -231,7 +228,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 		if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for lifetime")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -253,7 +250,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 		if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -272,7 +269,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecifications")
 	}
-	_listOfCovSubscriptionSpecifications, _listOfCovSubscriptionSpecificationsErr := BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParseWithBuffer(readBuffer, uint8(uint8(4)))
+	_listOfCovSubscriptionSpecifications, _listOfCovSubscriptionSpecificationsErr := BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationsErr != nil {
 		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error parsing 'listOfCovSubscriptionSpecifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
@@ -301,14 +298,14 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(re
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -320,7 +317,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.GetSubscriberProcessIdentifier())
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -335,7 +332,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 			}
 			issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(issueConfirmedNotifications)
+			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
 			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 			}
@@ -351,7 +348,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 				return errors.Wrap(pushErr, "Error pushing for lifetime")
 			}
 			lifetime = m.GetLifetime()
-			_lifetimeErr := writeBuffer.WriteSerializable(lifetime)
+			_lifetimeErr := writeBuffer.WriteSerializable(ctx, lifetime)
 			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lifetime")
 			}
@@ -367,7 +364,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 				return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
 			}
 			maxNotificationDelay = m.GetMaxNotificationDelay()
-			_maxNotificationDelayErr := writeBuffer.WriteSerializable(maxNotificationDelay)
+			_maxNotificationDelayErr := writeBuffer.WriteSerializable(ctx, maxNotificationDelay)
 			if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
 			}
@@ -380,7 +377,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 		if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecifications"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecifications")
 		}
-		_listOfCovSubscriptionSpecificationsErr := writeBuffer.WriteSerializable(m.GetListOfCovSubscriptionSpecifications())
+		_listOfCovSubscriptionSpecificationsErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovSubscriptionSpecifications())
 		if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecifications"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecifications")
 		}
@@ -393,7 +390,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool {
@@ -405,7 +402,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) String() st
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

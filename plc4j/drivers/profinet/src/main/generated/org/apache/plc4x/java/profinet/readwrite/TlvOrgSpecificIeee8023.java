@@ -43,55 +43,27 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
   }
 
   // Properties.
-  protected final short subType;
-  protected final short negotiationSupport;
-  protected final int negotiationCapability;
-  protected final int operationalMauType;
+  protected final TlvOrgSpecificIeee8023Unit specificUnit;
 
-  public TlvOrgSpecificIeee8023(
-      short subType, short negotiationSupport, int negotiationCapability, int operationalMauType) {
+  public TlvOrgSpecificIeee8023(TlvOrgSpecificIeee8023Unit specificUnit) {
     super();
-    this.subType = subType;
-    this.negotiationSupport = negotiationSupport;
-    this.negotiationCapability = negotiationCapability;
-    this.operationalMauType = operationalMauType;
+    this.specificUnit = specificUnit;
   }
 
-  public short getSubType() {
-    return subType;
-  }
-
-  public short getNegotiationSupport() {
-    return negotiationSupport;
-  }
-
-  public int getNegotiationCapability() {
-    return negotiationCapability;
-  }
-
-  public int getOperationalMauType() {
-    return operationalMauType;
+  public TlvOrgSpecificIeee8023Unit getSpecificUnit() {
+    return specificUnit;
   }
 
   @Override
   protected void serializeTlvOrganizationSpecificUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrgSpecificIeee8023");
 
-    // Simple Field (subType)
-    writeSimpleField("subType", subType, writeUnsignedShort(writeBuffer, 8));
-
-    // Simple Field (negotiationSupport)
-    writeSimpleField("negotiationSupport", negotiationSupport, writeUnsignedShort(writeBuffer, 8));
-
-    // Simple Field (negotiationCapability)
-    writeSimpleField(
-        "negotiationCapability", negotiationCapability, writeUnsignedInt(writeBuffer, 16));
-
-    // Simple Field (operationalMauType)
-    writeSimpleField("operationalMauType", operationalMauType, writeUnsignedInt(writeBuffer, 16));
+    // Simple Field (specificUnit)
+    writeSimpleField("specificUnit", specificUnit, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("TlvOrgSpecificIeee8023");
   }
@@ -105,18 +77,10 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvOrgSpecificIeee8023 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (subType)
-    lengthInBits += 8;
-
-    // Simple field (negotiationSupport)
-    lengthInBits += 8;
-
-    // Simple field (negotiationCapability)
-    lengthInBits += 16;
-
-    // Simple field (operationalMauType)
-    lengthInBits += 16;
+    // Simple field (specificUnit)
+    lengthInBits += specificUnit.getLengthInBits();
 
     return lengthInBits;
   }
@@ -127,45 +91,29 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short subType = readSimpleField("subType", readUnsignedShort(readBuffer, 8));
-
-    short negotiationSupport =
-        readSimpleField("negotiationSupport", readUnsignedShort(readBuffer, 8));
-
-    int negotiationCapability =
-        readSimpleField("negotiationCapability", readUnsignedInt(readBuffer, 16));
-
-    int operationalMauType = readSimpleField("operationalMauType", readUnsignedInt(readBuffer, 16));
+    TlvOrgSpecificIeee8023Unit specificUnit =
+        readSimpleField(
+            "specificUnit",
+            new DataReaderComplexDefault<>(
+                () -> TlvOrgSpecificIeee8023Unit.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvOrgSpecificIeee8023");
     // Create the instance
-    return new TlvOrgSpecificIeee8023BuilderImpl(
-        subType, negotiationSupport, negotiationCapability, operationalMauType);
+    return new TlvOrgSpecificIeee8023BuilderImpl(specificUnit);
   }
 
   public static class TlvOrgSpecificIeee8023BuilderImpl
       implements TlvOrganizationSpecificUnit.TlvOrganizationSpecificUnitBuilder {
-    private final short subType;
-    private final short negotiationSupport;
-    private final int negotiationCapability;
-    private final int operationalMauType;
+    private final TlvOrgSpecificIeee8023Unit specificUnit;
 
-    public TlvOrgSpecificIeee8023BuilderImpl(
-        short subType,
-        short negotiationSupport,
-        int negotiationCapability,
-        int operationalMauType) {
-      this.subType = subType;
-      this.negotiationSupport = negotiationSupport;
-      this.negotiationCapability = negotiationCapability;
-      this.operationalMauType = operationalMauType;
+    public TlvOrgSpecificIeee8023BuilderImpl(TlvOrgSpecificIeee8023Unit specificUnit) {
+      this.specificUnit = specificUnit;
     }
 
     public TlvOrgSpecificIeee8023 build() {
-      TlvOrgSpecificIeee8023 tlvOrgSpecificIeee8023 =
-          new TlvOrgSpecificIeee8023(
-              subType, negotiationSupport, negotiationCapability, operationalMauType);
+      TlvOrgSpecificIeee8023 tlvOrgSpecificIeee8023 = new TlvOrgSpecificIeee8023(specificUnit);
       return tlvOrgSpecificIeee8023;
     }
   }
@@ -179,22 +127,12 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
       return false;
     }
     TlvOrgSpecificIeee8023 that = (TlvOrgSpecificIeee8023) o;
-    return (getSubType() == that.getSubType())
-        && (getNegotiationSupport() == that.getNegotiationSupport())
-        && (getNegotiationCapability() == that.getNegotiationCapability())
-        && (getOperationalMauType() == that.getOperationalMauType())
-        && super.equals(that)
-        && true;
+    return (getSpecificUnit() == that.getSpecificUnit()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getSubType(),
-        getNegotiationSupport(),
-        getNegotiationCapability(),
-        getOperationalMauType());
+    return Objects.hash(super.hashCode(), getSpecificUnit());
   }
 
   @Override

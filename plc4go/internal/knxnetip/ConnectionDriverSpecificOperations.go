@@ -87,7 +87,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 			datapointType = &defaultDatapointType
 		}
 		// Parse the value
-		plcValue, err := driverModel.KnxDatapointParseWithBuffer(rb, *datapointType)
+		plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error parsing group address response"))
 			return
@@ -169,7 +169,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 			if propertyValueResponse.GetCount() > 0 {
 				dataLength := uint8(len(propertyValueResponse.GetData()))
 				data := propertyValueResponse.GetData()
-				plcValue, err := driverModel.KnxPropertyParse(data,
+				plcValue, err := driverModel.KnxPropertyParse(context.Background(), data,
 					driverModel.KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH.PropertyDataType(), dataLength)
 
 				// Return the result
@@ -345,7 +345,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 
 		dataLength := uint8(len(propertyValueResponse.GetData()))
 		data := propertyValueResponse.GetData()
-		plcValue, err := driverModel.KnxPropertyParse(data, property.PropertyDataType(), dataLength)
+		plcValue, err := driverModel.KnxPropertyParse(context.Background(), data, property.PropertyDataType(), dataLength)
 		if err != nil {
 			sendResponse(nil, 0, err)
 		} else {
@@ -493,7 +493,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			// Parse the data according to the property type information
 			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
 			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-				plcValue, err := driverModel.KnxDatapointParseWithBuffer(rb, *datapointType)
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
 				// Return the result
 				if err != nil {
 					sendResponse(nil, 0, err)

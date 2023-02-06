@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_ModbusPDUError) GetTypeName() string {
 	return "ModbusPDUError"
 }
 
-func (m *_ModbusPDUError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (exceptionCode)
 	lengthInBits += 8
@@ -128,15 +125,15 @@ func (m *_ModbusPDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_ModbusPDUError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUErrorParse(theBytes []byte, response bool) (ModbusPDUError, error) {
-	return ModbusPDUErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUError, error) {
+func ModbusPDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
@@ -149,7 +146,7 @@ func ModbusPDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exceptionCode")
 	}
-	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParseWithBuffer(readBuffer)
+	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field of ModbusPDUError")
 	}
@@ -172,14 +169,14 @@ func ModbusPDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (
 }
 
 func (m *_ModbusPDUError) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -191,7 +188,7 @@ func (m *_ModbusPDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("exceptionCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for exceptionCode")
 		}
-		_exceptionCodeErr := writeBuffer.WriteSerializable(m.GetExceptionCode())
+		_exceptionCodeErr := writeBuffer.WriteSerializable(ctx, m.GetExceptionCode())
 		if popErr := writeBuffer.PopContext("exceptionCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for exceptionCode")
 		}
@@ -204,7 +201,7 @@ func (m *_ModbusPDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUError) isModbusPDUError() bool {
@@ -216,7 +213,7 @@ func (m *_ModbusPDUError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

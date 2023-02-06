@@ -57,6 +57,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
   protected void serializeBACnetLandingCallStatusCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDirection");
 
@@ -75,6 +76,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLandingCallStatusCommandDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (direction)
     lengthInBits += direction.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged direction =
         readSimpleField(

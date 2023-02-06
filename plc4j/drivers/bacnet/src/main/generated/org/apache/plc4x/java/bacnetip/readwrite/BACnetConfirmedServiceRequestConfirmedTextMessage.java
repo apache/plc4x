@@ -88,6 +88,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
 
@@ -119,6 +120,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedTextMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (textMessageSourceDevice)
     lengthInBits += textMessageSourceDevice.getLengthInBits();
@@ -144,6 +146,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier textMessageSourceDevice =
         readSimpleField(

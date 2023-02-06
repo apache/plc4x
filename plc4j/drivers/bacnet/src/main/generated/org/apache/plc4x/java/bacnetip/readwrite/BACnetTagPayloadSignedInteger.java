@@ -158,6 +158,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadSignedInteger");
 
@@ -233,6 +234,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTagPayloadSignedInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -321,6 +323,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     boolean isInt8 = readVirtualField("isInt8", boolean.class, (actualLength) == (1));
 
     Byte valueInt8 = readOptionalField("valueInt8", readSignedByte(readBuffer, 8), isInt8);

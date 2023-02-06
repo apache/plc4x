@@ -64,6 +64,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_IoCrBlockReqApi");
 
@@ -98,6 +99,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_IoCrBlockReqApi _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (api)
     lengthInBits += 32;
@@ -109,7 +111,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     if (ioDataObjects != null) {
       int i = 0;
       for (PnIoCm_IoDataObject element : ioDataObjects) {
-        boolean last = ++i >= ioDataObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= ioDataObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -121,7 +123,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     if (ioCss != null) {
       int i = 0;
       for (PnIoCm_IoCs element : ioCss) {
-        boolean last = ++i >= ioCss.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= ioCss.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,6 +142,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long api = readConstField("api", readUnsignedLong(readBuffer, 32), PnIoCm_IoCrBlockReqApi.API);
 

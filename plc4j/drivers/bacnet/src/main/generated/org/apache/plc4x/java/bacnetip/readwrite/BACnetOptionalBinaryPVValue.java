@@ -56,6 +56,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
   protected void serializeBACnetOptionalBinaryPVChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalBinaryPVValue");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalBinaryPVValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryPv)
     lengthInBits += binaryPv.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(

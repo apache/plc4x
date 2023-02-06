@@ -58,6 +58,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockPassword");
 
@@ -76,6 +77,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockPassword _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (password)
     lengthInBits += password.getLengthInBits();
@@ -89,6 +91,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AmsString password =
         readSimpleField(

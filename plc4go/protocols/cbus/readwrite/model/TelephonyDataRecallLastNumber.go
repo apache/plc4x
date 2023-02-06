@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,10 +98,14 @@ func (m *_TelephonyDataRecallLastNumber) GetNumber() string {
 ///////////////////////
 
 func (m *_TelephonyDataRecallLastNumber) GetIsNumberOfLastOutgoingCall() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetRecallLastNumberType()) == (0x01)))
 }
 
 func (m *_TelephonyDataRecallLastNumber) GetIsNumberOfLastIncomingCall() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetRecallLastNumberType()) == (0x02)))
 }
 
@@ -135,12 +140,8 @@ func (m *_TelephonyDataRecallLastNumber) GetTypeName() string {
 	return "TelephonyDataRecallLastNumber"
 }
 
-func (m *_TelephonyDataRecallLastNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TelephonyDataRecallLastNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TelephonyDataRecallLastNumber) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (recallLastNumberType)
 	lengthInBits += 8
@@ -155,15 +156,15 @@ func (m *_TelephonyDataRecallLastNumber) GetLengthInBitsConditional(lastItem boo
 	return lengthInBits
 }
 
-func (m *_TelephonyDataRecallLastNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyDataRecallLastNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataRecallLastNumberParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
-	return TelephonyDataRecallLastNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return TelephonyDataRecallLastNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func TelephonyDataRecallLastNumberParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
+func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRecallLastNumber"); pullErr != nil {
@@ -211,14 +212,14 @@ func TelephonyDataRecallLastNumberParseWithBuffer(readBuffer utils.ReadBuffer, c
 }
 
 func (m *_TelephonyDataRecallLastNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -233,11 +234,11 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
 		}
 		// Virtual field
-		if _isNumberOfLastOutgoingCallErr := writeBuffer.WriteVirtual("isNumberOfLastOutgoingCall", m.GetIsNumberOfLastOutgoingCall()); _isNumberOfLastOutgoingCallErr != nil {
+		if _isNumberOfLastOutgoingCallErr := writeBuffer.WriteVirtual(ctx, "isNumberOfLastOutgoingCall", m.GetIsNumberOfLastOutgoingCall()); _isNumberOfLastOutgoingCallErr != nil {
 			return errors.Wrap(_isNumberOfLastOutgoingCallErr, "Error serializing 'isNumberOfLastOutgoingCall' field")
 		}
 		// Virtual field
-		if _isNumberOfLastIncomingCallErr := writeBuffer.WriteVirtual("isNumberOfLastIncomingCall", m.GetIsNumberOfLastIncomingCall()); _isNumberOfLastIncomingCallErr != nil {
+		if _isNumberOfLastIncomingCallErr := writeBuffer.WriteVirtual(ctx, "isNumberOfLastIncomingCall", m.GetIsNumberOfLastIncomingCall()); _isNumberOfLastIncomingCallErr != nil {
 			return errors.Wrap(_isNumberOfLastIncomingCallErr, "Error serializing 'isNumberOfLastIncomingCall' field")
 		}
 
@@ -253,7 +254,7 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TelephonyDataRecallLastNumber) isTelephonyDataRecallLastNumber() bool {
@@ -265,7 +266,7 @@ func (m *_TelephonyDataRecallLastNumber) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

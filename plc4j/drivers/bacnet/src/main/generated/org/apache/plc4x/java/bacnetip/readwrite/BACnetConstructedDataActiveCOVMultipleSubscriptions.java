@@ -75,6 +75,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveCOVMultipleSubscriptions");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActiveCOVMultipleSubscriptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (activeCOVMultipleSubscriptions != null) {
@@ -116,6 +118,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions =
         readTerminatedArrayField(

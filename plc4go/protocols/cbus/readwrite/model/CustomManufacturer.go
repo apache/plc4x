@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -83,11 +84,7 @@ func (m *_CustomManufacturer) GetTypeName() string {
 	return "CustomManufacturer"
 }
 
-func (m *_CustomManufacturer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CustomManufacturer) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CustomManufacturer) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (customString)
@@ -96,15 +93,15 @@ func (m *_CustomManufacturer) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CustomManufacturer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CustomManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CustomManufacturerParse(theBytes []byte, numBytes uint8) (CustomManufacturer, error) {
-	return CustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numBytes)
+	return CustomManufacturerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numBytes)
 }
 
-func CustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
+func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomManufacturer"); pullErr != nil {
@@ -132,14 +129,14 @@ func CustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uin
 }
 
 func (m *_CustomManufacturer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CustomManufacturer"); pushErr != nil {
@@ -178,7 +175,7 @@ func (m *_CustomManufacturer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

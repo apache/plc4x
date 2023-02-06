@@ -81,6 +81,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
 
@@ -105,6 +106,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestDeviceCommunicationControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (timeDuration)
     if (timeDuration != null) {
@@ -129,6 +131,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger timeDuration =
         readOptionalField(

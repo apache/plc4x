@@ -73,6 +73,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetDeviceObjectPropertyReference");
 
@@ -103,6 +104,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetDeviceObjectPropertyReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -135,6 +137,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(

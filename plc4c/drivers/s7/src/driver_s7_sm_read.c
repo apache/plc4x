@@ -257,12 +257,12 @@ plc4c_return_code plc4c_driver_s7_parse_read_response(
       all_data_item = plc4c_data_create_list_data(all_list);
       free(all_list);
       for (idx = 0; idx < num_elements ; idx++) {
-        plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+        plc4c_s7_read_write_data_item_parse(plc4x_spi_context_background(), read_buffer, data_protocol_id, string_length, &data_item);
         plc4c_utils_list_insert_head_value(all_data_item->data.list_value, (void*)data_item);
       }
       data_item = all_data_item;
     } else {
-      plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+      plc4c_s7_read_write_data_item_parse(plc4x_spi_context_background(), read_buffer, data_protocol_id, string_length, &data_item);
     }
 
     // Create a new response value-item

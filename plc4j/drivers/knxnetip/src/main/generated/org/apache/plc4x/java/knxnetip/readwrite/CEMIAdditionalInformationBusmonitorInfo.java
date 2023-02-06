@@ -102,6 +102,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
   protected void serializeCEMIAdditionalInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMIAdditionalInformationBusmonitorInfo");
 
@@ -138,6 +139,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CEMIAdditionalInformationBusmonitorInfo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (len)
     lengthInBits += 8;
@@ -169,6 +171,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short len =
         readConstField(

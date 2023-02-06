@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -81,6 +82,8 @@ func (m *_EnableControlData) GetValue() byte {
 ///////////////////////
 
 func (m *_EnableControlData) GetCommandType() EnableControlCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastEnableControlCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -109,11 +112,7 @@ func (m *_EnableControlData) GetTypeName() string {
 	return "EnableControlData"
 }
 
-func (m *_EnableControlData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_EnableControlData) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_EnableControlData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -130,15 +129,15 @@ func (m *_EnableControlData) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_EnableControlData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_EnableControlData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func EnableControlDataParse(theBytes []byte) (EnableControlData, error) {
-	return EnableControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return EnableControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func EnableControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlData, error) {
+func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EnableControlData"); pullErr != nil {
@@ -156,7 +155,7 @@ func EnableControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (EnableContro
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of EnableControlData")
 	}
@@ -197,14 +196,14 @@ func EnableControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (EnableContro
 }
 
 func (m *_EnableControlData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_EnableControlData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("EnableControlData"); pushErr != nil {
@@ -215,7 +214,7 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -223,7 +222,7 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -256,7 +255,7 @@ func (m *_EnableControlData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

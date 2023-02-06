@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,11 +81,7 @@ func (m *_MACAddress) GetTypeName() string {
 	return "MACAddress"
 }
 
-func (m *_MACAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MACAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_MACAddress) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -95,15 +92,15 @@ func (m *_MACAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_MACAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MACAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MACAddressParse(theBytes []byte) (MACAddress, error) {
-	return MACAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MACAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MACAddressParseWithBuffer(readBuffer utils.ReadBuffer) (MACAddress, error) {
+func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MACAddress"); pullErr != nil {
@@ -129,14 +126,14 @@ func MACAddressParseWithBuffer(readBuffer utils.ReadBuffer) (MACAddress, error) 
 }
 
 func (m *_MACAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MACAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MACAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MACAddress"); pushErr != nil {
@@ -164,7 +161,7 @@ func (m *_MACAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -58,6 +58,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataDialOutFailure");
 
@@ -83,6 +84,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataDialOutFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reason)
     lengthInBits += 8;
@@ -96,6 +98,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DialOutFailureReason reason =
         readEnumField(

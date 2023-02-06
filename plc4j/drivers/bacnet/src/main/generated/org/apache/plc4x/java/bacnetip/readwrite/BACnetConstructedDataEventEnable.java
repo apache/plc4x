@@ -78,6 +78,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventEnable");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventEnable)
     lengthInBits += eventEnable.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventTransitionBitsTagged eventEnable =
         readSimpleField(

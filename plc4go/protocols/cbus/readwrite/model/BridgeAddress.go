@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,11 +81,7 @@ func (m *_BridgeAddress) GetTypeName() string {
 	return "BridgeAddress"
 }
 
-func (m *_BridgeAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BridgeAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BridgeAddress) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (address)
@@ -93,15 +90,15 @@ func (m *_BridgeAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_BridgeAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BridgeAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BridgeAddressParse(theBytes []byte) (BridgeAddress, error) {
-	return BridgeAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BridgeAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BridgeAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {
@@ -128,14 +125,14 @@ func BridgeAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BridgeAddress, e
 }
 
 func (m *_BridgeAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BridgeAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BridgeAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BridgeAddress"); pushErr != nil {
@@ -164,7 +161,7 @@ func (m *_BridgeAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

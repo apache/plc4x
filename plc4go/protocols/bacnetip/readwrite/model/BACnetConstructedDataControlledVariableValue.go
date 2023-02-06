@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetControlledVariableVal
 ///////////////////////
 
 func (m *_BACnetConstructedDataControlledVariableValue) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetControlledVariableValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetTypeName() string {
 	return "BACnetConstructedDataControlledVariableValue"
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (controlledVariableValue)
-	lengthInBits += m.ControlledVariableValue.GetLengthInBits()
+	lengthInBits += m.ControlledVariableValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataControlledVariableValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
-	return BACnetConstructedDataControlledVariableValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataControlledVariableValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataControlledVariableValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
+func BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlledVariableValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataControlledVariableValueParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("controlledVariableValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableValue")
 	}
-	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _controlledVariableValueErr != nil {
 		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field of BACnetConstructedDataControlledVariableValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataControlledVariableValueParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataControlledVariableValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("controlledVariableValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlledVariableValue")
 		}
-		_controlledVariableValueErr := writeBuffer.WriteSerializable(m.GetControlledVariableValue())
+		_controlledVariableValueErr := writeBuffer.WriteSerializable(ctx, m.GetControlledVariableValue())
 		if popErr := writeBuffer.PopContext("controlledVariableValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlledVariableValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer
 			return errors.Wrap(_controlledVariableValueErr, "Error serializing 'controlledVariableValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataControlledVariableValue) isBACnetConstructedDataControlledVariableValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

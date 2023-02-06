@@ -74,6 +74,7 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
   protected void serializeOpenProtocolMessageSelectParameterSetChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSelectParameterSetRev1");
 
@@ -96,6 +97,7 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageSelectParameterSetRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parameterSetId)
     lengthInBits += 24;
@@ -110,6 +112,7 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =
         readSimpleField(

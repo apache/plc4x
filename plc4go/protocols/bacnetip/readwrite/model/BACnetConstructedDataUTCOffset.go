@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUTCOffset) GetUtcOffset() BACnetApplicationTagSig
 ///////////////////////
 
 func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetUtcOffset())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUTCOffset) GetTypeName() string {
 	return "BACnetConstructedDataUTCOffset"
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUTCOffset) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUTCOffset) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (utcOffset)
-	lengthInBits += m.UtcOffset.GetLengthInBits()
+	lengthInBits += m.UtcOffset.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUTCOffset) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUTCOffsetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
-	return BACnetConstructedDataUTCOffsetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUTCOffsetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUTCOffsetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
+func BACnetConstructedDataUTCOffsetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCOffset"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUTCOffsetParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("utcOffset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for utcOffset")
 	}
-	_utcOffset, _utcOffsetErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_utcOffset, _utcOffsetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _utcOffsetErr != nil {
 		return nil, errors.Wrap(_utcOffsetErr, "Error parsing 'utcOffset' field of BACnetConstructedDataUTCOffset")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUTCOffsetParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataUTCOffset) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("utcOffset"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for utcOffset")
 		}
-		_utcOffsetErr := writeBuffer.WriteSerializable(m.GetUtcOffset())
+		_utcOffsetErr := writeBuffer.WriteSerializable(ctx, m.GetUtcOffset())
 		if popErr := writeBuffer.PopContext("utcOffset"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for utcOffset")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_utcOffsetErr, "Error serializing 'utcOffset' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUTCOffset) isBACnetConstructedDataUTCOffset() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUTCOffset) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

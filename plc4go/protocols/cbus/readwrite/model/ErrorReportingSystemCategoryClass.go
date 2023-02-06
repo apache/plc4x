@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastErrorReportingSystemCategoryClass(structType interface{}) ErrorReportin
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryClass) GetLengthInBits() uint16 {
+func (m ErrorReportingSystemCategoryClass) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryClass) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingSystemCategoryClass) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryClassParse(theBytes []byte) (ErrorReportingSystemCategoryClass, error) {
-	return ErrorReportingSystemCategoryClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingSystemCategoryClassParse(ctx context.Context, theBytes []byte) (ErrorReportingSystemCategoryClass, error) {
+	return ErrorReportingSystemCategoryClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingSystemCategoryClassParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryClass, error) {
+func ErrorReportingSystemCategoryClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryClass, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryClass", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryClass")
@@ -198,13 +199,13 @@ func ErrorReportingSystemCategoryClassParseWithBuffer(readBuffer utils.ReadBuffe
 
 func (e ErrorReportingSystemCategoryClass) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingSystemCategoryClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryClass) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

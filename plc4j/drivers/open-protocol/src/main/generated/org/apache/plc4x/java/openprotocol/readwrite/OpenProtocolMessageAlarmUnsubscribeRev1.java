@@ -65,6 +65,7 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
   protected void serializeOpenProtocolMessageAlarmUnsubscribeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarmUnsubscribeRev1");
 
@@ -80,6 +81,7 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageAlarmUnsubscribeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -91,6 +93,7 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageAlarmUnsubscribeRev1");
     // Create the instance

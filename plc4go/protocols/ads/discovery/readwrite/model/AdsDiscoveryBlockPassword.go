@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_AdsDiscoveryBlockPassword) GetTypeName() string {
 	return "AdsDiscoveryBlockPassword"
 }
 
-func (m *_AdsDiscoveryBlockPassword) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscoveryBlockPassword) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDiscoveryBlockPassword) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (password)
-	lengthInBits += m.Password.GetLengthInBits()
+	lengthInBits += m.Password.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockPassword) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlockPassword) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockPasswordParse(theBytes []byte) (AdsDiscoveryBlockPassword, error) {
-	return AdsDiscoveryBlockPasswordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockPasswordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
+func AdsDiscoveryBlockPasswordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockPassword"); pullErr != nil {
@@ -141,7 +138,7 @@ func AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 	if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for password")
 	}
-	_password, _passwordErr := AmsStringParseWithBuffer(readBuffer)
+	_password, _passwordErr := AmsStringParseWithBuffer(ctx, readBuffer)
 	if _passwordErr != nil {
 		return nil, errors.Wrap(_passwordErr, "Error parsing 'password' field of AdsDiscoveryBlockPassword")
 	}
@@ -164,14 +161,14 @@ func AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 }
 
 func (m *_AdsDiscoveryBlockPassword) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for password")
 		}
-		_passwordErr := writeBuffer.WriteSerializable(m.GetPassword())
+		_passwordErr := writeBuffer.WriteSerializable(ctx, m.GetPassword())
 		if popErr := writeBuffer.PopContext("password"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for password")
 		}
@@ -196,7 +193,7 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDiscoveryBlockPassword) isAdsDiscoveryBlockPassword() bool {
@@ -208,7 +205,7 @@ func (m *_AdsDiscoveryBlockPassword) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

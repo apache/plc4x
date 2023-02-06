@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetRequestedShedLevel() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataRequestedShedLevel) GetActualValue() BACnetShedLevel {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetShedLevel(m.GetRequestedShedLevel())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetTypeName() string {
 	return "BACnetConstructedDataRequestedShedLevel"
 }
 
-func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (requestedShedLevel)
-	lengthInBits += m.RequestedShedLevel.GetLengthInBits()
+	lengthInBits += m.RequestedShedLevel.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataRequestedShedLevelParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
-	return BACnetConstructedDataRequestedShedLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataRequestedShedLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataRequestedShedLevelParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
+func BACnetConstructedDataRequestedShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRequestedShedLevel"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataRequestedShedLevelParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("requestedShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestedShedLevel")
 	}
-	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParseWithBuffer(readBuffer)
+	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParseWithBuffer(ctx, readBuffer)
 	if _requestedShedLevelErr != nil {
 		return nil, errors.Wrap(_requestedShedLevelErr, "Error parsing 'requestedShedLevel' field of BACnetConstructedDataRequestedShedLevel")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataRequestedShedLevelParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataRequestedShedLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("requestedShedLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for requestedShedLevel")
 		}
-		_requestedShedLevelErr := writeBuffer.WriteSerializable(m.GetRequestedShedLevel())
+		_requestedShedLevelErr := writeBuffer.WriteSerializable(ctx, m.GetRequestedShedLevel())
 		if popErr := writeBuffer.PopContext("requestedShedLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for requestedShedLevel")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_requestedShedLevelErr, "Error serializing 'requestedShedLevel' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataRequestedShedLevel) isBACnetConstructedDataRequestedShedLevel() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataRequestedShedLevel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

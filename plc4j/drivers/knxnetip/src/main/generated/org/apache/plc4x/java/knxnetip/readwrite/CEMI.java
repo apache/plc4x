@@ -48,6 +48,7 @@ public abstract class CEMI implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMI");
 
@@ -69,6 +70,7 @@ public abstract class CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CEMI _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (messageCode)
     lengthInBits += 8;
@@ -102,6 +104,7 @@ public abstract class CEMI implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short messageCode = readDiscriminatorField("messageCode", readUnsignedShort(readBuffer, 8));
 

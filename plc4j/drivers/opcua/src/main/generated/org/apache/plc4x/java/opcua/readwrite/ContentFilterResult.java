@@ -80,6 +80,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterResult");
 
@@ -108,6 +109,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilterResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfElementResults)
     lengthInBits += 32;
@@ -116,7 +118,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     if (elementResults != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : elementResults) {
-        boolean last = ++i >= elementResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elementResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -128,7 +130,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     if (elementDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : elementDiagnosticInfos) {
-        boolean last = ++i >= elementDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elementDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -142,6 +144,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfElementResults = readSimpleField("noOfElementResults", readSignedInt(readBuffer, 32));
 

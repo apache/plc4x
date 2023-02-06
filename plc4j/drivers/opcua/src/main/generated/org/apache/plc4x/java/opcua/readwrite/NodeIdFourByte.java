@@ -68,6 +68,7 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdFourByte");
 
@@ -93,6 +94,7 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeIdFourByte _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (namespaceIndex)
     lengthInBits += 8;
@@ -111,6 +113,7 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short namespaceIndex = readSimpleField("namespaceIndex", readUnsignedShort(readBuffer, 8));
 

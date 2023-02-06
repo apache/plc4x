@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetTypeName() strin
 	return "BACnetConfirmedServiceRequestReadRangeRangeByTime"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referenceTime)
-	lengthInBits += m.ReferenceTime.GetLengthInBits()
+	lengthInBits += m.ReferenceTime.GetLengthInBits(ctx)
 
 	// Simple field (count)
-	lengthInBits += m.Count.GetLengthInBits()
+	lengthInBits += m.Count.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pullErr != nil {
@@ -152,7 +149,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("referenceTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceTime")
 	}
-	_referenceTime, _referenceTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_referenceTime, _referenceTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _referenceTimeErr != nil {
 		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
@@ -165,7 +162,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
@@ -189,14 +186,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("referenceTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceTime")
 		}
-		_referenceTimeErr := writeBuffer.WriteSerializable(m.GetReferenceTime())
+		_referenceTimeErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTime())
 		if popErr := writeBuffer.PopContext("referenceTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceTime")
 		}
@@ -220,7 +217,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for count")
 		}
-		_countErr := writeBuffer.WriteSerializable(m.GetCount())
+		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for count")
 		}
@@ -233,7 +230,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool {
@@ -245,7 +242,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -54,7 +54,7 @@ plc4c_return_code plc4c_driver_modbus_send_packet(
     plc4c_modbus_read_write_modbus_adu* packet) {
   // Get the size required to contain the serialized form of this packet.
   uint16_t packet_size =
-      plc4c_modbus_read_write_modbus_adu_length_in_bytes(packet);
+      plc4c_modbus_read_write_modbus_adu_length_in_bytes(plc4x_spi_context_background(), packet);
 
   // Serialize this message to a byte-array.
   plc4c_spi_write_buffer* write_buffer;
@@ -64,7 +64,7 @@ plc4c_return_code plc4c_driver_modbus_send_packet(
     return return_code;
   }
   return_code = plc4c_modbus_read_write_modbus_adu_serialize(
-      write_buffer, packet);
+      plc4x_spi_context_background(), write_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }
@@ -100,7 +100,7 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(
 
   return_code =
       plc4c_modbus_read_write_modbus_adu_parse(
-          read_buffer,driver_type, true, packet);
+          plc4x_spi_context_background(), read_buffer,driver_type, true, packet);
   if (return_code != OK) {
     return return_code;
   }

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastConfirmationType(structType interface{}) ConfirmationType {
 	return castFunc(structType)
 }
 
-func (m ConfirmationType) GetLengthInBits() uint16 {
+func (m ConfirmationType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ConfirmationType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ConfirmationType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmationTypeParse(theBytes []byte) (ConfirmationType, error) {
-	return ConfirmationTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ConfirmationTypeParse(ctx context.Context, theBytes []byte) (ConfirmationType, error) {
+	return ConfirmationTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConfirmationTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ConfirmationType, error) {
+func ConfirmationTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmationType, error) {
 	val, err := readBuffer.ReadByte("ConfirmationType")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ConfirmationType")
@@ -138,13 +139,13 @@ func ConfirmationTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ConfirmationT
 
 func (e ConfirmationType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ConfirmationType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ConfirmationType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("ConfirmationType", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

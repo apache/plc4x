@@ -65,6 +65,7 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockStatus");
 
@@ -91,6 +92,7 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (statusLength)
     lengthInBits += 16;
@@ -107,6 +109,7 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int statusLength =
         readConstField(

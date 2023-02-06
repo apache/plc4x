@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -125,12 +126,8 @@ func (m *_APDUAbort) GetTypeName() string {
 	return "APDUAbort"
 }
 
-func (m *_APDUAbort) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUAbort) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUAbort) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -142,20 +139,20 @@ func (m *_APDUAbort) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (abortReason)
-	lengthInBits += m.AbortReason.GetLengthInBits()
+	lengthInBits += m.AbortReason.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_APDUAbort) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUAbort) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUAbortParse(theBytes []byte, apduLength uint16) (APDUAbort, error) {
-	return APDUAbortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUAbortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUAbortParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
+func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
@@ -199,7 +196,7 @@ func APDUAbortParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (A
 	if pullErr := readBuffer.PullContext("abortReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for abortReason")
 	}
-	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParseWithBuffer(readBuffer, uint32(uint32(1)))
+	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParseWithBuffer(ctx, readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field of APDUAbort")
 	}
@@ -227,14 +224,14 @@ func APDUAbortParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (A
 }
 
 func (m *_APDUAbort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUAbort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -276,7 +273,7 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("abortReason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for abortReason")
 		}
-		_abortReasonErr := writeBuffer.WriteSerializable(m.GetAbortReason())
+		_abortReasonErr := writeBuffer.WriteSerializable(ctx, m.GetAbortReason())
 		if popErr := writeBuffer.PopContext("abortReason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for abortReason")
 		}
@@ -289,7 +286,7 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUAbort) isAPDUAbort() bool {
@@ -301,7 +298,7 @@ func (m *_APDUAbort) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

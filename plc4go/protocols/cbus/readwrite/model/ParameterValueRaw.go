@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_ParameterValueRaw) GetTypeName() string {
 	return "ParameterValueRaw"
 }
 
-func (m *_ParameterValueRaw) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterValueRaw) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterValueRaw) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -122,15 +119,15 @@ func (m *_ParameterValueRaw) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_ParameterValueRaw) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValueRaw) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueRawParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
-	return ParameterValueRawParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueRawParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueRawParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
+func ParameterValueRawParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueRaw"); pullErr != nil {
@@ -161,14 +158,14 @@ func ParameterValueRawParseWithBuffer(readBuffer utils.ReadBuffer, parameterType
 }
 
 func (m *_ParameterValueRaw) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterValueRaw) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueRaw) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_ParameterValueRaw) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterValueRaw) isParameterValueRaw() bool {
@@ -199,7 +196,7 @@ func (m *_ParameterValueRaw) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

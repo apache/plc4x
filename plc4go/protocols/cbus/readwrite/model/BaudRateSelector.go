@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastBaudRateSelector(structType interface{}) BaudRateSelector {
 	return castFunc(structType)
 }
 
-func (m BaudRateSelector) GetLengthInBits() uint16 {
+func (m BaudRateSelector) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BaudRateSelector) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BaudRateSelector) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BaudRateSelectorParse(theBytes []byte) (BaudRateSelector, error) {
-	return BaudRateSelectorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BaudRateSelectorParse(ctx context.Context, theBytes []byte) (BaudRateSelector, error) {
+	return BaudRateSelectorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BaudRateSelectorParseWithBuffer(readBuffer utils.ReadBuffer) (BaudRateSelector, error) {
+func BaudRateSelectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BaudRateSelector, error) {
 	val, err := readBuffer.ReadUint8("BaudRateSelector", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BaudRateSelector")
@@ -138,13 +139,13 @@ func BaudRateSelectorParseWithBuffer(readBuffer utils.ReadBuffer) (BaudRateSelec
 
 func (e BaudRateSelector) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BaudRateSelector) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BaudRateSelector) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BaudRateSelector", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

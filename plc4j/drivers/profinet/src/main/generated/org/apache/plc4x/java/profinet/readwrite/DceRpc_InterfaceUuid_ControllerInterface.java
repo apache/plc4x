@@ -51,6 +51,7 @@ public class DceRpc_InterfaceUuid_ControllerInterface extends DceRpc_InterfaceUu
   protected void serializeDceRpc_InterfaceUuidChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_InterfaceUuid_ControllerInterface");
 
@@ -66,6 +67,7 @@ public class DceRpc_InterfaceUuid_ControllerInterface extends DceRpc_InterfaceUu
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DceRpc_InterfaceUuid_ControllerInterface _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -76,6 +78,7 @@ public class DceRpc_InterfaceUuid_ControllerInterface extends DceRpc_InterfaceUu
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DceRpc_InterfaceUuid_ControllerInterface");
     // Create the instance

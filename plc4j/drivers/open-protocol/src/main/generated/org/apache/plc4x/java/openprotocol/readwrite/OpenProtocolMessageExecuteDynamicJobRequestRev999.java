@@ -284,6 +284,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
   protected void serializeOpenProtocolMessageExecuteDynamicJobRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageExecuteDynamicJobRequestRev999");
 
@@ -567,6 +568,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageExecuteDynamicJobRequestRev999 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (blockIdJobId)
     lengthInBits += 16;
@@ -686,6 +688,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdJobId =
         readConstField(

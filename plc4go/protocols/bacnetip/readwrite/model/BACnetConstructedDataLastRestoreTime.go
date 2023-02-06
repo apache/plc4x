@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetLastRestoreTime() BACnetTimeS
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastRestoreTime) GetActualValue() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetTimeStamp(m.GetLastRestoreTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetTypeName() string {
 	return "BACnetConstructedDataLastRestoreTime"
 }
 
-func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastRestoreTime)
-	lengthInBits += m.LastRestoreTime.GetLengthInBits()
+	lengthInBits += m.LastRestoreTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastRestoreTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
-	return BACnetConstructedDataLastRestoreTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastRestoreTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastRestoreTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
+func BACnetConstructedDataLastRestoreTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastRestoreTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastRestoreTimeParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("lastRestoreTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastRestoreTime")
 	}
-	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _lastRestoreTimeErr != nil {
 		return nil, errors.Wrap(_lastRestoreTimeErr, "Error parsing 'lastRestoreTime' field of BACnetConstructedDataLastRestoreTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastRestoreTimeParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataLastRestoreTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("lastRestoreTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastRestoreTime")
 		}
-		_lastRestoreTimeErr := writeBuffer.WriteSerializable(m.GetLastRestoreTime())
+		_lastRestoreTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastRestoreTime())
 		if popErr := writeBuffer.PopContext("lastRestoreTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastRestoreTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_lastRestoreTimeErr, "Error serializing 'lastRestoreTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastRestoreTime) isBACnetConstructedDataLastRestoreTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastRestoreTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

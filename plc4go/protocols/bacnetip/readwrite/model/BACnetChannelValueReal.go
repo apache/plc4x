@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetChannelValueReal) GetTypeName() string {
 	return "BACnetChannelValueReal"
 }
 
-func (m *_BACnetChannelValueReal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetChannelValueReal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetChannelValueReal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (realValue)
-	lengthInBits += m.RealValue.GetLengthInBits()
+	lengthInBits += m.RealValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueReal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetChannelValueReal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueRealParse(theBytes []byte) (BACnetChannelValueReal, error) {
-	return BACnetChannelValueRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetChannelValueRealParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetChannelValueRealParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueReal, error) {
+func BACnetChannelValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueReal"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetChannelValueRealParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetC
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetChannelValueReal")
 	}
@@ -162,14 +159,14 @@ func BACnetChannelValueRealParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetC
 }
 
 func (m *_BACnetChannelValueReal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
-		_realValueErr := writeBuffer.WriteSerializable(m.GetRealValue())
+		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetChannelValueReal) isBACnetChannelValueReal() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetChannelValueReal) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

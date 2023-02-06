@@ -71,6 +71,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagObjectIdentifier");
 
@@ -97,6 +98,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagObjectIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -115,6 +117,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadObjectIdentifier payload =
         readSimpleField(

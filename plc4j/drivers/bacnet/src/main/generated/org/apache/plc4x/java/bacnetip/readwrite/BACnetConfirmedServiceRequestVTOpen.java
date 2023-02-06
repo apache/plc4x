@@ -72,6 +72,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestVTOpen");
 
@@ -96,6 +97,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestVTOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vtClass)
     lengthInBits += vtClass.getLengthInBits();
@@ -113,6 +115,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVTClassTagged vtClass =
         readSimpleField(

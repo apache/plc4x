@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesEventType) GetTypeName() string {
 	return "BACnetPropertyStatesEventType"
 }
 
-func (m *_BACnetPropertyStatesEventType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesEventType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesEventType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (eventType)
-	lengthInBits += m.EventType.GetLengthInBits()
+	lengthInBits += m.EventType.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEventType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesEventType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesEventTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
-	return BACnetPropertyStatesEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesEventTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
+func BACnetPropertyStatesEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEventType"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, p
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
 	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetPropertyStatesEventType")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, p
 }
 
 func (m *_BACnetPropertyStatesEventType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventType")
 		}
-		_eventTypeErr := writeBuffer.WriteSerializable(m.GetEventType())
+		_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
 		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventType")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesEventType) isBACnetPropertyStatesEventType() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesEventType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

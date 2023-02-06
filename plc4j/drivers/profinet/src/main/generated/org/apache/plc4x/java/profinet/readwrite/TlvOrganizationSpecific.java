@@ -58,6 +58,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
   @Override
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrganizationSpecific");
 
@@ -79,6 +80,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TlvOrganizationSpecific _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (organizationSpecificUnit)
     lengthInBits += organizationSpecificUnit.getLengthInBits();
@@ -92,6 +94,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvOrganizationSpecificUnit organizationSpecificUnit =
         readSimpleField(

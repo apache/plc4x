@@ -48,6 +48,7 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataClearDiversion");
 
@@ -63,6 +64,7 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataClearDiversion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -73,6 +75,7 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataClearDiversion");
     // Create the instance

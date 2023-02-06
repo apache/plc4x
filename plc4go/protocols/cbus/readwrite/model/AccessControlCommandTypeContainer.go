@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1391,19 +1392,19 @@ func CastAccessControlCommandTypeContainer(structType interface{}) AccessControl
 	return castFunc(structType)
 }
 
-func (m AccessControlCommandTypeContainer) GetLengthInBits() uint16 {
+func (m AccessControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m AccessControlCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AccessControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlCommandTypeContainerParse(theBytes []byte) (AccessControlCommandTypeContainer, error) {
-	return AccessControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AccessControlCommandTypeContainerParse(ctx context.Context, theBytes []byte) (AccessControlCommandTypeContainer, error) {
+	return AccessControlCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCommandTypeContainer")
@@ -1418,13 +1419,13 @@ func AccessControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffe
 
 func (e AccessControlCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AccessControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -109,44 +110,40 @@ func (m *_BACnetAccessRule) GetTypeName() string {
 	return "BACnetAccessRule"
 }
 
-func (m *_BACnetAccessRule) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAccessRule) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timeRangeSpecifier)
-	lengthInBits += m.TimeRangeSpecifier.GetLengthInBits()
+	lengthInBits += m.TimeRangeSpecifier.GetLengthInBits(ctx)
 
 	// Optional Field (timeRange)
 	if m.TimeRange != nil {
-		lengthInBits += m.TimeRange.GetLengthInBits()
+		lengthInBits += m.TimeRange.GetLengthInBits(ctx)
 	}
 
 	// Simple field (locationSpecifier)
-	lengthInBits += m.LocationSpecifier.GetLengthInBits()
+	lengthInBits += m.LocationSpecifier.GetLengthInBits(ctx)
 
 	// Optional Field (location)
 	if m.Location != nil {
-		lengthInBits += m.Location.GetLengthInBits()
+		lengthInBits += m.Location.GetLengthInBits(ctx)
 	}
 
 	// Simple field (enable)
-	lengthInBits += m.Enable.GetLengthInBits()
+	lengthInBits += m.Enable.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAccessRule) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAccessRule) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAccessRuleParse(theBytes []byte) (BACnetAccessRule, error) {
-	return BACnetAccessRuleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAccessRuleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
+func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessRule"); pullErr != nil {
@@ -159,7 +156,7 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 	if pullErr := readBuffer.PullContext("timeRangeSpecifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRangeSpecifier")
 	}
-	_timeRangeSpecifier, _timeRangeSpecifierErr := BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_timeRangeSpecifier, _timeRangeSpecifierErr := BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timeRangeSpecifierErr != nil {
 		return nil, errors.Wrap(_timeRangeSpecifierErr, "Error parsing 'timeRangeSpecifier' field of BACnetAccessRule")
 	}
@@ -175,7 +172,7 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 		if pullErr := readBuffer.PullContext("timeRange"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timeRange")
 		}
-		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(1))
+		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -194,7 +191,7 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 	if pullErr := readBuffer.PullContext("locationSpecifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for locationSpecifier")
 	}
-	_locationSpecifier, _locationSpecifierErr := BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_locationSpecifier, _locationSpecifierErr := BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _locationSpecifierErr != nil {
 		return nil, errors.Wrap(_locationSpecifierErr, "Error parsing 'locationSpecifier' field of BACnetAccessRule")
 	}
@@ -210,7 +207,7 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 		if pullErr := readBuffer.PullContext("location"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for location")
 		}
-		_val, _err := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(3))
+		_val, _err := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(3))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -229,7 +226,7 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
-	_enable, _enableErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_enable, _enableErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAccessRule")
 	}
@@ -253,14 +250,14 @@ func BACnetAccessRuleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessR
 }
 
 func (m *_BACnetAccessRule) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccessRule"); pushErr != nil {
@@ -271,7 +268,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("timeRangeSpecifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeRangeSpecifier")
 	}
-	_timeRangeSpecifierErr := writeBuffer.WriteSerializable(m.GetTimeRangeSpecifier())
+	_timeRangeSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRangeSpecifier())
 	if popErr := writeBuffer.PopContext("timeRangeSpecifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeRangeSpecifier")
 	}
@@ -286,7 +283,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 			return errors.Wrap(pushErr, "Error pushing for timeRange")
 		}
 		timeRange = m.GetTimeRange()
-		_timeRangeErr := writeBuffer.WriteSerializable(timeRange)
+		_timeRangeErr := writeBuffer.WriteSerializable(ctx, timeRange)
 		if popErr := writeBuffer.PopContext("timeRange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeRange")
 		}
@@ -299,7 +296,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("locationSpecifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for locationSpecifier")
 	}
-	_locationSpecifierErr := writeBuffer.WriteSerializable(m.GetLocationSpecifier())
+	_locationSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocationSpecifier())
 	if popErr := writeBuffer.PopContext("locationSpecifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for locationSpecifier")
 	}
@@ -314,7 +311,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 			return errors.Wrap(pushErr, "Error pushing for location")
 		}
 		location = m.GetLocation()
-		_locationErr := writeBuffer.WriteSerializable(location)
+		_locationErr := writeBuffer.WriteSerializable(ctx, location)
 		if popErr := writeBuffer.PopContext("location"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for location")
 		}
@@ -327,7 +324,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for enable")
 	}
-	_enableErr := writeBuffer.WriteSerializable(m.GetEnable())
+	_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
 	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for enable")
 	}
@@ -350,7 +347,7 @@ func (m *_BACnetAccessRule) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

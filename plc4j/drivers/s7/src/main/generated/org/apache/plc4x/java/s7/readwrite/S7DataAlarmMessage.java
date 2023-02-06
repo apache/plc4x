@@ -61,6 +61,7 @@ public abstract class S7DataAlarmMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7DataAlarmMessage");
 
@@ -85,6 +86,7 @@ public abstract class S7DataAlarmMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7DataAlarmMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (functionId)
     lengthInBits += 8;
@@ -123,6 +125,7 @@ public abstract class S7DataAlarmMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId =
         readConstField(

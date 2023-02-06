@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -146,12 +147,8 @@ func (m *_MonitoredSALShortFormBasicMode) GetTypeName() string {
 	return "MonitoredSALShortFormBasicMode"
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MonitoredSALShortFormBasicMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Optional Field (bridgeCount)
 	if m.BridgeCount != nil {
@@ -173,21 +170,21 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBitsConditional(lastItem bo
 
 	// Optional Field (salData)
 	if m.SalData != nil {
-		lengthInBits += m.SalData.GetLengthInBits()
+		lengthInBits += m.SalData.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MonitoredSALShortFormBasicModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
-	return MonitoredSALShortFormBasicModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return MonitoredSALShortFormBasicModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
+func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
@@ -239,7 +236,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALShortFormBasicMode")
 	}
@@ -255,7 +252,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParseWithBuffer(readBuffer, application.ApplicationId())
+		_val, _err := SALDataParseWithBuffer(ctx, readBuffer, application.ApplicationId())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -291,14 +288,14 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_MonitoredSALShortFormBasicMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -340,7 +337,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -355,7 +352,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(writeBuffer u
 				return errors.Wrap(pushErr, "Error pushing for salData")
 			}
 			salData = m.GetSalData()
-			_salDataErr := writeBuffer.WriteSerializable(salData)
+			_salDataErr := writeBuffer.WriteSerializable(ctx, salData)
 			if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for salData")
 			}
@@ -369,7 +366,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MonitoredSALShortFormBasicMode) isMonitoredSALShortFormBasicMode() bool {
@@ -381,7 +378,7 @@ func (m *_MonitoredSALShortFormBasicMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

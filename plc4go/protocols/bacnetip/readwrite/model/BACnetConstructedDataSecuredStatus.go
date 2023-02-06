@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSecuredStatus) GetSecuredStatus() BACnetDoorSecur
 ///////////////////////
 
 func (m *_BACnetConstructedDataSecuredStatus) GetActualValue() BACnetDoorSecuredStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDoorSecuredStatusTagged(m.GetSecuredStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSecuredStatus) GetTypeName() string {
 	return "BACnetConstructedDataSecuredStatus"
 }
 
-func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (securedStatus)
-	lengthInBits += m.SecuredStatus.GetLengthInBits()
+	lengthInBits += m.SecuredStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSecuredStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
-	return BACnetConstructedDataSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSecuredStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
+func BACnetConstructedDataSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecuredStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSecuredStatusParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("securedStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securedStatus")
 	}
-	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _securedStatusErr != nil {
 		return nil, errors.Wrap(_securedStatusErr, "Error parsing 'securedStatus' field of BACnetConstructedDataSecuredStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSecuredStatusParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataSecuredStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("securedStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for securedStatus")
 		}
-		_securedStatusErr := writeBuffer.WriteSerializable(m.GetSecuredStatus())
+		_securedStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSecuredStatus())
 		if popErr := writeBuffer.PopContext("securedStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for securedStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_securedStatusErr, "Error serializing 'securedStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSecuredStatus) isBACnetConstructedDataSecuredStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSecuredStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

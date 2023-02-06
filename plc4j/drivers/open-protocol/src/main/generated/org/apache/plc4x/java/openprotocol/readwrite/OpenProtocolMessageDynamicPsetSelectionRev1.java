@@ -81,6 +81,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
   protected void serializeOpenProtocolMessageDynamicPsetSelectionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageDynamicPsetSelectionRev1");
 
@@ -116,6 +117,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageDynamicPsetSelectionRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parameterSetId)
     lengthInBits += 24;
@@ -127,7 +129,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
     if (dataFields != null) {
       int i = 0;
       for (VariableDataField element : dataFields) {
-        boolean last = ++i >= dataFields.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataFields.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -142,6 +144,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =
         readSimpleField(

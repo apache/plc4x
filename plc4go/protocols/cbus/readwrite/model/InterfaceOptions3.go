@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,11 +107,7 @@ func (m *_InterfaceOptions3) GetTypeName() string {
 	return "InterfaceOptions3"
 }
 
-func (m *_InterfaceOptions3) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_InterfaceOptions3) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_InterfaceOptions3) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -140,15 +137,15 @@ func (m *_InterfaceOptions3) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_InterfaceOptions3) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_InterfaceOptions3) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func InterfaceOptions3Parse(theBytes []byte) (InterfaceOptions3, error) {
-	return InterfaceOptions3ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return InterfaceOptions3ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func InterfaceOptions3ParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
+func InterfaceOptions3ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions3"); pullErr != nil {
@@ -271,14 +268,14 @@ func InterfaceOptions3ParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOpt
 }
 
 func (m *_InterfaceOptions3) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_InterfaceOptions3) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_InterfaceOptions3) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("InterfaceOptions3"); pushErr != nil {
@@ -392,7 +389,7 @@ func (m *_InterfaceOptions3) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

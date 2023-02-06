@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,11 +96,7 @@ func (m *_AlarmMessageAckType) GetTypeName() string {
 	return "AlarmMessageAckType"
 }
 
-func (m *_AlarmMessageAckType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AlarmMessageAckType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessageAckType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -109,24 +107,26 @@ func (m *_AlarmMessageAckType) GetLengthInBitsConditional(lastItem bool) uint16 
 
 	// Array field
 	if len(m.MessageObjects) > 0 {
-		for i, element := range m.MessageObjects {
-			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.MessageObjects {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_AlarmMessageAckType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AlarmMessageAckType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AlarmMessageAckTypeParse(theBytes []byte) (AlarmMessageAckType, error) {
-	return AlarmMessageAckTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AlarmMessageAckTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AlarmMessageAckTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
+func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckType"); pullErr != nil {
@@ -160,12 +160,16 @@ func AlarmMessageAckTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessa
 		messageObjects = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(readBuffer)
+		_numItems := uint16(numberOfObjects)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageAckType")
 			}
-			messageObjects[curItem] = _item.(AlarmMessageObjectAckType)
+			messageObjects[_curItem] = _item.(AlarmMessageObjectAckType)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
@@ -185,14 +189,14 @@ func AlarmMessageAckTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessa
 }
 
 func (m *_AlarmMessageAckType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckType"); pushErr != nil {
@@ -217,8 +221,11 @@ func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for messageObjects")
 	}
-	for _, _element := range m.GetMessageObjects() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetMessageObjects() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
@@ -242,7 +249,7 @@ func (m *_AlarmMessageAckType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

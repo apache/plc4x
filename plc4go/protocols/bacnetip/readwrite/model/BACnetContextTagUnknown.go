@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -112,12 +113,8 @@ func (m *_BACnetContextTagUnknown) GetTypeName() string {
 	return "BACnetContextTagUnknown"
 }
 
-func (m *_BACnetContextTagUnknown) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetContextTagUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetContextTagUnknown) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -127,15 +124,15 @@ func (m *_BACnetContextTagUnknown) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagUnknown) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetContextTagUnknown) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetContextTagUnknownParse(theBytes []byte, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
-	return BACnetContextTagUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
+	return BACnetContextTagUnknownParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
 }
 
-func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
+func BACnetContextTagUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {
@@ -166,14 +163,14 @@ func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, actualL
 }
 
 func (m *_BACnetContextTagUnknown) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetContextTagUnknown) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetContextTagUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -192,7 +189,7 @@ func (m *_BACnetContextTagUnknown) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -214,7 +211,7 @@ func (m *_BACnetContextTagUnknown) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

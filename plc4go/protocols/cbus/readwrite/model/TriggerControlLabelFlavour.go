@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastTriggerControlLabelFlavour(structType interface{}) TriggerControlLabelF
 	return castFunc(structType)
 }
 
-func (m TriggerControlLabelFlavour) GetLengthInBits() uint16 {
+func (m TriggerControlLabelFlavour) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m TriggerControlLabelFlavour) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m TriggerControlLabelFlavour) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlLabelFlavourParse(theBytes []byte) (TriggerControlLabelFlavour, error) {
-	return TriggerControlLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func TriggerControlLabelFlavourParse(ctx context.Context, theBytes []byte) (TriggerControlLabelFlavour, error) {
+	return TriggerControlLabelFlavourParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func TriggerControlLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelFlavour, error) {
+func TriggerControlLabelFlavourParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelFlavour, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlLabelFlavour", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelFlavour")
@@ -126,13 +127,13 @@ func TriggerControlLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (Tri
 
 func (e TriggerControlLabelFlavour) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e TriggerControlLabelFlavour) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e TriggerControlLabelFlavour) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TriggerControlLabelFlavour", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

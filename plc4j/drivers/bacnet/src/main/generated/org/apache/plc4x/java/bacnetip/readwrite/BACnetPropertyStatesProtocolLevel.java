@@ -56,6 +56,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesProtocolLevel");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesProtocolLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (protocolLevel)
     lengthInBits += protocolLevel.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProtocolLevelTagged protocolLevel =
         readSimpleField(

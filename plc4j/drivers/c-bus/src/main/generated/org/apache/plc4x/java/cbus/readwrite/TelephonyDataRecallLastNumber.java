@@ -73,6 +73,7 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRecallLastNumber");
 
@@ -105,6 +106,7 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataRecallLastNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recallLastNumberType)
     lengthInBits += 8;
@@ -126,6 +128,7 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte recallLastNumberType = readSimpleField("recallLastNumberType", readByte(readBuffer, 8));
     boolean isNumberOfLastOutgoingCall =

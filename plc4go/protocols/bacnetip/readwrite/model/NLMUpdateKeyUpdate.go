@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -187,15 +189,11 @@ func (m *_NLMUpdateKeyUpdate) GetTypeName() string {
 	return "NLMUpdateKeyUpdate"
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMUpdateKeyUpdate) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (controlFlags)
-	lengthInBits += m.ControlFlags.GetLengthInBits()
+	lengthInBits += m.ControlFlags.GetLengthInBits(ctx)
 
 	// Optional Field (set1KeyRevision)
 	if m.Set1KeyRevision != nil {
@@ -219,9 +217,11 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Array field
 	if len(m.Set1Keys) > 0 {
-		for i, element := range m.Set1Keys {
-			last := i == len(m.Set1Keys)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Set1Keys {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Set1Keys), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
@@ -247,24 +247,26 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Array field
 	if len(m.Set2Keys) > 0 {
-		for i, element := range m.Set2Keys {
-			last := i == len(m.Set2Keys)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Set2Keys {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Set2Keys), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMUpdateKeyUpdateParse(theBytes []byte, apduLength uint16) (NLMUpdateKeyUpdate, error) {
-	return NLMUpdateKeyUpdateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMUpdateKeyUpdateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMUpdateKeyUpdateParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {
+func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdate"); pullErr != nil {
@@ -277,7 +279,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(readBuffer utils.ReadBuffer, apduLength u
 	if pullErr := readBuffer.PullContext("controlFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlFlags")
 	}
-	_controlFlags, _controlFlagsErr := NLMUpdateKeyUpdateControlFlagsParseWithBuffer(readBuffer)
+	_controlFlags, _controlFlagsErr := NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, readBuffer)
 	if _controlFlagsErr != nil {
 		return nil, errors.Wrap(_controlFlagsErr, "Error parsing 'controlFlags' field of NLMUpdateKeyUpdate")
 	}
@@ -337,12 +339,16 @@ func NLMUpdateKeyUpdateParseWithBuffer(readBuffer utils.ReadBuffer, apduLength u
 		set1Keys = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(readBuffer)
+		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'set1Keys' field of NLMUpdateKeyUpdate")
 			}
-			set1Keys[curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
+			set1Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("set1Keys", utils.WithRenderAsList(true)); closeErr != nil {
@@ -400,12 +406,16 @@ func NLMUpdateKeyUpdateParseWithBuffer(readBuffer utils.ReadBuffer, apduLength u
 		set2Keys = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(readBuffer)
+		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'set2Keys' field of NLMUpdateKeyUpdate")
 			}
-			set2Keys[curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
+			set2Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("set2Keys", utils.WithRenderAsList(true)); closeErr != nil {
@@ -438,14 +448,14 @@ func NLMUpdateKeyUpdateParseWithBuffer(readBuffer utils.ReadBuffer, apduLength u
 }
 
 func (m *_NLMUpdateKeyUpdate) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -457,7 +467,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("controlFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlFlags")
 		}
-		_controlFlagsErr := writeBuffer.WriteSerializable(m.GetControlFlags())
+		_controlFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetControlFlags())
 		if popErr := writeBuffer.PopContext("controlFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlFlags")
 		}
@@ -509,8 +519,11 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("set1Keys", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for set1Keys")
 		}
-		for _, _element := range m.GetSet1Keys() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetSet1Keys() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSet1Keys()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'set1Keys' field")
 			}
@@ -563,8 +576,11 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("set2Keys", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for set2Keys")
 		}
-		for _, _element := range m.GetSet2Keys() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetSet2Keys() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSet2Keys()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'set2Keys' field")
 			}
@@ -578,7 +594,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMUpdateKeyUpdate) isNLMUpdateKeyUpdate() bool {
@@ -590,7 +606,7 @@ func (m *_NLMUpdateKeyUpdate) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

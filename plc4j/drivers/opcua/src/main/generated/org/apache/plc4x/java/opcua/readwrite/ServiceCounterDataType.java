@@ -64,6 +64,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceCounterDataType");
 
@@ -85,6 +86,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServiceCounterDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (totalCount)
     lengthInBits += 32;
@@ -101,6 +103,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long totalCount = readSimpleField("totalCount", readUnsignedLong(readBuffer, 32));
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -141,12 +142,8 @@ func (m *_ModbusTcpADU) GetTypeName() string {
 	return "ModbusTcpADU"
 }
 
-func (m *_ModbusTcpADU) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusTcpADU) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (transactionIdentifier)
 	lengthInBits += 16
@@ -161,20 +158,20 @@ func (m *_ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.Pdu.GetLengthInBits()
+	lengthInBits += m.Pdu.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ModbusTcpADU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusTcpADU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusTcpADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusTcpADU, error) {
-	return ModbusTcpADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
+	return ModbusTcpADUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
-func ModbusTcpADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {
+func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusTcpADU"); pullErr != nil {
@@ -217,7 +214,7 @@ func ModbusTcpADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverT
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
 	}
-	_pdu, _pduErr := ModbusPDUParseWithBuffer(readBuffer, bool(response))
+	_pdu, _pduErr := ModbusPDUParseWithBuffer(ctx, readBuffer, bool(response))
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusTcpADU")
 	}
@@ -244,14 +241,14 @@ func ModbusTcpADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverT
 }
 
 func (m *_ModbusTcpADU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusTcpADU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -273,7 +270,7 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		length := uint16(uint16(m.GetPdu().GetLengthInBytes()) + uint16(uint16(1)))
+		length := uint16(uint16(m.GetPdu().GetLengthInBytes(ctx)) + uint16(uint16(1)))
 		_lengthErr := writeBuffer.WriteUint16("length", 16, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -290,7 +287,7 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pdu")
 		}
-		_pduErr := writeBuffer.WriteSerializable(m.GetPdu())
+		_pduErr := writeBuffer.WriteSerializable(ctx, m.GetPdu())
 		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pdu")
 		}
@@ -303,7 +300,7 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusTcpADU) isModbusTcpADU() bool {
@@ -315,7 +312,7 @@ func (m *_ModbusTcpADU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

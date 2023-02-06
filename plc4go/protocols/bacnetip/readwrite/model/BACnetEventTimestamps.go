@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -94,34 +95,30 @@ func (m *_BACnetEventTimestamps) GetTypeName() string {
 	return "BACnetEventTimestamps"
 }
 
-func (m *_BACnetEventTimestamps) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventTimestamps) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetEventTimestamps) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (toOffnormal)
-	lengthInBits += m.ToOffnormal.GetLengthInBits()
+	lengthInBits += m.ToOffnormal.GetLengthInBits(ctx)
 
 	// Simple field (toFault)
-	lengthInBits += m.ToFault.GetLengthInBits()
+	lengthInBits += m.ToFault.GetLengthInBits(ctx)
 
 	// Simple field (toNormal)
-	lengthInBits += m.ToNormal.GetLengthInBits()
+	lengthInBits += m.ToNormal.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventTimestamps) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventTimestamps) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventTimestampsParse(theBytes []byte) (BACnetEventTimestamps, error) {
-	return BACnetEventTimestampsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventTimestampsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
+func BACnetEventTimestampsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestamps"); pullErr != nil {
@@ -134,7 +131,7 @@ func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
 	}
-	_toOffnormal, _toOffnormalErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_toOffnormal, _toOffnormalErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventTimestamps")
 	}
@@ -147,7 +144,7 @@ func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
 	}
-	_toFault, _toFaultErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_toFault, _toFaultErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventTimestamps")
 	}
@@ -160,7 +157,7 @@ func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
 	}
-	_toNormal, _toNormalErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_toNormal, _toNormalErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventTimestamps")
 	}
@@ -182,14 +179,14 @@ func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEv
 }
 
 func (m *_BACnetEventTimestamps) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestamps"); pushErr != nil {
@@ -200,7 +197,7 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
 	}
-	_toOffnormalErr := writeBuffer.WriteSerializable(m.GetToOffnormal())
+	_toOffnormalErr := writeBuffer.WriteSerializable(ctx, m.GetToOffnormal())
 	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toOffnormal")
 	}
@@ -212,7 +209,7 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toFault")
 	}
-	_toFaultErr := writeBuffer.WriteSerializable(m.GetToFault())
+	_toFaultErr := writeBuffer.WriteSerializable(ctx, m.GetToFault())
 	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toFault")
 	}
@@ -224,7 +221,7 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toNormal")
 	}
-	_toNormalErr := writeBuffer.WriteSerializable(m.GetToNormal())
+	_toNormalErr := writeBuffer.WriteSerializable(ctx, m.GetToNormal())
 	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toNormal")
 	}
@@ -247,7 +244,7 @@ func (m *_BACnetEventTimestamps) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

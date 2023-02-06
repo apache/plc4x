@@ -55,6 +55,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataGasConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataGasConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (mJ)
     lengthInBits += 32;
@@ -86,6 +88,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long mJ = readSimpleField("mJ", readUnsignedLong(readBuffer, 32));
 

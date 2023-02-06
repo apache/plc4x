@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,11 +81,7 @@ func (m *_S7VarPayloadStatusItem) GetTypeName() string {
 	return "S7VarPayloadStatusItem"
 }
 
-func (m *_S7VarPayloadStatusItem) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7VarPayloadStatusItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_S7VarPayloadStatusItem) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -93,15 +90,15 @@ func (m *_S7VarPayloadStatusItem) GetLengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *_S7VarPayloadStatusItem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7VarPayloadStatusItem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7VarPayloadStatusItemParse(theBytes []byte) (S7VarPayloadStatusItem, error) {
-	return S7VarPayloadStatusItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7VarPayloadStatusItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7VarPayloadStatusItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
+func S7VarPayloadStatusItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
@@ -114,7 +111,7 @@ func S7VarPayloadStatusItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarPa
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadStatusItem")
 	}
@@ -134,14 +131,14 @@ func S7VarPayloadStatusItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarPa
 }
 
 func (m *_S7VarPayloadStatusItem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarPayloadStatusItem"); pushErr != nil {
@@ -152,7 +149,7 @@ func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
-	_returnCodeErr := writeBuffer.WriteSerializable(m.GetReturnCode())
+	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
@@ -175,7 +172,7 @@ func (m *_S7VarPayloadStatusItem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

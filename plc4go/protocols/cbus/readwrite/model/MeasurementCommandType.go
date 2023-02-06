@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,19 +104,19 @@ func CastMeasurementCommandType(structType interface{}) MeasurementCommandType {
 	return castFunc(structType)
 }
 
-func (m MeasurementCommandType) GetLengthInBits() uint16 {
+func (m MeasurementCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m MeasurementCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MeasurementCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementCommandTypeParse(theBytes []byte) (MeasurementCommandType, error) {
-	return MeasurementCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MeasurementCommandTypeParse(ctx context.Context, theBytes []byte) (MeasurementCommandType, error) {
+	return MeasurementCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeasurementCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementCommandType, error) {
+func MeasurementCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementCommandType, error) {
 	val, err := readBuffer.ReadUint8("MeasurementCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementCommandType")
@@ -130,13 +131,13 @@ func MeasurementCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Measure
 
 func (e MeasurementCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MeasurementCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

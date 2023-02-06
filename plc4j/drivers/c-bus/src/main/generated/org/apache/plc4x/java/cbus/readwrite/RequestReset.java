@@ -86,6 +86,7 @@ public class RequestReset extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestReset");
 
@@ -119,6 +120,7 @@ public class RequestReset extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestReset _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (secondTilde)
     if (secondTilde != null) {
@@ -139,6 +141,7 @@ public class RequestReset extends Request implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     RequestType tildePeek =
         readPeekField(

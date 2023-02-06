@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,15 +116,11 @@ func (m *_ParameterValueInterfaceOptions2) GetTypeName() string {
 	return "ParameterValueInterfaceOptions2"
 }
 
-func (m *_ParameterValueInterfaceOptions2) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterValueInterfaceOptions2) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterValueInterfaceOptions2) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -133,15 +130,15 @@ func (m *_ParameterValueInterfaceOptions2) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueInterfaceOptions2Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
-	return ParameterValueInterfaceOptions2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueInterfaceOptions2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
+func ParameterValueInterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions2"); pullErr != nil {
@@ -159,7 +156,7 @@ func ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := InterfaceOptions2ParseWithBuffer(readBuffer)
+	_value, _valueErr := InterfaceOptions2ParseWithBuffer(ctx, readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions2")
 	}
@@ -191,14 +188,14 @@ func ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_ParameterValueInterfaceOptions2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for value")
 		}
-		_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for value")
 		}
@@ -229,7 +226,7 @@ func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterValueInterfaceOptions2) isParameterValueInterfaceOptions2() bool {
@@ -241,7 +238,7 @@ func (m *_ParameterValueInterfaceOptions2) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSetting) GetSetting() BACnetApplicationTagUnsigne
 ///////////////////////
 
 func (m *_BACnetConstructedDataSetting) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetSetting())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSetting) GetTypeName() string {
 	return "BACnetConstructedDataSetting"
 }
 
-func (m *_BACnetConstructedDataSetting) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSetting) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSetting) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (setting)
-	lengthInBits += m.Setting.GetLengthInBits()
+	lengthInBits += m.Setting.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSetting) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSetting) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSettingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
-	return BACnetConstructedDataSettingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSettingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSettingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
+func BACnetConstructedDataSettingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetting"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSettingParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("setting"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setting")
 	}
-	_setting, _settingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_setting, _settingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _settingErr != nil {
 		return nil, errors.Wrap(_settingErr, "Error parsing 'setting' field of BACnetConstructedDataSetting")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSettingParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetConstructedDataSetting) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("setting"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setting")
 		}
-		_settingErr := writeBuffer.WriteSerializable(m.GetSetting())
+		_settingErr := writeBuffer.WriteSerializable(ctx, m.GetSetting())
 		if popErr := writeBuffer.PopContext("setting"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setting")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(writeBuffer uti
 			return errors.Wrap(_settingErr, "Error serializing 'setting' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSetting) isBACnetConstructedDataSetting() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSetting) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

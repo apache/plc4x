@@ -50,6 +50,7 @@ public class DataSetWriterTransportDataType extends ExtensionObjectDefinition im
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetWriterTransportDataType");
 
@@ -65,6 +66,7 @@ public class DataSetWriterTransportDataType extends ExtensionObjectDefinition im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSetWriterTransportDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -75,6 +77,7 @@ public class DataSetWriterTransportDataType extends ExtensionObjectDefinition im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DataSetWriterTransportDataType");
     // Create the instance

@@ -49,6 +49,7 @@ public abstract class ModbusADU implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusADU");
 
@@ -67,6 +68,7 @@ public abstract class ModbusADU implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ModbusADU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -108,6 +110,7 @@ public abstract class ModbusADU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ModbusADUBuilder builder = null;

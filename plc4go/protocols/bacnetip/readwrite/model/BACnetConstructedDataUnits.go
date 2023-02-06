@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUnits) GetUnits() BACnetEngineeringUnitsTagged {
 ///////////////////////
 
 func (m *_BACnetConstructedDataUnits) GetActualValue() BACnetEngineeringUnitsTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEngineeringUnitsTagged(m.GetUnits())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUnits) GetTypeName() string {
 	return "BACnetConstructedDataUnits"
 }
 
-func (m *_BACnetConstructedDataUnits) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUnits) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUnits) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (units)
-	lengthInBits += m.Units.GetLengthInBits()
+	lengthInBits += m.Units.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUnitsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUnits, error) {
-	return BACnetConstructedDataUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUnitsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUnitsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUnits, error) {
+func BACnetConstructedDataUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUnits"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUnitsParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
-	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _unitsErr != nil {
 		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetConstructedDataUnits")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUnitsParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 }
 
 func (m *_BACnetConstructedDataUnits) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUnits) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for units")
 		}
-		_unitsErr := writeBuffer.WriteSerializable(m.GetUnits())
+		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
 		if popErr := writeBuffer.PopContext("units"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for units")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUnits) SerializeWithWriteBuffer(writeBuffer utils
 			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUnits) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUnits) isBACnetConstructedDataUnits() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUnits) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

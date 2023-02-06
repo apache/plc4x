@@ -73,6 +73,7 @@ public class AlarmMessagePushType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AlarmMessagePushType");
 
@@ -100,6 +101,7 @@ public class AlarmMessagePushType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AlarmMessagePushType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (TimeStamp)
     lengthInBits += TimeStamp.getLengthInBits();
@@ -114,7 +116,7 @@ public class AlarmMessagePushType implements Message {
     if (messageObjects != null) {
       int i = 0;
       for (AlarmMessageObjectPushType element : messageObjects) {
-        boolean last = ++i >= messageObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= messageObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -133,6 +135,7 @@ public class AlarmMessagePushType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DateAndTime TimeStamp =
         readSimpleField(

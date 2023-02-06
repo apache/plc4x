@@ -79,6 +79,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultSubordinateRelationship");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDefaultSubordinateRelationship _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (defaultSubordinateRelationship)
     lengthInBits += defaultSubordinateRelationship.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRelationshipTagged defaultSubordinateRelationship =
         readSimpleField(

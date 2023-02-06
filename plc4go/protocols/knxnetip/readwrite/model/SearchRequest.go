@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,28 +109,24 @@ func (m *_SearchRequest) GetTypeName() string {
 	return "SearchRequest"
 }
 
-func (m *_SearchRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SearchRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SearchRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (hpaiIDiscoveryEndpoint)
-	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits()
+	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SearchRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SearchRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SearchRequestParse(theBytes []byte) (SearchRequest, error) {
-	return SearchRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return SearchRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func SearchRequestParseWithBuffer(readBuffer utils.ReadBuffer) (SearchRequest, error) {
+func SearchRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SearchRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
@@ -142,7 +139,7 @@ func SearchRequestParseWithBuffer(readBuffer utils.ReadBuffer) (SearchRequest, e
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiIDiscoveryEndpoint")
 	}
-	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(readBuffer)
+	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field of SearchRequest")
 	}
@@ -165,14 +162,14 @@ func SearchRequestParseWithBuffer(readBuffer utils.ReadBuffer) (SearchRequest, e
 }
 
 func (m *_SearchRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SearchRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiIDiscoveryEndpoint")
 		}
-		_hpaiIDiscoveryEndpointErr := writeBuffer.WriteSerializable(m.GetHpaiIDiscoveryEndpoint())
+		_hpaiIDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiIDiscoveryEndpoint())
 		if popErr := writeBuffer.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiIDiscoveryEndpoint")
 		}
@@ -197,7 +194,7 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SearchRequest) isSearchRequest() bool {
@@ -209,7 +206,7 @@ func (m *_SearchRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

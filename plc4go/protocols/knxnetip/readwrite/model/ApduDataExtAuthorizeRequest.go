@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_ApduDataExtAuthorizeRequest) GetTypeName() string {
 	return "ApduDataExtAuthorizeRequest"
 }
 
-func (m *_ApduDataExtAuthorizeRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataExtAuthorizeRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataExtAuthorizeRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -133,15 +130,15 @@ func (m *_ApduDataExtAuthorizeRequest) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_ApduDataExtAuthorizeRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExtAuthorizeRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtAuthorizeRequestParse(theBytes []byte, length uint8) (ApduDataExtAuthorizeRequest, error) {
-	return ApduDataExtAuthorizeRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtAuthorizeRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtAuthorizeRequestParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeRequest, error) {
+func ApduDataExtAuthorizeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
@@ -180,14 +177,14 @@ func ApduDataExtAuthorizeRequestParseWithBuffer(readBuffer utils.ReadBuffer, len
 }
 
 func (m *_ApduDataExtAuthorizeRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -213,7 +210,7 @@ func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataExtAuthorizeRequest) isApduDataExtAuthorizeRequest() bool {
@@ -225,7 +222,7 @@ func (m *_ApduDataExtAuthorizeRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

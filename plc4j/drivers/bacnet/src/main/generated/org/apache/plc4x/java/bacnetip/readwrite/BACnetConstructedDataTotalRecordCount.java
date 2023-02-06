@@ -79,6 +79,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTotalRecordCount");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTotalRecordCount _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (totalRecordCount)
     lengthInBits += totalRecordCount.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger totalRecordCount =
         readSimpleField(

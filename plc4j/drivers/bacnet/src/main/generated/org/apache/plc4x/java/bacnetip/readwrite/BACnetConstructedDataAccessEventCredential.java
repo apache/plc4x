@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEventCredential");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessEventCredential _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEventCredential)
     lengthInBits += accessEventCredential.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference accessEventCredential =
         readSimpleField(

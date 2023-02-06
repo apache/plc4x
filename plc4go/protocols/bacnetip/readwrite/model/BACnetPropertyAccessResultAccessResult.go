@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,12 +57,11 @@ type _BACnetPropertyAccessResultAccessResult struct {
 
 type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetPropertyAccessResultAccessResultParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPropertyAccessResultAccessResult, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPropertyAccessResultAccessResult, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -93,6 +93,8 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetPeekedTagHeader() BACnetTag
 ///////////////////////
 
 func (m *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -121,7 +123,7 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetTypeName() string {
 	return "BACnetPropertyAccessResultAccessResult"
 }
 
-func (m *_BACnetPropertyAccessResultAccessResult) GetParentLengthInBits() uint16 {
+func (m *_BACnetPropertyAccessResultAccessResult) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -129,15 +131,15 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetParentLengthInBits() uint16
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyAccessResultAccessResult) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyAccessResultAccessResult) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyAccessResultAccessResultParse(theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
-	return BACnetPropertyAccessResultAccessResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+	return BACnetPropertyAccessResultAccessResultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 }
 
-func BACnetPropertyAccessResultAccessResultParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
+func BACnetPropertyAccessResultAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResult"); pullErr != nil {
@@ -151,7 +153,7 @@ func BACnetPropertyAccessResultAccessResultParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -170,9 +172,9 @@ func BACnetPropertyAccessResultAccessResultParseWithBuffer(readBuffer utils.Read
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
-		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
-		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -190,7 +192,7 @@ func BACnetPropertyAccessResultAccessResultParseWithBuffer(readBuffer utils.Read
 	return _child, nil
 }
 
-func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPropertyAccessResultAccessResult, serializeChildFunction func() error) error {
+func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPropertyAccessResultAccessResult, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -200,7 +202,7 @@ func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyAccessResultAccessResult")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -240,7 +242,7 @@ func (m *_BACnetPropertyAccessResultAccessResult) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

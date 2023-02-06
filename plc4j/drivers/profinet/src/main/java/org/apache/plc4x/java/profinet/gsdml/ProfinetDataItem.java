@@ -40,6 +40,9 @@ public class ProfinetDataItem {
     @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
+    @JacksonXmlProperty(isAttribute=true, localName="Length")
+    private int length;
+
     @JacksonXmlProperty(isAttribute=true, localName="UseAsBits")
     private boolean useAsBits;
 
@@ -49,6 +52,10 @@ public class ProfinetDataItem {
 
     public String getTextId() {
         return textId;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public boolean isUseAsBits() {

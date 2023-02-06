@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastBACnetSegmentation(structType interface{}) BACnetSegmentation {
 	return castFunc(structType)
 }
 
-func (m BACnetSegmentation) GetLengthInBits() uint16 {
+func (m BACnetSegmentation) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetSegmentation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetSegmentation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSegmentationParse(theBytes []byte) (BACnetSegmentation, error) {
-	return BACnetSegmentationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetSegmentationParse(ctx context.Context, theBytes []byte) (BACnetSegmentation, error) {
+	return BACnetSegmentationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetSegmentationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
+func BACnetSegmentationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
 	val, err := readBuffer.ReadUint8("BACnetSegmentation", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSegmentation")
@@ -126,13 +127,13 @@ func BACnetSegmentationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSegme
 
 func (e BACnetSegmentation) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetSegmentation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSegmentation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

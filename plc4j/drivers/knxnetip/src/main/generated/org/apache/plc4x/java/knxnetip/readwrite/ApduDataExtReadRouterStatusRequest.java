@@ -49,6 +49,7 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtReadRouterStatusRequest");
 
@@ -64,6 +65,7 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtReadRouterStatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtReadRouterStatusRequest");
     // Create the instance

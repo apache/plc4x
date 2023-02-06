@@ -115,6 +115,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishedVariableDataType");
 
@@ -160,6 +161,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PublishedVariableDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (publishedVariable)
     lengthInBits += publishedVariable.getLengthInBits();
@@ -189,7 +191,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     if (metaDataProperties != null) {
       int i = 0;
       for (QualifiedName element : metaDataProperties) {
-        boolean last = ++i >= metaDataProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= metaDataProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -203,6 +205,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId publishedVariable =
         readSimpleField(

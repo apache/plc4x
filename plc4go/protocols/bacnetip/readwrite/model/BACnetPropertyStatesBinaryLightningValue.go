@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetTypeName() string {
 	return "BACnetPropertyStatesBinaryLightningValue"
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (binaryLightningValue)
-	lengthInBits += m.BinaryLightningValue.GetLengthInBits()
+	lengthInBits += m.BinaryLightningValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesBinaryLightningValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
-	return BACnetPropertyStatesBinaryLightningValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesBinaryLightningValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
+func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryLightningValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("binaryLightningValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryLightningValue")
 	}
-	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryLightningValueErr != nil {
 		return nil, errors.Wrap(_binaryLightningValueErr, "Error parsing 'binaryLightningValue' field of BACnetPropertyStatesBinaryLightningValue")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("binaryLightningValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for binaryLightningValue")
 		}
-		_binaryLightningValueErr := writeBuffer.WriteSerializable(m.GetBinaryLightningValue())
+		_binaryLightningValueErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryLightningValue())
 		if popErr := writeBuffer.PopContext("binaryLightningValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for binaryLightningValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) isBACnetPropertyStatesBinaryLightningValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

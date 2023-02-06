@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetTypeName() string {
 	return "BACnetPropertyStatesFileAccessMethod"
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fileAccessMethod)
-	lengthInBits += m.FileAccessMethod.GetLengthInBits()
+	lengthInBits += m.FileAccessMethod.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesFileAccessMethodParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
-	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
+func BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesFileAccessMethod"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesFileAccessMethodParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
 	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _fileAccessMethodErr != nil {
 		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetPropertyStatesFileAccessMethod")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesFileAccessMethodParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("fileAccessMethod"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileAccessMethod")
 		}
-		_fileAccessMethodErr := writeBuffer.WriteSerializable(m.GetFileAccessMethod())
+		_fileAccessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetFileAccessMethod())
 		if popErr := writeBuffer.PopContext("fileAccessMethod"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileAccessMethod")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) isBACnetPropertyStatesFileAccessMethod() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesFileAccessMethod) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

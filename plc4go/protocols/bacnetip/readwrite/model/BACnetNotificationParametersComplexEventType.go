@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetNotificationParametersComplexEventType) GetTypeName() string {
 	return "BACnetNotificationParametersComplexEventType"
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (listOfValues)
-	lengthInBits += m.ListOfValues.GetLengthInBits()
+	lengthInBits += m.ListOfValues.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersComplexEventTypeParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersComplexEventType, error) {
-	return BACnetNotificationParametersComplexEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+	return BACnetNotificationParametersComplexEventTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersComplexEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersComplexEventType, error) {
+func BACnetNotificationParametersComplexEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersComplexEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetNotificationParametersComplexEventTypeParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetNotificationParametersComplexEventType")
 	}
@@ -167,14 +164,14 @@ func BACnetNotificationParametersComplexEventTypeParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -186,7 +183,7 @@ func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
-		_listOfValuesErr := writeBuffer.WriteSerializable(m.GetListOfValues())
+		_listOfValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfValues())
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
@@ -199,7 +196,7 @@ func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) isBACnetNotificationParametersComplexEventType() bool {
@@ -211,7 +208,7 @@ func (m *_BACnetNotificationParametersComplexEventType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

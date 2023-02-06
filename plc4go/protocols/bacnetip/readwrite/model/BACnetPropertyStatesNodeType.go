@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesNodeType) GetTypeName() string {
 	return "BACnetPropertyStatesNodeType"
 }
 
-func (m *_BACnetPropertyStatesNodeType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesNodeType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesNodeType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nodeType)
-	lengthInBits += m.NodeType.GetLengthInBits()
+	lengthInBits += m.NodeType.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNodeType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesNodeType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesNodeTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
-	return BACnetPropertyStatesNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesNodeTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
+func BACnetPropertyStatesNodeTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNodeType"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer, pe
 	if pullErr := readBuffer.PullContext("nodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nodeType")
 	}
-	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _nodeTypeErr != nil {
 		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of BACnetPropertyStatesNodeType")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer, pe
 }
 
 func (m *_BACnetPropertyStatesNodeType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("nodeType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nodeType")
 		}
-		_nodeTypeErr := writeBuffer.WriteSerializable(m.GetNodeType())
+		_nodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNodeType())
 		if popErr := writeBuffer.PopContext("nodeType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nodeType")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesNodeType) isBACnetPropertyStatesNodeType() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesNodeType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

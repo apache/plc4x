@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesNetworkType) GetTypeName() string {
 	return "BACnetPropertyStatesNetworkType"
 }
 
-func (m *_BACnetPropertyStatesNetworkType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesNetworkType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesNetworkType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (networkType)
-	lengthInBits += m.NetworkType.GetLengthInBits()
+	lengthInBits += m.NetworkType.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNetworkType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesNetworkType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesNetworkTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
-	return BACnetPropertyStatesNetworkTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesNetworkTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
+func BACnetPropertyStatesNetworkTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkType"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("networkType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkType")
 	}
-	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkTypeErr != nil {
 		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field of BACnetPropertyStatesNetworkType")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetPropertyStatesNetworkType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("networkType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkType")
 		}
-		_networkTypeErr := writeBuffer.WriteSerializable(m.GetNetworkType())
+		_networkTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkType())
 		if popErr := writeBuffer.PopContext("networkType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkType")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesNetworkType) isBACnetPropertyStatesNetworkType() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesNetworkType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

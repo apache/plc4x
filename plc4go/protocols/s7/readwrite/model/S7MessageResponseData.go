@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -119,12 +120,8 @@ func (m *_S7MessageResponseData) GetTypeName() string {
 	return "S7MessageResponseData"
 }
 
-func (m *_S7MessageResponseData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7MessageResponseData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -135,15 +132,15 @@ func (m *_S7MessageResponseData) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_S7MessageResponseData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7MessageResponseDataParse(theBytes []byte) (S7MessageResponseData, error) {
-	return S7MessageResponseDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7MessageResponseDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7MessageResponseDataParseWithBuffer(readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
+func S7MessageResponseDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageResponseData"); pullErr != nil {
@@ -181,14 +178,14 @@ func S7MessageResponseDataParseWithBuffer(readBuffer utils.ReadBuffer) (S7Messag
 }
 
 func (m *_S7MessageResponseData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7MessageResponseData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7MessageResponseData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -215,7 +212,7 @@ func (m *_S7MessageResponseData) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7MessageResponseData) isS7MessageResponseData() bool {
@@ -227,7 +224,7 @@ func (m *_S7MessageResponseData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

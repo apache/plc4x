@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -336,19 +337,19 @@ func CastTemperatureBroadcastCommandTypeContainer(structType interface{}) Temper
 	return castFunc(structType)
 }
 
-func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBits() uint16 {
+func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func TemperatureBroadcastCommandTypeContainerParse(theBytes []byte) (TemperatureBroadcastCommandTypeContainer, error) {
-	return TemperatureBroadcastCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func TemperatureBroadcastCommandTypeContainerParse(ctx context.Context, theBytes []byte) (TemperatureBroadcastCommandTypeContainer, error) {
+	return TemperatureBroadcastCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
+func TemperatureBroadcastCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TemperatureBroadcastCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandTypeContainer")
@@ -363,13 +364,13 @@ func TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer utils.Re
 
 func (e TemperatureBroadcastCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e TemperatureBroadcastCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e TemperatureBroadcastCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TemperatureBroadcastCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

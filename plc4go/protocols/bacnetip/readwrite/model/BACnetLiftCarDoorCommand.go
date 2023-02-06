@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetLiftCarDoorCommand(structType interface{}) BACnetLiftCarDoorComma
 	return castFunc(structType)
 }
 
-func (m BACnetLiftCarDoorCommand) GetLengthInBits() uint16 {
+func (m BACnetLiftCarDoorCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetLiftCarDoorCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLiftCarDoorCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLiftCarDoorCommandParse(theBytes []byte) (BACnetLiftCarDoorCommand, error) {
-	return BACnetLiftCarDoorCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLiftCarDoorCommandParse(ctx context.Context, theBytes []byte) (BACnetLiftCarDoorCommand, error) {
+	return BACnetLiftCarDoorCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLiftCarDoorCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
+func BACnetLiftCarDoorCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftCarDoorCommand", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDoorCommand")
@@ -120,13 +121,13 @@ func BACnetLiftCarDoorCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 
 func (e BACnetLiftCarDoorCommand) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLiftCarDoorCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarDoorCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLiftCarDoorCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -73,6 +73,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterNodesResponse");
 
@@ -98,6 +99,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterNodesResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     if (registeredNodeIds != null) {
       int i = 0;
       for (NodeId element : registeredNodeIds) {
-        boolean last = ++i >= registeredNodeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= registeredNodeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -123,6 +125,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

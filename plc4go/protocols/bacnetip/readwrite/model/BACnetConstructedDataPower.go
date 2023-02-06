@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPower) GetPower() BACnetApplicationTagReal {
 ///////////////////////
 
 func (m *_BACnetConstructedDataPower) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetPower())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPower) GetTypeName() string {
 	return "BACnetConstructedDataPower"
 }
 
-func (m *_BACnetConstructedDataPower) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPower) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPower) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (power)
-	lengthInBits += m.Power.GetLengthInBits()
+	lengthInBits += m.Power.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPower) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPower) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPowerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
-	return BACnetConstructedDataPowerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPowerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPowerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
+func BACnetConstructedDataPowerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPower"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPowerParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("power"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for power")
 	}
-	_power, _powerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_power, _powerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _powerErr != nil {
 		return nil, errors.Wrap(_powerErr, "Error parsing 'power' field of BACnetConstructedDataPower")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPowerParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 }
 
 func (m *_BACnetConstructedDataPower) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("power"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for power")
 		}
-		_powerErr := writeBuffer.WriteSerializable(m.GetPower())
+		_powerErr := writeBuffer.WriteSerializable(ctx, m.GetPower())
 		if popErr := writeBuffer.PopContext("power"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for power")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(writeBuffer utils
 			return errors.Wrap(_powerErr, "Error serializing 'power' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPower) isBACnetConstructedDataPower() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPower) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

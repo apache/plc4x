@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _ApduData struct {
 
 type _ApduDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetApciType() uint8
 }
 
 type ApduDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ApduData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_ApduData) GetTypeName() string {
 	return "ApduData"
 }
 
-func (m *_ApduData) GetParentLengthInBits() uint16 {
+func (m *_ApduData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4
@@ -98,15 +98,15 @@ func (m *_ApduData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataParse(theBytes []byte, dataLength uint8) (ApduData, error) {
-	return ApduDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+	return ApduDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
-func ApduDataParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, error) {
+func ApduDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduData"); pullErr != nil {
@@ -132,37 +132,37 @@ func ApduDataParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 	var typeSwitchError error
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
-		_childTemp, typeSwitchError = ApduDataGroupValueReadParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueReadParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x1: // ApduDataGroupValueResponse
-		_childTemp, typeSwitchError = ApduDataGroupValueResponseParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueResponseParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x2: // ApduDataGroupValueWrite
-		_childTemp, typeSwitchError = ApduDataGroupValueWriteParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueWriteParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
-		_childTemp, typeSwitchError = ApduDataIndividualAddressWriteParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressWriteParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x4: // ApduDataIndividualAddressRead
-		_childTemp, typeSwitchError = ApduDataIndividualAddressReadParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressReadParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
-		_childTemp, typeSwitchError = ApduDataIndividualAddressResponseParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressResponseParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x6: // ApduDataAdcRead
-		_childTemp, typeSwitchError = ApduDataAdcReadParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataAdcReadParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x7: // ApduDataAdcResponse
-		_childTemp, typeSwitchError = ApduDataAdcResponseParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataAdcResponseParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x8: // ApduDataMemoryRead
-		_childTemp, typeSwitchError = ApduDataMemoryReadParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryReadParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0x9: // ApduDataMemoryResponse
-		_childTemp, typeSwitchError = ApduDataMemoryResponseParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryResponseParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xA: // ApduDataMemoryWrite
-		_childTemp, typeSwitchError = ApduDataMemoryWriteParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryWriteParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xB: // ApduDataUserMessage
-		_childTemp, typeSwitchError = ApduDataUserMessageParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataUserMessageParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
-		_childTemp, typeSwitchError = ApduDataDeviceDescriptorReadParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataDeviceDescriptorReadParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
-		_childTemp, typeSwitchError = ApduDataDeviceDescriptorResponseParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataDeviceDescriptorResponseParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xE: // ApduDataRestart
-		_childTemp, typeSwitchError = ApduDataRestartParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataRestartParseWithBuffer(ctx, readBuffer, dataLength)
 	case apciType == 0xF: // ApduDataOther
-		_childTemp, typeSwitchError = ApduDataOtherParseWithBuffer(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataOtherParseWithBuffer(ctx, readBuffer, dataLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [apciType=%v]", apciType)
 	}
@@ -180,7 +180,7 @@ func ApduDataParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 	return _child, nil
 }
 
-func (pm *_ApduData) SerializeParent(writeBuffer utils.WriteBuffer, child ApduData, serializeChildFunction func() error) error {
+func (pm *_ApduData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -228,7 +228,7 @@ func (m *_ApduData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

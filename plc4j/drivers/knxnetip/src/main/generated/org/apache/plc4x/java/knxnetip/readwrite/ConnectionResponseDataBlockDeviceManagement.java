@@ -51,6 +51,7 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
   protected void serializeConnectionResponseDataBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionResponseDataBlockDeviceManagement");
 
@@ -66,6 +67,7 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionResponseDataBlockDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -76,6 +78,7 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionResponseDataBlockDeviceManagement");
     // Create the instance

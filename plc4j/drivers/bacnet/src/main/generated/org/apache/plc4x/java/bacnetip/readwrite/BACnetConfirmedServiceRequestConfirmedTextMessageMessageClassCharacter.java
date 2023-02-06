@@ -65,6 +65,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
   protected void serializeBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
@@ -85,6 +86,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterValue)
     lengthInBits += characterValue.getLengthInBits();
@@ -100,6 +102,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString characterValue =
         readSimpleField(

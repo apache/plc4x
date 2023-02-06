@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -125,38 +126,34 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName()
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Optional Field (timeDuration)
 	if m.TimeDuration != nil {
-		lengthInBits += m.TimeDuration.GetLengthInBits()
+		lengthInBits += m.TimeDuration.GetLengthInBits(ctx)
 	}
 
 	// Simple field (enableDisable)
-	lengthInBits += m.EnableDisable.GetLengthInBits()
+	lengthInBits += m.EnableDisable.GetLengthInBits(ctx)
 
 	// Optional Field (password)
 	if m.Password != nil {
-		lengthInBits += m.Password.GetLengthInBits()
+		lengthInBits += m.Password.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
@@ -172,7 +169,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(read
 		if pullErr := readBuffer.PullContext("timeDuration"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timeDuration")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -191,7 +188,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(read
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enableDisable")
 	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _enableDisableErr != nil {
 		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
@@ -207,7 +204,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(read
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for password")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -240,14 +237,14 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(read
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -262,7 +259,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 				return errors.Wrap(pushErr, "Error pushing for timeDuration")
 			}
 			timeDuration = m.GetTimeDuration()
-			_timeDurationErr := writeBuffer.WriteSerializable(timeDuration)
+			_timeDurationErr := writeBuffer.WriteSerializable(ctx, timeDuration)
 			if popErr := writeBuffer.PopContext("timeDuration"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for timeDuration")
 			}
@@ -275,7 +272,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 		if pushErr := writeBuffer.PushContext("enableDisable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enableDisable")
 		}
-		_enableDisableErr := writeBuffer.WriteSerializable(m.GetEnableDisable())
+		_enableDisableErr := writeBuffer.WriteSerializable(ctx, m.GetEnableDisable())
 		if popErr := writeBuffer.PopContext("enableDisable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enableDisable")
 		}
@@ -290,7 +287,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.GetPassword()
-			_passwordErr := writeBuffer.WriteSerializable(password)
+			_passwordErr := writeBuffer.WriteSerializable(ctx, password)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for password")
 			}
@@ -304,7 +301,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool {
@@ -316,7 +313,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) String() stri
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

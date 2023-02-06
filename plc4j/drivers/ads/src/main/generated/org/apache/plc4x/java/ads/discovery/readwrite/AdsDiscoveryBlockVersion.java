@@ -58,6 +58,7 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockVersion");
 
@@ -81,6 +82,7 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (versionDataLen)
     lengthInBits += 16;
@@ -99,6 +101,7 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int versionDataLen = readImplicitField("versionDataLen", readUnsignedInt(readBuffer, 16));
 

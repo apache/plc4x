@@ -56,6 +56,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBacnetIpMode");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesBacnetIpMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bacnetIpMode)
     lengthInBits += bacnetIpMode.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetIPModeTagged bacnetIpMode =
         readSimpleField(

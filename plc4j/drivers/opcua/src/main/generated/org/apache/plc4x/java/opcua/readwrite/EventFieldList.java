@@ -70,6 +70,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EventFieldList");
 
@@ -94,6 +95,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EventFieldList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (clientHandle)
     lengthInBits += 32;
@@ -105,7 +107,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     if (eventFields != null) {
       int i = 0;
       for (Variant element : eventFields) {
-        boolean last = ++i >= eventFields.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= eventFields.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -119,6 +121,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 

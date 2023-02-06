@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,10 +114,14 @@ func (m *_HVACStatusFlags) GetCoolingPlant() bool {
 ///////////////////////
 
 func (m *_HVACStatusFlags) GetIsDamperStateClosed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetDamperState()))
 }
 
 func (m *_HVACStatusFlags) GetIsDamperStateOpen() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetDamperState())
 }
 
@@ -145,11 +150,7 @@ func (m *_HVACStatusFlags) GetTypeName() string {
 	return "HVACStatusFlags"
 }
 
-func (m *_HVACStatusFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (expansion)
@@ -183,15 +184,15 @@ func (m *_HVACStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACStatusFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACStatusFlagsParse(theBytes []byte) (HVACStatusFlags, error) {
-	return HVACStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
+func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStatusFlags"); pullErr != nil {
@@ -294,14 +295,14 @@ func HVACStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStatusFlag
 }
 
 func (m *_HVACStatusFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACStatusFlags"); pushErr != nil {
@@ -352,11 +353,11 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		return errors.Wrap(_damperStateErr, "Error serializing 'damperState' field")
 	}
 	// Virtual field
-	if _isDamperStateClosedErr := writeBuffer.WriteVirtual("isDamperStateClosed", m.GetIsDamperStateClosed()); _isDamperStateClosedErr != nil {
+	if _isDamperStateClosedErr := writeBuffer.WriteVirtual(ctx, "isDamperStateClosed", m.GetIsDamperStateClosed()); _isDamperStateClosedErr != nil {
 		return errors.Wrap(_isDamperStateClosedErr, "Error serializing 'isDamperStateClosed' field")
 	}
 	// Virtual field
-	if _isDamperStateOpenErr := writeBuffer.WriteVirtual("isDamperStateOpen", m.GetIsDamperStateOpen()); _isDamperStateOpenErr != nil {
+	if _isDamperStateOpenErr := writeBuffer.WriteVirtual(ctx, "isDamperStateOpen", m.GetIsDamperStateOpen()); _isDamperStateOpenErr != nil {
 		return errors.Wrap(_isDamperStateOpenErr, "Error serializing 'isDamperStateOpen' field")
 	}
 
@@ -396,7 +397,7 @@ func (m *_HVACStatusFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

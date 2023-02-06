@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,19 +104,19 @@ func CastEnableControlCommandType(structType interface{}) EnableControlCommandTy
 	return castFunc(structType)
 }
 
-func (m EnableControlCommandType) GetLengthInBits() uint16 {
+func (m EnableControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m EnableControlCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m EnableControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func EnableControlCommandTypeParse(theBytes []byte) (EnableControlCommandType, error) {
-	return EnableControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func EnableControlCommandTypeParse(ctx context.Context, theBytes []byte) (EnableControlCommandType, error) {
+	return EnableControlCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func EnableControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
+func EnableControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("EnableControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandType")
@@ -130,13 +131,13 @@ func EnableControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Enabl
 
 func (e EnableControlCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e EnableControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e EnableControlCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("EnableControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

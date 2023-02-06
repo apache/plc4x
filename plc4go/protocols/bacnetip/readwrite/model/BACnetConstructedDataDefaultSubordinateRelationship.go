@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetDefaultSubordi
 ///////////////////////
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() BACnetRelationshipTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetRelationshipTagged(m.GetDefaultSubordinateRelationship())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetTypeName() str
 	return "BACnetConstructedDataDefaultSubordinateRelationship"
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (defaultSubordinateRelationship)
-	lengthInBits += m.DefaultSubordinateRelationship.GetLengthInBits()
+	lengthInBits += m.DefaultSubordinateRelationship.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDefaultSubordinateRelationshipParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
-	return BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultSubordinateRelationship"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(readBuff
 	if pullErr := readBuffer.PullContext("defaultSubordinateRelationship"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultSubordinateRelationship")
 	}
-	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _defaultSubordinateRelationshipErr != nil {
 		return nil, errors.Wrap(_defaultSubordinateRelationshipErr, "Error parsing 'defaultSubordinateRelationship' field of BACnetConstructedDataDefaultSubordinateRelationship")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(readBuff
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 		if pushErr := writeBuffer.PushContext("defaultSubordinateRelationship"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultSubordinateRelationship")
 		}
-		_defaultSubordinateRelationshipErr := writeBuffer.WriteSerializable(m.GetDefaultSubordinateRelationship())
+		_defaultSubordinateRelationshipErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultSubordinateRelationship())
 		if popErr := writeBuffer.PopContext("defaultSubordinateRelationship"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultSubordinateRelationship")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 			return errors.Wrap(_defaultSubordinateRelationshipErr, "Error serializing 'defaultSubordinateRelationship' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) isBACnetConstructedDataDefaultSubordinateRelationship() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

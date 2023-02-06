@@ -58,6 +58,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DescriptionRequest");
 
@@ -80,6 +81,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DescriptionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiControlEndpoint)
     lengthInBits += hpaiControlEndpoint.getLengthInBits();
@@ -93,6 +95,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(

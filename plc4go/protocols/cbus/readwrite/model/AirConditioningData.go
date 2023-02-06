@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _AirConditioningData struct {
 
 type _AirConditioningDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type AirConditioningDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child AirConditioningData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AirConditioningData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_AirConditioningData) GetCommandTypeContainer() AirConditioningCommandT
 ///////////////////////
 
 func (m *_AirConditioningData) GetCommandType() AirConditioningCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastAirConditioningCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -116,7 +118,7 @@ func (m *_AirConditioningData) GetTypeName() string {
 	return "AirConditioningData"
 }
 
-func (m *_AirConditioningData) GetParentLengthInBits() uint16 {
+func (m *_AirConditioningData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -127,15 +129,15 @@ func (m *_AirConditioningData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_AirConditioningData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AirConditioningData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataParse(theBytes []byte) (AirConditioningData, error) {
-	return AirConditioningDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AirConditioningDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningData, error) {
+func AirConditioningDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningData"); pullErr != nil {
@@ -153,7 +155,7 @@ func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditi
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := AirConditioningCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := AirConditioningCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AirConditioningData")
 	}
@@ -178,43 +180,43 @@ func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditi
 	var typeSwitchError error
 	switch {
 	case commandType == AirConditioningCommandType_HVAC_SCHEDULE_ENTRY: // AirConditioningDataHvacScheduleEntry
-		_childTemp, typeSwitchError = AirConditioningDataHvacScheduleEntryParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataHvacScheduleEntryParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY: // AirConditioningDataHumidityScheduleEntry
-		_childTemp, typeSwitchError = AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_REFRESH: // AirConditioningDataRefresh
-		_childTemp, typeSwitchError = AirConditioningDataRefreshParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataRefreshParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS: // AirConditioningDataZoneHvacPlantStatus
-		_childTemp, typeSwitchError = AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHvacPlantStatusParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS: // AirConditioningDataZoneHumidityPlantStatus
-		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityPlantStatusParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityPlantStatusParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_TEMPERATURE: // AirConditioningDataZoneTemperature
-		_childTemp, typeSwitchError = AirConditioningDataZoneTemperatureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneTemperatureParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY: // AirConditioningDataZoneHumidity
-		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_OFF: // AirConditioningDataSetZoneGroupOff
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOffParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_ON: // AirConditioningDataSetZoneGroupOn
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOnParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_HVAC_MODE: // AirConditioningDataSetZoneHvacMode
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneHvacModeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneHvacModeParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_PLANT_HVAC_LEVEL: // AirConditioningDataSetPlantHvacLevel
-		_childTemp, typeSwitchError = AirConditioningDataSetPlantHvacLevelParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetPlantHvacLevelParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE: // AirConditioningDataSetZoneHumidityMode
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneHumidityModeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL: // AirConditioningDataSetPlantHumidityLevel
-		_childTemp, typeSwitchError = AirConditioningDataSetPlantHumidityLevelParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetPlantHumidityLevelParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT: // AirConditioningDataSetHvacUpperGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT: // AirConditioningDataSetHvacLowerGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacLowerGuardLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacLowerGuardLimitParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT: // AirConditioningDataSetHvacSetbackLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacSetbackLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT: // AirConditioningDataSetHumidityUpperGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumidityUpperGuardLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumidityUpperGuardLimitParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT: // AirConditioningDataSetHumidityLowerGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(ctx, readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT: // AirConditioningDataSetHumiditySetbackLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumiditySetbackLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumiditySetbackLimitParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -232,7 +234,7 @@ func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditi
 	return _child, nil
 }
 
-func (pm *_AirConditioningData) SerializeParent(writeBuffer utils.WriteBuffer, child AirConditioningData, serializeChildFunction func() error) error {
+func (pm *_AirConditioningData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AirConditioningData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -246,7 +248,7 @@ func (pm *_AirConditioningData) SerializeParent(writeBuffer utils.WriteBuffer, c
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -254,7 +256,7 @@ func (pm *_AirConditioningData) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -278,7 +280,7 @@ func (m *_AirConditioningData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

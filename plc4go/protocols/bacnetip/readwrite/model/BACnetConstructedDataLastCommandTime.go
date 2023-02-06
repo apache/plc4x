@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastCommandTime) GetLastCommandTime() BACnetTimeS
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastCommandTime) GetActualValue() BACnetTimeStamp {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetTimeStamp(m.GetLastCommandTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastCommandTime) GetTypeName() string {
 	return "BACnetConstructedDataLastCommandTime"
 }
 
-func (m *_BACnetConstructedDataLastCommandTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastCommandTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastCommandTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastCommandTime)
-	lengthInBits += m.LastCommandTime.GetLengthInBits()
+	lengthInBits += m.LastCommandTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastCommandTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastCommandTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastCommandTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCommandTime, error) {
-	return BACnetConstructedDataLastCommandTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastCommandTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastCommandTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCommandTime, error) {
+func BACnetConstructedDataLastCommandTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCommandTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCommandTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastCommandTimeParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("lastCommandTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCommandTime")
 	}
-	_lastCommandTime, _lastCommandTimeErr := BACnetTimeStampParseWithBuffer(readBuffer)
+	_lastCommandTime, _lastCommandTimeErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 	if _lastCommandTimeErr != nil {
 		return nil, errors.Wrap(_lastCommandTimeErr, "Error parsing 'lastCommandTime' field of BACnetConstructedDataLastCommandTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastCommandTimeParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataLastCommandTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("lastCommandTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastCommandTime")
 		}
-		_lastCommandTimeErr := writeBuffer.WriteSerializable(m.GetLastCommandTime())
+		_lastCommandTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastCommandTime())
 		if popErr := writeBuffer.PopContext("lastCommandTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastCommandTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_lastCommandTimeErr, "Error serializing 'lastCommandTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastCommandTime) isBACnetConstructedDataLastCommandTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastCommandTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

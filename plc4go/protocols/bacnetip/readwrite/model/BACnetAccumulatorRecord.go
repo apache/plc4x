@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,37 +102,33 @@ func (m *_BACnetAccumulatorRecord) GetTypeName() string {
 	return "BACnetAccumulatorRecord"
 }
 
-func (m *_BACnetAccumulatorRecord) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAccumulatorRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAccumulatorRecord) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
-	lengthInBits += m.Timestamp.GetLengthInBits()
+	lengthInBits += m.Timestamp.GetLengthInBits(ctx)
 
 	// Simple field (presentValue)
-	lengthInBits += m.PresentValue.GetLengthInBits()
+	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
 
 	// Simple field (accumulatedValue)
-	lengthInBits += m.AccumulatedValue.GetLengthInBits()
+	lengthInBits += m.AccumulatedValue.GetLengthInBits(ctx)
 
 	// Simple field (accumulatorStatus)
-	lengthInBits += m.AccumulatorStatus.GetLengthInBits()
+	lengthInBits += m.AccumulatorStatus.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAccumulatorRecord) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAccumulatorRecord) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAccumulatorRecordParse(theBytes []byte) (BACnetAccumulatorRecord, error) {
-	return BACnetAccumulatorRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAccumulatorRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
+func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccumulatorRecord"); pullErr != nil {
@@ -144,7 +141,7 @@ func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetAccumulatorRecord")
 	}
@@ -157,7 +154,7 @@ func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_presentValue, _presentValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetAccumulatorRecord")
 	}
@@ -170,7 +167,7 @@ func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("accumulatedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accumulatedValue")
 	}
-	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _accumulatedValueErr != nil {
 		return nil, errors.Wrap(_accumulatedValueErr, "Error parsing 'accumulatedValue' field of BACnetAccumulatorRecord")
 	}
@@ -183,7 +180,7 @@ func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("accumulatorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accumulatorStatus")
 	}
-	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accumulatorStatusErr != nil {
 		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field of BACnetAccumulatorRecord")
 	}
@@ -206,14 +203,14 @@ func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetAccumulatorRecord) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccumulatorRecord"); pushErr != nil {
@@ -224,7 +221,7 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := writeBuffer.WriteSerializable(m.GetTimestamp())
+	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -236,7 +233,7 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for presentValue")
 	}
-	_presentValueErr := writeBuffer.WriteSerializable(m.GetPresentValue())
+	_presentValueErr := writeBuffer.WriteSerializable(ctx, m.GetPresentValue())
 	if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for presentValue")
 	}
@@ -248,7 +245,7 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("accumulatedValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for accumulatedValue")
 	}
-	_accumulatedValueErr := writeBuffer.WriteSerializable(m.GetAccumulatedValue())
+	_accumulatedValueErr := writeBuffer.WriteSerializable(ctx, m.GetAccumulatedValue())
 	if popErr := writeBuffer.PopContext("accumulatedValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for accumulatedValue")
 	}
@@ -260,7 +257,7 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("accumulatorStatus"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for accumulatorStatus")
 	}
-	_accumulatorStatusErr := writeBuffer.WriteSerializable(m.GetAccumulatorStatus())
+	_accumulatorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetAccumulatorStatus())
 	if popErr := writeBuffer.PopContext("accumulatorStatus"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for accumulatorStatus")
 	}
@@ -283,7 +280,7 @@ func (m *_BACnetAccumulatorRecord) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

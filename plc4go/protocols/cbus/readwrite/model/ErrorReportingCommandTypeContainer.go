@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -168,19 +169,19 @@ func CastErrorReportingCommandTypeContainer(structType interface{}) ErrorReporti
 	return castFunc(structType)
 }
 
-func (m ErrorReportingCommandTypeContainer) GetLengthInBits() uint16 {
+func (m ErrorReportingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ErrorReportingCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingCommandTypeContainerParse(theBytes []byte) (ErrorReportingCommandTypeContainer, error) {
-	return ErrorReportingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingCommandTypeContainerParse(ctx context.Context, theBytes []byte) (ErrorReportingCommandTypeContainer, error) {
+	return ErrorReportingCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
+func ErrorReportingCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandTypeContainer")
@@ -195,13 +196,13 @@ func ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuff
 
 func (e ErrorReportingCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

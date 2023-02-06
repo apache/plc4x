@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -119,12 +120,8 @@ func (m *_CipRRData) GetTypeName() string {
 	return "CipRRData"
 }
 
-func (m *_CipRRData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CipRRData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 32
@@ -133,20 +130,20 @@ func (m *_CipRRData) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (exchange)
-	lengthInBits += m.Exchange.GetLengthInBits()
+	lengthInBits += m.Exchange.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CipRRData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CipRRDataParse(theBytes []byte, packetLength uint16) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength)
+	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength)
 }
 
-func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
+func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
@@ -193,7 +190,7 @@ func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) 
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
 	}
-	_exchange, _exchangeErr := CipExchangeParseWithBuffer(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
+	_exchange, _exchangeErr := CipExchangeParseWithBuffer(ctx, readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
 	if _exchangeErr != nil {
 		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field of CipRRData")
 	}
@@ -218,14 +215,14 @@ func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) 
 }
 
 func (m *_CipRRData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CipRRData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -269,7 +266,7 @@ func (m *_CipRRData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("exchange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for exchange")
 		}
-		_exchangeErr := writeBuffer.WriteSerializable(m.GetExchange())
+		_exchangeErr := writeBuffer.WriteSerializable(ctx, m.GetExchange())
 		if popErr := writeBuffer.PopContext("exchange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for exchange")
 		}
@@ -282,7 +279,7 @@ func (m *_CipRRData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -304,7 +301,7 @@ func (m *_CipRRData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,32 +113,28 @@ func (m *_BVLCReadForeignDeviceTableAck) GetTypeName() string {
 	return "BVLCReadForeignDeviceTableAck"
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
 		for _, element := range m.Table {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCReadForeignDeviceTableAckParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
-	return BVLCReadForeignDeviceTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+	return BVLCReadForeignDeviceTableAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
-func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
+func BVLCReadForeignDeviceTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
@@ -155,7 +153,7 @@ func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, b
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
 		for positionAware.GetPos() < _tableEndPos {
-			_item, _err := BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer)
+			_item, _err := BVLCForeignDeviceTableEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCReadForeignDeviceTableAck")
 			}
@@ -180,14 +178,14 @@ func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, b
 }
 
 func (m *_BVLCReadForeignDeviceTableAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -199,8 +197,11 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for table")
 		}
-		for _, _element := range m.GetTable() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetTable() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'table' field")
 			}
@@ -214,7 +215,7 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -236,7 +237,7 @@ func (m *_BVLCReadForeignDeviceTableAck) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -405,19 +406,19 @@ func CastBACnetAccessEvent(structType interface{}) BACnetAccessEvent {
 	return castFunc(structType)
 }
 
-func (m BACnetAccessEvent) GetLengthInBits() uint16 {
+func (m BACnetAccessEvent) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetAccessEvent) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessEvent) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessEventParse(theBytes []byte) (BACnetAccessEvent, error) {
-	return BACnetAccessEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessEventParse(ctx context.Context, theBytes []byte) (BACnetAccessEvent, error) {
+	return BACnetAccessEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessEventParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessEvent, error) {
+func BACnetAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessEvent, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessEvent", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessEvent")
@@ -432,13 +433,13 @@ func BACnetAccessEventParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccess
 
 func (e BACnetAccessEvent) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessEvent", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

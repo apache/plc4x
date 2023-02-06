@@ -71,6 +71,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataRepeatOnOff");
 
@@ -101,6 +102,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataRepeatOnOff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (repeatType)
     lengthInBits += 8;
@@ -120,6 +122,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte repeatType = readSimpleField("repeatType", readByte(readBuffer, 8));
     boolean isOff = readVirtualField("isOff", boolean.class, (repeatType) == (0x00));

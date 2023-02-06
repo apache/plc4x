@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetTimeDelayNormal() BACnetAppli
 ///////////////////////
 
 func (m *_BACnetConstructedDataTimeDelayNormal) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetTimeDelayNormal())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetTypeName() string {
 	return "BACnetConstructedDataTimeDelayNormal"
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (timeDelayNormal)
-	lengthInBits += m.TimeDelayNormal.GetLengthInBits()
+	lengthInBits += m.TimeDelayNormal.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTimeDelayNormalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
-	return BACnetConstructedDataTimeDelayNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTimeDelayNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTimeDelayNormalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
+func BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeDelayNormal"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTimeDelayNormalParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("timeDelayNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelayNormal")
 	}
-	_timeDelayNormal, _timeDelayNormalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_timeDelayNormal, _timeDelayNormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _timeDelayNormalErr != nil {
 		return nil, errors.Wrap(_timeDelayNormalErr, "Error parsing 'timeDelayNormal' field of BACnetConstructedDataTimeDelayNormal")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTimeDelayNormalParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("timeDelayNormal"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelayNormal")
 		}
-		_timeDelayNormalErr := writeBuffer.WriteSerializable(m.GetTimeDelayNormal())
+		_timeDelayNormalErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelayNormal())
 		if popErr := writeBuffer.PopContext("timeDelayNormal"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelayNormal")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_timeDelayNormalErr, "Error serializing 'timeDelayNormal' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) isBACnetConstructedDataTimeDelayNormal() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

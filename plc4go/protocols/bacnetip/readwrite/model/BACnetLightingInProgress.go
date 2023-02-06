@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastBACnetLightingInProgress(structType interface{}) BACnetLightingInProgre
 	return castFunc(structType)
 }
 
-func (m BACnetLightingInProgress) GetLengthInBits() uint16 {
+func (m BACnetLightingInProgress) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetLightingInProgress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLightingInProgress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingInProgressParse(theBytes []byte) (BACnetLightingInProgress, error) {
-	return BACnetLightingInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLightingInProgressParse(ctx context.Context, theBytes []byte) (BACnetLightingInProgress, error) {
+	return BACnetLightingInProgressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLightingInProgressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingInProgress, error) {
+func BACnetLightingInProgressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingInProgress, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingInProgress", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingInProgress")
@@ -132,13 +133,13 @@ func BACnetLightingInProgressParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 
 func (e BACnetLightingInProgress) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLightingInProgress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLightingInProgress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLightingInProgress", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -57,6 +57,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
   protected void serializeBACnetSpecialEventPeriodChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetSpecialEventPeriodCalendarReference");
 
@@ -76,6 +77,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetSpecialEventPeriodCalendarReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (calendarReference)
     lengthInBits += calendarReference.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier calendarReference =
         readSimpleField(

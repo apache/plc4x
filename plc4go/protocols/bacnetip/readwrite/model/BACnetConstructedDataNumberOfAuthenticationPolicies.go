@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetNumberOfAuthen
 ///////////////////////
 
 func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetNumberOfAuthenticationPolicies())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetTypeName() str
 	return "BACnetConstructedDataNumberOfAuthenticationPolicies"
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (numberOfAuthenticationPolicies)
-	lengthInBits += m.NumberOfAuthenticationPolicies.GetLengthInBits()
+	lengthInBits += m.NumberOfAuthenticationPolicies.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
-	return BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(readBuff
 	if pullErr := readBuffer.PullContext("numberOfAuthenticationPolicies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numberOfAuthenticationPolicies")
 	}
-	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _numberOfAuthenticationPoliciesErr != nil {
 		return nil, errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error parsing 'numberOfAuthenticationPolicies' field of BACnetConstructedDataNumberOfAuthenticationPolicies")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(readBuff
 }
 
 func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) SerializeWithWrit
 		if pushErr := writeBuffer.PushContext("numberOfAuthenticationPolicies"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for numberOfAuthenticationPolicies")
 		}
-		_numberOfAuthenticationPoliciesErr := writeBuffer.WriteSerializable(m.GetNumberOfAuthenticationPolicies())
+		_numberOfAuthenticationPoliciesErr := writeBuffer.WriteSerializable(ctx, m.GetNumberOfAuthenticationPolicies())
 		if popErr := writeBuffer.PopContext("numberOfAuthenticationPolicies"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for numberOfAuthenticationPolicies")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) SerializeWithWrit
 			return errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error serializing 'numberOfAuthenticationPolicies' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) isBACnetConstructedDataNumberOfAuthenticationPolicies() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

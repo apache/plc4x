@@ -79,6 +79,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBinaryLightingOutputFeedbackValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (feedbackValue)
     lengthInBits += feedbackValue.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryLightingPVTagged feedbackValue =
         readSimpleField(

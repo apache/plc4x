@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetFailedAttemptsTime() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataFailedAttemptsTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetFailedAttemptsTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetTypeName() string {
 	return "BACnetConstructedDataFailedAttemptsTime"
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (failedAttemptsTime)
-	lengthInBits += m.FailedAttemptsTime.GetLengthInBits()
+	lengthInBits += m.FailedAttemptsTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataFailedAttemptsTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptsTime, error) {
-	return BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptsTime, error) {
+func BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptsTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFailedAttemptsTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("failedAttemptsTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for failedAttemptsTime")
 	}
-	_failedAttemptsTime, _failedAttemptsTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_failedAttemptsTime, _failedAttemptsTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _failedAttemptsTimeErr != nil {
 		return nil, errors.Wrap(_failedAttemptsTimeErr, "Error parsing 'failedAttemptsTime' field of BACnetConstructedDataFailedAttemptsTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataFailedAttemptsTimeParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataFailedAttemptsTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFailedAttemptsTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("failedAttemptsTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for failedAttemptsTime")
 		}
-		_failedAttemptsTimeErr := writeBuffer.WriteSerializable(m.GetFailedAttemptsTime())
+		_failedAttemptsTimeErr := writeBuffer.WriteSerializable(ctx, m.GetFailedAttemptsTime())
 		if popErr := writeBuffer.PopContext("failedAttemptsTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for failedAttemptsTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_failedAttemptsTimeErr, "Error serializing 'failedAttemptsTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataFailedAttemptsTime) isBACnetConstructedDataFailedAttemptsTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

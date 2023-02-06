@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetLogDataLogDataEntry struct {
 
 type _BACnetLogDataLogDataEntryChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetLogDataLogDataEntryParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLogDataLogDataEntry, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLogDataLogDataEntry, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetLogDataLogDataEntry) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetLogDataLogDataEntry) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetLogDataLogDataEntry) GetTypeName() string {
 	return "BACnetLogDataLogDataEntry"
 }
 
-func (m *_BACnetLogDataLogDataEntry) GetParentLengthInBits() uint16 {
+func (m *_BACnetLogDataLogDataEntry) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetLogDataLogDataEntry) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogDataLogDataEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataEntryParse(theBytes []byte) (BACnetLogDataLogDataEntry, error) {
-	return BACnetLogDataLogDataEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLogDataLogDataEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLogDataLogDataEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntry, error) {
+func BACnetLogDataLogDataEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntry"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetLogDataLogDataEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,23 +167,23 @@ func BACnetLogDataLogDataEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogDataEntryBooleanValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogDataEntryRealValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryRealValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryRealValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataEntryEnumeratedValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetLogDataLogDataEntryUnsignedValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryUnsignedValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryUnsignedValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(4): // BACnetLogDataLogDataEntryIntegerValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(5): // BACnetLogDataLogDataEntryBitStringValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(6): // BACnetLogDataLogDataEntryNullValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryNullValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(7): // BACnetLogDataLogDataEntryFailure
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(8): // BACnetLogDataLogDataEntryAnyValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryAnyValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryAnyValueParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -199,7 +201,7 @@ func BACnetLogDataLogDataEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 	return _child, nil
 }
 
-func (pm *_BACnetLogDataLogDataEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLogDataLogDataEntry, serializeChildFunction func() error) error {
+func (pm *_BACnetLogDataLogDataEntry) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLogDataLogDataEntry, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -209,7 +211,7 @@ func (pm *_BACnetLogDataLogDataEntry) SerializeParent(writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntry")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -233,7 +235,7 @@ func (m *_BACnetLogDataLogDataEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

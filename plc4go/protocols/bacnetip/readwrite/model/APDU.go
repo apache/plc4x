@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _APDU struct {
 
 type _APDUChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetApduType() ApduType
 }
 
 type APDUParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child APDU, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child APDU, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_APDU) GetTypeName() string {
 	return "APDU"
 }
 
-func (m *_APDU) GetParentLengthInBits() uint16 {
+func (m *_APDU) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4
@@ -98,15 +98,15 @@ func (m *_APDU) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_APDU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUParse(theBytes []byte, apduLength uint16) (APDU, error) {
-	return APDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
+func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
@@ -119,7 +119,7 @@ func APDUParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, 
 	if pullErr := readBuffer.PullContext("apduType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for apduType")
 	}
-	apduType_temp, _apduTypeErr := ApduTypeParseWithBuffer(readBuffer)
+	apduType_temp, _apduTypeErr := ApduTypeParseWithBuffer(ctx, readBuffer)
 	var apduType ApduType = apduType_temp
 	if closeErr := readBuffer.CloseContext("apduType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for apduType")
@@ -139,23 +139,23 @@ func APDUParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, 
 	var typeSwitchError error
 	switch {
 	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
-		_childTemp, typeSwitchError = APDUConfirmedRequestParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUConfirmedRequestParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
-		_childTemp, typeSwitchError = APDUUnconfirmedRequestParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUUnconfirmedRequestParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
-		_childTemp, typeSwitchError = APDUSimpleAckParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUSimpleAckParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
-		_childTemp, typeSwitchError = APDUComplexAckParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUComplexAckParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
-		_childTemp, typeSwitchError = APDUSegmentAckParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUSegmentAckParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_ERROR_PDU: // APDUError
-		_childTemp, typeSwitchError = APDUErrorParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUErrorParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_REJECT_PDU: // APDUReject
-		_childTemp, typeSwitchError = APDURejectParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDURejectParseWithBuffer(ctx, readBuffer, apduLength)
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
-		_childTemp, typeSwitchError = APDUAbortParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUAbortParseWithBuffer(ctx, readBuffer, apduLength)
 	case 0 == 0: // APDUUnknown
-		_childTemp, typeSwitchError = APDUUnknownParseWithBuffer(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUUnknownParseWithBuffer(ctx, readBuffer, apduLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [apduType=%v]", apduType)
 	}
@@ -173,7 +173,7 @@ func APDUParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, 
 	return _child, nil
 }
 
-func (pm *_APDU) SerializeParent(writeBuffer utils.WriteBuffer, child APDU, serializeChildFunction func() error) error {
+func (pm *_APDU) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child APDU, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -188,7 +188,7 @@ func (pm *_APDU) SerializeParent(writeBuffer utils.WriteBuffer, child APDU, seri
 	if pushErr := writeBuffer.PushContext("apduType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for apduType")
 	}
-	_apduTypeErr := writeBuffer.WriteSerializable(apduType)
+	_apduTypeErr := writeBuffer.WriteSerializable(ctx, apduType)
 	if popErr := writeBuffer.PopContext("apduType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for apduType")
 	}
@@ -227,7 +227,7 @@ func (m *_APDU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

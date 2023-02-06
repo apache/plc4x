@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,19 +142,19 @@ func CastBACnetLifeSafetyOperation(structType interface{}) BACnetLifeSafetyOpera
 	return castFunc(structType)
 }
 
-func (m BACnetLifeSafetyOperation) GetLengthInBits() uint16 {
+func (m BACnetLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetLifeSafetyOperation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLifeSafetyOperation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLifeSafetyOperationParse(theBytes []byte) (BACnetLifeSafetyOperation, error) {
-	return BACnetLifeSafetyOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLifeSafetyOperationParse(ctx context.Context, theBytes []byte) (BACnetLifeSafetyOperation, error) {
+	return BACnetLifeSafetyOperationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLifeSafetyOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyOperation, error) {
+func BACnetLifeSafetyOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLifeSafetyOperation, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyOperation", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyOperation")
@@ -168,13 +169,13 @@ func BACnetLifeSafetyOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 
 func (e BACnetLifeSafetyOperation) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLifeSafetyOperation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLifeSafetyOperation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLifeSafetyOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

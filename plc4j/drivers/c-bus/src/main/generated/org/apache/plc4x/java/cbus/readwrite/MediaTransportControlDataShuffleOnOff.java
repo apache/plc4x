@@ -67,6 +67,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataShuffleOnOff");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataShuffleOnOff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (state)
     lengthInBits += 8;
@@ -110,6 +112,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte state = readSimpleField("state", readByte(readBuffer, 8));
     boolean isOff = readVirtualField("isOff", boolean.class, (state) == (0x00));

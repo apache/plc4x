@@ -56,6 +56,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesPolarity");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesPolarity _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (polarity)
     lengthInBits += polarity.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPolarityTagged polarity =
         readSimpleField(

@@ -164,6 +164,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProgramDiagnostic2DataType");
 
@@ -242,6 +243,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ProgramDiagnostic2DataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (createSessionId)
     lengthInBits += createSessionId.getLengthInBits();
@@ -268,7 +270,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodInputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodInputArguments) {
-        boolean last = ++i >= lastMethodInputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -280,7 +282,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodOutputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodOutputArguments) {
-        boolean last = ++i >= lastMethodOutputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -292,7 +294,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodInputValues != null) {
       int i = 0;
       for (Variant element : lastMethodInputValues) {
-        boolean last = ++i >= lastMethodInputValues.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputValues.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -304,7 +306,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodOutputValues != null) {
       int i = 0;
       for (Variant element : lastMethodOutputValues) {
-        boolean last = ++i >= lastMethodOutputValues.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputValues.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -324,6 +326,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId createSessionId =
         readSimpleField(

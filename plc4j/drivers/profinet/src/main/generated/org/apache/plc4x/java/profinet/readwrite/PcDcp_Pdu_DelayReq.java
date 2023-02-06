@@ -95,6 +95,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PcDcp_Pdu_DelayReq");
 
@@ -155,6 +156,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PcDcp_Pdu_DelayReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 32;
@@ -198,6 +200,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
         readReservedField("reserved", readUnsignedLong(readBuffer, 32), (long) 0x00000000);

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetExtendedTimeEnable() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetExtendedTimeEnable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetTypeName() string {
 	return "BACnetConstructedDataExtendedTimeEnable"
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (extendedTimeEnable)
-	lengthInBits += m.ExtendedTimeEnable.GetLengthInBits()
+	lengthInBits += m.ExtendedTimeEnable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataExtendedTimeEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
-	return BACnetConstructedDataExtendedTimeEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataExtendedTimeEnableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
+func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExtendedTimeEnable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("extendedTimeEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for extendedTimeEnable")
 	}
-	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _extendedTimeEnableErr != nil {
 		return nil, errors.Wrap(_extendedTimeEnableErr, "Error parsing 'extendedTimeEnable' field of BACnetConstructedDataExtendedTimeEnable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("extendedTimeEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for extendedTimeEnable")
 		}
-		_extendedTimeEnableErr := writeBuffer.WriteSerializable(m.GetExtendedTimeEnable())
+		_extendedTimeEnableErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedTimeEnable())
 		if popErr := writeBuffer.PopContext("extendedTimeEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for extendedTimeEnable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_extendedTimeEnableErr, "Error serializing 'extendedTimeEnable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) isBACnetConstructedDataExtendedTimeEnable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

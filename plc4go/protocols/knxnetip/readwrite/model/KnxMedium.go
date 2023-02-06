@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastKnxMedium(structType interface{}) KnxMedium {
 	return castFunc(structType)
 }
 
-func (m KnxMedium) GetLengthInBits() uint16 {
+func (m KnxMedium) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m KnxMedium) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxMedium) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxMediumParse(theBytes []byte) (KnxMedium, error) {
-	return KnxMediumParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxMediumParse(ctx context.Context, theBytes []byte) (KnxMedium, error) {
+	return KnxMediumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxMediumParseWithBuffer(readBuffer utils.ReadBuffer) (KnxMedium, error) {
+func KnxMediumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxMedium")
@@ -138,13 +139,13 @@ func KnxMediumParseWithBuffer(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 
 func (e KnxMedium) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxMedium) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxMedium) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

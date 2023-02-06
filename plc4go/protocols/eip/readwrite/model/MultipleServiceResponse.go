@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,12 +143,8 @@ func (m *_MultipleServiceResponse) GetTypeName() string {
 	return "MultipleServiceResponse"
 }
 
-func (m *_MultipleServiceResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MultipleServiceResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -173,15 +171,15 @@ func (m *_MultipleServiceResponse) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_MultipleServiceResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MultipleServiceResponseParse(theBytes []byte, serviceLen uint16) (MultipleServiceResponse, error) {
-	return MultipleServiceResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+	return MultipleServiceResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
-func MultipleServiceResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
+func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
@@ -239,12 +237,16 @@ func MultipleServiceResponseParseWithBuffer(readBuffer utils.ReadBuffer, service
 		offsets = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
+		_numItems := uint16(serviceNb)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of MultipleServiceResponse")
 			}
-			offsets[curItem] = _item
+			offsets[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
@@ -278,14 +280,14 @@ func MultipleServiceResponseParseWithBuffer(readBuffer utils.ReadBuffer, service
 }
 
 func (m *_MultipleServiceResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -334,7 +336,8 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for offsets")
 		}
-		for _, _element := range m.GetOffsets() {
+		for _curItem, _element := range m.GetOffsets() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint16("", 16, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
@@ -355,7 +358,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MultipleServiceResponse) isMultipleServiceResponse() bool {
@@ -367,7 +370,7 @@ func (m *_MultipleServiceResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

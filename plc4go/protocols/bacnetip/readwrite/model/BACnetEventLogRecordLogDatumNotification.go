@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,34 +124,30 @@ func (m *_BACnetEventLogRecordLogDatumNotification) GetTypeName() string {
 	return "BACnetEventLogRecordLogDatumNotification"
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (notification)
-	lengthInBits += m.Notification.GetLengthInBits()
+	lengthInBits += m.Notification.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventLogRecordLogDatumNotificationParse(theBytes []byte, tagNumber uint8) (BACnetEventLogRecordLogDatumNotification, error) {
-	return BACnetEventLogRecordLogDatumNotificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventLogRecordLogDatumNotificationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventLogRecordLogDatumNotification, error) {
+func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventLogRecordLogDatumNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumNotification"); pullErr != nil {
@@ -163,7 +160,7 @@ func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetEventLogRecordLogDatumNotification")
 	}
@@ -176,7 +173,7 @@ func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("notification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notification")
 	}
-	_notification, _notificationErr := ConfirmedEventNotificationRequestParseWithBuffer(readBuffer)
+	_notification, _notificationErr := ConfirmedEventNotificationRequestParseWithBuffer(ctx, readBuffer)
 	if _notificationErr != nil {
 		return nil, errors.Wrap(_notificationErr, "Error parsing 'notification' field of BACnetEventLogRecordLogDatumNotification")
 	}
@@ -189,7 +186,7 @@ func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetEventLogRecordLogDatumNotification")
 	}
@@ -216,14 +213,14 @@ func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -235,7 +232,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -247,7 +244,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("notification"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for notification")
 		}
-		_notificationErr := writeBuffer.WriteSerializable(m.GetNotification())
+		_notificationErr := writeBuffer.WriteSerializable(ctx, m.GetNotification())
 		if popErr := writeBuffer.PopContext("notification"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for notification")
 		}
@@ -259,7 +256,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -272,7 +269,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) isBACnetEventLogRecordLogDatumNotification() bool {
@@ -284,7 +281,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -80,6 +80,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeTypeDescription");
 
@@ -111,6 +112,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeTypeDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (typeDefinitionNode)
     lengthInBits += typeDefinitionNode.getLengthInBits();
@@ -128,7 +130,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     if (dataToReturn != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : dataToReturn) {
-        boolean last = ++i >= dataToReturn.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataToReturn.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -142,6 +144,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId typeDefinitionNode =
         readSimpleField(

@@ -79,6 +79,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolServicesSupported");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProtocolServicesSupported _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (protocolServicesSupported)
     lengthInBits += protocolServicesSupported.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetServicesSupportedTagged protocolServicesSupported =
         readSimpleField(

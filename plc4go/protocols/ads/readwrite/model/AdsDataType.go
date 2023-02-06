@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -672,19 +673,19 @@ func CastAdsDataType(structType interface{}) AdsDataType {
 	return castFunc(structType)
 }
 
-func (m AdsDataType) GetLengthInBits() uint16 {
+func (m AdsDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m AdsDataType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AdsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDataTypeParse(theBytes []byte) (AdsDataType, error) {
-	return AdsDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AdsDataTypeParse(ctx context.Context, theBytes []byte) (AdsDataType, error) {
+	return AdsDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataType, error) {
+func AdsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataType, error) {
 	val, err := readBuffer.ReadInt8("AdsDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsDataType")
@@ -699,13 +700,13 @@ func AdsDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataType, error
 
 func (e AdsDataType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AdsDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AdsDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

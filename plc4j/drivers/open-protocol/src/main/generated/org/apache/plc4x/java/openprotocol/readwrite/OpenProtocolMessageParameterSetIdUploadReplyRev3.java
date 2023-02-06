@@ -88,6 +88,7 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
   protected void serializeOpenProtocolMessageParameterSetIdUploadReplyChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetIdUploadReplyRev3");
 
@@ -133,6 +134,7 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageParameterSetIdUploadReplyRev3 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (numParameters)
     lengthInBits += 24;
@@ -162,6 +164,7 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long numParameters =
         readImplicitField(

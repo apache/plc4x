@@ -75,6 +75,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationRecipients");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeSynchronizationRecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (timeSynchronizationRecipients != null) {
@@ -116,6 +118,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRecipient> timeSynchronizationRecipients =
         readTerminatedArrayField(

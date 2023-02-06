@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastLightingLabelFlavour(structType interface{}) LightingLabelFlavour {
 	return castFunc(structType)
 }
 
-func (m LightingLabelFlavour) GetLengthInBits() uint16 {
+func (m LightingLabelFlavour) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m LightingLabelFlavour) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m LightingLabelFlavour) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingLabelFlavourParse(theBytes []byte) (LightingLabelFlavour, error) {
-	return LightingLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func LightingLabelFlavourParse(ctx context.Context, theBytes []byte) (LightingLabelFlavour, error) {
+	return LightingLabelFlavourParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LightingLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelFlavour, error) {
+func LightingLabelFlavourParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelFlavour, error) {
 	val, err := readBuffer.ReadUint8("LightingLabelFlavour", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingLabelFlavour")
@@ -126,13 +127,13 @@ func LightingLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (LightingL
 
 func (e LightingLabelFlavour) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e LightingLabelFlavour) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e LightingLabelFlavour) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingLabelFlavour", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

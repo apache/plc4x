@@ -67,6 +67,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
   protected void serializeCBusPointToPointToMultiPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommandStatus");
 
@@ -91,6 +92,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointToMultiPointCommandStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -108,6 +110,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0xFF);
 

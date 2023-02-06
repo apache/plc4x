@@ -136,6 +136,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FieldMetaData");
 
@@ -195,6 +196,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FieldMetaData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -235,7 +237,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     if (properties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : properties) {
-        boolean last = ++i >= properties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= properties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -249,6 +251,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(

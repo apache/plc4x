@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetTypeName() string {
 	return "BACnetSpecialEventPeriodCalendarEntry"
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (calendarEntry)
-	lengthInBits += m.CalendarEntry.GetLengthInBits()
+	lengthInBits += m.CalendarEntry.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetSpecialEventPeriodCalendarEntryParse(theBytes []byte) (BACnetSpecialEventPeriodCalendarEntry, error) {
-	return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
+func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarEntry"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
 	}
-	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _calendarEntryErr != nil {
 		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetSpecialEventPeriodCalendarEntry")
 	}
@@ -162,14 +159,14 @@ func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for calendarEntry")
 		}
-		_calendarEntryErr := writeBuffer.WriteSerializable(m.GetCalendarEntry())
+		_calendarEntryErr := writeBuffer.WriteSerializable(ctx, m.GetCalendarEntry())
 		if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for calendarEntry")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) isBACnetSpecialEventPeriodCalendarEntry() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

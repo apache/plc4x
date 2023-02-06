@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStateActionUnknown) GetTypeName() string {
 	return "BACnetPropertyStateActionUnknown"
 }
 
-func (m *_BACnetPropertyStateActionUnknown) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStateActionUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStateActionUnknown) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (unknownValue)
-	lengthInBits += m.UnknownValue.GetLengthInBits()
+	lengthInBits += m.UnknownValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStateActionUnknown) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStateActionUnknown) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStateActionUnknownParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
-	return BACnetPropertyStateActionUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStateActionUnknownParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStateActionUnknownParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
+func BACnetPropertyStateActionUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStateActionUnknown"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStateActionUnknownParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("unknownValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unknownValue")
 	}
-	_unknownValue, _unknownValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
+	_unknownValue, _unknownValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
 	if _unknownValueErr != nil {
 		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field of BACnetPropertyStateActionUnknown")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStateActionUnknownParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetPropertyStateActionUnknown) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("unknownValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unknownValue")
 		}
-		_unknownValueErr := writeBuffer.WriteSerializable(m.GetUnknownValue())
+		_unknownValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnknownValue())
 		if popErr := writeBuffer.PopContext("unknownValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unknownValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStateActionUnknown) isBACnetPropertyStateActionUnknown() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStateActionUnknown) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

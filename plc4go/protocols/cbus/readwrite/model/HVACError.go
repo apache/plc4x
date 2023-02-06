@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -915,19 +916,19 @@ func CastHVACError(structType interface{}) HVACError {
 	return castFunc(structType)
 }
 
-func (m HVACError) GetLengthInBits() uint16 {
+func (m HVACError) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m HVACError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HVACError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACErrorParse(theBytes []byte) (HVACError, error) {
-	return HVACErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HVACErrorParse(ctx context.Context, theBytes []byte) (HVACError, error) {
+	return HVACErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACErrorParseWithBuffer(readBuffer utils.ReadBuffer) (HVACError, error) {
+func HVACErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACError, error) {
 	val, err := readBuffer.ReadUint8("HVACError", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACError")
@@ -942,13 +943,13 @@ func HVACErrorParseWithBuffer(readBuffer utils.ReadBuffer) (HVACError, error) {
 
 func (e HVACError) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HVACError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HVACError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACError", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

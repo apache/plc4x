@@ -79,6 +79,7 @@ public class BACnetConstructedDataDateTimePatternValueRelinquishDefault
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDateTimePatternValueRelinquishDefault");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDateTimePatternValueRelinquishDefault
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDateTimePatternValueRelinquishDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relinquishDefault)
     lengthInBits += relinquishDefault.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDateTimePatternValueRelinquishDefault
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime relinquishDefault =
         readSimpleField(

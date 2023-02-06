@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -116,31 +117,27 @@ func (m *_DescriptionResponse) GetTypeName() string {
 	return "DescriptionResponse"
 }
 
-func (m *_DescriptionResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DescriptionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DescriptionResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.GetLengthInBits()
+	lengthInBits += m.DibDeviceInfo.GetLengthInBits(ctx)
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DescriptionResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DescriptionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DescriptionResponseParse(theBytes []byte) (DescriptionResponse, error) {
-	return DescriptionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DescriptionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DescriptionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
+func DescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
@@ -153,7 +150,7 @@ func DescriptionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (Descriptio
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
 	}
-	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(readBuffer)
+	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(ctx, readBuffer)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of DescriptionResponse")
 	}
@@ -166,7 +163,7 @@ func DescriptionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (Descriptio
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
 	}
-	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(readBuffer)
+	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(ctx, readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of DescriptionResponse")
 	}
@@ -190,14 +187,14 @@ func DescriptionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (Descriptio
 }
 
 func (m *_DescriptionResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DescriptionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -209,7 +206,7 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
 		}
-		_dibDeviceInfoErr := writeBuffer.WriteSerializable(m.GetDibDeviceInfo())
+		_dibDeviceInfoErr := writeBuffer.WriteSerializable(ctx, m.GetDibDeviceInfo())
 		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
 		}
@@ -221,7 +218,7 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
 		}
-		_dibSuppSvcFamiliesErr := writeBuffer.WriteSerializable(m.GetDibSuppSvcFamilies())
+		_dibSuppSvcFamiliesErr := writeBuffer.WriteSerializable(ctx, m.GetDibSuppSvcFamilies())
 		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
 		}
@@ -234,7 +231,7 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DescriptionResponse) isDescriptionResponse() bool {
@@ -246,7 +243,7 @@ func (m *_DescriptionResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

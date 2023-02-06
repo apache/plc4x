@@ -128,6 +128,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
   protected void serializeOpenProtocolMessageAlarmChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarmRev2");
 
@@ -208,6 +209,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageAlarmRev2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (blockIdErrorCode)
     lengthInBits += 16;
@@ -248,6 +250,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdErrorCode =
         readConstField(

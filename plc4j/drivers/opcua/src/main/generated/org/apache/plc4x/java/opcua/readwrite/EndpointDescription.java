@@ -115,6 +115,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EndpointDescription");
 
@@ -168,6 +169,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EndpointDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (endpointUrl)
     lengthInBits += endpointUrl.getLengthInBits();
@@ -191,7 +193,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     if (userIdentityTokens != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : userIdentityTokens) {
-        boolean last = ++i >= userIdentityTokens.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= userIdentityTokens.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -211,6 +213,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString endpointUrl =
         readSimpleField(

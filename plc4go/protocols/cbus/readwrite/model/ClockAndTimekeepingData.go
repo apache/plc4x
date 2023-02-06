@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -54,12 +55,11 @@ type _ClockAndTimekeepingData struct {
 
 type _ClockAndTimekeepingDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type ClockAndTimekeepingDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ClockAndTimekeepingData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ClockAndTimekeepingData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -95,6 +95,8 @@ func (m *_ClockAndTimekeepingData) GetArgument() byte {
 ///////////////////////
 
 func (m *_ClockAndTimekeepingData) GetCommandType() ClockAndTimekeepingCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastClockAndTimekeepingCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -123,7 +125,7 @@ func (m *_ClockAndTimekeepingData) GetTypeName() string {
 	return "ClockAndTimekeepingData"
 }
 
-func (m *_ClockAndTimekeepingData) GetParentLengthInBits() uint16 {
+func (m *_ClockAndTimekeepingData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -137,15 +139,15 @@ func (m *_ClockAndTimekeepingData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ClockAndTimekeepingData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ClockAndTimekeepingData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ClockAndTimekeepingDataParse(theBytes []byte) (ClockAndTimekeepingData, error) {
-	return ClockAndTimekeepingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ClockAndTimekeepingDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {
+func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingData"); pullErr != nil {
@@ -163,7 +165,7 @@ func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockA
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := ClockAndTimekeepingCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of ClockAndTimekeepingData")
 	}
@@ -195,11 +197,11 @@ func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockA
 	var typeSwitchError error
 	switch {
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x01: // ClockAndTimekeepingDataUpdateTime
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx, readBuffer)
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x02: // ClockAndTimekeepingDataUpdateDate
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateDateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx, readBuffer)
 	case commandType == ClockAndTimekeepingCommandType_REQUEST_REFRESH && argument == 0x03: // ClockAndTimekeepingDataRequestRefresh
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataRequestRefreshParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataRequestRefreshParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}
@@ -217,7 +219,7 @@ func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockA
 	return _child, nil
 }
 
-func (pm *_ClockAndTimekeepingData) SerializeParent(writeBuffer utils.WriteBuffer, child ClockAndTimekeepingData, serializeChildFunction func() error) error {
+func (pm *_ClockAndTimekeepingData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ClockAndTimekeepingData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -231,7 +233,7 @@ func (pm *_ClockAndTimekeepingData) SerializeParent(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -239,7 +241,7 @@ func (pm *_ClockAndTimekeepingData) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -270,7 +272,7 @@ func (m *_ClockAndTimekeepingData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

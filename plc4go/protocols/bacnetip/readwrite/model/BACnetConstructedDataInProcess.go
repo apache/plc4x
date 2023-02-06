@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataInProcess) GetInProcess() BACnetApplicationTagBoo
 ///////////////////////
 
 func (m *_BACnetConstructedDataInProcess) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetInProcess())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataInProcess) GetTypeName() string {
 	return "BACnetConstructedDataInProcess"
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataInProcess) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (inProcess)
-	lengthInBits += m.InProcess.GetLengthInBits()
+	lengthInBits += m.InProcess.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataInProcess) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataInProcessParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
-	return BACnetConstructedDataInProcessParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataInProcessParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataInProcessParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
+func BACnetConstructedDataInProcessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProcess"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataInProcessParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("inProcess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inProcess")
 	}
-	_inProcess, _inProcessErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_inProcess, _inProcessErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _inProcessErr != nil {
 		return nil, errors.Wrap(_inProcessErr, "Error parsing 'inProcess' field of BACnetConstructedDataInProcess")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataInProcessParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataInProcess) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("inProcess"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for inProcess")
 		}
-		_inProcessErr := writeBuffer.WriteSerializable(m.GetInProcess())
+		_inProcessErr := writeBuffer.WriteSerializable(ctx, m.GetInProcess())
 		if popErr := writeBuffer.PopContext("inProcess"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for inProcess")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_inProcessErr, "Error serializing 'inProcess' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataInProcess) isBACnetConstructedDataInProcess() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataInProcess) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetTimeStampDateTime) GetTypeName() string {
 	return "BACnetTimeStampDateTime"
 }
 
-func (m *_BACnetTimeStampDateTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimeStampDateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetTimeStampDateTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dateTimeValue)
-	lengthInBits += m.DateTimeValue.GetLengthInBits()
+	lengthInBits += m.DateTimeValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimeStampDateTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimeStampDateTimeParse(theBytes []byte) (BACnetTimeStampDateTime, error) {
-	return BACnetTimeStampDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTimeStampDateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTimeStampDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
+func BACnetTimeStampDateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetTimeStampDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetTimeStampDateTime")
 	}
@@ -162,14 +159,14 @@ func BACnetTimeStampDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetTimeStampDateTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
 		}
-		_dateTimeValueErr := writeBuffer.WriteSerializable(m.GetDateTimeValue())
+		_dateTimeValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateTimeValue())
 		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dateTimeValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetTimeStampDateTime) isBACnetTimeStampDateTime() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetTimeStampDateTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

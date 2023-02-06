@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetAssignedAccessRights) GetTypeName() string {
 	return "BACnetAssignedAccessRights"
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAssignedAccessRights) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (assignedAccessRights)
-	lengthInBits += m.AssignedAccessRights.GetLengthInBits()
+	lengthInBits += m.AssignedAccessRights.GetLengthInBits(ctx)
 
 	// Simple field (enable)
-	lengthInBits += m.Enable.GetLengthInBits()
+	lengthInBits += m.Enable.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAssignedAccessRightsParse(theBytes []byte) (BACnetAssignedAccessRights, error) {
-	return BACnetAssignedAccessRightsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAssignedAccessRightsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAssignedAccessRightsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
+func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedAccessRights"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetAssignedAccessRightsParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("assignedAccessRights"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedAccessRights")
 	}
-	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _assignedAccessRightsErr != nil {
 		return nil, errors.Wrap(_assignedAccessRightsErr, "Error parsing 'assignedAccessRights' field of BACnetAssignedAccessRights")
 	}
@@ -137,7 +134,7 @@ func BACnetAssignedAccessRightsParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
-	_enable, _enableErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_enable, _enableErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAssignedAccessRights")
 	}
@@ -158,14 +155,14 @@ func BACnetAssignedAccessRightsParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 }
 
 func (m *_BACnetAssignedAccessRights) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedAccessRights"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("assignedAccessRights"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
 	}
-	_assignedAccessRightsErr := writeBuffer.WriteSerializable(m.GetAssignedAccessRights())
+	_assignedAccessRightsErr := writeBuffer.WriteSerializable(ctx, m.GetAssignedAccessRights())
 	if popErr := writeBuffer.PopContext("assignedAccessRights"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for assignedAccessRights")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for enable")
 	}
-	_enableErr := writeBuffer.WriteSerializable(m.GetEnable())
+	_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
 	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for enable")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetAssignedAccessRights) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,19 +124,19 @@ func CastBACnetAuthorizationExemption(structType interface{}) BACnetAuthorizatio
 	return castFunc(structType)
 }
 
-func (m BACnetAuthorizationExemption) GetLengthInBits() uint16 {
+func (m BACnetAuthorizationExemption) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAuthorizationExemption) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAuthorizationExemption) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthorizationExemptionParse(theBytes []byte) (BACnetAuthorizationExemption, error) {
-	return BACnetAuthorizationExemptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAuthorizationExemptionParse(ctx context.Context, theBytes []byte) (BACnetAuthorizationExemption, error) {
+	return BACnetAuthorizationExemptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAuthorizationExemptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
+func BACnetAuthorizationExemptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthorizationExemption", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
@@ -150,13 +151,13 @@ func BACnetAuthorizationExemptionParseWithBuffer(readBuffer utils.ReadBuffer) (B
 
 func (e BACnetAuthorizationExemption) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthorizationExemption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthorizationExemption) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

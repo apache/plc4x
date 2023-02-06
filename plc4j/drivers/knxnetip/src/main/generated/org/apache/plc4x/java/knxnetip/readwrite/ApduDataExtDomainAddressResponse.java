@@ -49,6 +49,7 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtDomainAddressResponse");
 
@@ -64,6 +65,7 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtDomainAddressResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtDomainAddressResponse");
     // Create the instance

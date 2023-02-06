@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -143,6 +144,8 @@ func (m *_APDUComplexAck) GetSegment() []byte {
 ///////////////////////
 
 func (m *_APDUComplexAck) GetApduHeaderReduction() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	sequenceNumber := m.SequenceNumber
 	_ = sequenceNumber
 	proposedWindowSize := m.ProposedWindowSize
@@ -155,6 +158,8 @@ func (m *_APDUComplexAck) GetApduHeaderReduction() uint16 {
 }
 
 func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	sequenceNumber := m.SequenceNumber
 	_ = sequenceNumber
 	proposedWindowSize := m.ProposedWindowSize
@@ -203,12 +208,8 @@ func (m *_APDUComplexAck) GetTypeName() string {
 	return "APDUComplexAck"
 }
 
-func (m *_APDUComplexAck) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -236,7 +237,7 @@ func (m *_APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (serviceAck)
 	if m.ServiceAck != nil {
-		lengthInBits += m.ServiceAck.GetLengthInBits()
+		lengthInBits += m.ServiceAck.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (segmentServiceChoice)
@@ -254,15 +255,15 @@ func (m *_APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUComplexAck) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func APDUComplexAckParse(theBytes []byte, apduLength uint16) (APDUComplexAck, error) {
-	return APDUComplexAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return APDUComplexAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
+func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
@@ -341,7 +342,7 @@ func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceAck")
 		}
-		_val, _err := BACnetServiceAckParseWithBuffer(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
+		_val, _err := BACnetServiceAckParseWithBuffer(ctx, readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -367,7 +368,7 @@ func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 		if pullErr := readBuffer.PullContext("segmentServiceChoice"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for segmentServiceChoice")
 		}
-		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
+		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUComplexAck")
 		}
@@ -414,14 +415,14 @@ func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 }
 
 func (m *_APDUComplexAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -486,7 +487,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			}
 		}
 		// Virtual field
-		if _apduHeaderReductionErr := writeBuffer.WriteVirtual("apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
+		if _apduHeaderReductionErr := writeBuffer.WriteVirtual(ctx, "apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
@@ -497,7 +498,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 				return errors.Wrap(pushErr, "Error pushing for serviceAck")
 			}
 			serviceAck = m.GetServiceAck()
-			_serviceAckErr := writeBuffer.WriteSerializable(serviceAck)
+			_serviceAckErr := writeBuffer.WriteSerializable(ctx, serviceAck)
 			if popErr := writeBuffer.PopContext("serviceAck"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for serviceAck")
 			}
@@ -513,7 +514,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 				return errors.Wrap(pushErr, "Error pushing for segmentServiceChoice")
 			}
 			segmentServiceChoice = m.GetSegmentServiceChoice()
-			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(segmentServiceChoice)
+			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(ctx, segmentServiceChoice)
 			if popErr := writeBuffer.PopContext("segmentServiceChoice"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for segmentServiceChoice")
 			}
@@ -522,7 +523,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			}
 		}
 		// Virtual field
-		if _segmentReductionErr := writeBuffer.WriteVirtual("segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
+		if _segmentReductionErr := writeBuffer.WriteVirtual(ctx, "segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
 			return errors.Wrap(_segmentReductionErr, "Error serializing 'segmentReduction' field")
 		}
 
@@ -537,7 +538,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_APDUComplexAck) isAPDUComplexAck() bool {
@@ -549,7 +550,7 @@ func (m *_APDUComplexAck) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

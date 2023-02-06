@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -173,19 +174,19 @@ func CastMaxSegmentsAccepted(structType interface{}) MaxSegmentsAccepted {
 	return castFunc(structType)
 }
 
-func (m MaxSegmentsAccepted) GetLengthInBits() uint16 {
+func (m MaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint16 {
 	return 3
 }
 
-func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m MaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func MaxSegmentsAcceptedParse(theBytes []byte) (MaxSegmentsAccepted, error) {
-	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func MaxSegmentsAcceptedParse(ctx context.Context, theBytes []byte) (MaxSegmentsAccepted, error) {
+	return MaxSegmentsAcceptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
+func MaxSegmentsAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxSegmentsAccepted", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
@@ -200,13 +201,13 @@ func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegment
 
 func (e MaxSegmentsAccepted) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e MaxSegmentsAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e MaxSegmentsAccepted) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

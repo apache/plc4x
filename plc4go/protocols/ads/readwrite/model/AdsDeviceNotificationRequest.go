@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,12 +136,8 @@ func (m *_AdsDeviceNotificationRequest) GetTypeName() string {
 	return "AdsDeviceNotificationRequest"
 }
 
-func (m *_AdsDeviceNotificationRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -149,24 +147,26 @@ func (m *_AdsDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool
 
 	// Array field
 	if len(m.AdsStampHeaders) > 0 {
-		for i, element := range m.AdsStampHeaders {
-			last := i == len(m.AdsStampHeaders)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.AdsStampHeaders {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.AdsStampHeaders), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDeviceNotificationRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDeviceNotificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDeviceNotificationRequestParse(theBytes []byte) (AdsDeviceNotificationRequest, error) {
-	return AdsDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDeviceNotificationRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
+func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
@@ -200,12 +200,16 @@ func AdsDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (A
 		adsStampHeaders = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
-			_item, _err := AdsStampHeaderParseWithBuffer(readBuffer)
+		_numItems := uint16(stamps)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := AdsStampHeaderParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field of AdsDeviceNotificationRequest")
 			}
-			adsStampHeaders[curItem] = _item.(AdsStampHeader)
+			adsStampHeaders[_curItem] = _item.(AdsStampHeader)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("adsStampHeaders", utils.WithRenderAsList(true)); closeErr != nil {
@@ -228,14 +232,14 @@ func AdsDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (A
 }
 
 func (m *_AdsDeviceNotificationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -261,8 +265,11 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for adsStampHeaders")
 		}
-		for _, _element := range m.GetAdsStampHeaders() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetAdsStampHeaders() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdsStampHeaders()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
 			}
@@ -276,7 +283,7 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDeviceNotificationRequest) isAdsDeviceNotificationRequest() bool {
@@ -288,7 +295,7 @@ func (m *_AdsDeviceNotificationRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

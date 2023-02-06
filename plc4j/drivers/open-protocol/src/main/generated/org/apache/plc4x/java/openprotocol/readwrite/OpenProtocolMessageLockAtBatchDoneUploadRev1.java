@@ -74,6 +74,7 @@ public class OpenProtocolMessageLockAtBatchDoneUploadRev1
   protected void serializeOpenProtocolMessageLockAtBatchDoneUploadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLockAtBatchDoneUploadRev1");
 
@@ -96,6 +97,7 @@ public class OpenProtocolMessageLockAtBatchDoneUploadRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageLockAtBatchDoneUploadRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relayStatus)
     lengthInBits += 8;
@@ -110,6 +112,7 @@ public class OpenProtocolMessageLockAtBatchDoneUploadRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short relayStatus =
         readSimpleField(

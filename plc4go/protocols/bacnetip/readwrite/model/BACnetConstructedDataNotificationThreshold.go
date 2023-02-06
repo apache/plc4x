@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetNotificationThreshold()
 ///////////////////////
 
 func (m *_BACnetConstructedDataNotificationThreshold) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetNotificationThreshold())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetTypeName() string {
 	return "BACnetConstructedDataNotificationThreshold"
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (notificationThreshold)
-	lengthInBits += m.NotificationThreshold.GetLengthInBits()
+	lengthInBits += m.NotificationThreshold.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataNotificationThresholdParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
-	return BACnetConstructedDataNotificationThresholdParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataNotificationThresholdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataNotificationThresholdParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
+func BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationThreshold"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataNotificationThresholdParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
 	}
-	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _notificationThresholdErr != nil {
 		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetConstructedDataNotificationThreshold")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataNotificationThresholdParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("notificationThreshold"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for notificationThreshold")
 		}
-		_notificationThresholdErr := writeBuffer.WriteSerializable(m.GetNotificationThreshold())
+		_notificationThresholdErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationThreshold())
 		if popErr := writeBuffer.PopContext("notificationThreshold"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for notificationThreshold")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(w
 			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) isBACnetConstructedDataNotificationThreshold() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

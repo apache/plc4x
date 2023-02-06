@@ -67,6 +67,7 @@ public abstract class MediaTransportControlData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlData");
 
@@ -102,6 +103,7 @@ public abstract class MediaTransportControlData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     MediaTransportControlData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -127,6 +129,7 @@ public abstract class MediaTransportControlData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsMediaTransportControlCommandTypeContainer(readBuffer))) {

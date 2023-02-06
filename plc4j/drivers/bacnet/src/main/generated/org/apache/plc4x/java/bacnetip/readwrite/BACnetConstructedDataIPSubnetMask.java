@@ -78,6 +78,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPSubnetMask");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPSubnetMask _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipSubnetMask)
     lengthInBits += ipSubnetMask.getLengthInBits();
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipSubnetMask =
         readSimpleField(

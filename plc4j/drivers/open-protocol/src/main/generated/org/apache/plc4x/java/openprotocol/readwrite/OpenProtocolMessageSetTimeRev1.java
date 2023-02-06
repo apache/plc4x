@@ -73,6 +73,7 @@ public class OpenProtocolMessageSetTimeRev1 extends OpenProtocolMessageSetTime i
   protected void serializeOpenProtocolMessageSetTimeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSetTimeRev1");
 
@@ -92,6 +93,7 @@ public class OpenProtocolMessageSetTimeRev1 extends OpenProtocolMessageSetTime i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageSetTimeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeToSet)
     lengthInBits += 152;
@@ -105,6 +107,7 @@ public class OpenProtocolMessageSetTimeRev1 extends OpenProtocolMessageSetTime i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String timeToSet =
         readSimpleField("timeToSet", readString(readBuffer, 152), WithOption.WithEncoding("ASCII"));

@@ -51,6 +51,7 @@ public class Checksum implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Checksum");
 
@@ -69,6 +70,7 @@ public class Checksum implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Checksum _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 8;
@@ -86,6 +88,7 @@ public class Checksum implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte value = readSimpleField("value", readByte(readBuffer, 8));
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_MonitoredSALReply) GetTypeName() string {
 	return "MonitoredSALReply"
 }
 
-func (m *_MonitoredSALReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MonitoredSALReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (monitoredSAL)
-	lengthInBits += m.MonitoredSAL.GetLengthInBits()
+	lengthInBits += m.MonitoredSAL.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_MonitoredSALReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MonitoredSALReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MonitoredSALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
-	return MonitoredSALReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return MonitoredSALReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func MonitoredSALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
+func MonitoredSALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
@@ -139,7 +136,7 @@ func MonitoredSALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions C
 	if pullErr := readBuffer.PullContext("monitoredSAL"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredSAL")
 	}
-	_monitoredSAL, _monitoredSALErr := MonitoredSALParseWithBuffer(readBuffer, cBusOptions)
+	_monitoredSAL, _monitoredSALErr := MonitoredSALParseWithBuffer(ctx, readBuffer, cBusOptions)
 	if _monitoredSALErr != nil {
 		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
 	}
@@ -165,14 +162,14 @@ func MonitoredSALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions C
 }
 
 func (m *_MonitoredSALReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MonitoredSALReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("monitoredSAL"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredSAL")
 		}
-		_monitoredSALErr := writeBuffer.WriteSerializable(m.GetMonitoredSAL())
+		_monitoredSALErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredSAL())
 		if popErr := writeBuffer.PopContext("monitoredSAL"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredSAL")
 		}
@@ -197,7 +194,7 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MonitoredSALReply) isMonitoredSALReply() bool {
@@ -209,7 +206,7 @@ func (m *_MonitoredSALReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

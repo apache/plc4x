@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetBaseDeviceSecurityPo
 ///////////////////////
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() BACnetSecurityLevelTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetSecurityLevelTagged(m.GetBaseDeviceSecurityPolicy())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetTypeName() string {
 	return "BACnetConstructedDataBaseDeviceSecurityPolicy"
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (baseDeviceSecurityPolicy)
-	lengthInBits += m.BaseDeviceSecurityPolicy.GetLengthInBits()
+	lengthInBits += m.BaseDeviceSecurityPolicy.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBaseDeviceSecurityPolicyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
-	return BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("baseDeviceSecurityPolicy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for baseDeviceSecurityPolicy")
 	}
-	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _baseDeviceSecurityPolicyErr != nil {
 		return nil, errors.Wrap(_baseDeviceSecurityPolicyErr, "Error parsing 'baseDeviceSecurityPolicy' field of BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("baseDeviceSecurityPolicy"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for baseDeviceSecurityPolicy")
 		}
-		_baseDeviceSecurityPolicyErr := writeBuffer.WriteSerializable(m.GetBaseDeviceSecurityPolicy())
+		_baseDeviceSecurityPolicyErr := writeBuffer.WriteSerializable(ctx, m.GetBaseDeviceSecurityPolicy())
 		if popErr := writeBuffer.PopContext("baseDeviceSecurityPolicy"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for baseDeviceSecurityPolicy")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 			return errors.Wrap(_baseDeviceSecurityPolicyErr, "Error serializing 'baseDeviceSecurityPolicy' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) isBACnetConstructedDataBaseDeviceSecurityPolicy() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

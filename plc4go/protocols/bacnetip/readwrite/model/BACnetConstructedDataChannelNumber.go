@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataChannelNumber) GetChannelNumber() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataChannelNumber) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetChannelNumber())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataChannelNumber) GetTypeName() string {
 	return "BACnetConstructedDataChannelNumber"
 }
 
-func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataChannelNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (channelNumber)
-	lengthInBits += m.ChannelNumber.GetLengthInBits()
+	lengthInBits += m.ChannelNumber.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChannelNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataChannelNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataChannelNumberParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelNumber, error) {
-	return BACnetConstructedDataChannelNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataChannelNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataChannelNumberParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelNumber, error) {
+func BACnetConstructedDataChannelNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChannelNumber"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataChannelNumberParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("channelNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelNumber")
 	}
-	_channelNumber, _channelNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_channelNumber, _channelNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _channelNumberErr != nil {
 		return nil, errors.Wrap(_channelNumberErr, "Error parsing 'channelNumber' field of BACnetConstructedDataChannelNumber")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataChannelNumberParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataChannelNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("channelNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelNumber")
 		}
-		_channelNumberErr := writeBuffer.WriteSerializable(m.GetChannelNumber())
+		_channelNumberErr := writeBuffer.WriteSerializable(ctx, m.GetChannelNumber())
 		if popErr := writeBuffer.PopContext("channelNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelNumber")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_channelNumberErr, "Error serializing 'channelNumber' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataChannelNumber) isBACnetConstructedDataChannelNumber() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataChannelNumber) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

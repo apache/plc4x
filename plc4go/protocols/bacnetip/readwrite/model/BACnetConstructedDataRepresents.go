@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataRepresents) GetRepresents() BACnetDeviceObjectRef
 ///////////////////////
 
 func (m *_BACnetConstructedDataRepresents) GetActualValue() BACnetDeviceObjectReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectReference(m.GetRepresents())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataRepresents) GetTypeName() string {
 	return "BACnetConstructedDataRepresents"
 }
 
-func (m *_BACnetConstructedDataRepresents) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataRepresents) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataRepresents) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (represents)
-	lengthInBits += m.Represents.GetLengthInBits()
+	lengthInBits += m.Represents.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRepresents) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataRepresents) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataRepresentsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
-	return BACnetConstructedDataRepresentsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataRepresentsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataRepresentsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
+func BACnetConstructedDataRepresentsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRepresents"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataRepresentsParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("represents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for represents")
 	}
-	_represents, _representsErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
+	_represents, _representsErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 	if _representsErr != nil {
 		return nil, errors.Wrap(_representsErr, "Error parsing 'represents' field of BACnetConstructedDataRepresents")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataRepresentsParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataRepresents) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("represents"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for represents")
 		}
-		_representsErr := writeBuffer.WriteSerializable(m.GetRepresents())
+		_representsErr := writeBuffer.WriteSerializable(ctx, m.GetRepresents())
 		if popErr := writeBuffer.PopContext("represents"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for represents")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_representsErr, "Error serializing 'represents' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataRepresents) isBACnetConstructedDataRepresents() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataRepresents) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

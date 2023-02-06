@@ -79,6 +79,7 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMemberStatusFlags");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMemberStatusFlags _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusFlags)
     lengthInBits += statusFlags.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(

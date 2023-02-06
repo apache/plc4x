@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryRealValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryRealValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal realValue =
         readSimpleField(

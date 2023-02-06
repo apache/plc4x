@@ -79,6 +79,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastNotifyRecord");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastNotifyRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastNotifyRecord)
     lengthInBits += lastNotifyRecord.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lastNotifyRecord =
         readSimpleField(

@@ -65,6 +65,7 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserIdentityToken");
 
@@ -97,6 +98,7 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UserIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (policyLength)
     lengthInBits += 32;
@@ -116,6 +118,7 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int policyLength = readImplicitField("policyLength", readSignedInt(readBuffer, 32));
 

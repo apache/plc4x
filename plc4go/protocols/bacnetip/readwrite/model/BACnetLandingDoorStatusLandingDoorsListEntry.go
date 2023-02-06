@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetTypeName() string {
 	return "BACnetLandingDoorStatusLandingDoorsListEntry"
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (floorNumber)
-	lengthInBits += m.FloorNumber.GetLengthInBits()
+	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
 
 	// Simple field (doorStatus)
-	lengthInBits += m.DoorStatus.GetLengthInBits()
+	lengthInBits += m.DoorStatus.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLandingDoorStatusLandingDoorsListEntryParse(theBytes []byte) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
-	return BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
+func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatusLandingDoorsListEntry"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
@@ -137,7 +134,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("doorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorStatus")
 	}
-	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorStatusErr != nil {
 		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
@@ -158,14 +155,14 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLandingDoorStatusLandingDoorsListEntry"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer
 	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for floorNumber")
 	}
-	_floorNumberErr := writeBuffer.WriteSerializable(m.GetFloorNumber())
+	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
 	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for floorNumber")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer
 	if pushErr := writeBuffer.PushContext("doorStatus"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for doorStatus")
 	}
-	_doorStatusErr := writeBuffer.WriteSerializable(m.GetDoorStatus())
+	_doorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDoorStatus())
 	if popErr := writeBuffer.PopContext("doorStatus"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for doorStatus")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

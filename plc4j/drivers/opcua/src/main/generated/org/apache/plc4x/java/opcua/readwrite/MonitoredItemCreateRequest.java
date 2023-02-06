@@ -73,6 +73,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemCreateRequest");
 
@@ -103,6 +104,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredItemCreateRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemToMonitor)
     lengthInBits += itemToMonitor.getLengthInBits();
@@ -122,6 +124,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition itemToMonitor =
         readSimpleField(

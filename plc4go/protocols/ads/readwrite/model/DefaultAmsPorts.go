@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -405,19 +406,19 @@ func CastDefaultAmsPorts(structType interface{}) DefaultAmsPorts {
 	return castFunc(structType)
 }
 
-func (m DefaultAmsPorts) GetLengthInBits() uint16 {
+func (m DefaultAmsPorts) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m DefaultAmsPorts) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DefaultAmsPorts) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DefaultAmsPortsParse(theBytes []byte) (DefaultAmsPorts, error) {
-	return DefaultAmsPortsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DefaultAmsPortsParse(ctx context.Context, theBytes []byte) (DefaultAmsPorts, error) {
+	return DefaultAmsPortsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DefaultAmsPortsParseWithBuffer(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
+func DefaultAmsPortsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
 	val, err := readBuffer.ReadUint16("DefaultAmsPorts", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DefaultAmsPorts")
@@ -432,13 +433,13 @@ func DefaultAmsPortsParseWithBuffer(readBuffer utils.ReadBuffer) (DefaultAmsPort
 
 func (e DefaultAmsPorts) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DefaultAmsPorts) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DefaultAmsPorts) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("DefaultAmsPorts", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

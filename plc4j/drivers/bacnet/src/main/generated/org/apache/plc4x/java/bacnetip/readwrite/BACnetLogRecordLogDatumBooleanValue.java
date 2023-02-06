@@ -65,6 +65,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumBooleanValue");
 
@@ -83,6 +84,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumBooleanValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -96,6 +98,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBoolean booleanValue =
         readSimpleField(

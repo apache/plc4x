@@ -73,6 +73,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
 
@@ -101,6 +102,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetServiceAckAtomicReadFileStreamOrRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -127,6 +129,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(

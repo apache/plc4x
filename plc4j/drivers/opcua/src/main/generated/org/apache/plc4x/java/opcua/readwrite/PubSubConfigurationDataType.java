@@ -87,6 +87,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubConfigurationDataType");
 
@@ -121,6 +122,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubConfigurationDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfPublishedDataSets)
     lengthInBits += 32;
@@ -129,7 +131,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     if (publishedDataSets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : publishedDataSets) {
-        boolean last = ++i >= publishedDataSets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= publishedDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,7 +143,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     if (connections != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : connections) {
-        boolean last = ++i >= connections.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= connections.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -161,6 +163,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfPublishedDataSets =
         readSimpleField("noOfPublishedDataSets", readSignedInt(readBuffer, 32));

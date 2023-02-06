@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetAccessAuthenticationFactorDisable(structType interface{}) BACnetA
 	return castFunc(structType)
 }
 
-func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBits() uint16 {
+func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessAuthenticationFactorDisableParse(theBytes []byte) (BACnetAccessAuthenticationFactorDisable, error) {
-	return BACnetAccessAuthenticationFactorDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessAuthenticationFactorDisableParse(ctx context.Context, theBytes []byte) (BACnetAccessAuthenticationFactorDisable, error) {
+	return BACnetAccessAuthenticationFactorDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAccessAuthenticationFactorDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessAuthenticationFactorDisable, error) {
+func BACnetAccessAuthenticationFactorDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessAuthenticationFactorDisable, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessAuthenticationFactorDisable", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessAuthenticationFactorDisable")
@@ -144,13 +145,13 @@ func BACnetAccessAuthenticationFactorDisableParseWithBuffer(readBuffer utils.Rea
 
 func (e BACnetAccessAuthenticationFactorDisable) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessAuthenticationFactorDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessAuthenticationFactorDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

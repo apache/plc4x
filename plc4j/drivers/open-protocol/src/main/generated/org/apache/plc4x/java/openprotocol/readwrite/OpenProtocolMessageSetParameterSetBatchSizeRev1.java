@@ -81,6 +81,7 @@ public class OpenProtocolMessageSetParameterSetBatchSizeRev1
   protected void serializeOpenProtocolMessageSetParameterSetBatchSizeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSetParameterSetBatchSizeRev1");
 
@@ -110,6 +111,7 @@ public class OpenProtocolMessageSetParameterSetBatchSizeRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageSetParameterSetBatchSizeRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parameterSetId)
     lengthInBits += 24;
@@ -127,6 +129,7 @@ public class OpenProtocolMessageSetParameterSetBatchSizeRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =
         readSimpleField(

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPriorityValueCharacterString) GetTypeName() string {
 	return "BACnetPriorityValueCharacterString"
 }
 
-func (m *_BACnetPriorityValueCharacterString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityValueCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPriorityValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
-	lengthInBits += m.CharacterStringValue.GetLengthInBits()
+	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueCharacterString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValueCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueCharacterStringParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueCharacterString, error) {
-	return BACnetPriorityValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueCharacterStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueCharacterString, error) {
+func BACnetPriorityValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueCharacterString"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPriorityValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _characterStringValueErr != nil {
 		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetPriorityValueCharacterString")
 	}
@@ -164,14 +161,14 @@ func BACnetPriorityValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetPriorityValueCharacterString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(m.GetCharacterStringValue())
+		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPriorityValueCharacterString) isBACnetPriorityValueCharacterString() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetPriorityValueCharacterString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

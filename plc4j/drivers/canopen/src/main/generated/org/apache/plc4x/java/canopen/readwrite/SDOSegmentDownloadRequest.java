@@ -69,6 +69,7 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
   @Override
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegmentDownloadRequest");
 
@@ -102,6 +103,7 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOSegmentDownloadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (toggle)
     lengthInBits += 1;
@@ -132,6 +134,7 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean toggle = readSimpleField("toggle", readBoolean(readBuffer));
 

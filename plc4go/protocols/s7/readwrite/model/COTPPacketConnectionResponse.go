@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,12 +127,8 @@ func (m *_COTPPacketConnectionResponse) GetTypeName() string {
 	return "COTPPacketConnectionResponse"
 }
 
-func (m *_COTPPacketConnectionResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_COTPPacketConnectionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_COTPPacketConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -145,15 +142,15 @@ func (m *_COTPPacketConnectionResponse) GetLengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *_COTPPacketConnectionResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_COTPPacketConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func COTPPacketConnectionResponseParse(theBytes []byte, cotpLen uint16) (COTPPacketConnectionResponse, error) {
-	return COTPPacketConnectionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
+	return COTPPacketConnectionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
-func COTPPacketConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {
+func COTPPacketConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
@@ -180,7 +177,7 @@ func COTPPacketConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer, co
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
 	}
-	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(readBuffer)
+	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(ctx, readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field of COTPPacketConnectionResponse")
 	}
@@ -207,14 +204,14 @@ func COTPPacketConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer, co
 }
 
 func (m *_COTPPacketConnectionResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -240,7 +237,7 @@ func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for protocolClass")
 		}
-		_protocolClassErr := writeBuffer.WriteSerializable(m.GetProtocolClass())
+		_protocolClassErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolClass())
 		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for protocolClass")
 		}
@@ -253,7 +250,7 @@ func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_COTPPacketConnectionResponse) isCOTPPacketConnectionResponse() bool {
@@ -265,7 +262,7 @@ func (m *_COTPPacketConnectionResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

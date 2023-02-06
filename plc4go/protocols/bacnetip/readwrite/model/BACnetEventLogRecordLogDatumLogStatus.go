@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) GetTypeName() string {
 	return "BACnetEventLogRecordLogDatumLogStatus"
 }
 
-func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (logStatus)
-	lengthInBits += m.LogStatus.GetLengthInBits()
+	lengthInBits += m.LogStatus.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventLogRecordLogDatumLogStatusParse(theBytes []byte, tagNumber uint8) (BACnetEventLogRecordLogDatumLogStatus, error) {
-	return BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventLogRecordLogDatumLogStatus, error) {
+func BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventLogRecordLogDatumLogStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumLogStatus"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("logStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logStatus")
 	}
-	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _logStatusErr != nil {
 		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetEventLogRecordLogDatumLogStatus")
 	}
@@ -166,14 +163,14 @@ func BACnetEventLogRecordLogDatumLogStatusParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetEventLogRecordLogDatumLogStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("logStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for logStatus")
 		}
-		_logStatusErr := writeBuffer.WriteSerializable(m.GetLogStatus())
+		_logStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLogStatus())
 		if popErr := writeBuffer.PopContext("logStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for logStatus")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventLogRecordLogDatumLogStatus) isBACnetEventLogRecordLogDatumLogStatus() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

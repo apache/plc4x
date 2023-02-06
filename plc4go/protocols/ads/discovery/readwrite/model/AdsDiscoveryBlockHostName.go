@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_AdsDiscoveryBlockHostName) GetTypeName() string {
 	return "AdsDiscoveryBlockHostName"
 }
 
-func (m *_AdsDiscoveryBlockHostName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscoveryBlockHostName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDiscoveryBlockHostName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (hostName)
-	lengthInBits += m.HostName.GetLengthInBits()
+	lengthInBits += m.HostName.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockHostNameParse(theBytes []byte) (AdsDiscoveryBlockHostName, error) {
-	return AdsDiscoveryBlockHostNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockHostNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
+func AdsDiscoveryBlockHostNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockHostName"); pullErr != nil {
@@ -141,7 +138,7 @@ func AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 	if pullErr := readBuffer.PullContext("hostName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostName")
 	}
-	_hostName, _hostNameErr := AmsStringParseWithBuffer(readBuffer)
+	_hostName, _hostNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
 	if _hostNameErr != nil {
 		return nil, errors.Wrap(_hostNameErr, "Error parsing 'hostName' field of AdsDiscoveryBlockHostName")
 	}
@@ -164,14 +161,14 @@ func AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsD
 }
 
 func (m *_AdsDiscoveryBlockHostName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("hostName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hostName")
 		}
-		_hostNameErr := writeBuffer.WriteSerializable(m.GetHostName())
+		_hostNameErr := writeBuffer.WriteSerializable(ctx, m.GetHostName())
 		if popErr := writeBuffer.PopContext("hostName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hostName")
 		}
@@ -196,7 +193,7 @@ func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDiscoveryBlockHostName) isAdsDiscoveryBlockHostName() bool {
@@ -208,7 +205,7 @@ func (m *_AdsDiscoveryBlockHostName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

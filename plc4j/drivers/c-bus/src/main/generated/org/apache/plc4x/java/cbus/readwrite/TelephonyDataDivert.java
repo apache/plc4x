@@ -56,6 +56,7 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataDivert");
 
@@ -77,6 +78,7 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataDivert _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (number)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -91,6 +93,7 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String number =
         readSimpleField(

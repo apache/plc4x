@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -85,6 +86,8 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetProprietaryValue() u
 ///////////////////////
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetIsProprietary() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetValue()) == (BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE)))
 }
 
@@ -113,15 +116,11 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTypeName() string {
 	return "BACnetAccessAuthenticationFactorDisableTagged"
 }
 
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
 	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
@@ -134,15 +133,15 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBitsConditio
 	return lengthInBits
 }
 
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAccessAuthenticationFactorDisableTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessAuthenticationFactorDisableTagged, error) {
-	return BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessAuthenticationFactorDisableTagged, error) {
+func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessAuthenticationFactorDisableTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessAuthenticationFactorDisableTagged"); pullErr != nil {
@@ -155,7 +154,7 @@ func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessAuthenticationFactorDisableTagged")
 	}
@@ -214,14 +213,14 @@ func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccessAuthenticationFactorDisableTagged"); pushErr != nil {
@@ -232,7 +231,7 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) SerializeWithWriteBuffe
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -246,7 +245,7 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) SerializeWithWriteBuffe
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
+	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
@@ -284,7 +283,7 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

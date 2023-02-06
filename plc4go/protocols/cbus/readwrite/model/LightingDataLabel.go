@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,18 +130,14 @@ func (m *_LightingDataLabel) GetTypeName() string {
 	return "LightingDataLabel"
 }
 
-func (m *_LightingDataLabel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LightingDataLabel) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
 
 	// Simple field (labelOptions)
-	lengthInBits += m.LabelOptions.GetLengthInBits()
+	lengthInBits += m.LabelOptions.GetLengthInBits(ctx)
 
 	// Optional Field (language)
 	if m.Language != nil {
@@ -155,15 +152,15 @@ func (m *_LightingDataLabel) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingDataLabel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LightingDataLabelParse(theBytes []byte, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
-	return LightingDataLabelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return LightingDataLabelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func LightingDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
+func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataLabel"); pullErr != nil {
@@ -183,7 +180,7 @@ func LightingDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeCo
 	if pullErr := readBuffer.PullContext("labelOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelOptions")
 	}
-	_labelOptions, _labelOptionsErr := LightingLabelOptionsParseWithBuffer(readBuffer)
+	_labelOptions, _labelOptionsErr := LightingLabelOptionsParseWithBuffer(ctx, readBuffer)
 	if _labelOptionsErr != nil {
 		return nil, errors.Wrap(_labelOptionsErr, "Error parsing 'labelOptions' field of LightingDataLabel")
 	}
@@ -198,7 +195,7 @@ func LightingDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeCo
 		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for language")
 		}
-		_val, _err := LanguageParseWithBuffer(readBuffer)
+		_val, _err := LanguageParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of LightingDataLabel")
 		}
@@ -231,14 +228,14 @@ func LightingDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeCo
 }
 
 func (m *_LightingDataLabel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LightingDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -257,7 +254,7 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("labelOptions"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for labelOptions")
 		}
-		_labelOptionsErr := writeBuffer.WriteSerializable(m.GetLabelOptions())
+		_labelOptionsErr := writeBuffer.WriteSerializable(ctx, m.GetLabelOptions())
 		if popErr := writeBuffer.PopContext("labelOptions"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for labelOptions")
 		}
@@ -272,7 +269,7 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 				return errors.Wrap(pushErr, "Error pushing for language")
 			}
 			language = m.GetLanguage()
-			_languageErr := writeBuffer.WriteSerializable(language)
+			_languageErr := writeBuffer.WriteSerializable(ctx, language)
 			if popErr := writeBuffer.PopContext("language"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for language")
 			}
@@ -292,7 +289,7 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LightingDataLabel) isLightingDataLabel() bool {
@@ -304,7 +301,7 @@ func (m *_LightingDataLabel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

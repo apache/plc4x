@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,12 +124,8 @@ func (m *_ModbusPDUReadCoilsRequest) GetTypeName() string {
 	return "ModbusPDUReadCoilsRequest"
 }
 
-func (m *_ModbusPDUReadCoilsRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUReadCoilsRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUReadCoilsRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -139,15 +136,15 @@ func (m *_ModbusPDUReadCoilsRequest) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadCoilsRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUReadCoilsRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUReadCoilsRequestParse(theBytes []byte, response bool) (ModbusPDUReadCoilsRequest, error) {
-	return ModbusPDUReadCoilsRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUReadCoilsRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUReadCoilsRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadCoilsRequest, error) {
+func ModbusPDUReadCoilsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadCoilsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsRequest"); pullErr != nil {
@@ -185,14 +182,14 @@ func ModbusPDUReadCoilsRequestParseWithBuffer(readBuffer utils.ReadBuffer, respo
 }
 
 func (m *_ModbusPDUReadCoilsRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -219,7 +216,7 @@ func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUReadCoilsRequest) isModbusPDUReadCoilsRequest() bool {
@@ -231,7 +228,7 @@ func (m *_ModbusPDUReadCoilsRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

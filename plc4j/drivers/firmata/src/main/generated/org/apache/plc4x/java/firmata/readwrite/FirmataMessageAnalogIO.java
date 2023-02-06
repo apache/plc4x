@@ -64,6 +64,7 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
   protected void serializeFirmataMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataMessageAnalogIO");
 
@@ -93,6 +94,7 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataMessageAnalogIO _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 4;
@@ -111,6 +113,7 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pin =
         readSimpleField(

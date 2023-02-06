@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetChannelValueBoolean) GetTypeName() string {
 	return "BACnetChannelValueBoolean"
 }
 
-func (m *_BACnetChannelValueBoolean) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetChannelValueBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetChannelValueBoolean) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (booleanValue)
-	lengthInBits += m.BooleanValue.GetLengthInBits()
+	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueBoolean) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetChannelValueBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueBooleanParse(theBytes []byte) (BACnetChannelValueBoolean, error) {
-	return BACnetChannelValueBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetChannelValueBooleanParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetChannelValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueBoolean, error) {
+func BACnetChannelValueBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBoolean"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetChannelValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetChannelValueBoolean")
 	}
@@ -162,14 +159,14 @@ func BACnetChannelValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 }
 
 func (m *_BACnetChannelValueBoolean) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
-		_booleanValueErr := writeBuffer.WriteSerializable(m.GetBooleanValue())
+		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetChannelValueBoolean) isBACnetChannelValueBoolean() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetChannelValueBoolean) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

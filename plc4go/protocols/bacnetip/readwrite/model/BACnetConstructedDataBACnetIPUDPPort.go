@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetIpUdpPort() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetIpUdpPort())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetTypeName() string {
 	return "BACnetConstructedDataBACnetIPUDPPort"
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipUdpPort)
-	lengthInBits += m.IpUdpPort.GetLengthInBits()
+	lengthInBits += m.IpUdpPort.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBACnetIPUDPPortParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPUDPPort, error) {
-	return BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPUDPPort, error) {
+func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPUDPPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPUDPPort"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("ipUdpPort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipUdpPort")
 	}
-	_ipUdpPort, _ipUdpPortErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipUdpPort, _ipUdpPortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipUdpPortErr != nil {
 		return nil, errors.Wrap(_ipUdpPortErr, "Error parsing 'ipUdpPort' field of BACnetConstructedDataBACnetIPUDPPort")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("ipUdpPort"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipUdpPort")
 		}
-		_ipUdpPortErr := writeBuffer.WriteSerializable(m.GetIpUdpPort())
+		_ipUdpPortErr := writeBuffer.WriteSerializable(ctx, m.GetIpUdpPort())
 		if popErr := writeBuffer.PopContext("ipUdpPort"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipUdpPort")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_ipUdpPortErr, "Error serializing 'ipUdpPort' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) isBACnetConstructedDataBACnetIPUDPPort() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

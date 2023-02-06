@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDoorCommand");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarDoorCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarDoorCommand)
     lengthInBits += liftCarDoorCommand.getLengthInBits();
@@ -89,6 +91,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDoorCommandTagged liftCarDoorCommand =
         readSimpleField(

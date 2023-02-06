@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,37 +130,33 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) GetTypeName() string {
 	return "BACnetEventParameterChangeOfStatusFlags"
 }
 
-func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (timeDelay)
-	lengthInBits += m.TimeDelay.GetLengthInBits()
+	lengthInBits += m.TimeDelay.GetLengthInBits(ctx)
 
 	// Simple field (selectedFlags)
-	lengthInBits += m.SelectedFlags.GetLengthInBits()
+	lengthInBits += m.SelectedFlags.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfStatusFlagsParse(theBytes []byte) (BACnetEventParameterChangeOfStatusFlags, error) {
-	return BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfStatusFlags, error) {
+func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfStatusFlags"); pullErr != nil {
@@ -172,7 +169,7 @@ func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(18)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(18)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfStatusFlags")
 	}
@@ -185,7 +182,7 @@ func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfStatusFlags")
 	}
@@ -198,7 +195,7 @@ func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("selectedFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for selectedFlags")
 	}
-	_selectedFlags, _selectedFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_selectedFlags, _selectedFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _selectedFlagsErr != nil {
 		return nil, errors.Wrap(_selectedFlagsErr, "Error parsing 'selectedFlags' field of BACnetEventParameterChangeOfStatusFlags")
 	}
@@ -211,7 +208,7 @@ func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(18)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(18)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfStatusFlags")
 	}
@@ -237,14 +234,14 @@ func BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetEventParameterChangeOfStatusFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -256,7 +253,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -268,7 +265,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := writeBuffer.WriteSerializable(m.GetTimeDelay())
+		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -280,7 +277,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("selectedFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for selectedFlags")
 		}
-		_selectedFlagsErr := writeBuffer.WriteSerializable(m.GetSelectedFlags())
+		_selectedFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetSelectedFlags())
 		if popErr := writeBuffer.PopContext("selectedFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for selectedFlags")
 		}
@@ -292,7 +289,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -305,7 +302,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterChangeOfStatusFlags) isBACnetEventParameterChangeOfStatusFlags() bool {
@@ -317,7 +314,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

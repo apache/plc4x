@@ -74,6 +74,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsRequest");
 
@@ -98,6 +99,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TranslateBrowsePathsToNodeIdsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     if (browsePaths != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : browsePaths) {
-        boolean last = ++i >= browsePaths.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= browsePaths.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -123,6 +125,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

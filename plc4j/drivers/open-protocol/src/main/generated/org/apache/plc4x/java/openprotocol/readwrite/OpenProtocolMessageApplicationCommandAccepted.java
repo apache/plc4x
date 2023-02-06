@@ -70,6 +70,7 @@ public abstract class OpenProtocolMessageApplicationCommandAccepted extends Open
   protected void serializeOpenProtocolMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommandAccepted");
 
@@ -88,6 +89,7 @@ public abstract class OpenProtocolMessageApplicationCommandAccepted extends Open
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageApplicationCommandAccepted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,6 +102,7 @@ public abstract class OpenProtocolMessageApplicationCommandAccepted extends Open
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageApplicationCommandAcceptedBuilder builder = null;

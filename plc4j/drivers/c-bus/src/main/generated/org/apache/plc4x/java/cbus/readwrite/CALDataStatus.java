@@ -76,6 +76,7 @@ public class CALDataStatus extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataStatus");
 
@@ -107,6 +108,7 @@ public class CALDataStatus extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (application)
     lengthInBits += 8;
@@ -118,7 +120,7 @@ public class CALDataStatus extends CALData implements Message {
     if (statusBytes != null) {
       int i = 0;
       for (StatusByte element : statusBytes) {
-        boolean last = ++i >= statusBytes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= statusBytes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -135,6 +137,7 @@ public class CALDataStatus extends CALData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer application =
         readEnumField(

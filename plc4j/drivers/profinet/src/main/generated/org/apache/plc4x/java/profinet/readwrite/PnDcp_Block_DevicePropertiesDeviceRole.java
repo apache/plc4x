@@ -84,6 +84,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceRole");
 
@@ -123,6 +124,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DevicePropertiesDeviceRole _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 20;
@@ -151,6 +153,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
         readReservedField("reserved", readUnsignedLong(readBuffer, 20), (long) 0x000000);

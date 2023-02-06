@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,12 +115,8 @@ func (m *_MediaTransportControlDataSetSelection) GetTypeName() string {
 	return "MediaTransportControlDataSetSelection"
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataSetSelection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataSetSelection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (selectionHi)
 	lengthInBits += 8
@@ -130,15 +127,15 @@ func (m *_MediaTransportControlDataSetSelection) GetLengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataSetSelectionParse(theBytes []byte) (MediaTransportControlDataSetSelection, error) {
-	return MediaTransportControlDataSetSelectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataSetSelectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataSetSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
+func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetSelection"); pullErr != nil {
@@ -176,14 +173,14 @@ func MediaTransportControlDataSetSelectionParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_MediaTransportControlDataSetSelection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -210,7 +207,7 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataSetSelection) isMediaTransportControlDataSetSelection() bool {
@@ -222,7 +219,7 @@ func (m *_MediaTransportControlDataSetSelection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

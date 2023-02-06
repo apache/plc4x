@@ -77,6 +77,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
 
@@ -98,6 +99,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionReadSzlRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (szlId)
     lengthInBits += szlId.getLengthInBits();
@@ -114,6 +116,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlId szlId =
         readSimpleField(

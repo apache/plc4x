@@ -22,6 +22,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -31,13 +32,13 @@ var _ = fmt.Printf
 
 func (d *DefaultPlcWriteRequestBuilder) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcWriteRequestBuilder"); err != nil {
 		return err
 	}
@@ -47,7 +48,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			if err := writeBuffer.PushContext("writer"); err != nil {
 				return err
 			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("writer"); err != nil {
@@ -66,7 +67,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			if err := writeBuffer.PushContext("tagHandler"); err != nil {
 				return err
 			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("tagHandler"); err != nil {
@@ -85,7 +86,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			if err := writeBuffer.PushContext("valueHandler"); err != nil {
 				return err
 			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("valueHandler"); err != nil {
@@ -131,7 +132,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -166,7 +167,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			if err := writeBuffer.PushContext("writeRequestInterceptor"); err != nil {
 				return err
 			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("writeRequestInterceptor"); err != nil {
@@ -187,7 +188,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 
 func (d *DefaultPlcWriteRequestBuilder) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,28 +81,24 @@ func (m *_BACnetLandingDoorStatus) GetTypeName() string {
 	return "BACnetLandingDoorStatus"
 }
 
-func (m *_BACnetLandingDoorStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLandingDoorStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLandingDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (landingDoors)
-	lengthInBits += m.LandingDoors.GetLengthInBits()
+	lengthInBits += m.LandingDoors.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLandingDoorStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLandingDoorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLandingDoorStatusParse(theBytes []byte) (BACnetLandingDoorStatus, error) {
-	return BACnetLandingDoorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLandingDoorStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLandingDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
+func BACnetLandingDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatus"); pullErr != nil {
@@ -114,7 +111,7 @@ func BACnetLandingDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("landingDoors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
 	}
-	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _landingDoorsErr != nil {
 		return nil, errors.Wrap(_landingDoorsErr, "Error parsing 'landingDoors' field of BACnetLandingDoorStatus")
 	}
@@ -134,14 +131,14 @@ func BACnetLandingDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetLandingDoorStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLandingDoorStatus"); pushErr != nil {
@@ -152,7 +149,7 @@ func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("landingDoors"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for landingDoors")
 	}
-	_landingDoorsErr := writeBuffer.WriteSerializable(m.GetLandingDoors())
+	_landingDoorsErr := writeBuffer.WriteSerializable(ctx, m.GetLandingDoors())
 	if popErr := writeBuffer.PopContext("landingDoors"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for landingDoors")
 	}
@@ -175,7 +172,7 @@ func (m *_BACnetLandingDoorStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

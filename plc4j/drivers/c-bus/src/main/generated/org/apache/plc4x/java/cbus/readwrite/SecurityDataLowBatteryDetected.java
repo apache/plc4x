@@ -47,6 +47,7 @@ public class SecurityDataLowBatteryDetected extends SecurityData implements Mess
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataLowBatteryDetected");
 
@@ -62,6 +63,7 @@ public class SecurityDataLowBatteryDetected extends SecurityData implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataLowBatteryDetected _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -72,6 +74,7 @@ public class SecurityDataLowBatteryDetected extends SecurityData implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataLowBatteryDetected");
     // Create the instance

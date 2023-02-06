@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastZoneStatusTemp(structType interface{}) ZoneStatusTemp {
 	return castFunc(structType)
 }
 
-func (m ZoneStatusTemp) GetLengthInBits() uint16 {
+func (m ZoneStatusTemp) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m ZoneStatusTemp) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ZoneStatusTemp) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ZoneStatusTempParse(theBytes []byte) (ZoneStatusTemp, error) {
-	return ZoneStatusTempParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ZoneStatusTempParse(ctx context.Context, theBytes []byte) (ZoneStatusTemp, error) {
+	return ZoneStatusTempParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ZoneStatusTempParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatusTemp, error) {
+func ZoneStatusTempParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatusTemp, error) {
 	val, err := readBuffer.ReadUint8("ZoneStatusTemp", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ZoneStatusTemp")
@@ -126,13 +127,13 @@ func ZoneStatusTempParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatusTemp,
 
 func (e ZoneStatusTemp) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ZoneStatusTemp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ZoneStatusTemp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ZoneStatusTemp", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

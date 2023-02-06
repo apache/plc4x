@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -54,12 +55,11 @@ type _MediaTransportControlData struct {
 
 type _MediaTransportControlDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type MediaTransportControlDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child MediaTransportControlData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MediaTransportControlData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -95,6 +95,8 @@ func (m *_MediaTransportControlData) GetMediaLinkGroup() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlData) GetCommandType() MediaTransportControlCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastMediaTransportControlCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -123,7 +125,7 @@ func (m *_MediaTransportControlData) GetTypeName() string {
 	return "MediaTransportControlData"
 }
 
-func (m *_MediaTransportControlData) GetParentLengthInBits() uint16 {
+func (m *_MediaTransportControlData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -137,15 +139,15 @@ func (m *_MediaTransportControlData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataParse(theBytes []byte) (MediaTransportControlData, error) {
-	return MediaTransportControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlData, error) {
+func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlData"); pullErr != nil {
@@ -163,7 +165,7 @@ func MediaTransportControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (Medi
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MediaTransportControlCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := MediaTransportControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MediaTransportControlData")
 	}
@@ -195,47 +197,47 @@ func MediaTransportControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (Medi
 	var typeSwitchError error
 	switch {
 	case commandType == MediaTransportControlCommandType_STOP: // MediaTransportControlDataStop
-		_childTemp, typeSwitchError = MediaTransportControlDataStopParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataStopParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_PLAY: // MediaTransportControlDataPlay
-		_childTemp, typeSwitchError = MediaTransportControlDataPlayParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataPlayParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_PAUSE_RESUME: // MediaTransportControlDataPauseResume
-		_childTemp, typeSwitchError = MediaTransportControlDataPauseResumeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataPauseResumeParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_SELECT_CATEGORY: // MediaTransportControlDataSetCategory
-		_childTemp, typeSwitchError = MediaTransportControlDataSetCategoryParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataSetCategoryParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_SELECT_SELECTION: // MediaTransportControlDataSetSelection
-		_childTemp, typeSwitchError = MediaTransportControlDataSetSelectionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataSetSelectionParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_SELECT_TRACK: // MediaTransportControlDataSetTrack
-		_childTemp, typeSwitchError = MediaTransportControlDataSetTrackParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataSetTrackParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_SHUFFLE_ON_OFF: // MediaTransportControlDataShuffleOnOff
-		_childTemp, typeSwitchError = MediaTransportControlDataShuffleOnOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_REPEAT_ON_OFF: // MediaTransportControlDataRepeatOnOff
-		_childTemp, typeSwitchError = MediaTransportControlDataRepeatOnOffParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY: // MediaTransportControlDataNextPreviousCategory
-		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousCategoryParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousCategoryParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION: // MediaTransportControlDataNextPreviousSelection
-		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousSelectionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_TRACK: // MediaTransportControlDataNextPreviousTrack
-		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousTrackParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_FAST_FORWARD: // MediaTransportControlDataFastForward
-		_childTemp, typeSwitchError = MediaTransportControlDataFastForwardParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataFastForwardParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_REWIND: // MediaTransportControlDataRewind
-		_childTemp, typeSwitchError = MediaTransportControlDataRewindParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataRewindParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_SOURCE_POWER_CONTROL: // MediaTransportControlDataSourcePowerControl
-		_childTemp, typeSwitchError = MediaTransportControlDataSourcePowerControlParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_TOTAL_TRACKS: // MediaTransportControlDataTotalTracks
-		_childTemp, typeSwitchError = MediaTransportControlDataTotalTracksParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataTotalTracksParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_STATUS_REQUEST: // MediaTransportControlDataStatusRequest
-		_childTemp, typeSwitchError = MediaTransportControlDataStatusRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataStatusRequestParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_ENUMERATE_CATEGORIES_SELECTIONS_TRACKS: // MediaTransportControlDataEnumerateCategoriesSelectionTracks
-		_childTemp, typeSwitchError = MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_ENUMERATION_SIZE: // MediaTransportControlDataEnumerationsSize
-		_childTemp, typeSwitchError = MediaTransportControlDataEnumerationsSizeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx, readBuffer)
 	case commandType == MediaTransportControlCommandType_TRACK_NAME: // MediaTransportControlDataTrackName
-		_childTemp, typeSwitchError = MediaTransportControlDataTrackNameParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = MediaTransportControlDataTrackNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == MediaTransportControlCommandType_SELECTION_NAME: // MediaTransportControlDataSelectionName
-		_childTemp, typeSwitchError = MediaTransportControlDataSelectionNameParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = MediaTransportControlDataSelectionNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == MediaTransportControlCommandType_CATEGORY_NAME: // MediaTransportControlDataCategoryName
-		_childTemp, typeSwitchError = MediaTransportControlDataCategoryNameParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = MediaTransportControlDataCategoryNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -253,7 +255,7 @@ func MediaTransportControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (Medi
 	return _child, nil
 }
 
-func (pm *_MediaTransportControlData) SerializeParent(writeBuffer utils.WriteBuffer, child MediaTransportControlData, serializeChildFunction func() error) error {
+func (pm *_MediaTransportControlData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MediaTransportControlData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -267,7 +269,7 @@ func (pm *_MediaTransportControlData) SerializeParent(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -275,7 +277,7 @@ func (pm *_MediaTransportControlData) SerializeParent(writeBuffer utils.WriteBuf
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -306,7 +308,7 @@ func (m *_MediaTransportControlData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

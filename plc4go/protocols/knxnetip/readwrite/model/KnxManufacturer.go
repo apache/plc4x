@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -8708,19 +8709,19 @@ func CastKnxManufacturer(structType interface{}) KnxManufacturer {
 	return castFunc(structType)
 }
 
-func (m KnxManufacturer) GetLengthInBits() uint16 {
+func (m KnxManufacturer) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m KnxManufacturer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxManufacturerParse(theBytes []byte) (KnxManufacturer, error) {
-	return KnxManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxManufacturerParse(ctx context.Context, theBytes []byte) (KnxManufacturer, error) {
+	return KnxManufacturerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxManufacturerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
+func KnxManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
 	val, err := readBuffer.ReadUint16("KnxManufacturer", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxManufacturer")
@@ -8735,13 +8736,13 @@ func KnxManufacturerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxManufacture
 
 func (e KnxManufacturer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

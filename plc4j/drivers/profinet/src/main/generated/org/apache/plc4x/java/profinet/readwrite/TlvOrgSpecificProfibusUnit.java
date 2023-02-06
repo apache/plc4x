@@ -49,6 +49,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrgSpecificProfibusUnit");
 
@@ -77,6 +78,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     TlvOrgSpecificProfibusUnit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (subType)
     lengthInBits += 8;
@@ -98,6 +100,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvProfibusSubType subType =
         readDiscriminatorField(
@@ -107,9 +110,15 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrgSpecificProfibusUnitBuilder builder = null;
-    if (EvaluationHelper.equals(subType, TlvProfibusSubType.PORT_STATUS)) {
+    if (EvaluationHelper.equals(subType, TlvProfibusSubType.MEASURED_DELAY)) {
+      builder =
+          TlvProfibusSubTypeMeasuredDelay.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(subType, TlvProfibusSubType.PORT_STATUS)) {
       builder =
           TlvProfibusSubTypePortStatus.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(subType, TlvProfibusSubType.MRP_PORT_STATUS)) {
+      builder =
+          TlvProfibusSubTypeMrpPortStatus.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(subType, TlvProfibusSubType.CHASSIS_MAC)) {
       builder =
           TlvProfibusSubTypeChassisMac.staticParseTlvOrgSpecificProfibusUnitBuilder(readBuffer);

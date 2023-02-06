@@ -58,6 +58,7 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataTriggerEvent");
 
@@ -76,6 +77,7 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataTriggerEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (actionSelector)
     lengthInBits += 8;
@@ -89,6 +91,7 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte actionSelector = readSimpleField("actionSelector", readByte(readBuffer, 8));
 

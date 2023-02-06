@@ -87,6 +87,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerOnNetwork");
 
@@ -118,6 +119,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerOnNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recordId)
     lengthInBits += 32;
@@ -135,7 +137,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     if (serverCapabilities != null) {
       int i = 0;
       for (PascalString element : serverCapabilities) {
-        boolean last = ++i >= serverCapabilities.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverCapabilities.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,6 +151,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long recordId = readSimpleField("recordId", readUnsignedLong(readBuffer, 32));
 

@@ -49,6 +49,7 @@ public abstract class COTPParameter implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameter");
 
@@ -76,6 +77,7 @@ public abstract class COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     COTPParameter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (parameterType)
     lengthInBits += 8;
@@ -113,6 +115,7 @@ public abstract class COTPParameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short parameterType = readDiscriminatorField("parameterType", readUnsignedShort(readBuffer, 8));
 

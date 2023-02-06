@@ -116,7 +116,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 				continue
 			}
 			// If the size of the tag is greater than 6, we have to skip the first byte
-			if groupAddressTag.GetTagType().GetLengthInBits() > 6 {
+			if groupAddressTag.GetTagType().GetLengthInBits(context.Background()) > 6 {
 				_, _ = rb.ReadUint8("groupAddress", 8)
 			}
 			elementType := *groupAddressTag.GetTagType()
@@ -143,7 +143,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					plcValue := values2.NewPlcRawByteArray(rb.GetBytes())
 					plcValueList = append(plcValueList, plcValue)
 				} else {
-					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(rb, elementType)
+					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, elementType)
 					if err2 == nil {
 						plcValueList = append(plcValueList, plcValue)
 					} else {

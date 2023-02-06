@@ -49,6 +49,7 @@ public abstract class S7Address implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Address");
 
@@ -70,6 +71,7 @@ public abstract class S7Address implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7Address _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (addressType)
     lengthInBits += 8;
@@ -89,6 +91,7 @@ public abstract class S7Address implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short addressType = readDiscriminatorField("addressType", readUnsignedShort(readBuffer, 8));
 

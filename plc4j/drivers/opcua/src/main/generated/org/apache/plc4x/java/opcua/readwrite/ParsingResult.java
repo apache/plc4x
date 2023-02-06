@@ -87,6 +87,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParsingResult");
 
@@ -118,6 +119,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParsingResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -129,7 +131,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     if (dataStatusCodes != null) {
       int i = 0;
       for (StatusCode element : dataStatusCodes) {
-        boolean last = ++i >= dataStatusCodes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataStatusCodes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,7 +143,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     if (dataDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : dataDiagnosticInfos) {
-        boolean last = ++i >= dataDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -155,6 +157,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(

@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString");
 
@@ -76,6 +77,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterStringValue)
     lengthInBits += characterStringValue.getLengthInBits();
@@ -90,6 +92,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(

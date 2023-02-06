@@ -58,6 +58,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
   protected void serializeAdsDiscoveryBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockRouteName");
 
@@ -76,6 +77,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDiscoveryBlockRouteName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (routeName)
     lengthInBits += routeName.getLengthInBits();
@@ -89,6 +91,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AmsString routeName =
         readSimpleField(

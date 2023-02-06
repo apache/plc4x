@@ -217,10 +217,10 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
 				}
 				// If the size of the tag is greater than 6, we have to skip the first byte
-				if tag.GetTagType().GetLengthInBits() > 6 {
+				if tag.GetTagType().GetLengthInBits(context.Background()) > 6 {
 					_, _ = rb.ReadUint8("tagType", 8)
 				}
-				plcValue, err := driverModel.KnxDatapointParseWithBuffer(rb, *tag.GetTagType())
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *tag.GetTagType())
 				// If any of the values doesn't decode correctly, we can't return any
 				if err != nil {
 					return apiModel.PlcResponseCode_INVALID_DATA, nil
@@ -231,7 +231,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 	}
 
 	// If there is only one address to read, return this directly.
-	// Otherwise return a struct, with the keys being the string representations of the address.
+	// Otherwise, return a struct, with the keys being the string representations of the address.
 	if len(rawAddresses) == 1 {
 		stringAddress := NumericGroupAddressToString(rawAddresses[0], tag)
 		return apiModel.PlcResponseCode_OK, values[stringAddress]

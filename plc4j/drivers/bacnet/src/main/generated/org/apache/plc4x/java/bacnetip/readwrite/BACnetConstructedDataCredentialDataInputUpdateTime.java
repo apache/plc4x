@@ -79,6 +79,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialDataInputUpdateTime");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCredentialDataInputUpdateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (updateTime)
     lengthInBits += updateTime.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp updateTime =
         readSimpleField(

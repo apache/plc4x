@@ -105,6 +105,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRequestKeyUpdate");
 
@@ -141,6 +142,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMRequestKeyUpdate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (set1KeyRevision)
     lengthInBits += 8;
@@ -172,6 +174,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte set1KeyRevision = readSimpleField("set1KeyRevision", readByte(readBuffer, 8));
 

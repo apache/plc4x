@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPriorityValueObjectidentifier) GetTypeName() string {
 	return "BACnetPriorityValueObjectidentifier"
 }
 
-func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectidentifierValue)
-	lengthInBits += m.ObjectidentifierValue.GetLengthInBits()
+	lengthInBits += m.ObjectidentifierValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueObjectidentifierParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {
-	return BACnetPriorityValueObjectidentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueObjectidentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueObjectidentifierParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {
+func BACnetPriorityValueObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueObjectidentifier"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPriorityValueObjectidentifierParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _objectidentifierValueErr != nil {
 		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetPriorityValueObjectidentifier")
 	}
@@ -164,14 +161,14 @@ func BACnetPriorityValueObjectidentifierParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetPriorityValueObjectidentifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
 		}
-		_objectidentifierValueErr := writeBuffer.WriteSerializable(m.GetObjectidentifierValue())
+		_objectidentifierValueErr := writeBuffer.WriteSerializable(ctx, m.GetObjectidentifierValue())
 		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPriorityValueObjectidentifier) isBACnetPriorityValueObjectidentifier() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetPriorityValueObjectidentifier) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

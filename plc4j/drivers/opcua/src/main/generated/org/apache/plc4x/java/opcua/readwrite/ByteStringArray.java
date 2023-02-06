@@ -57,6 +57,7 @@ public class ByteStringArray implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ByteStringArray");
 
@@ -78,6 +79,7 @@ public class ByteStringArray implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ByteStringArray _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (arrayLength)
     lengthInBits += 32;
@@ -101,6 +103,7 @@ public class ByteStringArray implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int arrayLength = readSimpleField("arrayLength", readSignedInt(readBuffer, 32));
 

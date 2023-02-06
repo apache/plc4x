@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -119,31 +120,27 @@ func (m *_TunnelingRequest) GetTypeName() string {
 	return "TunnelingRequest"
 }
 
-func (m *_TunnelingRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TunnelingRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TunnelingRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (tunnelingRequestDataBlock)
-	lengthInBits += m.TunnelingRequestDataBlock.GetLengthInBits()
+	lengthInBits += m.TunnelingRequestDataBlock.GetLengthInBits(ctx)
 
 	// Simple field (cemi)
-	lengthInBits += m.Cemi.GetLengthInBits()
+	lengthInBits += m.Cemi.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_TunnelingRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TunnelingRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TunnelingRequestParse(theBytes []byte, totalLength uint16) (TunnelingRequest, error) {
-	return TunnelingRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+	return TunnelingRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
-func TunnelingRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {
+func TunnelingRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
@@ -156,7 +153,7 @@ func TunnelingRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingRequestDataBlock")
 	}
-	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParseWithBuffer(readBuffer)
+	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParseWithBuffer(ctx, readBuffer)
 	if _tunnelingRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field of TunnelingRequest")
 	}
@@ -169,7 +166,7 @@ func TunnelingRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParseWithBuffer(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParseWithBuffer(ctx, readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx))))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of TunnelingRequest")
 	}
@@ -193,14 +190,14 @@ func TunnelingRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength ui
 }
 
 func (m *_TunnelingRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TunnelingRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -212,7 +209,7 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tunnelingRequestDataBlock")
 		}
-		_tunnelingRequestDataBlockErr := writeBuffer.WriteSerializable(m.GetTunnelingRequestDataBlock())
+		_tunnelingRequestDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetTunnelingRequestDataBlock())
 		if popErr := writeBuffer.PopContext("tunnelingRequestDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tunnelingRequestDataBlock")
 		}
@@ -224,7 +221,7 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
-		_cemiErr := writeBuffer.WriteSerializable(m.GetCemi())
+		_cemiErr := writeBuffer.WriteSerializable(ctx, m.GetCemi())
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for cemi")
 		}
@@ -237,7 +234,7 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -259,7 +256,7 @@ func (m *_TunnelingRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

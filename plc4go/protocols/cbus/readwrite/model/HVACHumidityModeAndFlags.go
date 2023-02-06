@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,34 +112,50 @@ func (m *_HVACHumidityModeAndFlags) GetMode() HVACHumidityModeAndFlagsMode {
 ///////////////////////
 
 func (m *_HVACHumidityModeAndFlags) GetIsAuxLevelUnused() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetAuxiliaryLevel()))
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsAuxLevelUsed() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetAuxiliaryLevel())
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsGuardDisabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetGuard()))
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsGuardEnabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetGuard())
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsSetbackDisabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetSetback()))
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsSetbackEnabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetSetback())
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsLevelHumidity() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(!(m.GetLevel()))
 }
 
 func (m *_HVACHumidityModeAndFlags) GetIsLevelRaw() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(m.GetLevel())
 }
 
@@ -167,11 +184,7 @@ func (m *_HVACHumidityModeAndFlags) GetTypeName() string {
 	return "HVACHumidityModeAndFlags"
 }
 
-func (m *_HVACHumidityModeAndFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACHumidityModeAndFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACHumidityModeAndFlags) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -211,15 +224,15 @@ func (m *_HVACHumidityModeAndFlags) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_HVACHumidityModeAndFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACHumidityModeAndFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACHumidityModeAndFlagsParse(theBytes []byte) (HVACHumidityModeAndFlags, error) {
-	return HVACHumidityModeAndFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACHumidityModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
+func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidityModeAndFlags"); pullErr != nil {
@@ -317,7 +330,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACH
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer)
+	_mode, _modeErr := HVACHumidityModeAndFlagsModeParseWithBuffer(ctx, readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACHumidityModeAndFlags")
 	}
@@ -342,14 +355,14 @@ func HVACHumidityModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACH
 }
 
 func (m *_HVACHumidityModeAndFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACHumidityModeAndFlags"); pushErr != nil {
@@ -379,11 +392,11 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_auxiliaryLevelErr, "Error serializing 'auxiliaryLevel' field")
 	}
 	// Virtual field
-	if _isAuxLevelUnusedErr := writeBuffer.WriteVirtual("isAuxLevelUnused", m.GetIsAuxLevelUnused()); _isAuxLevelUnusedErr != nil {
+	if _isAuxLevelUnusedErr := writeBuffer.WriteVirtual(ctx, "isAuxLevelUnused", m.GetIsAuxLevelUnused()); _isAuxLevelUnusedErr != nil {
 		return errors.Wrap(_isAuxLevelUnusedErr, "Error serializing 'isAuxLevelUnused' field")
 	}
 	// Virtual field
-	if _isAuxLevelUsedErr := writeBuffer.WriteVirtual("isAuxLevelUsed", m.GetIsAuxLevelUsed()); _isAuxLevelUsedErr != nil {
+	if _isAuxLevelUsedErr := writeBuffer.WriteVirtual(ctx, "isAuxLevelUsed", m.GetIsAuxLevelUsed()); _isAuxLevelUsedErr != nil {
 		return errors.Wrap(_isAuxLevelUsedErr, "Error serializing 'isAuxLevelUsed' field")
 	}
 
@@ -394,11 +407,11 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_guardErr, "Error serializing 'guard' field")
 	}
 	// Virtual field
-	if _isGuardDisabledErr := writeBuffer.WriteVirtual("isGuardDisabled", m.GetIsGuardDisabled()); _isGuardDisabledErr != nil {
+	if _isGuardDisabledErr := writeBuffer.WriteVirtual(ctx, "isGuardDisabled", m.GetIsGuardDisabled()); _isGuardDisabledErr != nil {
 		return errors.Wrap(_isGuardDisabledErr, "Error serializing 'isGuardDisabled' field")
 	}
 	// Virtual field
-	if _isGuardEnabledErr := writeBuffer.WriteVirtual("isGuardEnabled", m.GetIsGuardEnabled()); _isGuardEnabledErr != nil {
+	if _isGuardEnabledErr := writeBuffer.WriteVirtual(ctx, "isGuardEnabled", m.GetIsGuardEnabled()); _isGuardEnabledErr != nil {
 		return errors.Wrap(_isGuardEnabledErr, "Error serializing 'isGuardEnabled' field")
 	}
 
@@ -409,11 +422,11 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_setbackErr, "Error serializing 'setback' field")
 	}
 	// Virtual field
-	if _isSetbackDisabledErr := writeBuffer.WriteVirtual("isSetbackDisabled", m.GetIsSetbackDisabled()); _isSetbackDisabledErr != nil {
+	if _isSetbackDisabledErr := writeBuffer.WriteVirtual(ctx, "isSetbackDisabled", m.GetIsSetbackDisabled()); _isSetbackDisabledErr != nil {
 		return errors.Wrap(_isSetbackDisabledErr, "Error serializing 'isSetbackDisabled' field")
 	}
 	// Virtual field
-	if _isSetbackEnabledErr := writeBuffer.WriteVirtual("isSetbackEnabled", m.GetIsSetbackEnabled()); _isSetbackEnabledErr != nil {
+	if _isSetbackEnabledErr := writeBuffer.WriteVirtual(ctx, "isSetbackEnabled", m.GetIsSetbackEnabled()); _isSetbackEnabledErr != nil {
 		return errors.Wrap(_isSetbackEnabledErr, "Error serializing 'isSetbackEnabled' field")
 	}
 
@@ -424,11 +437,11 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.W
 		return errors.Wrap(_levelErr, "Error serializing 'level' field")
 	}
 	// Virtual field
-	if _isLevelHumidityErr := writeBuffer.WriteVirtual("isLevelHumidity", m.GetIsLevelHumidity()); _isLevelHumidityErr != nil {
+	if _isLevelHumidityErr := writeBuffer.WriteVirtual(ctx, "isLevelHumidity", m.GetIsLevelHumidity()); _isLevelHumidityErr != nil {
 		return errors.Wrap(_isLevelHumidityErr, "Error serializing 'isLevelHumidity' field")
 	}
 	// Virtual field
-	if _isLevelRawErr := writeBuffer.WriteVirtual("isLevelRaw", m.GetIsLevelRaw()); _isLevelRawErr != nil {
+	if _isLevelRawErr := writeBuffer.WriteVirtual(ctx, "isLevelRaw", m.GetIsLevelRaw()); _isLevelRawErr != nil {
 		return errors.Wrap(_isLevelRawErr, "Error serializing 'isLevelRaw' field")
 	}
 
@@ -436,7 +449,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.W
 	if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for mode")
 	}
-	_modeErr := writeBuffer.WriteSerializable(m.GetMode())
+	_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
 	if popErr := writeBuffer.PopContext("mode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for mode")
 	}
@@ -459,7 +472,7 @@ func (m *_HVACHumidityModeAndFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

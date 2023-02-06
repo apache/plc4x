@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,12 +118,8 @@ func (m *_CipWriteResponse) GetTypeName() string {
 	return "CipWriteResponse"
 }
 
-func (m *_CipWriteResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CipWriteResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CipWriteResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -136,15 +133,15 @@ func (m *_CipWriteResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipWriteResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CipWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CipWriteResponseParse(theBytes []byte, serviceLen uint16) (CipWriteResponse, error) {
-	return CipWriteResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+	return CipWriteResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
-func CipWriteResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteResponse, error) {
+func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
@@ -202,14 +199,14 @@ func CipWriteResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uin
 }
 
 func (m *_CipWriteResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CipWriteResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CipWriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -252,7 +249,7 @@ func (m *_CipWriteResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipWriteResponse) isCipWriteResponse() bool {
@@ -264,7 +261,7 @@ func (m *_CipWriteResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

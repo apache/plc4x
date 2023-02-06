@@ -79,6 +79,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProportionalConstant");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProportionalConstant _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (proportionalConstant)
     lengthInBits += proportionalConstant.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal proportionalConstant =
         readSimpleField(

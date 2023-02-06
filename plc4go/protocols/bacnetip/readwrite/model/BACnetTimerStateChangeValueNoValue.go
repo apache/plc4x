@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetTypeName() string {
 	return "BACnetTimerStateChangeValueNoValue"
 }
 
-func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (noValue)
-	lengthInBits += m.NoValue.GetLengthInBits()
+	lengthInBits += m.NoValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimerStateChangeValueNoValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
-	return BACnetTimerStateChangeValueNoValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetTimerStateChangeValueNoValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetTimerStateChangeValueNoValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
+func BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueNoValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetTimerStateChangeValueNoValueParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("noValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for noValue")
 	}
-	_noValue, _noValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
+	_noValue, _noValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noValueErr != nil {
 		return nil, errors.Wrap(_noValueErr, "Error parsing 'noValue' field of BACnetTimerStateChangeValueNoValue")
 	}
@@ -164,14 +161,14 @@ func BACnetTimerStateChangeValueNoValueParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("noValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for noValue")
 		}
-		_noValueErr := writeBuffer.WriteSerializable(m.GetNoValue())
+		_noValueErr := writeBuffer.WriteSerializable(ctx, m.GetNoValue())
 		if popErr := writeBuffer.PopContext("noValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for noValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) isBACnetTimerStateChangeValueNoValue() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

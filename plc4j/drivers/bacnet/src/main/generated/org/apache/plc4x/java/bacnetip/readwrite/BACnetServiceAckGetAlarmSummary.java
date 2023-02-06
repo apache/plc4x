@@ -78,6 +78,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckGetAlarmSummary");
 
@@ -106,6 +107,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckGetAlarmSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -125,6 +127,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(

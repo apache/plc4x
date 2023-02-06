@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(st
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBits() uint16 {
+func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(theBytes []byte) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable")
@@ -120,13 +121,13 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWi
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

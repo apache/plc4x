@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -41,9 +43,9 @@ func (m SimulatedParserHelper) Parse(typeName string, arguments []string, io uti
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParseWithBuffer(io, dataType, numberOfValues)
+		return model.DataItemParseWithBuffer(context.Background(), io, dataType, numberOfValues)
 	case "Dummy":
-		return model.DummyParseWithBuffer(io)
+		return model.DummyParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

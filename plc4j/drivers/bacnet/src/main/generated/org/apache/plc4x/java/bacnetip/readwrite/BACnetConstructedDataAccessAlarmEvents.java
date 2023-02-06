@@ -75,6 +75,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessAlarmEvents");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessAlarmEvents _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (accessAlarmEvents != null) {
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessEventTagged> accessAlarmEvents =
         readTerminatedArrayField(

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,40 +138,36 @@ func (m *_BACnetEventParameterChangeOfBitstring) GetTypeName() string {
 	return "BACnetEventParameterChangeOfBitstring"
 }
 
-func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (timeDelay)
-	lengthInBits += m.TimeDelay.GetLengthInBits()
+	lengthInBits += m.TimeDelay.GetLengthInBits(ctx)
 
 	// Simple field (bitmask)
-	lengthInBits += m.Bitmask.GetLengthInBits()
+	lengthInBits += m.Bitmask.GetLengthInBits(ctx)
 
 	// Simple field (listOfBitstringValues)
-	lengthInBits += m.ListOfBitstringValues.GetLengthInBits()
+	lengthInBits += m.ListOfBitstringValues.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfBitstringParse(theBytes []byte) (BACnetEventParameterChangeOfBitstring, error) {
-	return BACnetEventParameterChangeOfBitstringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterChangeOfBitstringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfBitstring, error) {
+func BACnetEventParameterChangeOfBitstringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfBitstring, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfBitstring"); pullErr != nil {
@@ -183,7 +180,7 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -196,7 +193,7 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -209,7 +206,7 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
 	}
-	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
 		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -222,7 +219,7 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("listOfBitstringValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfBitstringValues")
 	}
-	_listOfBitstringValues, _listOfBitstringValuesErr := BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(readBuffer, uint8(uint8(2)))
+	_listOfBitstringValues, _listOfBitstringValuesErr := BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
 	if _listOfBitstringValuesErr != nil {
 		return nil, errors.Wrap(_listOfBitstringValuesErr, "Error parsing 'listOfBitstringValues' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -235,7 +232,7 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -262,14 +259,14 @@ func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetEventParameterChangeOfBitstring) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -281,7 +278,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -293,7 +290,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := writeBuffer.WriteSerializable(m.GetTimeDelay())
+		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -305,7 +302,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitmask")
 		}
-		_bitmaskErr := writeBuffer.WriteSerializable(m.GetBitmask())
+		_bitmaskErr := writeBuffer.WriteSerializable(ctx, m.GetBitmask())
 		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitmask")
 		}
@@ -317,7 +314,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("listOfBitstringValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfBitstringValues")
 		}
-		_listOfBitstringValuesErr := writeBuffer.WriteSerializable(m.GetListOfBitstringValues())
+		_listOfBitstringValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfBitstringValues())
 		if popErr := writeBuffer.PopContext("listOfBitstringValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfBitstringValues")
 		}
@@ -329,7 +326,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -342,7 +339,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterChangeOfBitstring) isBACnetEventParameterChangeOfBitstring() bool {
@@ -354,7 +351,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

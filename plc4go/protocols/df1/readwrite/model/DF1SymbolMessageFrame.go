@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -146,12 +147,8 @@ func (m *_DF1SymbolMessageFrame) GetTypeName() string {
 	return "DF1SymbolMessageFrame"
 }
 
-func (m *_DF1SymbolMessageFrame) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DF1SymbolMessageFrame) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (destinationAddress)
 	lengthInBits += 8
@@ -160,7 +157,7 @@ func (m *_DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint1
 	lengthInBits += 8
 
 	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	lengthInBits += m.Command.GetLengthInBits(ctx)
 
 	// Const Field (messageEnd)
 	lengthInBits += 8
@@ -174,15 +171,15 @@ func (m *_DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DF1SymbolMessageFrame) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DF1SymbolMessageFrameParse(theBytes []byte) (DF1SymbolMessageFrame, error) {
-	return DF1SymbolMessageFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DF1SymbolMessageFrameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DF1SymbolMessageFrameParseWithBuffer(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
+func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
@@ -209,7 +206,7 @@ func DF1SymbolMessageFrameParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbo
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := DF1CommandParseWithBuffer(readBuffer)
+	_command, _commandErr := DF1CommandParseWithBuffer(ctx, readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of DF1SymbolMessageFrame")
 	}
@@ -267,14 +264,14 @@ func DF1SymbolMessageFrameParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbo
 }
 
 func (m *_DF1SymbolMessageFrame) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -300,7 +297,7 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for command")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
+		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for command")
 		}
@@ -337,7 +334,7 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DF1SymbolMessageFrame) isDF1SymbolMessageFrame() bool {
@@ -349,7 +346,7 @@ func (m *_DF1SymbolMessageFrame) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

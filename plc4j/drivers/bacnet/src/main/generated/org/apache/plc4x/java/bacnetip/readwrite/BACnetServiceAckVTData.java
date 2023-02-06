@@ -78,6 +78,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckVTData");
 
@@ -103,6 +104,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckVTData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vtSessionIdentifier)
     lengthInBits += vtSessionIdentifier.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger vtSessionIdentifier =
         readSimpleField(

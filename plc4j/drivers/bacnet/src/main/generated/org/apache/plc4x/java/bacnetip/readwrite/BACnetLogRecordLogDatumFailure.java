@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumFailure");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (failure)
     lengthInBits += failure.getLengthInBits();
@@ -95,6 +97,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed failure =
         readSimpleField(

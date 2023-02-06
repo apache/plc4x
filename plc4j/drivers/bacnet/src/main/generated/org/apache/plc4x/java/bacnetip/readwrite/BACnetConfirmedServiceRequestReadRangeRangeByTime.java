@@ -67,6 +67,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
   protected void serializeBACnetConfirmedServiceRequestReadRangeRangeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
 
@@ -88,6 +89,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestReadRangeRangeByTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceTime)
     lengthInBits += referenceTime.getLengthInBits();
@@ -105,6 +107,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime referenceTime =
         readSimpleField(

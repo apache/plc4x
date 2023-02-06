@@ -48,6 +48,7 @@ public class TriggerControlDataIndicatorKill extends TriggerControlData implemen
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataIndicatorKill");
 
@@ -63,6 +64,7 @@ public class TriggerControlDataIndicatorKill extends TriggerControlData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataIndicatorKill _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -73,6 +75,7 @@ public class TriggerControlDataIndicatorKill extends TriggerControlData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TriggerControlDataIndicatorKill");
     // Create the instance

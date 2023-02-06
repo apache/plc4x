@@ -62,6 +62,7 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandManufacturer");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandManufacturer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (manufacturerName)
     lengthInBits += 64;
@@ -93,6 +95,7 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String manufacturerName = readSimpleField("manufacturerName", readString(readBuffer, 64));
 

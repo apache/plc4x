@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_KnxNetRemoteLogging) GetTypeName() string {
 	return "KnxNetRemoteLogging"
 }
 
-func (m *_KnxNetRemoteLogging) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_KnxNetRemoteLogging) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_KnxNetRemoteLogging) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -120,15 +117,15 @@ func (m *_KnxNetRemoteLogging) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_KnxNetRemoteLogging) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func KnxNetRemoteLoggingParse(theBytes []byte) (KnxNetRemoteLogging, error) {
-	return KnxNetRemoteLoggingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return KnxNetRemoteLoggingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxNetRemoteLoggingParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
+func KnxNetRemoteLoggingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
@@ -158,14 +155,14 @@ func KnxNetRemoteLoggingParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetRemo
 }
 
 func (m *_KnxNetRemoteLogging) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_KnxNetRemoteLogging) isKnxNetRemoteLogging() bool {
@@ -197,7 +194,7 @@ func (m *_KnxNetRemoteLogging) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

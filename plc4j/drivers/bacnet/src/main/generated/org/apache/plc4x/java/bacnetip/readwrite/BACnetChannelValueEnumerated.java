@@ -56,6 +56,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueEnumerated");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(

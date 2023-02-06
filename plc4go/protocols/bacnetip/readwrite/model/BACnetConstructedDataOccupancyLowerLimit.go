@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetOccupancyLowerLimit() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataOccupancyLowerLimit) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetOccupancyLowerLimit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetTypeName() string {
 	return "BACnetConstructedDataOccupancyLowerLimit"
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (occupancyLowerLimit)
-	lengthInBits += m.OccupancyLowerLimit.GetLengthInBits()
+	lengthInBits += m.OccupancyLowerLimit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataOccupancyLowerLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
-	return BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
+func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("occupancyLowerLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimit")
 	}
-	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _occupancyLowerLimitErr != nil {
 		return nil, errors.Wrap(_occupancyLowerLimitErr, "Error parsing 'occupancyLowerLimit' field of BACnetConstructedDataOccupancyLowerLimit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("occupancyLowerLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for occupancyLowerLimit")
 		}
-		_occupancyLowerLimitErr := writeBuffer.WriteSerializable(m.GetOccupancyLowerLimit())
+		_occupancyLowerLimitErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyLowerLimit())
 		if popErr := writeBuffer.PopContext("occupancyLowerLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for occupancyLowerLimit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_occupancyLowerLimitErr, "Error serializing 'occupancyLowerLimit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimit) isBACnetConstructedDataOccupancyLowerLimit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

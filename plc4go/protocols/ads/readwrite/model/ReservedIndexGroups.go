@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -297,19 +298,19 @@ func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
 	return castFunc(structType)
 }
 
-func (m ReservedIndexGroups) GetLengthInBits() uint16 {
+func (m ReservedIndexGroups) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ReservedIndexGroups) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReservedIndexGroupsParse(theBytes []byte) (ReservedIndexGroups, error) {
-	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ReservedIndexGroupsParse(ctx context.Context, theBytes []byte) (ReservedIndexGroups, error) {
+	return ReservedIndexGroupsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
+func ReservedIndexGroupsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
 	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
@@ -324,13 +325,13 @@ func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIn
 
 func (e ReservedIndexGroups) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ReservedIndexGroups) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ReservedIndexGroups) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

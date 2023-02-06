@@ -64,6 +64,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EphemeralKeyType");
 
@@ -85,6 +86,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EphemeralKeyType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (publicKey)
     lengthInBits += publicKey.getLengthInBits();
@@ -101,6 +103,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString publicKey =
         readSimpleField(

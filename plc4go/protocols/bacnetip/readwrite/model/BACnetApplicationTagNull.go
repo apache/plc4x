@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,25 +88,21 @@ func (m *_BACnetApplicationTagNull) GetTypeName() string {
 	return "BACnetApplicationTagNull"
 }
 
-func (m *_BACnetApplicationTagNull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetApplicationTagNull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetApplicationTagNull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetApplicationTagNull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetApplicationTagNull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetApplicationTagNullParse(theBytes []byte) (BACnetApplicationTagNull, error) {
-	return BACnetApplicationTagNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetApplicationTagNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetApplicationTagNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
+func BACnetApplicationTagNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {
@@ -127,14 +124,14 @@ func BACnetApplicationTagNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 }
 
 func (m *_BACnetApplicationTagNull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -147,7 +144,7 @@ func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetApplicationTagNull) isBACnetApplicationTagNull() bool {
@@ -159,7 +156,7 @@ func (m *_BACnetApplicationTagNull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

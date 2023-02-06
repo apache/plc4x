@@ -22,16 +22,17 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/IBM/netaddr"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"net"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/IBM/netaddr"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"

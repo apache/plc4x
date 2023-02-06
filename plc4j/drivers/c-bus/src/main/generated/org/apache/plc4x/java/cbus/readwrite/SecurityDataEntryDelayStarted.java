@@ -47,6 +47,7 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataEntryDelayStarted");
 
@@ -62,6 +63,7 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataEntryDelayStarted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -72,6 +74,7 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataEntryDelayStarted");
     // Create the instance

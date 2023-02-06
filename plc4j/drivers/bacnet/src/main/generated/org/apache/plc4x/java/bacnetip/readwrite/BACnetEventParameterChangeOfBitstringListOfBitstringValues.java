@@ -71,6 +71,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues");
 
@@ -95,6 +96,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetEventParameterChangeOfBitstringListOfBitstringValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -138,6 +140,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(

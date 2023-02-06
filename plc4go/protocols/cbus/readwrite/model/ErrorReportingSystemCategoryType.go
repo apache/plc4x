@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _ErrorReportingSystemCategoryType struct {
 
 type _ErrorReportingSystemCategoryTypeChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetErrorReportingSystemCategoryClass() ErrorReportingSystemCategoryClass
 }
 
 type ErrorReportingSystemCategoryTypeParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ErrorReportingSystemCategoryType, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ErrorReportingSystemCategoryType, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,21 +87,21 @@ func (m *_ErrorReportingSystemCategoryType) GetTypeName() string {
 	return "ErrorReportingSystemCategoryType"
 }
 
-func (m *_ErrorReportingSystemCategoryType) GetParentLengthInBits() uint16 {
+func (m *_ErrorReportingSystemCategoryType) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategoryType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ErrorReportingSystemCategoryType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingSystemCategoryTypeParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
-	return ErrorReportingSystemCategoryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
+	return ErrorReportingSystemCategoryTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
-func ErrorReportingSystemCategoryTypeParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
+func ErrorReportingSystemCategoryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryType"); pullErr != nil {
@@ -121,17 +121,17 @@ func ErrorReportingSystemCategoryTypeParseWithBuffer(readBuffer utils.ReadBuffer
 	var typeSwitchError error
 	switch {
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_INPUT_UNITS: // ErrorReportingSystemCategoryTypeInputUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_SUPPORT_UNITS: // ErrorReportingSystemCategoryTypeSupportUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS: // ErrorReportingSystemCategoryTypeBuildingManagementSystems
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_OUTPUT_UNITS: // ErrorReportingSystemCategoryTypeOutputUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeOutputUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeOutputUnitsParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS: // ErrorReportingSystemCategoryTypeClimateControllers
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	case 0 == 0: // ErrorReportingSystemCategoryTypeReserved
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeReservedParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorReportingSystemCategoryClass=%v]", errorReportingSystemCategoryClass)
 	}
@@ -149,7 +149,7 @@ func ErrorReportingSystemCategoryTypeParseWithBuffer(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (pm *_ErrorReportingSystemCategoryType) SerializeParent(writeBuffer utils.WriteBuffer, child ErrorReportingSystemCategoryType, serializeChildFunction func() error) error {
+func (pm *_ErrorReportingSystemCategoryType) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ErrorReportingSystemCategoryType, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -179,7 +179,7 @@ func (m *_ErrorReportingSystemCategoryType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

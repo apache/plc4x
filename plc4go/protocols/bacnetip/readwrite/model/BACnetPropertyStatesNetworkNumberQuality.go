@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetTypeName() string {
 	return "BACnetPropertyStatesNetworkNumberQuality"
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (networkNumberQuality)
-	lengthInBits += m.NetworkNumberQuality.GetLengthInBits()
+	lengthInBits += m.NetworkNumberQuality.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesNetworkNumberQualityParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
-	return BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
+func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkNumberQuality"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
 	}
-	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkNumberQualityErr != nil {
 		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetPropertyStatesNetworkNumberQuality")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQuality) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesNetworkNumberQuality) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("networkNumberQuality"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkNumberQuality")
 		}
-		_networkNumberQualityErr := writeBuffer.WriteSerializable(m.GetNetworkNumberQuality())
+		_networkNumberQualityErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumberQuality())
 		if popErr := writeBuffer.PopContext("networkNumberQuality"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkNumberQuality")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) isBACnetPropertyStatesNetworkNumberQuality() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

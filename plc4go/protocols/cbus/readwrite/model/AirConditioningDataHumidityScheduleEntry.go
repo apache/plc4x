@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -162,18 +163,14 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetTypeName() string {
 	return "AirConditioningDataHumidityScheduleEntry"
 }
 
-func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
 
 	// Simple field (zoneList)
-	lengthInBits += m.ZoneList.GetLengthInBits()
+	lengthInBits += m.ZoneList.GetLengthInBits(ctx)
 
 	// Simple field (entry)
 	lengthInBits += 8
@@ -182,33 +179,33 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBitsConditional(l
 	lengthInBits += 8
 
 	// Simple field (humidityModeAndFlags)
-	lengthInBits += m.HumidityModeAndFlags.GetLengthInBits()
+	lengthInBits += m.HumidityModeAndFlags.GetLengthInBits(ctx)
 
 	// Simple field (startTime)
-	lengthInBits += m.StartTime.GetLengthInBits()
+	lengthInBits += m.StartTime.GetLengthInBits(ctx)
 
 	// Optional Field (level)
 	if m.Level != nil {
-		lengthInBits += m.Level.GetLengthInBits()
+		lengthInBits += m.Level.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (rawLevel)
 	if m.RawLevel != nil {
-		lengthInBits += m.RawLevel.GetLengthInBits()
+		lengthInBits += m.RawLevel.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataHumidityScheduleEntryParse(theBytes []byte) (AirConditioningDataHumidityScheduleEntry, error) {
-	return AirConditioningDataHumidityScheduleEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AirConditioningDataHumidityScheduleEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
+func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataHumidityScheduleEntry"); pullErr != nil {
@@ -228,7 +225,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataHumidityScheduleEntry")
 	}
@@ -255,7 +252,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("humidityModeAndFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for humidityModeAndFlags")
 	}
-	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(readBuffer)
+	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(ctx, readBuffer)
 	if _humidityModeAndFlagsErr != nil {
 		return nil, errors.Wrap(_humidityModeAndFlagsErr, "Error parsing 'humidityModeAndFlags' field of AirConditioningDataHumidityScheduleEntry")
 	}
@@ -268,7 +265,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("startTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for startTime")
 	}
-	_startTime, _startTimeErr := HVACStartTimeParseWithBuffer(readBuffer)
+	_startTime, _startTimeErr := HVACStartTimeParseWithBuffer(ctx, readBuffer)
 	if _startTimeErr != nil {
 		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field of AirConditioningDataHumidityScheduleEntry")
 	}
@@ -284,7 +281,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 		if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for level")
 		}
-		_val, _err := HVACHumidityParseWithBuffer(readBuffer)
+		_val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -306,7 +303,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 		if pullErr := readBuffer.PullContext("rawLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rawLevel")
 		}
-		_val, _err := HVACRawLevelsParseWithBuffer(readBuffer)
+		_val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -342,14 +339,14 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_AirConditioningDataHumidityScheduleEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -368,7 +365,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneList")
 		}
-		_zoneListErr := writeBuffer.WriteSerializable(m.GetZoneList())
+		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
 		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for zoneList")
 		}
@@ -394,7 +391,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("humidityModeAndFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for humidityModeAndFlags")
 		}
-		_humidityModeAndFlagsErr := writeBuffer.WriteSerializable(m.GetHumidityModeAndFlags())
+		_humidityModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityModeAndFlags())
 		if popErr := writeBuffer.PopContext("humidityModeAndFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for humidityModeAndFlags")
 		}
@@ -406,7 +403,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("startTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for startTime")
 		}
-		_startTimeErr := writeBuffer.WriteSerializable(m.GetStartTime())
+		_startTimeErr := writeBuffer.WriteSerializable(ctx, m.GetStartTime())
 		if popErr := writeBuffer.PopContext("startTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for startTime")
 		}
@@ -421,7 +418,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 				return errors.Wrap(pushErr, "Error pushing for level")
 			}
 			level = m.GetLevel()
-			_levelErr := writeBuffer.WriteSerializable(level)
+			_levelErr := writeBuffer.WriteSerializable(ctx, level)
 			if popErr := writeBuffer.PopContext("level"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for level")
 			}
@@ -437,7 +434,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 				return errors.Wrap(pushErr, "Error pushing for rawLevel")
 			}
 			rawLevel = m.GetRawLevel()
-			_rawLevelErr := writeBuffer.WriteSerializable(rawLevel)
+			_rawLevelErr := writeBuffer.WriteSerializable(ctx, rawLevel)
 			if popErr := writeBuffer.PopContext("rawLevel"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for rawLevel")
 			}
@@ -451,7 +448,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AirConditioningDataHumidityScheduleEntry) isAirConditioningDataHumidityScheduleEntry() bool {
@@ -463,7 +460,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

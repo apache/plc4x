@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) GetTypeName() string {
 	return "BACnetPropertyStatesZoneOccupanyState"
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneOccupanyState)
-	lengthInBits += m.ZoneOccupanyState.GetLengthInBits()
+	lengthInBits += m.ZoneOccupanyState.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesZoneOccupanyStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
-	return BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
+func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesZoneOccupanyState"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("zoneOccupanyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneOccupanyState")
 	}
-	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _zoneOccupanyStateErr != nil {
 		return nil, errors.Wrap(_zoneOccupanyStateErr, "Error parsing 'zoneOccupanyState' field of BACnetPropertyStatesZoneOccupanyState")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("zoneOccupanyState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneOccupanyState")
 		}
-		_zoneOccupanyStateErr := writeBuffer.WriteSerializable(m.GetZoneOccupanyState())
+		_zoneOccupanyStateErr := writeBuffer.WriteSerializable(ctx, m.GetZoneOccupanyState())
 		if popErr := writeBuffer.PopContext("zoneOccupanyState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for zoneOccupanyState")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) isBACnetPropertyStatesZoneOccupanyState() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

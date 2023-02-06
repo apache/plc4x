@@ -115,6 +115,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubGroupDataType");
 
@@ -170,6 +171,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubGroupDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -193,7 +195,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     if (securityKeyServices != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : securityKeyServices) {
-        boolean last = ++i >= securityKeyServices.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= securityKeyServices.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -208,7 +210,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     if (groupProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : groupProperties) {
-        boolean last = ++i >= groupProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= groupProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -222,6 +224,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(

@@ -43,6 +43,7 @@ public class ImageJPG implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ImageJPG");
 
@@ -58,6 +59,7 @@ public class ImageJPG implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ImageJPG _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -72,6 +74,7 @@ public class ImageJPG implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ImageJPG");
     // Create the instance

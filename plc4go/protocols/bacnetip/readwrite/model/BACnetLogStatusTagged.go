@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -82,14 +83,20 @@ func (m *_BACnetLogStatusTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetLogStatusTagged) GetLogDisabled() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetBufferPurged() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetLogInterrupted() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -118,18 +125,14 @@ func (m *_BACnetLogStatusTagged) GetTypeName() string {
 	return "BACnetLogStatusTagged"
 }
 
-func (m *_BACnetLogStatusTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogStatusTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLogStatusTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -140,15 +143,15 @@ func (m *_BACnetLogStatusTagged) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetLogStatusTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogStatusTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
-	return BACnetLogStatusTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetLogStatusTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetLogStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
+func BACnetLogStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogStatusTagged"); pullErr != nil {
@@ -161,7 +164,7 @@ func BACnetLogStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLogStatusTagged")
 	}
@@ -184,7 +187,7 @@ func BACnetLogStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetLogStatusTagged")
 	}
@@ -222,14 +225,14 @@ func BACnetLogStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 }
 
 func (m *_BACnetLogStatusTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogStatusTagged"); pushErr != nil {
@@ -240,7 +243,7 @@ func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -252,7 +255,7 @@ func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -260,15 +263,15 @@ func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _logDisabledErr := writeBuffer.WriteVirtual("logDisabled", m.GetLogDisabled()); _logDisabledErr != nil {
+	if _logDisabledErr := writeBuffer.WriteVirtual(ctx, "logDisabled", m.GetLogDisabled()); _logDisabledErr != nil {
 		return errors.Wrap(_logDisabledErr, "Error serializing 'logDisabled' field")
 	}
 	// Virtual field
-	if _bufferPurgedErr := writeBuffer.WriteVirtual("bufferPurged", m.GetBufferPurged()); _bufferPurgedErr != nil {
+	if _bufferPurgedErr := writeBuffer.WriteVirtual(ctx, "bufferPurged", m.GetBufferPurged()); _bufferPurgedErr != nil {
 		return errors.Wrap(_bufferPurgedErr, "Error serializing 'bufferPurged' field")
 	}
 	// Virtual field
-	if _logInterruptedErr := writeBuffer.WriteVirtual("logInterrupted", m.GetLogInterrupted()); _logInterruptedErr != nil {
+	if _logInterruptedErr := writeBuffer.WriteVirtual(ctx, "logInterrupted", m.GetLogInterrupted()); _logInterruptedErr != nil {
 		return errors.Wrap(_logInterruptedErr, "Error serializing 'logInterrupted' field")
 	}
 
@@ -300,7 +303,7 @@ func (m *_BACnetLogStatusTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

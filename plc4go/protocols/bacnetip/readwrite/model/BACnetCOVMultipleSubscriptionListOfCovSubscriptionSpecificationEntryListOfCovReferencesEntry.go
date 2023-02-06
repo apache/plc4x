@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -95,36 +96,32 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	return "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (monitoredProperty)
-	lengthInBits += m.MonitoredProperty.GetLengthInBits()
+	lengthInBits += m.MonitoredProperty.GetLengthInBits(ctx)
 
 	// Optional Field (covIncrement)
 	if m.CovIncrement != nil {
-		lengthInBits += m.CovIncrement.GetLengthInBits()
+		lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
 	}
 
 	// Simple field (timestamped)
-	lengthInBits += m.Timestamped.GetLengthInBits()
+	lengthInBits += m.Timestamped.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParse(theBytes []byte) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
-	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); pullErr != nil {
@@ -137,7 +134,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	if pullErr := readBuffer.PullContext("monitoredProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredProperty")
 	}
-	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _monitoredPropertyErr != nil {
 		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
@@ -153,7 +150,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -172,7 +169,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	if pullErr := readBuffer.PullContext("timestamped"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamped")
 	}
-	_timestamped, _timestampedErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_timestamped, _timestampedErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _timestampedErr != nil {
 		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
@@ -194,14 +191,14 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); pushErr != nil {
@@ -212,7 +209,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	if pushErr := writeBuffer.PushContext("monitoredProperty"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for monitoredProperty")
 	}
-	_monitoredPropertyErr := writeBuffer.WriteSerializable(m.GetMonitoredProperty())
+	_monitoredPropertyErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredProperty())
 	if popErr := writeBuffer.PopContext("monitoredProperty"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for monitoredProperty")
 	}
@@ -227,7 +224,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
 		covIncrement = m.GetCovIncrement()
-		_covIncrementErr := writeBuffer.WriteSerializable(covIncrement)
+		_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -240,7 +237,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	if pushErr := writeBuffer.PushContext("timestamped"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamped")
 	}
-	_timestampedErr := writeBuffer.WriteSerializable(m.GetTimestamped())
+	_timestampedErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamped())
 	if popErr := writeBuffer.PopContext("timestamped"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamped")
 	}
@@ -263,7 +260,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

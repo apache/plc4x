@@ -73,6 +73,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   @Override
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterSetupCommunication");
 
@@ -100,6 +101,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterSetupCommunication _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -122,6 +124,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);

@@ -79,6 +79,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkPortMaxMaster");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkPortMaxMaster _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxMaster)
     lengthInBits += maxMaster.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxMaster =
         readSimpleField(

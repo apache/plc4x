@@ -79,6 +79,7 @@ public class BACnetConstructedDataTimeOfStrikeCountReset extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeOfStrikeCountReset");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataTimeOfStrikeCountReset extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeOfStrikeCountReset _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeOfStrikeCountReset)
     lengthInBits += timeOfStrikeCountReset.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataTimeOfStrikeCountReset extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime timeOfStrikeCountReset =
         readSimpleField(

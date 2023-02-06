@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPowerMode) GetPowerMode() BACnetApplicationTagBoo
 ///////////////////////
 
 func (m *_BACnetConstructedDataPowerMode) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetPowerMode())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPowerMode) GetTypeName() string {
 	return "BACnetConstructedDataPowerMode"
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPowerMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPowerMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (powerMode)
-	lengthInBits += m.PowerMode.GetLengthInBits()
+	lengthInBits += m.PowerMode.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPowerMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPowerModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPowerMode, error) {
-	return BACnetConstructedDataPowerModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPowerModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPowerModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPowerMode, error) {
+func BACnetConstructedDataPowerModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPowerMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPowerMode"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPowerModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("powerMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for powerMode")
 	}
-	_powerMode, _powerModeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_powerMode, _powerModeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _powerModeErr != nil {
 		return nil, errors.Wrap(_powerModeErr, "Error parsing 'powerMode' field of BACnetConstructedDataPowerMode")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPowerModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataPowerMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("powerMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for powerMode")
 		}
-		_powerModeErr := writeBuffer.WriteSerializable(m.GetPowerMode())
+		_powerModeErr := writeBuffer.WriteSerializable(ctx, m.GetPowerMode())
 		if popErr := writeBuffer.PopContext("powerMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for powerMode")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_powerModeErr, "Error serializing 'powerMode' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPowerMode) isBACnetConstructedDataPowerMode() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPowerMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

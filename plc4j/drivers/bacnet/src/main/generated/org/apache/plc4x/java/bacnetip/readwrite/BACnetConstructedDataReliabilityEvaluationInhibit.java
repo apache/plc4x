@@ -79,6 +79,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataReliabilityEvaluationInhibit");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataReliabilityEvaluationInhibit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reliabilityEvaluationInhibit)
     lengthInBits += reliabilityEvaluationInhibit.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean reliabilityEvaluationInhibit =
         readSimpleField(

@@ -89,6 +89,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
 
@@ -133,6 +134,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionAlarmQueryResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (functionId)
     lengthInBits += 8;
@@ -158,6 +160,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId =
         readConstField(

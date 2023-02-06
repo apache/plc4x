@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDirection");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarDirection)
     lengthInBits += liftCarDirection.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged liftCarDirection =
         readSimpleField(

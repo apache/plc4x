@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_IdentifyReplyCommandDelays) GetTypeName() string {
 	return "IdentifyReplyCommandDelays"
 }
 
-func (m *_IdentifyReplyCommandDelays) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandDelays) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandDelays) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.TerminalLevels) > 0 {
@@ -133,15 +130,15 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandDelays) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandDelays) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandDelaysParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
-	return IdentifyReplyCommandDelaysParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandDelaysParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandDelaysParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {
@@ -180,14 +177,14 @@ func IdentifyReplyCommandDelaysParseWithBuffer(readBuffer utils.ReadBuffer, attr
 }
 
 func (m *_IdentifyReplyCommandDelays) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -213,7 +210,7 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandDelays) isIdentifyReplyCommandDelays() bool {
@@ -225,7 +222,7 @@ func (m *_IdentifyReplyCommandDelays) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

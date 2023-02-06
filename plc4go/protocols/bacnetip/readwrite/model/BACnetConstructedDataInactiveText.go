@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataInactiveText) GetInactiveText() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataInactiveText) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetInactiveText())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataInactiveText) GetTypeName() string {
 	return "BACnetConstructedDataInactiveText"
 }
 
-func (m *_BACnetConstructedDataInactiveText) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataInactiveText) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataInactiveText) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (inactiveText)
-	lengthInBits += m.InactiveText.GetLengthInBits()
+	lengthInBits += m.InactiveText.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInactiveText) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataInactiveText) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataInactiveTextParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
-	return BACnetConstructedDataInactiveTextParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataInactiveTextParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataInactiveTextParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
+func BACnetConstructedDataInactiveTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInactiveText"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataInactiveTextParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("inactiveText"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inactiveText")
 	}
-	_inactiveText, _inactiveTextErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_inactiveText, _inactiveTextErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _inactiveTextErr != nil {
 		return nil, errors.Wrap(_inactiveTextErr, "Error parsing 'inactiveText' field of BACnetConstructedDataInactiveText")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataInactiveTextParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataInactiveText) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("inactiveText"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for inactiveText")
 		}
-		_inactiveTextErr := writeBuffer.WriteSerializable(m.GetInactiveText())
+		_inactiveTextErr := writeBuffer.WriteSerializable(ctx, m.GetInactiveText())
 		if popErr := writeBuffer.PopContext("inactiveText"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for inactiveText")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_inactiveTextErr, "Error serializing 'inactiveText' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataInactiveText) isBACnetConstructedDataInactiveText() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataInactiveText) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

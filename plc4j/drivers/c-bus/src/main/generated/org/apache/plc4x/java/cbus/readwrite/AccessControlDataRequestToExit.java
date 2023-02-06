@@ -48,6 +48,7 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataRequestToExit");
 
@@ -63,6 +64,7 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataRequestToExit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -73,6 +75,7 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataRequestToExit");
     // Create the instance

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAckedTransitions) GetAckedTransitions() BACnetEve
 ///////////////////////
 
 func (m *_BACnetConstructedDataAckedTransitions) GetActualValue() BACnetEventTransitionBitsTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEventTransitionBitsTagged(m.GetAckedTransitions())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAckedTransitions) GetTypeName() string {
 	return "BACnetConstructedDataAckedTransitions"
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ackedTransitions)
-	lengthInBits += m.AckedTransitions.GetLengthInBits()
+	lengthInBits += m.AckedTransitions.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAckedTransitionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
-	return BACnetConstructedDataAckedTransitionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAckedTransitionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAckedTransitionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
+func BACnetConstructedDataAckedTransitionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckedTransitions"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAckedTransitionsParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("ackedTransitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackedTransitions")
 	}
-	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackedTransitionsErr != nil {
 		return nil, errors.Wrap(_ackedTransitionsErr, "Error parsing 'ackedTransitions' field of BACnetConstructedDataAckedTransitions")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAckedTransitionsParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("ackedTransitions"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ackedTransitions")
 		}
-		_ackedTransitionsErr := writeBuffer.WriteSerializable(m.GetAckedTransitions())
+		_ackedTransitionsErr := writeBuffer.WriteSerializable(ctx, m.GetAckedTransitions())
 		if popErr := writeBuffer.PopContext("ackedTransitions"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ackedTransitions")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_ackedTransitionsErr, "Error serializing 'ackedTransitions' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) isBACnetConstructedDataAckedTransitions() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAckedTransitions) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

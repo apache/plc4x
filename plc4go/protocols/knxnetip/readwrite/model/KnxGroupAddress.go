@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _KnxGroupAddress struct {
 
 type _KnxGroupAddressChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetNumLevels() uint8
 }
 
 type KnxGroupAddressParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child KnxGroupAddress, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child KnxGroupAddress, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,21 +87,21 @@ func (m *_KnxGroupAddress) GetTypeName() string {
 	return "KnxGroupAddress"
 }
 
-func (m *_KnxGroupAddress) GetParentLengthInBits() uint16 {
+func (m *_KnxGroupAddress) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_KnxGroupAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_KnxGroupAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func KnxGroupAddressParse(theBytes []byte, numLevels uint8) (KnxGroupAddress, error) {
-	return KnxGroupAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numLevels)
+	return KnxGroupAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
-func KnxGroupAddressParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {
+func KnxGroupAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
@@ -121,11 +121,11 @@ func KnxGroupAddressParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8
 	var typeSwitchError error
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		_childTemp, typeSwitchError = KnxGroupAddressFreeLevelParseWithBuffer(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddressFreeLevelParseWithBuffer(ctx, readBuffer, numLevels)
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		_childTemp, typeSwitchError = KnxGroupAddress2LevelParseWithBuffer(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddress2LevelParseWithBuffer(ctx, readBuffer, numLevels)
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		_childTemp, typeSwitchError = KnxGroupAddress3LevelParseWithBuffer(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddress3LevelParseWithBuffer(ctx, readBuffer, numLevels)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [numLevels=%v]", numLevels)
 	}
@@ -143,7 +143,7 @@ func KnxGroupAddressParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8
 	return _child, nil
 }
 
-func (pm *_KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child KnxGroupAddress, serializeChildFunction func() error) error {
+func (pm *_KnxGroupAddress) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child KnxGroupAddress, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -173,7 +173,7 @@ func (m *_KnxGroupAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,11 +137,7 @@ func (m *_GroupObjectDescriptorRealisationType7) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType7"
 }
 
-func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dataAddress)
@@ -173,15 +170,15 @@ func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func GroupObjectDescriptorRealisationType7Parse(theBytes []byte) (GroupObjectDescriptorRealisationType7, error) {
-	return GroupObjectDescriptorRealisationType7ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return GroupObjectDescriptorRealisationType7ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
+func GroupObjectDescriptorRealisationType7ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType7"); pullErr != nil {
@@ -243,7 +240,7 @@ func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of GroupObjectDescriptorRealisationType7")
 	}
@@ -256,7 +253,7 @@ func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
 	}
-	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(readBuffer)
+	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(ctx, readBuffer)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field of GroupObjectDescriptorRealisationType7")
 	}
@@ -284,14 +281,14 @@ func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_GroupObjectDescriptorRealisationType7) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType7"); pushErr != nil {
@@ -351,7 +348,7 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(writeB
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
-	_priorityErr := writeBuffer.WriteSerializable(m.GetPriority())
+	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priority")
 	}
@@ -363,7 +360,7 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(writeB
 	if pushErr := writeBuffer.PushContext("valueType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueType")
 	}
-	_valueTypeErr := writeBuffer.WriteSerializable(m.GetValueType())
+	_valueTypeErr := writeBuffer.WriteSerializable(ctx, m.GetValueType())
 	if popErr := writeBuffer.PopContext("valueType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueType")
 	}
@@ -386,7 +383,7 @@ func (m *_GroupObjectDescriptorRealisationType7) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

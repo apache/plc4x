@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,15 +136,11 @@ func (m *_LPollData) GetTypeName() string {
 	return "LPollData"
 }
 
-func (m *_LPollData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LPollData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LPollData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.GetLengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.TargetAddress) > 0 {
@@ -159,15 +156,15 @@ func (m *_LPollData) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_LPollData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LPollData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LPollDataParse(theBytes []byte) (LPollData, error) {
-	return LPollDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LPollDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LPollDataParseWithBuffer(readBuffer utils.ReadBuffer) (LPollData, error) {
+func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
@@ -180,7 +177,7 @@ func LPollDataParseWithBuffer(readBuffer utils.ReadBuffer) (LPollData, error) {
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LPollData")
 	}
@@ -236,14 +233,14 @@ func LPollDataParseWithBuffer(readBuffer utils.ReadBuffer) (LPollData, error) {
 }
 
 func (m *_LPollData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LPollData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -255,7 +252,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
-		_sourceAddressErr := writeBuffer.WriteSerializable(m.GetSourceAddress())
+		_sourceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAddress())
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
@@ -297,7 +294,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LPollData) isLPollData() bool {
@@ -309,7 +306,7 @@ func (m *_LPollData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

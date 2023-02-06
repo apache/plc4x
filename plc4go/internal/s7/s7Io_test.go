@@ -20,13 +20,15 @@
 package s7
 
 import (
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestS7MessageBytes(t *testing.T) {
@@ -70,14 +72,14 @@ func TestS7MessageBytes(t *testing.T) {
 								model.NewS7ParameterReadVarResponse(1),
 							),
 						),
-						26,
+						25,
 					),
 				),
 			},
 			wantStringSerialized: `
 ╔═TPKTPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                               ║
-║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                                               ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                               ║
 ║╚═══════════╝╚═════════╝╚═════════╝                                                                               ║
 ║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════╗║
 ║║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════╗║║
@@ -95,7 +97,7 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║╔═payload══════════════════════════════════════════════════════════════════════════════════╗                  ║║║
 ║║║║╔═S7Message══════════════════════════════════════════════════════════════════════════════╗║                  ║║║
 ║║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗║║                  ║║║
-║║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║║║                  ║║║
+║║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║║║                  ║║║
 ║║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝║║                  ║║║
 ║║║║║╔═S7MessageResponseData═══╗╔═parameter═════════════════════════════════════╗            ║║                  ║║║
 ║║║║║║╔═errorClass╗╔═errorCode╗║║╔═S7Parameter═════════════════════════════════╗║            ║║                  ║║║
@@ -117,10 +119,8 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║║║║║                ║║                  ║║║
 ║║║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ║║║║║                ║║                  ║║║
 ║║║║║║║║║║╔═data═══════════════════════════════════════╗╔═padding╗      ║║║║║                ║║                  ║║║
-║║║║║║║║║║║0|01                            '.         '║║╔══════╗║      ║║║║║                ║║                  ║║║
-║║║║║║║║║║╚════════════════════════════════════════════╝║║0x00 0║║      ║║║║║                ║║                  ║║║
-║║║║║║║║║║                                              ║╚══════╝║      ║║║║║                ║║                  ║║║
-║║║║║║║║║║                                              ╚════════╝      ║║║║║                ║║                  ║║║
+║║║║║║║║║║║0|01                            '.         '║║        ║      ║║║║║                ║║                  ║║║
+║║║║║║║║║║╚════════════════════════════════════════════╝╚════════╝      ║║║║║                ║║                  ║║║
 ║║║║║║║║║╚══════════════════════════════════════════════════════════════╝║║║║                ║║                  ║║║
 ║║║║║║║║╚════════════════════════════════════════════════════════════════╝║║║                ║║                  ║║║
 ║║║║║║║╚══════════════════════════════════════════════════════════════════╝║║                ║║                  ║║║
@@ -135,7 +135,7 @@ func TestS7MessageBytes(t *testing.T) {
 			wantStringSerializedCompact: `
 ╔═TPKTPacket═════════════════════════════════════════════════════════════════════════════════════╗
 ║╔═protocolId╗╔═reserved╗╔═len═════╗                                                             ║
-║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                             ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                             ║
 ║╚═══════════╝╚═════════╝╚═════════╝                                                             ║
 ║╔═payload/COTPPacket═══════════════════════════════════════════════════════════════════════════╗║
 ║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗                                              ║║
@@ -150,7 +150,7 @@ func TestS7MessageBytes(t *testing.T) {
 ║║╚═════════════════════════════════════════════════════════════════════════════════════╝       ║║
 ║║╔═payload/S7Message══════════════════════════════════════════════════════════════════════════╗║║
 ║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗    ║║║
-║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║    ║║║
+║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║    ║║║
 ║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝    ║║║
 ║║║╔═S7MessageResponseData═══╗╔═parameter/S7Parameter═══════════════════════════════════╗      ║║║
 ║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse/numItems═══╗║      ║║║
@@ -161,9 +161,9 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗║║║║
 ║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║║║║
 ║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝║║║║
-║║║║╔═dataLength╗╔═data═══════════════════════════════════════╗╔═padding/╗                    ║║║║
-║║║║║ 0x0001 1  ║║0|01                            '.         '║║ 0x00 0  ║                    ║║║║
-║║║║╚═══════════╝╚════════════════════════════════════════════╝╚═════════╝                    ║║║║
+║║║║╔═dataLength╗╔═data═══════════════════════════════════════╗                               ║║║║
+║║║║║ 0x0001 1  ║║0|01                            '.         '║                               ║║║║
+║║║║╚═══════════╝╚════════════════════════════════════════════╝                               ║║║║
 ║║║╚══════════════════════════════════════════════════════════════════════════════════════════╝║║║
 ║║╚════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚══════════════════════════════════════════════════════════════════════════════════════════════╝║
@@ -173,7 +173,7 @@ func TestS7MessageBytes(t *testing.T) {
 <TPKTPacket>
   <protocolId dataType="uint" bitLength="8">3</protocolId>
   <reserved dataType="uint" bitLength="8">0</reserved>
-  <len dataType="uint" bitLength="16">30</len>
+  <len dataType="uint" bitLength="16">29</len>
   <payload>
     <COTPPacket>
       <headerLength dataType="uint" bitLength="8">5</headerLength>
@@ -200,7 +200,7 @@ func TestS7MessageBytes(t *testing.T) {
           <reserved dataType="uint" bitLength="16">0</reserved>
           <tpduReference dataType="uint" bitLength="16">11</tpduReference>
           <parameterLength dataType="uint" bitLength="16">2</parameterLength>
-          <payloadLength dataType="uint" bitLength="16">6</payloadLength>
+          <payloadLength dataType="uint" bitLength="16">5</payloadLength>
           <S7MessageResponseData>
             <errorClass dataType="uint" bitLength="8">0</errorClass>
             <errorCode dataType="uint" bitLength="8">0</errorCode>
@@ -226,9 +226,7 @@ func TestS7MessageBytes(t *testing.T) {
                     </transportSize>
                     <dataLength dataType="uint" bitLength="16">1</dataLength>
                     <data dataType="byte" bitLength="8">0x01</data>
-                    <padding isList="true">
-                      <value dataType="uint" bitLength="8">0</value>
-                    </padding>
+                    <padding isList="true"></padding>
                   </S7VarPayloadDataItem>
                 </items>
               </S7PayloadReadVarResponse>
@@ -243,7 +241,7 @@ func TestS7MessageBytes(t *testing.T) {
 			wantStringJson: `
 {
   "TPKTPacket": {
-    "len": 30,
+    "len": 29,
     "len__plc4x_bitLength": 16,
     "len__plc4x_dataType": "uint",
     "payload": {
@@ -319,13 +317,7 @@ func TestS7MessageBytes(t *testing.T) {
                         "dataLength__plc4x_dataType": "uint",
                         "data__plc4x_bitLength": 8,
                         "data__plc4x_dataType": "byte",
-                        "padding": [
-                          {
-                            "value": 0,
-                            "value__plc4x_bitLength": 8,
-                            "value__plc4x_dataType": "uint"
-                          }
-                        ],
+                        "padding": [],
                         "returnCode": {
                           "DataTransportErrorCode": 255,
                           "DataTransportErrorCode__plc4x_bitLength": 8,
@@ -344,7 +336,7 @@ func TestS7MessageBytes(t *testing.T) {
                 }
               }
             },
-            "payloadLength": 6,
+            "payloadLength": 5,
             "payloadLength__plc4x_bitLength": 16,
             "payloadLength__plc4x_dataType": "uint",
             "protocolId": 50,
@@ -373,9 +365,9 @@ func TestS7MessageBytes(t *testing.T) {
 }
 `,
 			wantDump: `
-00|03 00 00 1e 05 f0 0d c0 01 0c '..........'
-10|32 03 00 00 00 0b 00 02 00 06 '2.........'
-20|00 00 04 01 ff 03 00 01 01 00 '..........'
+00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
+10|32 03 00 00 00 0b 00 02 00 05 '2.........'
+20|00 00 04 01 ff 03 00 01 01    '......... '
 `,
 		},
 		{
@@ -881,7 +873,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Box", func(t *testing.T) {
 				boxWriter := utils.NewWriteBufferBoxBased()
-				if err := tt.args.debuggable.SerializeWithWriteBuffer(boxWriter); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(context.Background(), boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
@@ -891,7 +883,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Compact Box", func(t *testing.T) {
 				boxWriter := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-				if err := tt.args.debuggable.SerializeWithWriteBuffer(boxWriter); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(context.Background(), boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
@@ -901,7 +893,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Xml", func(t *testing.T) {
 				xmlWriteBuffer := utils.NewXmlWriteBuffer()
-				if err := tt.args.debuggable.SerializeWithWriteBuffer(xmlWriteBuffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringXml = strings.Trim(tt.wantStringXml, "\n")
@@ -911,7 +903,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Json", func(t *testing.T) {
 				jsonWriteBuffer := utils.NewJsonWriteBuffer()
-				if err := tt.args.debuggable.SerializeWithWriteBuffer(jsonWriteBuffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(context.Background(), jsonWriteBuffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringJson = strings.Trim(tt.wantStringJson, "\n")
@@ -925,7 +917,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple Binary Serialize", func(t *testing.T) {
 				buffer := utils.NewWriteBufferByteBased()
-				if err := tt.args.debuggable.SerializeWithWriteBuffer(buffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(context.Background(), buffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantDump = strings.Trim(tt.wantDump, "\n")
@@ -936,7 +928,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("xml roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
-				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil {
+				if got, err := model.TPKTPacketParseWithBuffer(context.Background(), readBuffer); err != nil {
 					t.Error(err)
 				} else {
 					assert.Equal(t, tt.args.debuggable, got)
@@ -945,7 +937,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("json roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
-				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+				if got, err := model.TPKTPacketParseWithBuffer(context.Background(), readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
 					if err != nil {
 						t.Error(err)
 					} else {

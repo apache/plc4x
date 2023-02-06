@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -48,7 +49,7 @@ plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_address** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_address** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -103,7 +104,7 @@ if( addressType == 0x10 ) { /* S7AddressAny */
 
   // Simple Field (area)
   plc4c_s7_read_write_memory_area area;
-  _res = plc4c_s7_read_write_memory_area_parse(readBuffer, (void*) &area);
+  _res = plc4c_s7_read_write_memory_area_parse(ctx, readBuffer, (void*) &area);
   if(_res != OK) {
     return _res;
   }
@@ -144,7 +145,7 @@ if( addressType == 0x10 ) { /* S7AddressAny */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_address* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_address* _message) {
   plc4c_return_code _res = OK;
 
   // Discriminator Field (addressType)
@@ -173,7 +174,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
   }
 
   // Simple Field (area)
-  _res = plc4c_s7_read_write_memory_area_serialize(writeBuffer, &_message->s7_address_any_area);
+  _res = plc4c_s7_read_write_memory_area_serialize(ctx, writeBuffer, &_message->s7_address_any_area);
   if(_res != OK) {
     return _res;
   }
@@ -203,11 +204,11 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_address* _message) {
-  return plc4c_s7_read_write_s7_address_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_address* _message) {
+  return plc4c_s7_read_write_s7_address_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_address* _message) {
+uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_address* _message) {
   uint16_t lengthInBits = 0;
 
   // Discriminator Field (addressType)
@@ -230,7 +231,7 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_ad
 
 
   // Simple field (area)
-  lengthInBits += plc4c_s7_read_write_memory_area_length_in_bits(&_message->s7_address_any_area);
+  lengthInBits += plc4c_s7_read_write_memory_area_length_in_bits(ctx, &_message->s7_address_any_area);
 
 
   // Reserved Field (reserved)

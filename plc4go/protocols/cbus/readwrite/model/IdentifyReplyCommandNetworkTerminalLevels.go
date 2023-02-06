@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetTypeName() string {
 	return "IdentifyReplyCommandNetworkTerminalLevels"
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.NetworkTerminalLevels) > 0 {
@@ -122,15 +119,15 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBitsConditional(
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandNetworkTerminalLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
-	return IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
+func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkTerminalLevels"); pullErr != nil {
@@ -161,14 +158,14 @@ func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) isIdentifyReplyCommandNetworkTerminalLevels() bool {
@@ -199,7 +196,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

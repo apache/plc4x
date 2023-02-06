@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetPassengerAlarm() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataPassengerAlarm) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetPassengerAlarm())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetTypeName() string {
 	return "BACnetConstructedDataPassengerAlarm"
 }
 
-func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (passengerAlarm)
-	lengthInBits += m.PassengerAlarm.GetLengthInBits()
+	lengthInBits += m.PassengerAlarm.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPassengerAlarmParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
-	return BACnetConstructedDataPassengerAlarmParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPassengerAlarmParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPassengerAlarmParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
+func BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassengerAlarm"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPassengerAlarmParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("passengerAlarm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for passengerAlarm")
 	}
-	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _passengerAlarmErr != nil {
 		return nil, errors.Wrap(_passengerAlarmErr, "Error parsing 'passengerAlarm' field of BACnetConstructedDataPassengerAlarm")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPassengerAlarmParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataPassengerAlarm) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("passengerAlarm"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for passengerAlarm")
 		}
-		_passengerAlarmErr := writeBuffer.WriteSerializable(m.GetPassengerAlarm())
+		_passengerAlarmErr := writeBuffer.WriteSerializable(ctx, m.GetPassengerAlarm())
 		if popErr := writeBuffer.PopContext("passengerAlarm"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for passengerAlarm")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_passengerAlarmErr, "Error serializing 'passengerAlarm' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPassengerAlarm) isBACnetConstructedDataPassengerAlarm() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPassengerAlarm) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

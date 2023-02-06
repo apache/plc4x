@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,43 +148,39 @@ func (m *_BACnetNotificationParametersFloatingLimit) GetTypeName() string {
 	return "BACnetNotificationParametersFloatingLimit"
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (referenceValue)
-	lengthInBits += m.ReferenceValue.GetLengthInBits()
+	lengthInBits += m.ReferenceValue.GetLengthInBits(ctx)
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.GetLengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
 
 	// Simple field (setPointValue)
-	lengthInBits += m.SetPointValue.GetLengthInBits()
+	lengthInBits += m.SetPointValue.GetLengthInBits(ctx)
 
 	// Simple field (errorLimit)
-	lengthInBits += m.ErrorLimit.GetLengthInBits()
+	lengthInBits += m.ErrorLimit.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersFloatingLimitParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersFloatingLimit, error) {
-	return BACnetNotificationParametersFloatingLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+	return BACnetNotificationParametersFloatingLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersFloatingLimit, error) {
+func BACnetNotificationParametersFloatingLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersFloatingLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersFloatingLimit"); pullErr != nil {
@@ -196,7 +193,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -209,7 +206,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("referenceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceValue")
 	}
-	_referenceValue, _referenceValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_referenceValue, _referenceValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _referenceValueErr != nil {
 		return nil, errors.Wrap(_referenceValueErr, "Error parsing 'referenceValue' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -222,7 +219,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -235,7 +232,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("setPointValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setPointValue")
 	}
-	_setPointValue, _setPointValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_setPointValue, _setPointValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _setPointValueErr != nil {
 		return nil, errors.Wrap(_setPointValueErr, "Error parsing 'setPointValue' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -248,7 +245,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("errorLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorLimit")
 	}
-	_errorLimit, _errorLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
+	_errorLimit, _errorLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
 	if _errorLimitErr != nil {
 		return nil, errors.Wrap(_errorLimitErr, "Error parsing 'errorLimit' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -261,7 +258,7 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersFloatingLimit")
 	}
@@ -292,14 +289,14 @@ func BACnetNotificationParametersFloatingLimitParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetNotificationParametersFloatingLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -311,7 +308,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -323,7 +320,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("referenceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceValue")
 		}
-		_referenceValueErr := writeBuffer.WriteSerializable(m.GetReferenceValue())
+		_referenceValueErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceValue())
 		if popErr := writeBuffer.PopContext("referenceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceValue")
 		}
@@ -335,7 +332,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(m.GetStatusFlags())
+		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -347,7 +344,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("setPointValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setPointValue")
 		}
-		_setPointValueErr := writeBuffer.WriteSerializable(m.GetSetPointValue())
+		_setPointValueErr := writeBuffer.WriteSerializable(ctx, m.GetSetPointValue())
 		if popErr := writeBuffer.PopContext("setPointValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setPointValue")
 		}
@@ -359,7 +356,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("errorLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorLimit")
 		}
-		_errorLimitErr := writeBuffer.WriteSerializable(m.GetErrorLimit())
+		_errorLimitErr := writeBuffer.WriteSerializable(ctx, m.GetErrorLimit())
 		if popErr := writeBuffer.PopContext("errorLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorLimit")
 		}
@@ -371,7 +368,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -384,7 +381,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersFloatingLimit) isBACnetNotificationParametersFloatingLimit() bool {
@@ -396,7 +393,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

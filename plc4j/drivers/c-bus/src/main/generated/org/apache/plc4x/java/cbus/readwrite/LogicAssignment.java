@@ -91,6 +91,7 @@ public class LogicAssignment implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LogicAssignment");
 
@@ -136,6 +137,7 @@ public class LogicAssignment implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LogicAssignment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (greaterOfOrLogic)
     lengthInBits += 1;
@@ -175,6 +177,7 @@ public class LogicAssignment implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean greaterOfOrLogic = readSimpleField("greaterOfOrLogic", readBoolean(readBuffer));
 

@@ -68,6 +68,7 @@ public class S7MessageResponse extends S7Message implements Message {
   @Override
   protected void serializeS7MessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageResponse");
 
@@ -89,6 +90,7 @@ public class S7MessageResponse extends S7Message implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7MessageResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorClass)
     lengthInBits += 8;
@@ -105,6 +107,7 @@ public class S7MessageResponse extends S7Message implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short errorClass = readSimpleField("errorClass", readUnsignedShort(readBuffer, 8));
 

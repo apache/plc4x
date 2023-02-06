@@ -79,6 +79,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetHvacLowerGuardLimit");
 
@@ -107,6 +108,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataSetHvacLowerGuardLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -129,6 +131,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 

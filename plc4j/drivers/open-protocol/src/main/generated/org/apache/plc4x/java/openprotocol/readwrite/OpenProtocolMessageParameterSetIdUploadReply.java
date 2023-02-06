@@ -70,6 +70,7 @@ public abstract class OpenProtocolMessageParameterSetIdUploadReply extends OpenP
   protected void serializeOpenProtocolMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetIdUploadReply");
 
@@ -88,6 +89,7 @@ public abstract class OpenProtocolMessageParameterSetIdUploadReply extends OpenP
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageParameterSetIdUploadReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,6 +102,7 @@ public abstract class OpenProtocolMessageParameterSetIdUploadReply extends OpenP
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageParameterSetIdUploadReplyBuilder builder = null;

@@ -22,6 +22,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -31,17 +32,17 @@ var _ = fmt.Printf
 
 func (d *DefaultPlcReadResponse) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcReadResponse"); err != nil {
 		return err
 	}
-	if err := d.DefaultResponse.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := d.DefaultResponse.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 
@@ -50,7 +51,7 @@ func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(writeBuffer utils.Writ
 			if err := writeBuffer.PushContext("request"); err != nil {
 				return err
 			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("request"); err != nil {
@@ -73,7 +74,7 @@ func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(writeBuffer utils.Writ
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -97,7 +98,7 @@ func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(writeBuffer utils.Writ
 
 func (d *DefaultPlcReadResponse) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

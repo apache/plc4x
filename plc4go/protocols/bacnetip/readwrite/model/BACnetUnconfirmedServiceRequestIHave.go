@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,34 +125,30 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIHave"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (objectName)
-	lengthInBits += m.ObjectName.GetLengthInBits()
+	lengthInBits += m.ObjectName.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestIHaveParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
-	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
+func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
@@ -164,7 +161,7 @@ func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
 	}
@@ -177,7 +174,7 @@ func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
 	}
@@ -190,7 +187,7 @@ func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
-	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestIHave")
 	}
@@ -217,14 +214,14 @@ func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIHave) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -236,7 +233,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(m.GetDeviceIdentifier())
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -248,7 +245,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -260,7 +257,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(writeBu
 		if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectName")
 		}
-		_objectNameErr := writeBuffer.WriteSerializable(m.GetObjectName())
+		_objectNameErr := writeBuffer.WriteSerializable(ctx, m.GetObjectName())
 		if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectName")
 		}
@@ -273,7 +270,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIHave) isBACnetUnconfirmedServiceRequestIHave() bool {
@@ -285,7 +282,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

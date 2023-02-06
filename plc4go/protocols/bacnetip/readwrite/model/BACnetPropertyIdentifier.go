@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -2823,19 +2824,19 @@ func CastBACnetPropertyIdentifier(structType interface{}) BACnetPropertyIdentifi
 	return castFunc(structType)
 }
 
-func (m BACnetPropertyIdentifier) GetLengthInBits() uint16 {
+func (m BACnetPropertyIdentifier) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m BACnetPropertyIdentifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetPropertyIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyIdentifierParse(theBytes []byte) (BACnetPropertyIdentifier, error) {
-	return BACnetPropertyIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetPropertyIdentifierParse(ctx context.Context, theBytes []byte) (BACnetPropertyIdentifier, error) {
+	return BACnetPropertyIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetPropertyIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
+func BACnetPropertyIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
 	val, err := readBuffer.ReadUint32("BACnetPropertyIdentifier", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
@@ -2850,13 +2851,13 @@ func BACnetPropertyIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 
 func (e BACnetPropertyIdentifier) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetPropertyIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetPropertyIdentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("BACnetPropertyIdentifier", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -51,6 +51,7 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
   protected void serializeConnectionRequestInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequestInformationDeviceManagement");
 
@@ -66,6 +67,7 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionRequestInformationDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -76,6 +78,7 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionRequestInformationDeviceManagement");
     // Create the instance

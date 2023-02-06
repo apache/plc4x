@@ -136,6 +136,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProgramDiagnosticDataType");
 
@@ -200,6 +201,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ProgramDiagnosticDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (createSessionId)
     lengthInBits += createSessionId.getLengthInBits();
@@ -226,7 +228,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     if (lastMethodInputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodInputArguments) {
-        boolean last = ++i >= lastMethodInputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -238,7 +240,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     if (lastMethodOutputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodOutputArguments) {
-        boolean last = ++i >= lastMethodOutputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -258,6 +260,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId createSessionId =
         readSimpleField(

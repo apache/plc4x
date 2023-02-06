@@ -20,6 +20,8 @@
 package knxnetip
 
 import (
+	"context"
+
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -37,7 +39,7 @@ func NewValueDecoder(rb utils.ReadBuffer) ValueDecoder {
 
 func (m ValueDecoder) Decode(typeName string) api.PlcValue {
 	datatype, _ := driverModel.KnxDatapointTypeByName(typeName)
-	plcValue, err := driverModel.KnxDatapointParseWithBuffer(m.rb, datatype)
+	plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), m.rb, datatype)
 	if err != nil {
 		return nil
 	}

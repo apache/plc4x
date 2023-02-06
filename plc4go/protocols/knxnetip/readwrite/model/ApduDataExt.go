@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _ApduDataExt struct {
 
 type _ApduDataExtChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetExtApciType() uint8
 }
 
 type ApduDataExtParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ApduDataExt, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduDataExt, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_ApduDataExt) GetTypeName() string {
 	return "ApduDataExt"
 }
 
-func (m *_ApduDataExt) GetParentLengthInBits() uint16 {
+func (m *_ApduDataExt) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (extApciType)
 	lengthInBits += 6
@@ -98,15 +98,15 @@ func (m *_ApduDataExt) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataExt) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExt) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtParse(theBytes []byte, length uint8) (ApduDataExt, error) {
-	return ApduDataExtParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, error) {
+func ApduDataExtParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExt"); pullErr != nil {
@@ -132,87 +132,87 @@ func ApduDataExtParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (Apdu
 	var typeSwitchError error
 	switch {
 	case extApciType == 0x00: // ApduDataExtOpenRoutingTableRequest
-		_childTemp, typeSwitchError = ApduDataExtOpenRoutingTableRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtOpenRoutingTableRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x01: // ApduDataExtReadRoutingTableRequest
-		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x02: // ApduDataExtReadRoutingTableResponse
-		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x03: // ApduDataExtWriteRoutingTableRequest
-		_childTemp, typeSwitchError = ApduDataExtWriteRoutingTableRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtWriteRoutingTableRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x08: // ApduDataExtReadRouterMemoryRequest
-		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x09: // ApduDataExtReadRouterMemoryResponse
-		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x0A: // ApduDataExtWriteRouterMemoryRequest
-		_childTemp, typeSwitchError = ApduDataExtWriteRouterMemoryRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtWriteRouterMemoryRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x0D: // ApduDataExtReadRouterStatusRequest
-		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x0E: // ApduDataExtReadRouterStatusResponse
-		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x0F: // ApduDataExtWriteRouterStatusRequest
-		_childTemp, typeSwitchError = ApduDataExtWriteRouterStatusRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtWriteRouterStatusRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x10: // ApduDataExtMemoryBitWrite
-		_childTemp, typeSwitchError = ApduDataExtMemoryBitWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtMemoryBitWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x11: // ApduDataExtAuthorizeRequest
-		_childTemp, typeSwitchError = ApduDataExtAuthorizeRequestParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtAuthorizeRequestParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x12: // ApduDataExtAuthorizeResponse
-		_childTemp, typeSwitchError = ApduDataExtAuthorizeResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtAuthorizeResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x13: // ApduDataExtKeyWrite
-		_childTemp, typeSwitchError = ApduDataExtKeyWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtKeyWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x14: // ApduDataExtKeyResponse
-		_childTemp, typeSwitchError = ApduDataExtKeyResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtKeyResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x15: // ApduDataExtPropertyValueRead
-		_childTemp, typeSwitchError = ApduDataExtPropertyValueReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtPropertyValueReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x16: // ApduDataExtPropertyValueResponse
-		_childTemp, typeSwitchError = ApduDataExtPropertyValueResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtPropertyValueResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x17: // ApduDataExtPropertyValueWrite
-		_childTemp, typeSwitchError = ApduDataExtPropertyValueWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtPropertyValueWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x18: // ApduDataExtPropertyDescriptionRead
-		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x19: // ApduDataExtPropertyDescriptionResponse
-		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x1A: // ApduDataExtNetworkParameterRead
-		_childTemp, typeSwitchError = ApduDataExtNetworkParameterReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtNetworkParameterReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x1B: // ApduDataExtNetworkParameterResponse
-		_childTemp, typeSwitchError = ApduDataExtNetworkParameterResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtNetworkParameterResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x1C: // ApduDataExtIndividualAddressSerialNumberRead
-		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x1D: // ApduDataExtIndividualAddressSerialNumberResponse
-		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x1E: // ApduDataExtIndividualAddressSerialNumberWrite
-		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x20: // ApduDataExtDomainAddressWrite
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x21: // ApduDataExtDomainAddressRead
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x22: // ApduDataExtDomainAddressResponse
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x23: // ApduDataExtDomainAddressSelectiveRead
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressSelectiveReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x24: // ApduDataExtNetworkParameterWrite
-		_childTemp, typeSwitchError = ApduDataExtNetworkParameterWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtNetworkParameterWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x25: // ApduDataExtLinkRead
-		_childTemp, typeSwitchError = ApduDataExtLinkReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtLinkReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x26: // ApduDataExtLinkResponse
-		_childTemp, typeSwitchError = ApduDataExtLinkResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtLinkResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x27: // ApduDataExtLinkWrite
-		_childTemp, typeSwitchError = ApduDataExtLinkWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtLinkWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x28: // ApduDataExtGroupPropertyValueRead
-		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x29: // ApduDataExtGroupPropertyValueResponse
-		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x2A: // ApduDataExtGroupPropertyValueWrite
-		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x2B: // ApduDataExtGroupPropertyValueInfoReport
-		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueInfoReportParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueInfoReportParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x2C: // ApduDataExtDomainAddressSerialNumberRead
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x2D: // ApduDataExtDomainAddressSerialNumberResponse
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberResponseParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberResponseParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x2E: // ApduDataExtDomainAddressSerialNumberWrite
-		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParseWithBuffer(ctx, readBuffer, length)
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
-		_childTemp, typeSwitchError = ApduDataExtFileStreamInfoReportParseWithBuffer(readBuffer, length)
+		_childTemp, typeSwitchError = ApduDataExtFileStreamInfoReportParseWithBuffer(ctx, readBuffer, length)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [extApciType=%v]", extApciType)
 	}
@@ -230,7 +230,7 @@ func ApduDataExtParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (Apdu
 	return _child, nil
 }
 
-func (pm *_ApduDataExt) SerializeParent(writeBuffer utils.WriteBuffer, child ApduDataExt, serializeChildFunction func() error) error {
+func (pm *_ApduDataExt) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ApduDataExt, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -278,7 +278,7 @@ func (m *_ApduDataExt) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

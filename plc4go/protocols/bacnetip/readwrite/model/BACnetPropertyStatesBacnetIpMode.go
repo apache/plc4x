@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetTypeName() string {
 	return "BACnetPropertyStatesBacnetIpMode"
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (bacnetIpMode)
-	lengthInBits += m.BacnetIpMode.GetLengthInBits()
+	lengthInBits += m.BacnetIpMode.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesBacnetIpModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
-	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesBacnetIpModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+func BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBacnetIpMode"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesBacnetIpModeParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
 	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _bacnetIpModeErr != nil {
 		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesBacnetIpModeParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("bacnetIpMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bacnetIpMode")
 		}
-		_bacnetIpModeErr := writeBuffer.WriteSerializable(m.GetBacnetIpMode())
+		_bacnetIpModeErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIpMode())
 		if popErr := writeBuffer.PopContext("bacnetIpMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bacnetIpMode")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) isBACnetPropertyStatesBacnetIpMode() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesBacnetIpMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetIpv6DefaultGateway() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPv6DefaultGateway) GetActualValue() BACnetApplicationTagOctetString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagOctetString(m.GetIpv6DefaultGateway())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetTypeName() string {
 	return "BACnetConstructedDataIPv6DefaultGateway"
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6DefaultGateway)
-	lengthInBits += m.Ipv6DefaultGateway.GetLengthInBits()
+	lengthInBits += m.Ipv6DefaultGateway.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPv6DefaultGatewayParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
-	return BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
+func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DefaultGateway"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("ipv6DefaultGateway"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DefaultGateway")
 	}
-	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6DefaultGatewayErr != nil {
 		return nil, errors.Wrap(_ipv6DefaultGatewayErr, "Error parsing 'ipv6DefaultGateway' field of BACnetConstructedDataIPv6DefaultGateway")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataIPv6DefaultGateway) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("ipv6DefaultGateway"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6DefaultGateway")
 		}
-		_ipv6DefaultGatewayErr := writeBuffer.WriteSerializable(m.GetIpv6DefaultGateway())
+		_ipv6DefaultGatewayErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6DefaultGateway())
 		if popErr := writeBuffer.PopContext("ipv6DefaultGateway"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6DefaultGateway")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_ipv6DefaultGatewayErr, "Error serializing 'ipv6DefaultGateway' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPv6DefaultGateway) isBACnetConstructedDataIPv6DefaultGateway() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

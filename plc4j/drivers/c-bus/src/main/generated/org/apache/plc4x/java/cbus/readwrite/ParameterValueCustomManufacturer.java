@@ -62,6 +62,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueCustomManufacturer");
 
@@ -80,6 +81,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueCustomManufacturer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -93,6 +95,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CustomManufacturer value =
         readSimpleField(

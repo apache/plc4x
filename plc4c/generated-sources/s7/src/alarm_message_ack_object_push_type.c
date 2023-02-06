@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -33,7 +34,7 @@ uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_ACK_OBJECT_PUSH_TYPE_VARIABLE_SPEC() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_ack_object_push_type** _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_ack_object_push_type** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -64,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(p
 
   // Simple Field (syntaxId)
   plc4c_s7_read_write_syntax_id_type syntaxId;
-  _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
+  _res = plc4c_s7_read_write_syntax_id_type_parse(ctx, readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
@@ -88,7 +89,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(p
 
   // Simple Field (ackStateGoing)
   plc4c_s7_read_write_state* ackStateGoing;
-  _res = plc4c_s7_read_write_state_parse(readBuffer, (void*) &ackStateGoing);
+  _res = plc4c_s7_read_write_state_parse(ctx, readBuffer, (void*) &ackStateGoing);
   if(_res != OK) {
     return _res;
   }
@@ -96,7 +97,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(p
 
   // Simple Field (ackStateComing)
   plc4c_s7_read_write_state* ackStateComing;
-  _res = plc4c_s7_read_write_state_parse(readBuffer, (void*) &ackStateComing);
+  _res = plc4c_s7_read_write_state_parse(ctx, readBuffer, (void*) &ackStateComing);
   if(_res != OK) {
     return _res;
   }
@@ -105,7 +106,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_parse(p
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (variableSpec)
@@ -118,7 +119,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_seriali
   }
 
   // Simple Field (syntaxId)
-  _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->syntax_id);
+  _res = plc4c_s7_read_write_syntax_id_type_serialize(ctx, writeBuffer, &_message->syntax_id);
   if(_res != OK) {
     return _res;
   }
@@ -136,13 +137,13 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_seriali
   }
 
   // Simple Field (ackStateGoing)
-  _res = plc4c_s7_read_write_state_serialize(writeBuffer, _message->ack_state_going);
+  _res = plc4c_s7_read_write_state_serialize(ctx, writeBuffer, _message->ack_state_going);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (ackStateComing)
-  _res = plc4c_s7_read_write_state_serialize(writeBuffer, _message->ack_state_coming);
+  _res = plc4c_s7_read_write_state_serialize(ctx, writeBuffer, _message->ack_state_coming);
   if(_res != OK) {
     return _res;
   }
@@ -150,11 +151,11 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_object_push_type_seriali
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bytes(plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
-  return plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
+  return plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
+uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_ack_object_push_type* _message) {
   uint16_t lengthInBits = 0;
 
   // Const Field (variableSpec)
@@ -164,7 +165,7 @@ uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(p
   lengthInBits += 8;
 
   // Simple field (syntaxId)
-  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->syntax_id);
+  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(ctx, &_message->syntax_id);
 
   // Simple field (numberOfValues)
   lengthInBits += 8;
@@ -173,10 +174,10 @@ uint16_t plc4c_s7_read_write_alarm_message_ack_object_push_type_length_in_bits(p
   lengthInBits += 32;
 
   // Simple field (ackStateGoing)
-  lengthInBits += plc4c_s7_read_write_state_length_in_bits(_message->ack_state_going);
+  lengthInBits += plc4c_s7_read_write_state_length_in_bits(ctx, _message->ack_state_going);
 
   // Simple field (ackStateComing)
-  lengthInBits += plc4c_s7_read_write_state_length_in_bits(_message->ack_state_coming);
+  lengthInBits += plc4c_s7_read_write_state_length_in_bits(ctx, _message->ack_state_coming);
 
   return lengthInBits;
 }

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMinimumOutput) GetMinimumOutput() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataMinimumOutput) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetMinimumOutput())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMinimumOutput) GetTypeName() string {
 	return "BACnetConstructedDataMinimumOutput"
 }
 
-func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (minimumOutput)
-	lengthInBits += m.MinimumOutput.GetLengthInBits()
+	lengthInBits += m.MinimumOutput.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMinimumOutputParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
-	return BACnetConstructedDataMinimumOutputParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMinimumOutputParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMinimumOutputParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
+func BACnetConstructedDataMinimumOutputParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOutput"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMinimumOutputParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("minimumOutput"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumOutput")
 	}
-	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _minimumOutputErr != nil {
 		return nil, errors.Wrap(_minimumOutputErr, "Error parsing 'minimumOutput' field of BACnetConstructedDataMinimumOutput")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMinimumOutputParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataMinimumOutput) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("minimumOutput"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumOutput")
 		}
-		_minimumOutputErr := writeBuffer.WriteSerializable(m.GetMinimumOutput())
+		_minimumOutputErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumOutput())
 		if popErr := writeBuffer.PopContext("minimumOutput"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumOutput")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_minimumOutputErr, "Error serializing 'minimumOutput' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMinimumOutput) isBACnetConstructedDataMinimumOutput() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMinimumOutput) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

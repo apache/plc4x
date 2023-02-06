@@ -60,6 +60,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
 
@@ -75,6 +76,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -85,6 +87,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     // Create the instance

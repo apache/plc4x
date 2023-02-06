@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetChangeOfStateTime() BACnetD
 ///////////////////////
 
 func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetChangeOfStateTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetTypeName() string {
 	return "BACnetConstructedDataChangeOfStateTime"
 }
 
-func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (changeOfStateTime)
-	lengthInBits += m.ChangeOfStateTime.GetLengthInBits()
+	lengthInBits += m.ChangeOfStateTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataChangeOfStateTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
-	return BACnetConstructedDataChangeOfStateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataChangeOfStateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
+func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("changeOfStateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeOfStateTime")
 	}
-	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _changeOfStateTimeErr != nil {
 		return nil, errors.Wrap(_changeOfStateTimeErr, "Error parsing 'changeOfStateTime' field of BACnetConstructedDataChangeOfStateTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataChangeOfStateTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("changeOfStateTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changeOfStateTime")
 		}
-		_changeOfStateTimeErr := writeBuffer.WriteSerializable(m.GetChangeOfStateTime())
+		_changeOfStateTimeErr := writeBuffer.WriteSerializable(ctx, m.GetChangeOfStateTime())
 		if popErr := writeBuffer.PopContext("changeOfStateTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changeOfStateTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(write
 			return errors.Wrap(_changeOfStateTimeErr, "Error serializing 'changeOfStateTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataChangeOfStateTime) isBACnetConstructedDataChangeOfStateTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataChangeOfStateTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -518,19 +519,19 @@ func CastDeviceDescriptor(structType interface{}) DeviceDescriptor {
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptor) GetLengthInBits() uint16 {
+func (m DeviceDescriptor) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m DeviceDescriptor) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DeviceDescriptor) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceDescriptorParse(theBytes []byte) (DeviceDescriptor, error) {
-	return DeviceDescriptorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DeviceDescriptorParse(ctx context.Context, theBytes []byte) (DeviceDescriptor, error) {
+	return DeviceDescriptorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DeviceDescriptorParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
+func DeviceDescriptorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
@@ -545,13 +546,13 @@ func DeviceDescriptorParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescrip
 
 func (e DeviceDescriptor) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DeviceDescriptor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DeviceDescriptor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -72,6 +72,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObject");
 
@@ -94,6 +95,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestCreateObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectSpecifier)
     lengthInBits += objectSpecifier.getLengthInBits();
@@ -113,6 +115,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier =
         readSimpleField(

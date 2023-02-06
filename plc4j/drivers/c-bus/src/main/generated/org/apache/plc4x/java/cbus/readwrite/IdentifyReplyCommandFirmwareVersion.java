@@ -62,6 +62,7 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandFirmwareVersion");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandFirmwareVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (firmwareVersion)
     lengthInBits += 64;
@@ -93,6 +95,7 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String firmwareVersion = readSimpleField("firmwareVersion", readString(readBuffer, 64));
 

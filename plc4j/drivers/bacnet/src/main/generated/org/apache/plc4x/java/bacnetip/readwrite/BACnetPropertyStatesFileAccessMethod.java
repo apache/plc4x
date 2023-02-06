@@ -56,6 +56,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesFileAccessMethod");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesFileAccessMethod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileAccessMethod)
     lengthInBits += fileAccessMethod.getLengthInBits();
@@ -88,6 +90,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFileAccessMethodTagged fileAccessMethod =
         readSimpleField(

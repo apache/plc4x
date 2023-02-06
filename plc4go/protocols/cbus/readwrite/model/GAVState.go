@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastGAVState(structType interface{}) GAVState {
 	return castFunc(structType)
 }
 
-func (m GAVState) GetLengthInBits() uint16 {
+func (m GAVState) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m GAVState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m GAVState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func GAVStateParse(theBytes []byte) (GAVState, error) {
-	return GAVStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func GAVStateParse(ctx context.Context, theBytes []byte) (GAVState, error) {
+	return GAVStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func GAVStateParseWithBuffer(readBuffer utils.ReadBuffer) (GAVState, error) {
+func GAVStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GAVState, error) {
 	val, err := readBuffer.ReadUint8("GAVState", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading GAVState")
@@ -126,13 +127,13 @@ func GAVStateParseWithBuffer(readBuffer utils.ReadBuffer) (GAVState, error) {
 
 func (e GAVState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e GAVState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e GAVState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

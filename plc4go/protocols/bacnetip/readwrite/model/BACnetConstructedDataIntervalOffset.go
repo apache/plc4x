@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIntervalOffset) GetIntervalOffset() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataIntervalOffset) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetIntervalOffset())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIntervalOffset) GetTypeName() string {
 	return "BACnetConstructedDataIntervalOffset"
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (intervalOffset)
-	lengthInBits += m.IntervalOffset.GetLengthInBits()
+	lengthInBits += m.IntervalOffset.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIntervalOffsetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
-	return BACnetConstructedDataIntervalOffsetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIntervalOffsetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIntervalOffsetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
+func BACnetConstructedDataIntervalOffsetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntervalOffset"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIntervalOffsetParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("intervalOffset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for intervalOffset")
 	}
-	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _intervalOffsetErr != nil {
 		return nil, errors.Wrap(_intervalOffsetErr, "Error parsing 'intervalOffset' field of BACnetConstructedDataIntervalOffset")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIntervalOffsetParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("intervalOffset"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for intervalOffset")
 		}
-		_intervalOffsetErr := writeBuffer.WriteSerializable(m.GetIntervalOffset())
+		_intervalOffsetErr := writeBuffer.WriteSerializable(ctx, m.GetIntervalOffset())
 		if popErr := writeBuffer.PopContext("intervalOffset"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for intervalOffset")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_intervalOffsetErr, "Error serializing 'intervalOffset' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) isBACnetConstructedDataIntervalOffset() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIntervalOffset) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

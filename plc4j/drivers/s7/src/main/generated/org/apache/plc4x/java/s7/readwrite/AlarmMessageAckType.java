@@ -64,6 +64,7 @@ public class AlarmMessageAckType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AlarmMessageAckType");
 
@@ -88,6 +89,7 @@ public class AlarmMessageAckType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AlarmMessageAckType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (functionId)
     lengthInBits += 8;
@@ -99,7 +101,7 @@ public class AlarmMessageAckType implements Message {
     if (messageObjects != null) {
       int i = 0;
       for (AlarmMessageObjectAckType element : messageObjects) {
-        boolean last = ++i >= messageObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= messageObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -118,6 +120,7 @@ public class AlarmMessageAckType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 

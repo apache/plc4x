@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetDeployedProfileLocati
 ///////////////////////
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetDeployedProfileLocation())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetTypeName() string {
 	return "BACnetConstructedDataDeployedProfileLocation"
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (deployedProfileLocation)
-	lengthInBits += m.DeployedProfileLocation.GetLengthInBits()
+	lengthInBits += m.DeployedProfileLocation.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDeployedProfileLocationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
-	return BACnetConstructedDataDeployedProfileLocationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDeployedProfileLocationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeployedProfileLocation"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("deployedProfileLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deployedProfileLocation")
 	}
-	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _deployedProfileLocationErr != nil {
 		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field of BACnetConstructedDataDeployedProfileLocation")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("deployedProfileLocation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deployedProfileLocation")
 		}
-		_deployedProfileLocationErr := writeBuffer.WriteSerializable(m.GetDeployedProfileLocation())
+		_deployedProfileLocationErr := writeBuffer.WriteSerializable(ctx, m.GetDeployedProfileLocation())
 		if popErr := writeBuffer.PopContext("deployedProfileLocation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deployedProfileLocation")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 			return errors.Wrap(_deployedProfileLocationErr, "Error serializing 'deployedProfileLocation' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) isBACnetConstructedDataDeployedProfileLocation() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -145,6 +147,8 @@ func (m *_NPDU) GetApdu() APDU {
 ///////////////////////
 
 func (m *_NPDU) GetDestinationLengthAddon() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	destinationNetworkAddress := m.DestinationNetworkAddress
 	_ = destinationNetworkAddress
 	destinationLength := m.DestinationLength
@@ -163,6 +167,8 @@ func (m *_NPDU) GetDestinationLengthAddon() uint16 {
 }
 
 func (m *_NPDU) GetSourceLengthAddon() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	destinationNetworkAddress := m.DestinationNetworkAddress
 	_ = destinationNetworkAddress
 	destinationLength := m.DestinationLength
@@ -181,6 +187,8 @@ func (m *_NPDU) GetSourceLengthAddon() uint16 {
 }
 
 func (m *_NPDU) GetPayloadSubtraction() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	destinationNetworkAddress := m.DestinationNetworkAddress
 	_ = destinationNetworkAddress
 	destinationLength := m.DestinationLength
@@ -223,18 +231,14 @@ func (m *_NPDU) GetTypeName() string {
 	return "NPDU"
 }
 
-func (m *_NPDU) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_NPDU) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (protocolVersionNumber)
 	lengthInBits += 8
 
 	// Simple field (control)
-	lengthInBits += m.Control.GetLengthInBits()
+	lengthInBits += m.Control.GetLengthInBits(ctx)
 
 	// Optional Field (destinationNetworkAddress)
 	if m.DestinationNetworkAddress != nil {
@@ -279,26 +283,26 @@ func (m *_NPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (nlm)
 	if m.Nlm != nil {
-		lengthInBits += m.Nlm.GetLengthInBits()
+		lengthInBits += m.Nlm.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (apdu)
 	if m.Apdu != nil {
-		lengthInBits += m.Apdu.GetLengthInBits()
+		lengthInBits += m.Apdu.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_NPDU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NPDU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NPDUParse(theBytes []byte, npduLength uint16) (NPDU, error) {
-	return NPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes), npduLength)
+	return NPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), npduLength)
 }
 
-func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
+func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
@@ -318,7 +322,7 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 	if pullErr := readBuffer.PullContext("control"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for control")
 	}
-	_control, _controlErr := NPDUControlParseWithBuffer(readBuffer)
+	_control, _controlErr := NPDUControlParseWithBuffer(ctx, readBuffer)
 	if _controlErr != nil {
 		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of NPDU")
 	}
@@ -358,12 +362,16 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 		destinationAddress = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+		_numItems := uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field of NPDU")
 			}
-			destinationAddress[curItem] = _item
+			destinationAddress[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
@@ -406,12 +414,16 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 		sourceAddress = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+		_numItems := uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field of NPDU")
 			}
-			sourceAddress[curItem] = _item
+			sourceAddress[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("sourceAddress", utils.WithRenderAsList(true)); closeErr != nil {
@@ -445,7 +457,7 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for nlm")
 		}
-		_val, _err := NLMParseWithBuffer(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
+		_val, _err := NLMParseWithBuffer(ctx, readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -467,7 +479,7 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for apdu")
 		}
-		_val, _err := APDUParseWithBuffer(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
+		_val, _err := APDUParseWithBuffer(ctx, readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -509,14 +521,14 @@ func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, 
 }
 
 func (m *_NPDU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDU"); pushErr != nil {
@@ -534,7 +546,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("control"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for control")
 	}
-	_controlErr := writeBuffer.WriteSerializable(m.GetControl())
+	_controlErr := writeBuffer.WriteSerializable(ctx, m.GetControl())
 	if popErr := writeBuffer.PopContext("control"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for control")
 	}
@@ -566,7 +578,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for destinationAddress")
 	}
-	for _, _element := range m.GetDestinationAddress() {
+	for _curItem, _element := range m.GetDestinationAddress() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
@@ -576,7 +589,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for destinationAddress")
 	}
 	// Virtual field
-	if _destinationLengthAddonErr := writeBuffer.WriteVirtual("destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
+	if _destinationLengthAddonErr := writeBuffer.WriteVirtual(ctx, "destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
 		return errors.Wrap(_destinationLengthAddonErr, "Error serializing 'destinationLengthAddon' field")
 	}
 
@@ -604,7 +617,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 	}
-	for _, _element := range m.GetSourceAddress() {
+	for _curItem, _element := range m.GetSourceAddress() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
@@ -614,7 +628,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for sourceAddress")
 	}
 	// Virtual field
-	if _sourceLengthAddonErr := writeBuffer.WriteVirtual("sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
+	if _sourceLengthAddonErr := writeBuffer.WriteVirtual(ctx, "sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
 		return errors.Wrap(_sourceLengthAddonErr, "Error serializing 'sourceLengthAddon' field")
 	}
 
@@ -628,7 +642,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _payloadSubtractionErr := writeBuffer.WriteVirtual("payloadSubtraction", m.GetPayloadSubtraction()); _payloadSubtractionErr != nil {
+	if _payloadSubtractionErr := writeBuffer.WriteVirtual(ctx, "payloadSubtraction", m.GetPayloadSubtraction()); _payloadSubtractionErr != nil {
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}
 
@@ -639,7 +653,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for nlm")
 		}
 		nlm = m.GetNlm()
-		_nlmErr := writeBuffer.WriteSerializable(nlm)
+		_nlmErr := writeBuffer.WriteSerializable(ctx, nlm)
 		if popErr := writeBuffer.PopContext("nlm"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nlm")
 		}
@@ -655,7 +669,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
 		apdu = m.GetApdu()
-		_apduErr := writeBuffer.WriteSerializable(apdu)
+		_apduErr := writeBuffer.WriteSerializable(ctx, apdu)
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apdu")
 		}
@@ -689,7 +703,7 @@ func (m *_NPDU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

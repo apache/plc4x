@@ -64,6 +64,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenNetworkPayload");
 
@@ -93,6 +94,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenNetworkPayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (request)
     lengthInBits += 8;
@@ -112,6 +114,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NMTStateRequest request =
         readEnumField(

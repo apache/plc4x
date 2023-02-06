@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastBACnetLimitEnable(structType interface{}) BACnetLimitEnable {
 	return castFunc(structType)
 }
 
-func (m BACnetLimitEnable) GetLengthInBits() uint16 {
+func (m BACnetLimitEnable) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetLimitEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLimitEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLimitEnableParse(theBytes []byte) (BACnetLimitEnable, error) {
-	return BACnetLimitEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLimitEnableParse(ctx context.Context, theBytes []byte) (BACnetLimitEnable, error) {
+	return BACnetLimitEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLimitEnableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
+func BACnetLimitEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
 	val, err := readBuffer.ReadUint8("BACnetLimitEnable", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")
@@ -114,13 +115,13 @@ func BACnetLimitEnableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLimitE
 
 func (e BACnetLimitEnable) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLimitEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLimitEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLimitEnable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

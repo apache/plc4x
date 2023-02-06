@@ -58,6 +58,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataPoolsSpasPondsFountainsControl");
 
@@ -79,6 +80,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataPoolsSpasPondsFountainsControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (poolsSpaPondsFountainsData)
     lengthInBits += poolsSpaPondsFountainsData.getLengthInBits();
@@ -92,6 +94,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData poolsSpaPondsFountainsData =
         readSimpleField(

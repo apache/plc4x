@@ -71,6 +71,7 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteSingleCoilRequest");
 
@@ -92,6 +93,7 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUWriteSingleCoilRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 16;
@@ -108,6 +110,7 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 

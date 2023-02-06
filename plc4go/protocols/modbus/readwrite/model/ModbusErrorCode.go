@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,19 +136,19 @@ func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
 	return castFunc(structType)
 }
 
-func (m ModbusErrorCode) GetLengthInBits() uint16 {
+func (m ModbusErrorCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ModbusErrorCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ModbusErrorCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusErrorCodeParse(theBytes []byte) (ModbusErrorCode, error) {
-	return ModbusErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ModbusErrorCodeParse(ctx context.Context, theBytes []byte) (ModbusErrorCode, error) {
+	return ModbusErrorCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ModbusErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
+func ModbusErrorCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
 	val, err := readBuffer.ReadUint8("ModbusErrorCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusErrorCode")
@@ -162,13 +163,13 @@ func ModbusErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusErrorCod
 
 func (e ModbusErrorCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ModbusErrorCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ModbusErrorCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

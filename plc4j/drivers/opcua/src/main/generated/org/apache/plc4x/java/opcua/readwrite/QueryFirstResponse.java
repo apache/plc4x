@@ -115,6 +115,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryFirstResponse");
 
@@ -158,6 +159,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryFirstResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -169,7 +171,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (queryDataSets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : queryDataSets) {
-        boolean last = ++i >= queryDataSets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= queryDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -184,7 +186,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (parsingResults != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : parsingResults) {
-        boolean last = ++i >= parsingResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= parsingResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -196,7 +198,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -213,6 +215,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(

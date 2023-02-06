@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,33 +109,31 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetTypeName() string {
 	return "IdentifyReplyCommandLogicalAssignment"
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.LogicAssigment) > 0 {
-		for i, element := range m.LogicAssigment {
-			last := i == len(m.LogicAssigment)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.LogicAssigment {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.LogicAssigment), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandLogicalAssignmentParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
-	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
@@ -153,12 +153,16 @@ func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer utils.ReadB
 		logicAssigment = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-			_item, _err := LogicAssignmentParseWithBuffer(readBuffer)
+		_numItems := uint16(numBytes)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := LogicAssignmentParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'logicAssigment' field of IdentifyReplyCommandLogicalAssignment")
 			}
-			logicAssigment[curItem] = _item.(LogicAssignment)
+			logicAssigment[_curItem] = _item.(LogicAssignment)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("logicAssigment", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,14 +185,14 @@ func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -200,8 +204,11 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("logicAssigment", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for logicAssigment")
 		}
-		for _, _element := range m.GetLogicAssigment() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetLogicAssigment() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLogicAssigment()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'logicAssigment' field")
 			}
@@ -215,7 +222,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) isIdentifyReplyCommandLogicalAssignment() bool {
@@ -227,7 +234,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

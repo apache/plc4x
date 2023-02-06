@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -77,6 +78,8 @@ func (m *_BACnetTagPayloadCharacterString) GetValue() string {
 ///////////////////////
 
 func (m *_BACnetTagPayloadCharacterString) GetActualLengthInBit() uint16 {
+	ctx := context.Background()
+	_ = ctx
 	return uint16(uint16(uint16(m.ActualLength)*uint16(uint16(8))) - uint16(uint16(8)))
 }
 
@@ -105,11 +108,7 @@ func (m *_BACnetTagPayloadCharacterString) GetTypeName() string {
 	return "BACnetTagPayloadCharacterString"
 }
 
-func (m *_BACnetTagPayloadCharacterString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadCharacterString) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (encoding)
@@ -123,15 +122,15 @@ func (m *_BACnetTagPayloadCharacterString) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadCharacterString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadCharacterStringParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
-	return BACnetTagPayloadCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength)
+	return BACnetTagPayloadCharacterStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
-func BACnetTagPayloadCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
+func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadCharacterString"); pullErr != nil {
@@ -144,7 +143,7 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for encoding")
 	}
-	_encoding, _encodingErr := BACnetCharacterEncodingParseWithBuffer(readBuffer)
+	_encoding, _encodingErr := BACnetCharacterEncodingParseWithBuffer(ctx, readBuffer)
 	if _encodingErr != nil {
 		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of BACnetTagPayloadCharacterString")
 	}
@@ -178,14 +177,14 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetTagPayloadCharacterString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadCharacterString"); pushErr != nil {
@@ -196,7 +195,7 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(writeBuffer 
 	if pushErr := writeBuffer.PushContext("encoding"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for encoding")
 	}
-	_encodingErr := writeBuffer.WriteSerializable(m.GetEncoding())
+	_encodingErr := writeBuffer.WriteSerializable(ctx, m.GetEncoding())
 	if popErr := writeBuffer.PopContext("encoding"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for encoding")
 	}
@@ -204,7 +203,7 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(writeBuffer 
 		return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
 	}
 	// Virtual field
-	if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.GetActualLengthInBit()); _actualLengthInBitErr != nil {
+	if _actualLengthInBitErr := writeBuffer.WriteVirtual(ctx, "actualLengthInBit", m.GetActualLengthInBit()); _actualLengthInBitErr != nil {
 		return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 	}
 
@@ -240,7 +239,7 @@ func (m *_BACnetTagPayloadCharacterString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

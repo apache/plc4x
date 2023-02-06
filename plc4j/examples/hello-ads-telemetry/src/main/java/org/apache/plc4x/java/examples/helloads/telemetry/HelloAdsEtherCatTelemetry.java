@@ -20,6 +20,7 @@ package org.apache.plc4x.java.examples.helloads.telemetry;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
@@ -32,131 +33,85 @@ import java.util.Map;
 
 // Extracted from https://infosys.beckhoff.com/index.php?content=../content/1031/devicemanager/262982923.html
 
-enum EtherCatConstant {
-    DeviceType(0x10000000, PlcValueType.UDINT),
-    ManufacturerDeviceName(0x10080000, PlcValueType.STRING),
-    HardwareVersion(0x10090000, PlcValueType.UINT),
-    SoftwareVersion(0x100A0000, PlcValueType.STRING),
-    IdentityObjectNum(0x10180000, PlcValueType.USINT),
-    IdentityObjectVendorId(0x10180001, PlcValueType.UDINT),
-    IdentityObjectProductCode(0x10180002, PlcValueType.UDINT),
-    IdentityObjectRevisionNumber(0x10180003, PlcValueType.UDINT),
-    IdentityObjectSerialNumber(0x10180004, PlcValueType.UDINT),
-    ConfigurationDataNum(0x80000000, PlcValueType.USINT), // 0x8xxx0000 xxx = device index (starting with 0)
-    ConfigurationDataAddress(0x80000001, PlcValueType.UINT),
-    ConfigurationDataType(0x80000002, PlcValueType.STRING), // Not sure ...
-    ConfigurationDataName(0x80000003, PlcValueType.STRING),
-    ConfigurationDataDeviceType(0x80000004, PlcValueType.UDINT),
-    ConfigurationDataVendorId(0x80000005, PlcValueType.UDINT),
-    ConfigurationDataProductCode(0x80000006, PlcValueType.UDINT),
-    ConfigurationDataRevisionNumber(0x80000007, PlcValueType.UDINT),
-    ConfigurationDataSerialNumber(0x80000008, PlcValueType.UDINT),
-    ConfigurationDataMailboxOutSize(0x80000021, PlcValueType.UINT),
-    ConfigurationDataMailboxInSize(0x80000022, PlcValueType.UINT),
-    ConfigurationDataLinkStatus(0x80000023, PlcValueType.USINT),
-    ConfigurationDataLinkPreset(0x80000024, PlcValueType.USINT),
-    ConfigurationDataFlags(0x80000025, PlcValueType.UINT),
-    StateMachineNum(0xA0000000, PlcValueType.USINT),      // 0xAxxx0000 xxx = device index (starting with 0)
-    StateMachineAlStatus(0xA0000001, PlcValueType.UINT),
-    StateMachineAlControl(0xA0000002, PlcValueType.UINT),
-    StateMachineLastAlStatusCode(0xA0000003, PlcValueType.UINT),
-    StateMachineLinkConnectionStatus(0xA0000004, PlcValueType.USINT),
-    StateMachineLinkControl(0xA0000005, PlcValueType.USINT),
-    StateMachineFixedAddressPort0(0xA0000006, PlcValueType.UINT),
-    StateMachineFixedAddressPort1(0xA0000007, PlcValueType.UINT),
-    StateMachineFixedAddressPort2(0xA0000008, PlcValueType.UINT),
-    StateMachineFixedAddressPort3(0xA0000009, PlcValueType.UINT),
-    StateMachineCrcErrorCountPort0(0xA000000A, PlcValueType.UDINT),
-    StateMachineCrcErrorCountPort1(0xA000000B, PlcValueType.UDINT),
-    StateMachineCrcErrorCountPort2(0xA000000C, PlcValueType.UDINT),
-    StateMachineCrcErrorCountPort3(0xA000000D, PlcValueType.UDINT),
-    StateMachineCyclicWcErrorCount(0xA000000E, PlcValueType.UDINT),
-    StateMachineSlaveNotPresentCount(0xA000000F, PlcValueType.UDINT),
-    StateMachineAbnormalStateChangeCount(0xA0000010, PlcValueType.UDINT),
-    //StateMachineDisableAutomaticLinkControl(0xA0000011, PlcValueType.BOOL),
-    //ScanSlavesNum(0xF002000, PlcValueType.),
-    //ScanSlavesScanCommand(0xF002001, PlcValueType.),
-    ScanSlavesScanStatus(0xF002002, PlcValueType.USINT),
-    //ScanSlavesScanReply(0xF002003, PlcValueType.),
-    ConfiguredSlavesNum(0xF0200000, PlcValueType.USINT), // Get the EtherCAT address by looping through the modules
-//    FrameStatisticsNum(0xF1200000, PlcValueType.);
-    FrameStatisticsCyclicLostFramesCount(0xF1200001, PlcValueType.UDINT),
-    FrameStatisticsAcyclicLostFramesCount(0xF1200002, PlcValueType.UDINT);
-    //DiagnosticNum(0xF2000000, PlcValueType.),
-    //DiagnosticResetDiagnosticCounters(0xF2000001, PlcValueType.);
-
-    private static final Map<Integer, EtherCatConstant> map;
-    static {
-        map = new HashMap<>();
-        for (EtherCatConstant value : EtherCatConstant.values()) {
-            map.put(value.offset, value);
-        }
-    }
-
-    final int offset;
-    final PlcValueType plcValueType;
-    EtherCatConstant(int offset, PlcValueType plcValueType) {
-        this.offset = offset;
-        this.plcValueType = plcValueType;
-    }
-
-    public static EtherCatConstant enumForValue(int offset) {
-        return map.get(offset);
-    }
-
-}
 public class HelloAdsEtherCatTelemetry {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloAdsTelemetry.class);
 
     private static final int AoEGroupIndex = 0x0000F302;
 
-    protected void outputEtherCatData(String localIp, String remoteIp, String remoteAmdNetId) {
+    protected void outputEtherCatData(String remoteIp, String localAmsNetId, String remoteAmdNetId) {
+        Map<Integer, EtherCatDevice> devices = new HashMap<>();
         // The AmsNetId of the PLC usually is {ip}.1.1 and that of the EtherCAT master is {ip}.3.1
         // The port number equals the EtherCAT address. For the EtherCAT master, this port is 0xFFFF = 65535
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection(String.format("ads:tcp://%s?targetAmsNetId=%s.3.1&targetAmsPort=65535&sourceAmsNetId=%s.1.1&sourceAmsPort=65534&load-symbol-and-data-type-tables=false", remoteIp, remoteIp, localIp))) {
-            String manufacturerDeviceName = connection.readRequestBuilder().addTagAddress("manufacturerDeviceName", getAddress(EtherCatConstant.ManufacturerDeviceName)).build().execute().get().getString("manufacturerDeviceName");
-            int hardwareVersion = connection.readRequestBuilder().addTagAddress("hardwareVersion", getAddress(EtherCatConstant.HardwareVersion)).build().execute().get().getInteger("hardwareVersion");
-            String softwareVersion = connection.readRequestBuilder().addTagAddress("softwareVersion", getAddress(EtherCatConstant.SoftwareVersion)).build().execute().get().getString("softwareVersion");
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection(String.format("ads:tcp://%s?targetAmsNetId=%s&targetAmsPort=65535&sourceAmsNetId=%s&sourceAmsPort=65534&load-symbol-and-data-type-tables=false", remoteIp, remoteAmdNetId, localAmsNetId))) {
+            String manufacturerDeviceName = connection.readRequestBuilder().addTagAddress("manufacturerDeviceName", getAddress(EtherCatMasterConstants.ManufacturerDeviceName)).build().execute().get().getString("manufacturerDeviceName");
+            int hardwareVersion = connection.readRequestBuilder().addTagAddress("hardwareVersion", getAddress(EtherCatMasterConstants.HardwareVersion)).build().execute().get().getInteger("hardwareVersion");
+            String softwareVersion = connection.readRequestBuilder().addTagAddress("softwareVersion", getAddress(EtherCatMasterConstants.SoftwareVersion)).build().execute().get().getString("softwareVersion");
             logger.info("Found Device: {} Hardware Version {}, Software Version {}", manufacturerDeviceName, hardwareVersion, softwareVersion);
 
             logger.info("Identity Object:");
-            outputEtherCatSection(connection, EtherCatConstant.IdentityObjectNum.offset, EtherCatConstant.IdentityObjectNum.offset);
+            outputEtherCatSection(connection, EtherCatMasterConstants.IdentityObjectNum.offset, EtherCatMasterConstants.IdentityObjectNum.offset);
 
             // Load the number of EtherCAT slaves:
             int numSlaves = connection.readRequestBuilder().addTagAddress("numberOfSlaves", "0x0000F302/0xF0200000:USINT").build().execute().get().getInteger("numberOfSlaves");
 
             // Load the number of slaves and their etherCatAddresses
             // NOTE: We need to do this without using multi-item-requests as it seems that this part of the system doesn't support this.
-            Map<Integer, Integer> etherCatAddresses = new HashMap<>();
             for(int i = 0; i < numSlaves; i++) {
                 logger.info("Slave {}", i);
-                int etherCatAddressOffset = EtherCatConstant.ConfiguredSlavesNum.offset | (i + 1);
-                int configDataOffset = EtherCatConstant.ConfigurationDataNum.offset | (i << 16);
-                int stateMachineOffset = EtherCatConstant.StateMachineNum.offset | (i << 16);
+                int etherCatAddressOffset = EtherCatMasterConstants.ConfiguredSlavesNum.offset | (i + 1);
+                int configDataOffset = EtherCatMasterConstants.ConfigurationDataNum.offset | (i << 16);
+                int stateMachineOffset = EtherCatMasterConstants.StateMachineNum.offset | (i << 16);
 
                 String etherCatAddressAddress = String.format("0x%08X/0x%08X:%s", AoEGroupIndex, etherCatAddressOffset, PlcValueType.UINT.name());
                 int etherCatAddress = connection.readRequestBuilder().addTagAddress("etherCatAddress", etherCatAddressAddress).build().execute().get().getInteger("etherCatAddress");
                 logger.info(" - EtherCat Address: {}", etherCatAddress);
 
                 logger.info(" - Configuration Data:");
-                outputEtherCatSection(connection, configDataOffset, EtherCatConstant.ConfigurationDataNum.offset);
-                logger.info(" - State Machine Data");
-                outputEtherCatSection(connection, stateMachineOffset, EtherCatConstant.StateMachineNum.offset);
-            }
+                EtherCatDevice device = outputEtherCatSection(connection, configDataOffset, EtherCatMasterConstants.ConfigurationDataNum.offset);
+                //logger.info(" - State Machine Data");
+                //outputEtherCatSection(connection, stateMachineOffset, EtherCatConstant.StateMachineNum.offset);
+                devices.put(i, device);
 
+                //String manufacturerDeviceName = connection.readRequestBuilder().addTagAddress("lalala", getAddress(EtherCatConstant.ManufacturerDeviceName)).build().execute().get().getString("manufacturerDeviceName");
+
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    } 
+
+        logger.info("Loading EtherCAT device information:");
+        for (Map.Entry<Integer, EtherCatDevice> device : devices.entrySet()) {
+            int deviceIndex = device.getKey();
+            EtherCatDevice etherCatDevice = device.getValue();
+            logger.info(" - Connecting with device {} on EtherCAT address {}", deviceIndex, 1001);
+            try (PlcConnection etherCatConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(String.format("ads:tcp://%s?targetAmsNetId=%s&targetAmsPort=%d&sourceAmsNetId=%s&sourceAmsPort=65534&load-symbol-and-data-type-tables=false", remoteIp, remoteAmdNetId, etherCatDevice.getEtherCatAddress(), localAmsNetId))) {
+                String etherCatAddressAddress = String.format("0x%08X/0x%08X:%s", AoEGroupIndex, 0x60000001, PlcValueType.BOOL.name());
+                PlcReadRequest build = etherCatConnection.readRequestBuilder()
+                    .addTagAddress("Channel 1", etherCatAddressAddress)
+                    .build();
+                PlcReadResponse plcReadResponse = build.execute().get();
+                System.out.println(plcReadResponse);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     
-    protected void outputEtherCatSection(PlcConnection connection, int baseOffset, int baseTypeOffset) throws Exception {
+    protected EtherCatDevice outputEtherCatSection(PlcConnection connection, int baseOffset, int baseTypeOffset) throws Exception {
         String sectionNumAddress = String.format("0x%08X/0x%08X:%s", AoEGroupIndex, baseOffset, PlcValueType.USINT.name());
+
+        int etherCatAddress = 0;
+        String deviceName = null;
+        int vendorId = 0;
+        int productCode = 0;
+        int revisionNumber = 0;
+
         int identityObjectNum = connection.readRequestBuilder().addTagAddress("num", sectionNumAddress).build().execute().get().getInteger("num");
         for (int i = 1; i < identityObjectNum; i++) {
             int offset = baseOffset | i;
             int typeOffset = baseTypeOffset | i;
-            EtherCatConstant etherCatConstantAddress = EtherCatConstant.enumForValue(typeOffset);
+            EtherCatMasterConstants etherCatConstantAddress = EtherCatMasterConstants.enumForValue(typeOffset);
             PlcValueType etherCatConstantType = (etherCatConstantAddress != null) ? etherCatConstantAddress.plcValueType : PlcValueType.USINT;
             String address = String.format("0x%08X/0x%08X:%s", AoEGroupIndex, offset, etherCatConstantType.name());
             if(etherCatConstantType == PlcValueType.STRING) {
@@ -167,6 +122,23 @@ public class HelloAdsEtherCatTelemetry {
                 if (readResponse.getResponseCode("value") == PlcResponseCode.OK) {
                     PlcValue value = readResponse.getPlcValue("value");
                     if (etherCatConstantAddress != null) {
+                        switch (etherCatConstantAddress) {
+                            case ConfigurationDataAddress:
+                                etherCatAddress = value.getInteger();
+                                break;
+                            case ConfigurationDataName:
+                                deviceName = value.getString();
+                                break;
+                            case ConfigurationDataVendorId:
+                                vendorId = value.getInteger();
+                                break;
+                            case ConfigurationDataProductCode:
+                                productCode = value.getInteger();
+                                break;
+                            case ConfigurationDataRevisionNumber:
+                                revisionNumber = value.getInteger();
+                                break;
+                        }
                         logger.info("    - {}: {}", etherCatConstantAddress.name(), value.toString());
                     } else {
                         logger.info("    - Unknown: {}", value.toString());
@@ -176,10 +148,11 @@ public class HelloAdsEtherCatTelemetry {
                 // Ignore this ...
             }
         }
+        return new EtherCatDevice(etherCatAddress, deviceName, vendorId, productCode, revisionNumber);
     }
     
     
-    protected String getAddress(EtherCatConstant variable) {
+    protected String getAddress(EtherCatMasterConstants variable) {
         String dataTypeName = variable.plcValueType.name();
         if (variable.plcValueType == PlcValueType.STRING) {
             dataTypeName += "(255)";
@@ -188,14 +161,15 @@ public class HelloAdsEtherCatTelemetry {
     }
 
     public static void main(String[] args) {
-        if(args.length != 2) {
-            logger.error("Usage: HelloAdsTelemetry {ip-address of PLC} {local ip-address}");
+        if(args.length != 3) {
+            logger.error("Usage: HelloAdsTelemetry {remote ip-address} {local-ams-net-id} {remote-ams-net-id}");
             System.exit(1);
         }
 
         String remoteIp = args[0];
-        String localIp = args[1];
-        new HelloAdsEtherCatTelemetry().outputEtherCatData(localIp, remoteIp, remoteIp + ".3.1");
+        String localAmsNetId = args[1];
+        String remoteAmsNetId = args[2];
+        new HelloAdsEtherCatTelemetry().outputEtherCatData(remoteIp, localAmsNetId, remoteAmsNetId);
     }
     
 }

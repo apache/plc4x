@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,12 +118,8 @@ func (m *_FirmataMessageDigitalIO) GetTypeName() string {
 	return "FirmataMessageDigitalIO"
 }
 
-func (m *_FirmataMessageDigitalIO) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataMessageDigitalIO) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataMessageDigitalIO) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pinBlock)
 	lengthInBits += 4
@@ -134,15 +132,15 @@ func (m *_FirmataMessageDigitalIO) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_FirmataMessageDigitalIO) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataMessageDigitalIO) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataMessageDigitalIOParse(theBytes []byte, response bool) (FirmataMessageDigitalIO, error) {
-	return FirmataMessageDigitalIOParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+	return FirmataMessageDigitalIOParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
-func FirmataMessageDigitalIOParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
+func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {
@@ -169,12 +167,16 @@ func FirmataMessageDigitalIOParseWithBuffer(readBuffer utils.ReadBuffer, respons
 		data = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
+		_numItems := uint16(uint16(2))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadInt8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of FirmataMessageDigitalIO")
 			}
-			data[curItem] = _item
+			data[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,14 +200,14 @@ func FirmataMessageDigitalIOParseWithBuffer(readBuffer utils.ReadBuffer, respons
 }
 
 func (m *_FirmataMessageDigitalIO) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -224,7 +226,8 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
-		for _, _element := range m.GetData() {
+		for _curItem, _element := range m.GetData() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
@@ -239,7 +242,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataMessageDigitalIO) isFirmataMessageDigitalIO() bool {
@@ -251,7 +254,7 @@ func (m *_FirmataMessageDigitalIO) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

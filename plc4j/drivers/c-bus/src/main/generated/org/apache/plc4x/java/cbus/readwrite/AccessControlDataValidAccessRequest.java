@@ -66,6 +66,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataValidAccessRequest");
 
@@ -94,6 +95,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataValidAccessRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessControlDirection)
     lengthInBits += 8;
@@ -113,6 +115,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlDirection accessControlDirection =
         readEnumField(

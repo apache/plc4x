@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -111,12 +112,8 @@ func (m *_UnknownMessage) GetTypeName() string {
 	return "UnknownMessage"
 }
 
-func (m *_UnknownMessage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_UnknownMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_UnknownMessage) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -126,15 +123,15 @@ func (m *_UnknownMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_UnknownMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_UnknownMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func UnknownMessageParse(theBytes []byte, totalLength uint16) (UnknownMessage, error) {
-	return UnknownMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+	return UnknownMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
-func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
+func UnknownMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
@@ -163,14 +160,14 @@ func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint
 }
 
 func (m *_UnknownMessage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_UnknownMessage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_UnknownMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -189,7 +186,7 @@ func (m *_UnknownMessage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -211,7 +208,7 @@ func (m *_UnknownMessage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

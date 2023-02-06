@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,11 +137,7 @@ func (m *_CBusOptions) GetTypeName() string {
 	return "CBusOptions"
 }
 
-func (m *_CBusOptions) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CBusOptions) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (connect)
@@ -173,15 +170,15 @@ func (m *_CBusOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusOptions) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusOptions) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusOptionsParse(theBytes []byte) (CBusOptions, error) {
-	return CBusOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return CBusOptionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CBusOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusOptions, error) {
+func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusOptions"); pullErr != nil {
@@ -272,14 +269,14 @@ func CBusOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusOptions, error
 }
 
 func (m *_CBusOptions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusOptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusOptions"); pushErr != nil {
@@ -364,7 +361,7 @@ func (m *_CBusOptions) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

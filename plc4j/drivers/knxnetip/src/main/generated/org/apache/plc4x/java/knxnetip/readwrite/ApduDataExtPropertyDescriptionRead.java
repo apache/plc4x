@@ -69,6 +69,7 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtPropertyDescriptionRead");
 
@@ -93,6 +94,7 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtPropertyDescriptionRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIndex)
     lengthInBits += 8;
@@ -112,6 +114,7 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short objectIndex = readSimpleField("objectIndex", readUnsignedShort(readBuffer, 8));
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -118,12 +119,8 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetTypeName() string {
 	return "FirmataMessageSubscribeDigitalPinValue"
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -137,15 +134,15 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBitsConditional(las
 	return lengthInBits
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataMessageSubscribeDigitalPinValueParse(theBytes []byte, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
-	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
-func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
+func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeDigitalPinValue"); pullErr != nil {
@@ -203,14 +200,14 @@ func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -253,7 +250,7 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) isFirmataMessageSubscribeDigitalPinValue() bool {
@@ -265,7 +262,7 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

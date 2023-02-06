@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataNodeSubtype) GetNodeSubType() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetNodeSubType())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataNodeSubtype) GetTypeName() string {
 	return "BACnetConstructedDataNodeSubtype"
 }
 
-func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nodeSubType)
-	lengthInBits += m.NodeSubType.GetLengthInBits()
+	lengthInBits += m.NodeSubType.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataNodeSubtypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
-	return BACnetConstructedDataNodeSubtypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataNodeSubtypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataNodeSubtypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
+func BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNodeSubtype"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataNodeSubtypeParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("nodeSubType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nodeSubType")
 	}
-	_nodeSubType, _nodeSubTypeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_nodeSubType, _nodeSubTypeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _nodeSubTypeErr != nil {
 		return nil, errors.Wrap(_nodeSubTypeErr, "Error parsing 'nodeSubType' field of BACnetConstructedDataNodeSubtype")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataNodeSubtypeParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("nodeSubType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nodeSubType")
 		}
-		_nodeSubTypeErr := writeBuffer.WriteSerializable(m.GetNodeSubType())
+		_nodeSubTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNodeSubType())
 		if popErr := writeBuffer.PopContext("nodeSubType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nodeSubType")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_nodeSubTypeErr, "Error serializing 'nodeSubType' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) isBACnetConstructedDataNodeSubtype() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataNodeSubtype) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

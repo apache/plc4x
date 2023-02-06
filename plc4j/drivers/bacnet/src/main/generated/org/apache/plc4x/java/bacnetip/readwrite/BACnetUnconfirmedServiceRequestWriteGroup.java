@@ -86,6 +86,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWriteGroup");
 
@@ -113,6 +114,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWriteGroup _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupNumber)
     lengthInBits += groupNumber.getLengthInBits();
@@ -138,6 +140,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger groupNumber =
         readSimpleField(

@@ -69,6 +69,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadAlarmSC");
 
@@ -87,6 +88,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadAlarmSC _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (alarmMessage)
     lengthInBits += alarmMessage.getLengthInBits();
@@ -100,6 +102,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AlarmMessagePushType alarmMessage =
         readSimpleField(

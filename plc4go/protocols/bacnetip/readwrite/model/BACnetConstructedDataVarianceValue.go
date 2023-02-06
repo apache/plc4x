@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataVarianceValue) GetVarianceValue() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataVarianceValue) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetVarianceValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataVarianceValue) GetTypeName() string {
 	return "BACnetConstructedDataVarianceValue"
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (varianceValue)
-	lengthInBits += m.VarianceValue.GetLengthInBits()
+	lengthInBits += m.VarianceValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataVarianceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVarianceValue, error) {
-	return BACnetConstructedDataVarianceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataVarianceValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataVarianceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVarianceValue, error) {
+func BACnetConstructedDataVarianceValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVarianceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVarianceValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataVarianceValueParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("varianceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for varianceValue")
 	}
-	_varianceValue, _varianceValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_varianceValue, _varianceValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _varianceValueErr != nil {
 		return nil, errors.Wrap(_varianceValueErr, "Error parsing 'varianceValue' field of BACnetConstructedDataVarianceValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataVarianceValueParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataVarianceValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("varianceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for varianceValue")
 		}
-		_varianceValueErr := writeBuffer.WriteSerializable(m.GetVarianceValue())
+		_varianceValueErr := writeBuffer.WriteSerializable(ctx, m.GetVarianceValue())
 		if popErr := writeBuffer.PopContext("varianceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for varianceValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_varianceValueErr, "Error serializing 'varianceValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataVarianceValue) isBACnetConstructedDataVarianceValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataVarianceValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

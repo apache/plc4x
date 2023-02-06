@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMachineRoomID) GetMachineRoomId() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataMachineRoomID) GetActualValue() BACnetApplicationTagObjectIdentifier {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagObjectIdentifier(m.GetMachineRoomId())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMachineRoomID) GetTypeName() string {
 	return "BACnetConstructedDataMachineRoomID"
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (machineRoomId)
-	lengthInBits += m.MachineRoomId.GetLengthInBits()
+	lengthInBits += m.MachineRoomId.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMachineRoomIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
-	return BACnetConstructedDataMachineRoomIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMachineRoomIDParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMachineRoomIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
+func BACnetConstructedDataMachineRoomIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMachineRoomID"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMachineRoomIDParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("machineRoomId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for machineRoomId")
 	}
-	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _machineRoomIdErr != nil {
 		return nil, errors.Wrap(_machineRoomIdErr, "Error parsing 'machineRoomId' field of BACnetConstructedDataMachineRoomID")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMachineRoomIDParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("machineRoomId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for machineRoomId")
 		}
-		_machineRoomIdErr := writeBuffer.WriteSerializable(m.GetMachineRoomId())
+		_machineRoomIdErr := writeBuffer.WriteSerializable(ctx, m.GetMachineRoomId())
 		if popErr := writeBuffer.PopContext("machineRoomId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for machineRoomId")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_machineRoomIdErr, "Error serializing 'machineRoomId' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) isBACnetConstructedDataMachineRoomID() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMachineRoomID) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

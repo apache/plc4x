@@ -67,6 +67,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
   protected void serializeBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileRecord");
 
@@ -90,6 +91,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestAtomicReadFileRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartRecord)
     lengthInBits += fileStartRecord.getLengthInBits();
@@ -107,6 +109,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger fileStartRecord =
         readSimpleField(

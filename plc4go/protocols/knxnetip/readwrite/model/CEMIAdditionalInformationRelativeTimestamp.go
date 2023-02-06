@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -125,31 +126,27 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 	return "CEMIAdditionalInformationRelativeTimestamp"
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8
 
 	// Simple field (relativeTimestamp)
-	lengthInBits += m.RelativeTimestamp.GetLengthInBits()
+	lengthInBits += m.RelativeTimestamp.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CEMIAdditionalInformationRelativeTimestampParse(theBytes []byte) (CEMIAdditionalInformationRelativeTimestamp, error) {
-	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
+func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
@@ -171,7 +168,7 @@ func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relativeTimestamp")
 	}
-	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParseWithBuffer(readBuffer)
+	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParseWithBuffer(ctx, readBuffer)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field of CEMIAdditionalInformationRelativeTimestamp")
 	}
@@ -194,14 +191,14 @@ func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer utils.
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -219,7 +216,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("relativeTimestamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for relativeTimestamp")
 		}
-		_relativeTimestampErr := writeBuffer.WriteSerializable(m.GetRelativeTimestamp())
+		_relativeTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetRelativeTimestamp())
 		if popErr := writeBuffer.PopContext("relativeTimestamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for relativeTimestamp")
 		}
@@ -232,7 +229,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) isCEMIAdditionalInformationRelativeTimestamp() bool {
@@ -244,7 +241,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

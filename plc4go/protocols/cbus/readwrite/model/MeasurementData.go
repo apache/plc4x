@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _MeasurementData struct {
 
 type _MeasurementDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type MeasurementDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child MeasurementData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeasurementData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_MeasurementData) GetCommandTypeContainer() MeasurementCommandTypeConta
 ///////////////////////
 
 func (m *_MeasurementData) GetCommandType() MeasurementCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastMeasurementCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -116,7 +118,7 @@ func (m *_MeasurementData) GetTypeName() string {
 	return "MeasurementData"
 }
 
-func (m *_MeasurementData) GetParentLengthInBits() uint16 {
+func (m *_MeasurementData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -127,15 +129,15 @@ func (m *_MeasurementData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_MeasurementData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeasurementDataParse(theBytes []byte) (MeasurementData, error) {
-	return MeasurementDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeasurementDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementData, error) {
+func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeasurementData"); pullErr != nil {
@@ -153,7 +155,7 @@ func MeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementDat
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MeasurementCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := MeasurementCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MeasurementData")
 	}
@@ -178,7 +180,7 @@ func MeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementDat
 	var typeSwitchError error
 	switch {
 	case commandType == MeasurementCommandType_MEASUREMENT_EVENT: // MeasurementDataChannelMeasurementData
-		_childTemp, typeSwitchError = MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeasurementDataChannelMeasurementDataParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -196,7 +198,7 @@ func MeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementDat
 	return _child, nil
 }
 
-func (pm *_MeasurementData) SerializeParent(writeBuffer utils.WriteBuffer, child MeasurementData, serializeChildFunction func() error) error {
+func (pm *_MeasurementData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeasurementData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -210,7 +212,7 @@ func (pm *_MeasurementData) SerializeParent(writeBuffer utils.WriteBuffer, child
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -218,7 +220,7 @@ func (pm *_MeasurementData) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -242,7 +244,7 @@ func (m *_MeasurementData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

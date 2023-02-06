@@ -68,6 +68,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueBaudRateSelector");
 
@@ -96,6 +97,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueBaudRateSelector _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 8;
@@ -114,6 +116,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("BaudRateSelector has exactly one byte");

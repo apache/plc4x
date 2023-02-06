@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,19 +154,19 @@ func CastBACnetAbortReason(structType interface{}) BACnetAbortReason {
 	return castFunc(structType)
 }
 
-func (m BACnetAbortReason) GetLengthInBits() uint16 {
+func (m BACnetAbortReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetAbortReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAbortReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAbortReasonParse(theBytes []byte) (BACnetAbortReason, error) {
-	return BACnetAbortReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAbortReasonParse(ctx context.Context, theBytes []byte) (BACnetAbortReason, error) {
+	return BACnetAbortReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAbortReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAbortReason, error) {
+func BACnetAbortReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAbortReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetAbortReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAbortReason")
@@ -180,13 +181,13 @@ func BACnetAbortReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAbortR
 
 func (e BACnetAbortReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAbortReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAbortReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAbortReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastCEMIPriority(structType interface{}) CEMIPriority {
 	return castFunc(structType)
 }
 
-func (m CEMIPriority) GetLengthInBits() uint16 {
+func (m CEMIPriority) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m CEMIPriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m CEMIPriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIPriorityParse(theBytes []byte) (CEMIPriority, error) {
-	return CEMIPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func CEMIPriorityParse(ctx context.Context, theBytes []byte) (CEMIPriority, error) {
+	return CEMIPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CEMIPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	val, err := readBuffer.ReadUint8("CEMIPriority", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CEMIPriority")
@@ -126,13 +127,13 @@ func CEMIPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIPriority, err
 
 func (e CEMIPriority) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e CEMIPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e CEMIPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

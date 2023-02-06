@@ -63,6 +63,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
   @Override
   protected void serializeModbusADUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusAsciiADU");
 
@@ -100,6 +101,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusAsciiADU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 8;
@@ -119,6 +121,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short address =
         readSimpleField(

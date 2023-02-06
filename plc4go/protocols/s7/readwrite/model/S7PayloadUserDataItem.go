@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -58,15 +59,14 @@ type _S7PayloadUserDataItem struct {
 
 type _S7PayloadUserDataItemChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCpuFunctionType() uint8
 	GetCpuSubfunction() uint8
 	GetDataLength() uint16
 }
 
 type S7PayloadUserDataItemParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7PayloadUserDataItem, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7PayloadUserDataItem, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -117,7 +117,7 @@ func (m *_S7PayloadUserDataItem) GetTypeName() string {
 	return "S7PayloadUserDataItem"
 }
 
-func (m *_S7PayloadUserDataItem) GetParentLengthInBits() uint16 {
+func (m *_S7PayloadUserDataItem) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -132,15 +132,15 @@ func (m *_S7PayloadUserDataItem) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7PayloadUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
-	return S7PayloadUserDataItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+	return S7PayloadUserDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItem"); pullErr != nil {
@@ -153,7 +153,7 @@ func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFuncti
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7PayloadUserDataItem")
 	}
@@ -166,7 +166,7 @@ func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFuncti
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7PayloadUserDataItem")
 	}
@@ -193,41 +193,41 @@ func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFuncti
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x03: // S7PayloadDiagnosticMessage
-		_childTemp, typeSwitchError = S7PayloadDiagnosticMessageParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadDiagnosticMessageParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x05: // S7PayloadAlarm8
-		_childTemp, typeSwitchError = S7PayloadAlarm8ParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarm8ParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x06: // S7PayloadNotify
-		_childTemp, typeSwitchError = S7PayloadNotifyParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadNotifyParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x0c: // S7PayloadAlarmAckInd
-		_childTemp, typeSwitchError = S7PayloadAlarmAckIndParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmAckIndParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x11: // S7PayloadAlarmSQ
-		_childTemp, typeSwitchError = S7PayloadAlarmSQParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSQParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x12: // S7PayloadAlarmS
-		_childTemp, typeSwitchError = S7PayloadAlarmSParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x13: // S7PayloadAlarmSC
-		_childTemp, typeSwitchError = S7PayloadAlarmSCParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSCParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x16: // S7PayloadNotify8
-		_childTemp, typeSwitchError = S7PayloadNotify8ParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadNotify8ParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscription
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x05: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAck
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAckResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQuery
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType, cpuSubfunction)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v, cpuSubfunction=%v, dataLength=%v]", cpuFunctionType, cpuSubfunction, dataLength)
 	}
@@ -245,7 +245,7 @@ func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFuncti
 	return _child, nil
 }
 
-func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, child S7PayloadUserDataItem, serializeChildFunction func() error) error {
+func (pm *_S7PayloadUserDataItem) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7PayloadUserDataItem, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -259,7 +259,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
-	_returnCodeErr := writeBuffer.WriteSerializable(m.GetReturnCode())
+	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
@@ -271,7 +271,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
-	_transportSizeErr := writeBuffer.WriteSerializable(m.GetTransportSize())
+	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
@@ -280,7 +280,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4)))
+	dataLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(4)))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -306,7 +306,7 @@ func (m *_S7PayloadUserDataItem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

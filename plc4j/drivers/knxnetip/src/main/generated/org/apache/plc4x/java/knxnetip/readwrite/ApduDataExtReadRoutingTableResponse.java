@@ -49,6 +49,7 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtReadRoutingTableResponse");
 
@@ -64,6 +65,7 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtReadRoutingTableResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtReadRoutingTableResponse");
     // Create the instance

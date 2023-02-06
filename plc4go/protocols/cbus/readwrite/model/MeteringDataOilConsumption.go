@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_MeteringDataOilConsumption) GetTypeName() string {
 	return "MeteringDataOilConsumption"
 }
 
-func (m *_MeteringDataOilConsumption) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MeteringDataOilConsumption) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MeteringDataOilConsumption) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (L)
 	lengthInBits += 32
@@ -119,15 +116,15 @@ func (m *_MeteringDataOilConsumption) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_MeteringDataOilConsumption) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeteringDataOilConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeteringDataOilConsumptionParse(theBytes []byte) (MeteringDataOilConsumption, error) {
-	return MeteringDataOilConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeteringDataOilConsumptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeteringDataOilConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataOilConsumption, error) {
+func MeteringDataOilConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOilConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataOilConsumption"); pullErr != nil {
@@ -157,14 +154,14 @@ func MeteringDataOilConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (Met
 }
 
 func (m *_MeteringDataOilConsumption) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MeteringDataOilConsumption) isMeteringDataOilConsumption() bool {
@@ -196,7 +193,7 @@ func (m *_MeteringDataOilConsumption) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

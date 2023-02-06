@@ -123,6 +123,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionSecurityDiagnosticsDataType");
 
@@ -185,6 +186,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SessionSecurityDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sessionId)
     lengthInBits += sessionId.getLengthInBits();
@@ -199,7 +201,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     if (clientUserIdHistory != null) {
       int i = 0;
       for (PascalString element : clientUserIdHistory) {
-        boolean last = ++i >= clientUserIdHistory.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= clientUserIdHistory.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -231,6 +233,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
         readSimpleField(

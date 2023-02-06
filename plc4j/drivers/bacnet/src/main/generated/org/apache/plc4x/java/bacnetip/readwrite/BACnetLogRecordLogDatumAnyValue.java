@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumAnyValue");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumAnyValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (anyValue)
     if (anyValue != null) {
@@ -97,6 +99,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData anyValue =
         readOptionalField(

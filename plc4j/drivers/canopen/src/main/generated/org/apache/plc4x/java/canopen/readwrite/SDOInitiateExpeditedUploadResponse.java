@@ -63,6 +63,7 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
   protected void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateExpeditedUploadResponse");
 
@@ -85,6 +86,7 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateExpeditedUploadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -108,6 +110,7 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((4) - (size)));
 

@@ -71,6 +71,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RedundantServerDataType");
 
@@ -100,6 +101,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RedundantServerDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverId)
     lengthInBits += serverId.getLengthInBits();
@@ -119,6 +121,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverId =
         readSimpleField(

@@ -96,6 +96,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   @Override
   protected void serializeMonitoredSALChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALShortFormBasicMode");
 
@@ -138,6 +139,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredSALShortFormBasicMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (bridgeCount)
     if (bridgeCount != null) {
@@ -171,6 +173,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte counts = readPeekField("counts", readByte(readBuffer, 8));
 

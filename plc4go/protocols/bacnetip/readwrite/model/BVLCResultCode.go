@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBVLCResultCode(structType interface{}) BVLCResultCode {
 	return castFunc(structType)
 }
 
-func (m BVLCResultCode) GetLengthInBits() uint16 {
+func (m BVLCResultCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BVLCResultCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BVLCResultCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCResultCodeParse(theBytes []byte) (BVLCResultCode, error) {
-	return BVLCResultCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BVLCResultCodeParse(ctx context.Context, theBytes []byte) (BVLCResultCode, error) {
+	return BVLCResultCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BVLCResultCodeParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
+func BVLCResultCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
 	val, err := readBuffer.ReadUint16("BVLCResultCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BVLCResultCode")
@@ -144,13 +145,13 @@ func BVLCResultCodeParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResultCode,
 
 func (e BVLCResultCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BVLCResultCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BVLCResultCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

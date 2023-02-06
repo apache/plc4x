@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetIpv6MulticastAddre
 ///////////////////////
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetActualValue() BACnetApplicationTagOctetString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagOctetString(m.GetIpv6MulticastAddress())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetTypeName() string 
 	return "BACnetConstructedDataBACnetIPv6MulticastAddress"
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6MulticastAddress)
-	lengthInBits += m.Ipv6MulticastAddress.GetLengthInBits()
+	lengthInBits += m.Ipv6MulticastAddress.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBACnetIPv6MulticastAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
-	return BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
+func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("ipv6MulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6MulticastAddress")
 	}
-	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6MulticastAddressErr != nil {
 		return nil, errors.Wrap(_ipv6MulticastAddressErr, "Error parsing 'ipv6MulticastAddress' field of BACnetConstructedDataBACnetIPv6MulticastAddress")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("ipv6MulticastAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6MulticastAddress")
 		}
-		_ipv6MulticastAddressErr := writeBuffer.WriteSerializable(m.GetIpv6MulticastAddress())
+		_ipv6MulticastAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6MulticastAddress())
 		if popErr := writeBuffer.PopContext("ipv6MulticastAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6MulticastAddress")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuf
 			return errors.Wrap(_ipv6MulticastAddressErr, "Error serializing 'ipv6MulticastAddress' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) isBACnetConstructedDataBACnetIPv6MulticastAddress() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

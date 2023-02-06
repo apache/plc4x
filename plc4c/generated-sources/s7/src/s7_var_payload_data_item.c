@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -27,7 +28,7 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -39,7 +40,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Simple Field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -47,7 +48,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Simple Field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -70,7 +71,6 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
     // Count array
     uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       char* _value = malloc(sizeof(char));
       _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
@@ -83,7 +83,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Padding Field (padding)
   {
-    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, 8)) && (((plc4c_spi_evaluation_helper_count(data)) % (2))));
+    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, 8)) && ((((!(plc4x_spi_context_get_last_item_from_context(ctx)))) ? ((plc4c_spi_evaluation_helper_count(data)) % (2)) : 0)));
     while (_timesPadding-- > 0) {
       // Just read the padding data and ignore it
       uint8_t _paddingValue = 0;
@@ -97,17 +97,17 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (returnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
@@ -122,7 +122,6 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       char* _value = (char*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_char(writeBuffer, *_value);
     }
@@ -130,7 +129,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
 
   // Padding Field (padding)
   {
-    int _timesPadding = (int) (((plc4c_spi_evaluation_helper_count(_message->data)) % (2)));
+    int _timesPadding = (int) ((((!(plc4x_spi_context_get_last_item_from_context(ctx)))) ? ((plc4c_spi_evaluation_helper_count(_message->data)) % (2)) : 0));
     while (_timesPadding-- > 0) {
       // Just output the default padding data
       _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
@@ -143,18 +142,18 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bytes(plc4c_s7_read_write_s7_var_payload_data_item* _message) {
-  return plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
+  return plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_read_write_s7_var_payload_data_item* _message) {
+uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (returnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->return_code);
 
   // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
   // Implicit Field (dataLength)
   lengthInBits += 16;
@@ -163,7 +162,7 @@ uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_re
   lengthInBits += 8 * plc4c_utils_list_size(_message->data);
 
   // Padding Field (padding)
-  int _needsPadding = (int) (((plc4c_spi_evaluation_helper_count(_message->data)) % (2)));
+  int _needsPadding = (int) ((((!(plc4x_spi_context_get_last_item_from_context(ctx)))) ? ((plc4c_spi_evaluation_helper_count(_message->data)) % (2)) : 0));
   while(_needsPadding-- > 0) {
     lengthInBits += 8;
   }

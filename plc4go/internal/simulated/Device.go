@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"context"
 	"math/rand"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -67,7 +68,7 @@ func (t *Device) getRandomValue(tag simulatedTag) *values.PlcValue {
 	size := tag.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)
-	plcValue, err := model.DataItemParse(data, tag.DataTypeSize.String(), tag.Quantity)
+	plcValue, err := model.DataItemParse(context.Background(), data, tag.DataTypeSize.String(), tag.Quantity)
 	if err != nil {
 		panic("Unable to parse random bytes")
 	}

@@ -122,6 +122,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetWriterDataType");
 
@@ -182,6 +183,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSetWriterDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -211,7 +213,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     if (dataSetWriterProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : dataSetWriterProperties) {
-        boolean last = ++i >= dataSetWriterProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataSetWriterProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -231,6 +233,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(

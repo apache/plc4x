@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_SecurityDataRequestZoneName) GetTypeName() string {
 	return "SecurityDataRequestZoneName"
 }
 
-func (m *_SecurityDataRequestZoneName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataRequestZoneName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataRequestZoneName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8
@@ -119,15 +116,15 @@ func (m *_SecurityDataRequestZoneName) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_SecurityDataRequestZoneName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataRequestZoneName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataRequestZoneNameParse(theBytes []byte) (SecurityDataRequestZoneName, error) {
-	return SecurityDataRequestZoneNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataRequestZoneNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataRequestZoneNameParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataRequestZoneName, error) {
+func SecurityDataRequestZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRequestZoneName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataRequestZoneName"); pullErr != nil {
@@ -157,14 +154,14 @@ func SecurityDataRequestZoneNameParseWithBuffer(readBuffer utils.ReadBuffer) (Se
 }
 
 func (m *_SecurityDataRequestZoneName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataRequestZoneName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataRequestZoneName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_SecurityDataRequestZoneName) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataRequestZoneName) isSecurityDataRequestZoneName() bool {
@@ -196,7 +193,7 @@ func (m *_SecurityDataRequestZoneName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -79,6 +79,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPMulticastAddress");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPMulticastAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipMulticastAddress)
     lengthInBits += ipMulticastAddress.getLengthInBits();
@@ -122,6 +124,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipMulticastAddress =
         readSimpleField(

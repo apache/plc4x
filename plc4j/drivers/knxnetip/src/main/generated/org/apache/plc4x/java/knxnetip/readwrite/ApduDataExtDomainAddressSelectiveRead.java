@@ -49,6 +49,7 @@ public class ApduDataExtDomainAddressSelectiveRead extends ApduDataExt implement
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtDomainAddressSelectiveRead");
 
@@ -64,6 +65,7 @@ public class ApduDataExtDomainAddressSelectiveRead extends ApduDataExt implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtDomainAddressSelectiveRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
@@ -74,6 +76,7 @@ public class ApduDataExtDomainAddressSelectiveRead extends ApduDataExt implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtDomainAddressSelectiveRead");
     // Create the instance

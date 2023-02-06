@@ -81,6 +81,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
   protected void serializeOpenProtocolMessageApplicationCommandErrorChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommandErrorRev1");
 
@@ -115,6 +116,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageApplicationCommandErrorRev1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestMid)
     lengthInBits += 32;
@@ -132,6 +134,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid requestMid =
         readEnumField(

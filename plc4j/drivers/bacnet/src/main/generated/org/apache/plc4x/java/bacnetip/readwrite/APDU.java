@@ -52,6 +52,7 @@ public abstract class APDU implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDU");
 
@@ -78,6 +79,7 @@ public abstract class APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     APDU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (apduType)
     lengthInBits += 4;
@@ -111,6 +113,7 @@ public abstract class APDU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApduType apduType =
         readDiscriminatorField(

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1031,19 +1032,19 @@ func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
 	return castFunc(structType)
 }
 
-func (m KnxPropertyDataType) GetLengthInBits() uint16 {
+func (m KnxPropertyDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m KnxPropertyDataType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m KnxPropertyDataType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxPropertyDataTypeParse(theBytes []byte) (KnxPropertyDataType, error) {
-	return KnxPropertyDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func KnxPropertyDataTypeParse(ctx context.Context, theBytes []byte) (KnxPropertyDataType, error) {
+	return KnxPropertyDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func KnxPropertyDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
 	val, err := readBuffer.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxPropertyDataType")
@@ -1058,13 +1059,13 @@ func KnxPropertyDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxPropert
 
 func (e KnxPropertyDataType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e KnxPropertyDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e KnxPropertyDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

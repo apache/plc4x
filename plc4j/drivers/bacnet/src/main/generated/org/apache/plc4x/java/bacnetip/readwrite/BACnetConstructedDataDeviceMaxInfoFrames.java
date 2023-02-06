@@ -79,6 +79,7 @@ public class BACnetConstructedDataDeviceMaxInfoFrames extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeviceMaxInfoFrames");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataDeviceMaxInfoFrames extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDeviceMaxInfoFrames _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxInfoFrames)
     lengthInBits += maxInfoFrames.getLengthInBits();
@@ -121,6 +123,7 @@ public class BACnetConstructedDataDeviceMaxInfoFrames extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxInfoFrames =
         readSimpleField(

@@ -58,6 +58,7 @@ public class BACnetVMACEntry implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetVMACEntry");
 
@@ -81,6 +82,7 @@ public class BACnetVMACEntry implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetVMACEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (virtualMacAddress)
     if (virtualMacAddress != null) {
@@ -106,6 +108,7 @@ public class BACnetVMACEntry implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagOctetString virtualMacAddress =
         readOptionalField(

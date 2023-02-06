@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,28 +109,24 @@ func (m *_DescriptionRequest) GetTypeName() string {
 	return "DescriptionRequest"
 }
 
-func (m *_DescriptionRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DescriptionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DescriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DescriptionRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DescriptionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DescriptionRequestParse(theBytes []byte) (DescriptionRequest, error) {
-	return DescriptionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DescriptionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DescriptionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
+func DescriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
@@ -142,7 +139,7 @@ func DescriptionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (Description
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DescriptionRequest")
 	}
@@ -165,14 +162,14 @@ func DescriptionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (Description
 }
 
 func (m *_DescriptionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DescriptionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
-		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(m.GetHpaiControlEndpoint())
+		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiControlEndpoint())
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
@@ -197,7 +194,7 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DescriptionRequest) isDescriptionRequest() bool {
@@ -209,7 +206,7 @@ func (m *_DescriptionRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

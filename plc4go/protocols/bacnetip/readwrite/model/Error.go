@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_Error) GetTypeName() string {
 	return "Error"
 }
 
-func (m *_Error) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_Error) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_Error) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (errorClass)
-	lengthInBits += m.ErrorClass.GetLengthInBits()
+	lengthInBits += m.ErrorClass.GetLengthInBits(ctx)
 
 	// Simple field (errorCode)
-	lengthInBits += m.ErrorCode.GetLengthInBits()
+	lengthInBits += m.ErrorCode.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_Error) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Error) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorParse(theBytes []byte) (Error, error) {
-	return ErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorParseWithBuffer(readBuffer utils.ReadBuffer) (Error, error) {
+func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Error"); pullErr != nil {
@@ -124,7 +121,7 @@ func ErrorParseWithBuffer(readBuffer utils.ReadBuffer) (Error, error) {
 	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorClass")
 	}
-	_errorClass, _errorClassErr := ErrorClassTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_errorClass, _errorClassErr := ErrorClassTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of Error")
 	}
@@ -137,7 +134,7 @@ func ErrorParseWithBuffer(readBuffer utils.ReadBuffer) (Error, error) {
 	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorCode")
 	}
-	_errorCode, _errorCodeErr := ErrorCodeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_errorCode, _errorCodeErr := ErrorCodeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of Error")
 	}
@@ -158,14 +155,14 @@ func ErrorParseWithBuffer(readBuffer utils.ReadBuffer) (Error, error) {
 }
 
 func (m *_Error) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_Error) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_Error) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Error"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_Error) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for errorClass")
 	}
-	_errorClassErr := writeBuffer.WriteSerializable(m.GetErrorClass())
+	_errorClassErr := writeBuffer.WriteSerializable(ctx, m.GetErrorClass())
 	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for errorClass")
 	}
@@ -188,7 +185,7 @@ func (m *_Error) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for errorCode")
 	}
-	_errorCodeErr := writeBuffer.WriteSerializable(m.GetErrorCode())
+	_errorCodeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorCode())
 	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for errorCode")
 	}
@@ -211,7 +208,7 @@ func (m *_Error) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

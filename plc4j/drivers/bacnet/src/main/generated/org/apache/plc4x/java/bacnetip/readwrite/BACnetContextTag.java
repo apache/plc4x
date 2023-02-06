@@ -69,6 +69,7 @@ public abstract class BACnetContextTag implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTag");
 
@@ -98,6 +99,7 @@ public abstract class BACnetContextTag implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetContextTag _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (header)
     lengthInBits += header.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetContextTag implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader header =
         readSimpleField(

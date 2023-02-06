@@ -73,6 +73,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddNodesRequest");
 
@@ -97,6 +98,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AddNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     if (nodesToAdd != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToAdd) {
-        boolean last = ++i >= nodesToAdd.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToAdd.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -122,6 +124,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(

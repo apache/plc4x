@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,12 +57,11 @@ type _BACnetPriorityValue struct {
 
 type _BACnetPriorityValueChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetPriorityValueParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -93,10 +93,14 @@ func (m *_BACnetPriorityValue) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetPriorityValue) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
 func (m *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
 }
 
@@ -125,7 +129,7 @@ func (m *_BACnetPriorityValue) GetTypeName() string {
 	return "BACnetPriorityValue"
 }
 
-func (m *_BACnetPriorityValue) GetParentLengthInBits() uint16 {
+func (m *_BACnetPriorityValue) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -135,15 +139,15 @@ func (m *_BACnetPriorityValue) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
-	return BACnetPriorityValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
+func BACnetPriorityValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValue"); pullErr != nil {
@@ -157,7 +161,7 @@ func BACnetPriorityValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -186,35 +190,35 @@ func BACnetPriorityValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetPriorityValueNull
-		_childTemp, typeSwitchError = BACnetPriorityValueNullParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueNullParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetPriorityValueReal
-		_childTemp, typeSwitchError = BACnetPriorityValueRealParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueRealParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetPriorityValueEnumerated
-		_childTemp, typeSwitchError = BACnetPriorityValueEnumeratedParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueEnumeratedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetPriorityValueUnsigned
-		_childTemp, typeSwitchError = BACnetPriorityValueUnsignedParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueUnsignedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetPriorityValueBoolean
-		_childTemp, typeSwitchError = BACnetPriorityValueBooleanParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueBooleanParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetPriorityValueInteger
-		_childTemp, typeSwitchError = BACnetPriorityValueIntegerParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueIntegerParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetPriorityValueDouble
-		_childTemp, typeSwitchError = BACnetPriorityValueDoubleParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueDoubleParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetPriorityValueTime
-		_childTemp, typeSwitchError = BACnetPriorityValueTimeParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetPriorityValueCharacterString
-		_childTemp, typeSwitchError = BACnetPriorityValueCharacterStringParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueCharacterStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetPriorityValueOctetString
-		_childTemp, typeSwitchError = BACnetPriorityValueOctetStringParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueOctetStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetPriorityValueBitString
-		_childTemp, typeSwitchError = BACnetPriorityValueBitStringParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueBitStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetPriorityValueDate
-		_childTemp, typeSwitchError = BACnetPriorityValueDateParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueDateParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetPriorityValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetPriorityValueObjectidentifierParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueObjectidentifierParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetPriorityValueConstructedValue
-		_childTemp, typeSwitchError = BACnetPriorityValueConstructedValueParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueConstructedValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetPriorityValueDateTime
-		_childTemp, typeSwitchError = BACnetPriorityValueDateTimeParseWithBuffer(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetPriorityValueDateTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
@@ -232,7 +236,7 @@ func BACnetPriorityValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 	return _child, nil
 }
 
-func (pm *_BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error {
+func (pm *_BACnetPriorityValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -242,11 +246,11 @@ func (pm *_BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValue")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
-	if _peekedIsContextTagErr := writeBuffer.WriteVirtual("peekedIsContextTag", m.GetPeekedIsContextTag()); _peekedIsContextTagErr != nil {
+	if _peekedIsContextTagErr := writeBuffer.WriteVirtual(ctx, "peekedIsContextTag", m.GetPeekedIsContextTag()); _peekedIsContextTagErr != nil {
 		return errors.Wrap(_peekedIsContextTagErr, "Error serializing 'peekedIsContextTag' field")
 	}
 
@@ -280,7 +284,7 @@ func (m *_BACnetPriorityValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

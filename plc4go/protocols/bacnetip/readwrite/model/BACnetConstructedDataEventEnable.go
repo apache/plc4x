@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataEventEnable) GetEventEnable() BACnetEventTransiti
 ///////////////////////
 
 func (m *_BACnetConstructedDataEventEnable) GetActualValue() BACnetEventTransitionBitsTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEventTransitionBitsTagged(m.GetEventEnable())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataEventEnable) GetTypeName() string {
 	return "BACnetConstructedDataEventEnable"
 }
 
-func (m *_BACnetConstructedDataEventEnable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEventEnable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEventEnable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (eventEnable)
-	lengthInBits += m.EventEnable.GetLengthInBits()
+	lengthInBits += m.EventEnable.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventEnable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEventEnable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEventEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventEnable, error) {
-	return BACnetConstructedDataEventEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEventEnableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEventEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventEnable, error) {
+func BACnetConstructedDataEventEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventEnable"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataEventEnableParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("eventEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventEnable")
 	}
-	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventEnableErr != nil {
 		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field of BACnetConstructedDataEventEnable")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataEventEnableParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataEventEnable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("eventEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventEnable")
 		}
-		_eventEnableErr := writeBuffer.WriteSerializable(m.GetEventEnable())
+		_eventEnableErr := writeBuffer.WriteSerializable(ctx, m.GetEventEnable())
 		if popErr := writeBuffer.PopContext("eventEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventEnable")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_eventEnableErr, "Error serializing 'eventEnable' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEventEnable) isBACnetConstructedDataEventEnable() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataEventEnable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

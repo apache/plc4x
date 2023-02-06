@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -63,13 +65,12 @@ type _CIPEncapsulationPacket struct {
 
 type _CIPEncapsulationPacketChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommandType() uint16
 }
 
 type CIPEncapsulationPacketParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -128,7 +129,7 @@ func (m *_CIPEncapsulationPacket) GetTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *_CIPEncapsulationPacket) GetParentLengthInBits() uint16 {
+func (m *_CIPEncapsulationPacket) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16
@@ -156,15 +157,15 @@ func (m *_CIPEncapsulationPacket) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_CIPEncapsulationPacket) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CIPEncapsulationPacketParse(theBytes []byte) (CIPEncapsulationPacket, error) {
-	return CIPEncapsulationPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return CIPEncapsulationPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
+func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
@@ -211,12 +212,16 @@ func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEnca
 		senderContext = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
+		_numItems := uint16(uint16(8))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of CIPEncapsulationPacket")
 			}
-			senderContext[curItem] = _item
+			senderContext[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
@@ -258,13 +263,13 @@ func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEnca
 	var typeSwitchError error
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParseWithBuffer(ctx, readBuffer)
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParseWithBuffer(ctx, readBuffer)
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParseWithBuffer(ctx, readBuffer)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParseWithBuffer(readBuffer, packetLen)
+		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParseWithBuffer(ctx, readBuffer, packetLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -283,7 +288,7 @@ func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEnca
 	return _child, nil
 }
 
-func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error {
+func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -302,7 +307,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 	}
 
 	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	packetLen := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(28)))
+	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
 	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, (packetLen))
 	if _packetLenErr != nil {
 		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
@@ -326,7 +331,8 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for senderContext")
 	}
-	for _, _element := range m.GetSenderContext() {
+	for _curItem, _element := range m.GetSenderContext() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
@@ -379,7 +385,7 @@ func (m *_CIPEncapsulationPacket) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

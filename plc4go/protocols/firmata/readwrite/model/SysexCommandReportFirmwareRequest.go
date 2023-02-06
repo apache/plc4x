@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,25 +94,21 @@ func (m *_SysexCommandReportFirmwareRequest) GetTypeName() string {
 	return "SysexCommandReportFirmwareRequest"
 }
 
-func (m *_SysexCommandReportFirmwareRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SysexCommandReportFirmwareRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SysexCommandReportFirmwareRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandReportFirmwareRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SysexCommandReportFirmwareRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandReportFirmwareRequestParse(theBytes []byte, response bool) (SysexCommandReportFirmwareRequest, error) {
-	return SysexCommandReportFirmwareRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return SysexCommandReportFirmwareRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SysexCommandReportFirmwareRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareRequest, error) {
+func SysexCommandReportFirmwareRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareRequest"); pullErr != nil {
@@ -133,14 +130,14 @@ func SysexCommandReportFirmwareRequestParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_SysexCommandReportFirmwareRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SysexCommandReportFirmwareRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandReportFirmwareRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -153,7 +150,7 @@ func (m *_SysexCommandReportFirmwareRequest) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SysexCommandReportFirmwareRequest) isSysexCommandReportFirmwareRequest() bool {
@@ -165,7 +162,7 @@ func (m *_SysexCommandReportFirmwareRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

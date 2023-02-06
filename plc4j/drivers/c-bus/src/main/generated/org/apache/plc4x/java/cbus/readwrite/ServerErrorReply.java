@@ -60,6 +60,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
   protected void serializeReplyOrConfirmationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerErrorReply");
 
@@ -78,6 +79,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerErrorReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (errorMarker)
     lengthInBits += 8;
@@ -92,6 +94,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte errorMarker =
         readConstField("errorMarker", readByte(readBuffer, 8), ServerErrorReply.ERRORMARKER);

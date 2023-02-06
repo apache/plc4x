@@ -146,6 +146,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUConfirmedRequest");
 
@@ -243,6 +244,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUConfirmedRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentedMessage)
     lengthInBits += 1;
@@ -303,6 +305,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean segmentedMessage = readSimpleField("segmentedMessage", readBoolean(readBuffer));
 

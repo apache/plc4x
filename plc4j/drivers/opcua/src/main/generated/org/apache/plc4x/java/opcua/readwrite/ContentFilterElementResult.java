@@ -87,6 +87,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterElementResult");
 
@@ -119,6 +120,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilterElementResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -130,7 +132,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     if (operandStatusCodes != null) {
       int i = 0;
       for (StatusCode element : operandStatusCodes) {
-        boolean last = ++i >= operandStatusCodes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operandStatusCodes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -142,7 +144,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     if (operandDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : operandDiagnosticInfos) {
-        boolean last = ++i >= operandDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operandDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -156,6 +158,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(

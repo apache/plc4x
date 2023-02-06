@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLowerDeck) GetLowerDeck() BACnetApplicationTagObj
 ///////////////////////
 
 func (m *_BACnetConstructedDataLowerDeck) GetActualValue() BACnetApplicationTagObjectIdentifier {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagObjectIdentifier(m.GetLowerDeck())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLowerDeck) GetTypeName() string {
 	return "BACnetConstructedDataLowerDeck"
 }
 
-func (m *_BACnetConstructedDataLowerDeck) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLowerDeck) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLowerDeck) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lowerDeck)
-	lengthInBits += m.LowerDeck.GetLengthInBits()
+	lengthInBits += m.LowerDeck.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLowerDeck) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLowerDeck) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLowerDeckParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowerDeck, error) {
-	return BACnetConstructedDataLowerDeckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLowerDeckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLowerDeckParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowerDeck, error) {
+func BACnetConstructedDataLowerDeckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowerDeck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowerDeck"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLowerDeckParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("lowerDeck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowerDeck")
 	}
-	_lowerDeck, _lowerDeckErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_lowerDeck, _lowerDeckErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _lowerDeckErr != nil {
 		return nil, errors.Wrap(_lowerDeckErr, "Error parsing 'lowerDeck' field of BACnetConstructedDataLowerDeck")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLowerDeckParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataLowerDeck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLowerDeck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLowerDeck) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLowerDeck) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("lowerDeck"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowerDeck")
 		}
-		_lowerDeckErr := writeBuffer.WriteSerializable(m.GetLowerDeck())
+		_lowerDeckErr := writeBuffer.WriteSerializable(ctx, m.GetLowerDeck())
 		if popErr := writeBuffer.PopContext("lowerDeck"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowerDeck")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLowerDeck) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_lowerDeckErr, "Error serializing 'lowerDeck' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLowerDeck) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLowerDeck) isBACnetConstructedDataLowerDeck() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLowerDeck) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

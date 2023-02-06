@@ -19,9 +19,11 @@
 
 package utils
 
+import "context"
+
 type LengthAware interface {
 	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
+	GetLengthInBits(ctx context.Context) uint16
 }

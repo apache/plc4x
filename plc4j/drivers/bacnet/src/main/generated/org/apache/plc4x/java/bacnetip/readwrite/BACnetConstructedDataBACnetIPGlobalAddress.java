@@ -79,6 +79,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPGlobalAddress");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPGlobalAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bacnetIpGlobalAddress)
     lengthInBits += bacnetIpGlobalAddress.getLengthInBits();
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetHostNPort bacnetIpGlobalAddress =
         readSimpleField(

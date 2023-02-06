@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,19 +130,19 @@ func CastBACnetNetworkPortCommand(structType interface{}) BACnetNetworkPortComma
 	return castFunc(structType)
 }
 
-func (m BACnetNetworkPortCommand) GetLengthInBits() uint16 {
+func (m BACnetNetworkPortCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetNetworkPortCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetNetworkPortCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNetworkPortCommandParse(theBytes []byte) (BACnetNetworkPortCommand, error) {
-	return BACnetNetworkPortCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetNetworkPortCommandParse(ctx context.Context, theBytes []byte) (BACnetNetworkPortCommand, error) {
+	return BACnetNetworkPortCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
+func BACnetNetworkPortCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkPortCommand", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")
@@ -156,13 +157,13 @@ func BACnetNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 
 func (e BACnetNetworkPortCommand) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetNetworkPortCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetNetworkPortCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetNetworkPortCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

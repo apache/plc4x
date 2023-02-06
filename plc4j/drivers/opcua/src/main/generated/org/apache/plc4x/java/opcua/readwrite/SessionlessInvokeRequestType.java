@@ -108,6 +108,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionlessInvokeRequestType");
 
@@ -147,6 +148,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SessionlessInvokeRequestType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (urisVersion)
     lengthInBits += 32;
@@ -158,7 +160,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     if (namespaceUris != null) {
       int i = 0;
       for (PascalString element : namespaceUris) {
-        boolean last = ++i >= namespaceUris.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= namespaceUris.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -170,7 +172,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     if (serverUris != null) {
       int i = 0;
       for (PascalString element : serverUris) {
-        boolean last = ++i >= serverUris.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverUris.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -182,7 +184,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     if (localeIds != null) {
       int i = 0;
       for (PascalString element : localeIds) {
-        boolean last = ++i >= localeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= localeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -199,6 +201,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long urisVersion = readSimpleField("urisVersion", readUnsignedLong(readBuffer, 32));
 

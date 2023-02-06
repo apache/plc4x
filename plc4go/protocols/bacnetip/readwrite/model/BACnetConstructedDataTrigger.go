@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTrigger) GetTrigger() BACnetApplicationTagBoolean
 ///////////////////////
 
 func (m *_BACnetConstructedDataTrigger) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetTrigger())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTrigger) GetTypeName() string {
 	return "BACnetConstructedDataTrigger"
 }
 
-func (m *_BACnetConstructedDataTrigger) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTrigger) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTrigger) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (trigger)
-	lengthInBits += m.Trigger.GetLengthInBits()
+	lengthInBits += m.Trigger.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrigger) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTrigger) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTriggerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
-	return BACnetConstructedDataTriggerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTriggerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTriggerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
+func BACnetConstructedDataTriggerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrigger"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTriggerParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("trigger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trigger")
 	}
-	_trigger, _triggerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_trigger, _triggerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _triggerErr != nil {
 		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of BACnetConstructedDataTrigger")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTriggerParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetConstructedDataTrigger) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("trigger"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for trigger")
 		}
-		_triggerErr := writeBuffer.WriteSerializable(m.GetTrigger())
+		_triggerErr := writeBuffer.WriteSerializable(ctx, m.GetTrigger())
 		if popErr := writeBuffer.PopContext("trigger"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for trigger")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(writeBuffer uti
 			return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTrigger) isBACnetConstructedDataTrigger() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTrigger) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

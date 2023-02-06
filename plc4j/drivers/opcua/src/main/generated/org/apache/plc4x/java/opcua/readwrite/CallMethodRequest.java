@@ -77,6 +77,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallMethodRequest");
 
@@ -104,6 +105,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CallMethodRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectId)
     lengthInBits += objectId.getLengthInBits();
@@ -118,7 +120,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     if (inputArguments != null) {
       int i = 0;
       for (Variant element : inputArguments) {
-        boolean last = ++i >= inputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= inputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -132,6 +134,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId objectId =
         readSimpleField(

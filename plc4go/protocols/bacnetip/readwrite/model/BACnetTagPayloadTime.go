@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,22 +97,32 @@ func (m *_BACnetTagPayloadTime) GetFractional() uint8 {
 ///////////////////////
 
 func (m *_BACnetTagPayloadTime) GetWildcard() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(0xFF)
 }
 
 func (m *_BACnetTagPayloadTime) GetHourIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetHour()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadTime) GetMinuteIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetMinute()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadTime) GetSecondIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetSecond()) == (m.GetWildcard())))
 }
 
 func (m *_BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetFractional()) == (m.GetWildcard())))
 }
 
@@ -140,11 +151,7 @@ func (m *_BACnetTagPayloadTime) GetTypeName() string {
 	return "BACnetTagPayloadTime"
 }
 
-func (m *_BACnetTagPayloadTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagPayloadTime) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagPayloadTime) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -172,15 +179,15 @@ func (m *_BACnetTagPayloadTime) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagPayloadTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagPayloadTimeParse(theBytes []byte) (BACnetTagPayloadTime, error) {
-	return BACnetTagPayloadTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTagPayloadTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTagPayloadTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
+func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadTime"); pullErr != nil {
@@ -256,21 +263,21 @@ func BACnetTagPayloadTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTag
 }
 
 func (m *_BACnetTagPayloadTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadTime")
 	}
 	// Virtual field
-	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.GetWildcard()); _wildcardErr != nil {
+	if _wildcardErr := writeBuffer.WriteVirtual(ctx, "wildcard", m.GetWildcard()); _wildcardErr != nil {
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
@@ -281,7 +288,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 	// Virtual field
-	if _hourIsWildcardErr := writeBuffer.WriteVirtual("hourIsWildcard", m.GetHourIsWildcard()); _hourIsWildcardErr != nil {
+	if _hourIsWildcardErr := writeBuffer.WriteVirtual(ctx, "hourIsWildcard", m.GetHourIsWildcard()); _hourIsWildcardErr != nil {
 		return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 	}
 
@@ -292,7 +299,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 	}
 	// Virtual field
-	if _minuteIsWildcardErr := writeBuffer.WriteVirtual("minuteIsWildcard", m.GetMinuteIsWildcard()); _minuteIsWildcardErr != nil {
+	if _minuteIsWildcardErr := writeBuffer.WriteVirtual(ctx, "minuteIsWildcard", m.GetMinuteIsWildcard()); _minuteIsWildcardErr != nil {
 		return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
 	}
 
@@ -303,7 +310,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_secondErr, "Error serializing 'second' field")
 	}
 	// Virtual field
-	if _secondIsWildcardErr := writeBuffer.WriteVirtual("secondIsWildcard", m.GetSecondIsWildcard()); _secondIsWildcardErr != nil {
+	if _secondIsWildcardErr := writeBuffer.WriteVirtual(ctx, "secondIsWildcard", m.GetSecondIsWildcard()); _secondIsWildcardErr != nil {
 		return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
 	}
 
@@ -314,7 +321,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
 	}
 	// Virtual field
-	if _fractionalIsWildcardErr := writeBuffer.WriteVirtual("fractionalIsWildcard", m.GetFractionalIsWildcard()); _fractionalIsWildcardErr != nil {
+	if _fractionalIsWildcardErr := writeBuffer.WriteVirtual(ctx, "fractionalIsWildcard", m.GetFractionalIsWildcard()); _fractionalIsWildcardErr != nil {
 		return errors.Wrap(_fractionalIsWildcardErr, "Error serializing 'fractionalIsWildcard' field")
 	}
 
@@ -333,7 +340,7 @@ func (m *_BACnetTagPayloadTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

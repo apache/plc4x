@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastBACnetLoggingType(structType interface{}) BACnetLoggingType {
 	return castFunc(structType)
 }
 
-func (m BACnetLoggingType) GetLengthInBits() uint16 {
+func (m BACnetLoggingType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetLoggingType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetLoggingType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLoggingTypeParse(theBytes []byte) (BACnetLoggingType, error) {
-	return BACnetLoggingTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetLoggingTypeParse(ctx context.Context, theBytes []byte) (BACnetLoggingType, error) {
+	return BACnetLoggingTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
+func BACnetLoggingTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
 	val, err := readBuffer.ReadUint8("BACnetLoggingType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
@@ -126,13 +127,13 @@ func BACnetLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLoggin
 
 func (e BACnetLoggingType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetLoggingType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLoggingType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

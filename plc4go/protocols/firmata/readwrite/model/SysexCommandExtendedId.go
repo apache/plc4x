@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,12 +113,8 @@ func (m *_SysexCommandExtendedId) GetTypeName() string {
 	return "SysexCommandExtendedId"
 }
 
-func (m *_SysexCommandExtendedId) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SysexCommandExtendedId) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SysexCommandExtendedId) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Id) > 0 {
@@ -126,15 +124,15 @@ func (m *_SysexCommandExtendedId) GetLengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *_SysexCommandExtendedId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SysexCommandExtendedId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandExtendedIdParse(theBytes []byte, response bool) (SysexCommandExtendedId, error) {
-	return SysexCommandExtendedIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return SysexCommandExtendedIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SysexCommandExtendedIdParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedId, error) {
+func SysexCommandExtendedIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
@@ -154,12 +152,16 @@ func SysexCommandExtendedIdParseWithBuffer(readBuffer utils.ReadBuffer, response
 		id = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
+		_numItems := uint16(uint16(2))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadInt8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'id' field of SysexCommandExtendedId")
 			}
-			id[curItem] = _item
+			id[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("id", utils.WithRenderAsList(true)); closeErr != nil {
@@ -180,14 +182,14 @@ func SysexCommandExtendedIdParseWithBuffer(readBuffer utils.ReadBuffer, response
 }
 
 func (m *_SysexCommandExtendedId) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -199,7 +201,8 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for id")
 		}
-		for _, _element := range m.GetId() {
+		for _curItem, _element := range m.GetId() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'id' field")
@@ -214,7 +217,7 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SysexCommandExtendedId) isSysexCommandExtendedId() bool {
@@ -226,7 +229,7 @@ func (m *_SysexCommandExtendedId) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

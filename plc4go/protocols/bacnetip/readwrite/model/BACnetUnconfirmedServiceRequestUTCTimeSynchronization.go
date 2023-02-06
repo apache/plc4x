@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,31 +117,27 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetTypeName() s
 	return "BACnetUnconfirmedServiceRequestUTCTimeSynchronization"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (synchronizedDate)
-	lengthInBits += m.SynchronizedDate.GetLengthInBits()
+	lengthInBits += m.SynchronizedDate.GetLengthInBits(ctx)
 
 	// Simple field (synchronizedTime)
-	lengthInBits += m.SynchronizedTime.GetLengthInBits()
+	lengthInBits += m.SynchronizedTime.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
-	return BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {
@@ -153,7 +150,7 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(readBu
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedDate")
 	}
-	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _synchronizedDateErr != nil {
 		return nil, errors.Wrap(_synchronizedDateErr, "Error parsing 'synchronizedDate' field of BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
 	}
@@ -166,7 +163,7 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(readBu
 	if pullErr := readBuffer.PullContext("synchronizedTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedTime")
 	}
-	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _synchronizedTimeErr != nil {
 		return nil, errors.Wrap(_synchronizedTimeErr, "Error parsing 'synchronizedTime' field of BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
 	}
@@ -192,14 +189,14 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(readBu
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -211,7 +208,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWr
 		if pushErr := writeBuffer.PushContext("synchronizedDate"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for synchronizedDate")
 		}
-		_synchronizedDateErr := writeBuffer.WriteSerializable(m.GetSynchronizedDate())
+		_synchronizedDateErr := writeBuffer.WriteSerializable(ctx, m.GetSynchronizedDate())
 		if popErr := writeBuffer.PopContext("synchronizedDate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for synchronizedDate")
 		}
@@ -223,7 +220,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWr
 		if pushErr := writeBuffer.PushContext("synchronizedTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for synchronizedTime")
 		}
-		_synchronizedTimeErr := writeBuffer.WriteSerializable(m.GetSynchronizedTime())
+		_synchronizedTimeErr := writeBuffer.WriteSerializable(ctx, m.GetSynchronizedTime())
 		if popErr := writeBuffer.PopContext("synchronizedTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for synchronizedTime")
 		}
@@ -236,7 +233,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool {
@@ -248,7 +245,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) String() string
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

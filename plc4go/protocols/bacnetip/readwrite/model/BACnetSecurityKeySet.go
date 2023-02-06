@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,37 +102,33 @@ func (m *_BACnetSecurityKeySet) GetTypeName() string {
 	return "BACnetSecurityKeySet"
 }
 
-func (m *_BACnetSecurityKeySet) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetSecurityKeySet) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetSecurityKeySet) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (keyRevision)
-	lengthInBits += m.KeyRevision.GetLengthInBits()
+	lengthInBits += m.KeyRevision.GetLengthInBits(ctx)
 
 	// Simple field (activationTime)
-	lengthInBits += m.ActivationTime.GetLengthInBits()
+	lengthInBits += m.ActivationTime.GetLengthInBits(ctx)
 
 	// Simple field (expirationTime)
-	lengthInBits += m.ExpirationTime.GetLengthInBits()
+	lengthInBits += m.ExpirationTime.GetLengthInBits(ctx)
 
 	// Simple field (keyIds)
-	lengthInBits += m.KeyIds.GetLengthInBits()
+	lengthInBits += m.KeyIds.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetSecurityKeySet) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetSecurityKeySet) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetSecurityKeySetParse(theBytes []byte) (BACnetSecurityKeySet, error) {
-	return BACnetSecurityKeySetParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetSecurityKeySetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
+func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSecurityKeySet"); pullErr != nil {
@@ -144,7 +141,7 @@ func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSec
 	if pullErr := readBuffer.PullContext("keyRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for keyRevision")
 	}
-	_keyRevision, _keyRevisionErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_keyRevision, _keyRevisionErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyRevisionErr != nil {
 		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of BACnetSecurityKeySet")
 	}
@@ -157,7 +154,7 @@ func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSec
 	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
 	}
-	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _activationTimeErr != nil {
 		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetSecurityKeySet")
 	}
@@ -170,7 +167,7 @@ func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSec
 	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
 	}
-	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
+	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
 	if _expirationTimeErr != nil {
 		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetSecurityKeySet")
 	}
@@ -183,7 +180,7 @@ func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSec
 	if pullErr := readBuffer.PullContext("keyIds"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for keyIds")
 	}
-	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParseWithBuffer(readBuffer, uint8(uint8(3)))
+	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
 	if _keyIdsErr != nil {
 		return nil, errors.Wrap(_keyIdsErr, "Error parsing 'keyIds' field of BACnetSecurityKeySet")
 	}
@@ -206,14 +203,14 @@ func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSec
 }
 
 func (m *_BACnetSecurityKeySet) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSecurityKeySet"); pushErr != nil {
@@ -224,7 +221,7 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("keyRevision"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for keyRevision")
 	}
-	_keyRevisionErr := writeBuffer.WriteSerializable(m.GetKeyRevision())
+	_keyRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetKeyRevision())
 	if popErr := writeBuffer.PopContext("keyRevision"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for keyRevision")
 	}
@@ -236,7 +233,7 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("activationTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for activationTime")
 	}
-	_activationTimeErr := writeBuffer.WriteSerializable(m.GetActivationTime())
+	_activationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetActivationTime())
 	if popErr := writeBuffer.PopContext("activationTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for activationTime")
 	}
@@ -248,7 +245,7 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for expirationTime")
 	}
-	_expirationTimeErr := writeBuffer.WriteSerializable(m.GetExpirationTime())
+	_expirationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetExpirationTime())
 	if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for expirationTime")
 	}
@@ -260,7 +257,7 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("keyIds"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for keyIds")
 	}
-	_keyIdsErr := writeBuffer.WriteSerializable(m.GetKeyIds())
+	_keyIdsErr := writeBuffer.WriteSerializable(ctx, m.GetKeyIds())
 	if popErr := writeBuffer.PopContext("keyIds"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for keyIds")
 	}
@@ -283,7 +280,7 @@ func (m *_BACnetSecurityKeySet) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -26,8 +26,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
 public class HelloPlc4xRead {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloPlc4xRead.class);
@@ -77,21 +75,21 @@ public class HelloPlc4xRead {
             //////////////////////////////////////////////////////////
             // Read asynchronously ...
             // Register a callback executed as soon as a response arrives.
-            /*logger.info("Asynchronous request ...");
-            CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-            asyncResponse.whenComplete((readResponse, throwable) -> {
-                if (readResponse != null) {
-                    printResponse(readResponse);
-                } else {
-                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
-                }
-            });*/
-
-            // Give the async request a little time...
-            TimeUnit.MILLISECONDS.sleep(1000);
-            plcConnection.close();
-            System.exit(0);
+//            logger.info("Asynchronous request ...");
+//            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+//            asyncResponse.whenComplete((readResponse, throwable) -> {
+//                if (readResponse != null) {
+//                    printResponse(readResponse);
+//                } else {
+//                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+//                }
+//              });
+//
+//            // Wait until the async request has finished
+//            asyncResponse.get();
         }
+        // This is needed to avoid a known problem that an application may hang indefinitely.
+        System.exit(0);
     }
 
     private static void printResponse(PlcReadResponse response) {

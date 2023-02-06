@@ -68,6 +68,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestWritePropertyMultiple");
 
@@ -86,6 +87,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestWritePropertyMultiple _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -105,6 +107,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetWriteAccessSpecification> data =
         readLengthArrayField(

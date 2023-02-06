@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -19656,19 +19657,19 @@ func CastBACnetVendorId(structType interface{}) BACnetVendorId {
 	return castFunc(structType)
 }
 
-func (m BACnetVendorId) GetLengthInBits() uint16 {
+func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetVendorId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetVendorIdParse(theBytes []byte) (BACnetVendorId, error) {
-	return BACnetVendorIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetVendorIdParse(ctx context.Context, theBytes []byte) (BACnetVendorId, error) {
+	return BACnetVendorIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
+func BACnetVendorIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")
@@ -19683,13 +19684,13 @@ func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId,
 
 func (e BACnetVendorId) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetVendorId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetVendorId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

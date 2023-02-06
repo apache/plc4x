@@ -64,6 +64,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryEventFieldList");
 
@@ -85,6 +86,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryEventFieldList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfEventFields)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     if (eventFields != null) {
       int i = 0;
       for (Variant element : eventFields) {
-        boolean last = ++i >= eventFields.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= eventFields.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEventFields = readSimpleField("noOfEventFields", readSignedInt(readBuffer, 32));
 
