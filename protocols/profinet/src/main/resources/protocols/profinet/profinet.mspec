@@ -111,6 +111,35 @@
         ['TIME_TO_LIVE'   TlvTimeToLive
             [simple     uint 16         tlvTimeToLiveUnit                          ]
         ]
+        ['PORT_DESCRIPTION'   TlvPortDescription(uint 9 tlvIdLength)
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+        ]
+        ['SYSTEM_NAME'   TlvSystemName(uint 9 tlvIdLength)
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+        ]
+        ['SYSTEM_DESCRIPTION'   TlvSystemDescription(uint 9 tlvIdLength)
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+        ]
+        ['SYSTEM_CAPABILITIES'   TlvSystemCapabilities
+            [reserved   uint 8                          '0x00'                      ]
+            [simple     bit             stationOnlyCapable                          ]
+            [simple     bit             docsisCableDeviceCapable                    ]
+            [simple     bit             telephoneCapable                            ]
+            [simple     bit             routerCapable                               ]
+            [simple     bit             wlanAccessPointCapable                      ]
+            [simple     bit             bridgeCapable                               ]
+            [simple     bit             repeaterCapable                             ]
+            [simple     bit             otherCapable                                ]
+            [reserved   uint 8                          '0x00'                      ]
+            [simple     bit             stationOnlyEnabled                          ]
+            [simple     bit             docsisCableDeviceEnabled                    ]
+            [simple     bit             telephoneEnabled                            ]
+            [simple     bit             routerEnabled                               ]
+            [simple     bit             wlanAccessPointEnabled                      ]
+            [simple     bit             bridgeEnabled                               ]
+            [simple     bit             repeaterEnabled                             ]
+            [simple     bit             otherEnabled                                ]
+        ]
         ['MANAGEMENT_ADDRESS' TlvManagementAddress
             [implicit   uint 8          addressStringLength    '5' ]
             [simple     ManagementAddressSubType  addressSubType                   ]
@@ -132,10 +161,21 @@
             [simple     TlvOrgSpecificProfibusUnit      specificUnit               ]
         ]
         ['0x00120F' TlvOrgSpecificIeee8023
-            [simple     uint 8                          subType                    ]
+            [simple     TlvOrgSpecificIeee8023Unit      specificUnit               ]
+        ]
+    ]
+]
+
+[discriminatedType TlvOrgSpecificIeee8023Unit
+    [discriminator  TlvIEEESubType  subType]
+    [typeSwitch subType
+        ['MAC_PHY_CONFIG_STATUS'  TlvIeee8023MacPhyConfigStatus
             [simple     uint 8                          negotiationSupport         ]
             [simple     uint 16                         negotiationCapability      ]
             [simple     uint 16                         operationalMauType         ]
+        ]
+        ['MAX_FRAME_SIZE'  TlvIeee8023MaxFrameSize
+            [simple     uint 16                         maxSize                    ]
         ]
     ]
 ]
@@ -143,6 +183,12 @@
 [discriminatedType TlvOrgSpecificProfibusUnit
     [discriminator  TlvProfibusSubType  subType]
     [typeSwitch subType
+        ['MEASURED_DELAY'  TlvProfibusSubTypeMeasuredDelay
+            [simple     uint 32                         localPortRxDelay]
+            [simple     uint 32                         remotePortRxDelay]
+            [simple     uint 32                         localPortTxDelay]
+            [simple     uint 32                         remotePortTxDelay]
+        ]
         ['PORT_STATUS'  TlvProfibusSubTypePortStatus
             [simple     uint 16                         rtClass2PortStatus]
             [reserved   uint 2                          '0x00'           ]
@@ -151,14 +197,25 @@
             [reserved   uint 9                          '0x00'           ]
             [simple     uint 3                          rtClass3PortStatus]
         ]
+        ['MRP_PORT_STATUS'  TlvProfibusSubTypeMrpPortStatus
+            [simple     Uuid                      macAddress]
+            [simple     uint 16                   Status]
+        ]
         ['CHASSIS_MAC'  TlvProfibusSubTypeChassisMac
             [simple     MacAddress                      macAddress]
         ]
     ]
 ]
 
+[enum  uint 8 TlvIEEESubType
+    ['0x01' MAC_PHY_CONFIG_STATUS]
+    ['0x04' MAX_FRAME_SIZE]
+]
+
 [enum  uint 8 TlvProfibusSubType
+    ['0x01' MEASURED_DELAY]
     ['0x02' PORT_STATUS]
+    ['0x04' MRP_PORT_STATUS]
     ['0x05' CHASSIS_MAC]
 ]
 

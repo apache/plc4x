@@ -355,8 +355,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         new TlvProfibusSubTypeChassisMac(macAddress)
                     );
 
-                    TlvOrgSpecificIeee8023 ieee = new TlvOrgSpecificIeee8023(
-                        (short) 0x01,
+                    TlvIeee8023MacPhyConfigStatus ieee = new TlvIeee8023MacPhyConfigStatus(
                         (short) 0x03,
                         0x0020,
                         0x0010
@@ -391,7 +390,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                         ),
                                         new TlvOrganizationSpecific(
                                             ieee.getLengthInBytes(),
-                                            ieee
+                                            new TlvOrgSpecificIeee8023(ieee)
                                         ),
                                         new TlvManagementAddress(
                                             12,
