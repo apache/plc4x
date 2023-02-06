@@ -84,6 +84,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
         if (module.getSystemDefinedSubmoduleList() != null) {
             for (ProfinetInterfaceSubmoduleItem interfaceItem : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
                 Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
+                Integer subSlotNumber = interfaceItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     slot,
                     interfaceItem.getSubslotNumber(),
@@ -93,7 +94,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     interfaceItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                    identNumber,
+                    subSlotNumber,
                     identNumber,
                     false,
                     false,
@@ -105,6 +106,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
             for (
                 ProfinetPortSubmoduleItem portItem : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
                 Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
+                Integer subSlotNumber = portItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     0,
                     portItem.getSubslotNumber(),
@@ -114,7 +116,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     portItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                    identNumber,
+                    subSlotNumber,
                     identNumber,
                     false,
                     false,

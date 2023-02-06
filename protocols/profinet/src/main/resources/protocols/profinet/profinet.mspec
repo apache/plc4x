@@ -101,24 +101,24 @@
         ['END_OF_LLDP'  EndOfLldp
         ]
         ['CHASSIS_ID'   TlvChassisId(uint 9 tlvIdLength)
-            [simple     uint 8                        chassisIdSubType               ]
-            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId                      ]
+            [simple     uint 8                        chassisIdSubType              ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId               ]
         ]
         ['PORT_ID'   TlvPortId(uint 9 tlvIdLength)
-            [simple     uint 8          portIdSubType                              ]
-            [simple     vstring     '(tlvIdLength - 1) * 8' portId                           ]
+            [simple     uint 8          portIdSubType                               ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' portId                  ]
         ]
         ['TIME_TO_LIVE'   TlvTimeToLive
-            [simple     uint 16         tlvTimeToLiveUnit                          ]
+            [simple     uint 16         tlvTimeToLiveUnit                           ]
         ]
         ['PORT_DESCRIPTION'   TlvPortDescription(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_NAME'   TlvSystemName(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_DESCRIPTION'   TlvSystemDescription(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_CAPABILITIES'   TlvSystemCapabilities
             [reserved   uint 8                          '0x00'                      ]
