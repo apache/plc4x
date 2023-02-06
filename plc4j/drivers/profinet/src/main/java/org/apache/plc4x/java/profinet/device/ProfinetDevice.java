@@ -605,20 +605,9 @@ public class ProfinetDevice implements PlcSubscriber{
 
             int seqNumber = 0;
             List<PnIoCm_Block> requests = new ArrayList<>();
-            requests.add(
-                new IODWriteRequestHeader(
-                    (short) 1,
-                    (short) 0,
-                    seqNumber,
-                    ProfinetDeviceContext.ARUUID,
-                    0x00000000,
-                    0x0000,
-                    0x0000,
-                    0xe040,
-                    180,
-                    null
 
-                ));
+            // This will be filled in later
+            requests.add(null);
             seqNumber += 1;
             for (ProfinetInterfaceSubmoduleItem interfaceModule : deviceContext.getInterfaceSubModules()) {
                 requests.add(
@@ -674,7 +663,24 @@ public class ProfinetDevice implements PlcSubscriber{
                 }
                 index += 1;
             }
+            long multiWriteRecordLength = 0;
+            // The first record isn't included in the overall length
+            for (int i = 1; i < requests.size(); i++) {
+                multiWriteRecordLength += requests.get(i).getLengthInBytes();
+            }
 
+            requests.set(0, new IODWriteRequestHeader(
+                (short) 1,
+                (short) 0,
+                seqNumber,
+                ProfinetDeviceContext.ARUUID,
+                0x00000000,
+                0x0000,
+                0x0000,
+                0xe040,
+                multiWriteRecordLength,
+                null
+            ));
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
