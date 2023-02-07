@@ -44,7 +44,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         try {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, value, type, null, ByteOrder.LITTLE_ENDIAN);
-            data = writeBuffer.getData();
+            data = writeBuffer.getBytes();
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }

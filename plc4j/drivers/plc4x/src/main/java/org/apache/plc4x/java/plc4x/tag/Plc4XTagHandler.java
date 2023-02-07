@@ -28,12 +28,7 @@ public class Plc4XTagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        if(!tagAddress.contains(":")) {
-            throw new PlcInvalidTagException(tagAddress);
-        }
-        String address = tagAddress.substring(0, tagAddress.lastIndexOf(":"));
-        String dataType = tagAddress.substring(tagAddress.lastIndexOf(":") + 1);
-        return new Plc4xTag(address, PlcValueType.valueOf(dataType));
+        return new Plc4xTag(tagAddress);
     }
 
     @Override

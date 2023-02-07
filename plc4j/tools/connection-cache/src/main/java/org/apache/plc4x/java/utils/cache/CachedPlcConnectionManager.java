@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.cache;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
@@ -58,17 +59,26 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         this.connectionContainers = new HashMap<>();
     }
 
+    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
+        return getConnection(url,null);
+    }
+
+    @Override
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainers.get(url) == null) {
+            if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
                 // Establish the real connection to the plc
-                PlcConnection connection = connectionManager.getConnection(url);
-
-                // Crate a connection container to manage handling this connection
+                PlcConnection connection;
+                if(authentication!=null) {
+                    connection = connectionManager.getConnection(url,authentication);
+                } else{
+                    connection = connectionManager.getConnection(url);
+                }
                 connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
@@ -85,8 +95,9 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         }
     }
 
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
+    @Override
+    public PlcDriverManager getDriverManager() {
+        return connectionManager.getDriverManager();
     }
 
     public static class Builder {

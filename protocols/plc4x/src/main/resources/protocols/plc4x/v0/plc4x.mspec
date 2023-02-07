@@ -175,14 +175,12 @@
         ['WCHAR'         STRING
             [simple   string 16                  value        encoding='"UTF-16"']
         ]
-        //['STRING'        STRING
-        //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-        //    [simple   vstring 'stringLength'     value                           ]
-        //]
-        //['WSTRING'       STRING
-        //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
-        //]
+        ['STRING'        STRING
+            [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 8']
+        ]
+        ['WSTRING'       STRING
+            [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 16' encoding='"UTF-16"']
+        ]
 
         // Times and Dates
         ['TIME'           TIME

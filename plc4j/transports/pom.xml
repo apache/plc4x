@@ -45,5 +45,19 @@
     <module>virtualcan</module>
     <module>test</module>
   </modules>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <SPI-Provider>
+              *
+            </SPI-Provider>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

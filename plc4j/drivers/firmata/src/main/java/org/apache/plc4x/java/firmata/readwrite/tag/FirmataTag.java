@@ -57,6 +57,7 @@ public abstract class FirmataTag implements PlcTag {
         return address;
     }
 
+    @Override
     public int getNumberOfElements() {
         return quantity;
     }

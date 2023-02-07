@@ -115,6 +115,7 @@ public class DirectAdsTag implements AdsTag {
         return adsDataTypeName;
     }
 
+    @Override
     public int getNumberOfElements() {
         return numberOfElements;
     }

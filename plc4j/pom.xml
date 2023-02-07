@@ -126,6 +126,9 @@
               <goal>check</goal>
             </goals>
             <configuration>
+              <excludes>
+                <exclude>**/Identifiers</exclude>
+              </excludes>
               <!-- TODO: Turn this on as soon as possible. -->
               <haltOnFailure>false</haltOnFailure>
               <rules>
@@ -221,7 +224,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{failsafeArgLine}</argLine>
+          <argLine>-Xmx256m</argLine>
           <includes>
             <include>**/*IT.java</include>
           </includes>

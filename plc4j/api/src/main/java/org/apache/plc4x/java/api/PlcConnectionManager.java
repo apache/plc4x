@@ -41,5 +41,6 @@ public interface PlcConnectionManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
+    PlcDriverManager getDriverManager();
 
 }

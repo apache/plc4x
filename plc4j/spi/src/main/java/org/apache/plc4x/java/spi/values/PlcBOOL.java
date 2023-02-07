@@ -56,6 +56,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
             return new PlcBOOL((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcBOOL((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcBOOL(((Number) value).intValue());
         } else {
             return new PlcBOOL((String) value);
         }

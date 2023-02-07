@@ -25,19 +25,25 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class S7Configuration implements Configuration, TcpTransportConfiguration {
+    @ConfigurationParameter("local-group")
+    @IntDefaultValue(3)
+    public int localGroup = 3;
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
     public int localRack = 1;
 
-    @ConfigurationParameter("local-slot")
-    @IntDefaultValue(1)
-    public int localSlot = 1;
-    
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
     public int localTsap = 0;
 
+    @ConfigurationParameter("local-slot")
+    @IntDefaultValue(1)
+    public int localSlot = 1;
+
+    @ConfigurationParameter("remote-group")
+    @IntDefaultValue(1)
+    public int remoteGroup = 1;
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
     public int remoteRack = 0;
@@ -65,6 +71,31 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("controller-type")
     public String controllerType;
 
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(4000)
+    protected int timeoutRequest;
+    public int getLocalGroup() {
+        return localGroup;
+    }
+
+    public void setLocalGroup(int localGroup) {
+        this.localGroup = localGroup;
+    }
+    public int getLocalTsap() {
+        return localTsap;
+    }
+
+    public void setLocalTsap(int localTsap) {
+        this.localTsap = localTsap;
+    }
+    public int getRemoteGroup() {
+        return remoteGroup;
+    }
+
+    public void setRemoteGroup(int remoteGroup) {
+        this.remoteGroup = remoteGroup;
+    }
+
     public int getLocalRack() {
         return localRack;
     }
@@ -81,14 +112,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.localSlot = localSlot;
     }
 
-    public int getLocalTsap() {
-        return localTsap;
-    }
-
-    public void setLocalTsap(int localTsap) {
-        this.localTsap = localTsap;
-    }
-    
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -104,7 +127,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteSlot(int remoteSlot) {
         this.remoteSlot = remoteSlot;
     }
-
     public int getRemoteTsap() {
         return remoteTsap;
     }
@@ -112,7 +134,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteTsap(int remoteTsap) {
         this.remoteTsap = remoteTsap;
     }
-    
     public int getPduSize() {
         return pduSize;
     }
@@ -145,6 +166,12 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.controllerType = controllerType;
     }
 
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
     /**
      * Per default port for the S7 protocol is 102.
      * @return 102
@@ -158,15 +185,18 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public String toString() {
         return "Configuration{" +
             "local-rack=" + localRack +
+            ", local-group=" + localGroup +
             ", local-slot=" + localSlot +
             ", local-tsap=" + localTsap +
+            ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
             ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType='" + controllerType + '\'' +
+            ", controllerType='" + controllerType +
+            ", timeoutRequest='" + timeoutRequest + '\'' +
             '}';
     }
 

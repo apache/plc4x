@@ -34,13 +34,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class LeasedPlcConnection implements PlcConnection {
 
-    private final ConnectionContainer connectionContainer;
+    private ConnectionContainer connectionContainer;
     private PlcConnection connection;
-
+    private Timer usageTimer;
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
-        Timer usageTimer = new Timer();
+        usageTimer = new Timer();
         usageTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -51,11 +51,18 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
-        // Make the connection unusable.
-        connection = null;
-
+        if(usageTimer != null){
+            usageTimer.cancel();
+            usageTimer = null;
+        }
+        if(connectionContainer == null) {
+            return;
+        }
         // Tell the connection container that the connection is free to be reused.
         connectionContainer.returnConnection(this);
+        // Make the connection unusable.
+        connection = null;
+        connectionContainer = null;
     }
 
     @Override

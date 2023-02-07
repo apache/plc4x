@@ -713,9 +713,9 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address;
 
     item = cur_item->value;
-
+    plc4c_s7_read_write_s7_var_request_parameter_item_field* field = item->address;
     // Get the item address from the API request.
-    parsed_item_address = item->address;
+    parsed_item_address = field->parameter_item;
 
     // Create a copy of the request item...
     updated_item_address = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
@@ -723,14 +723,14 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
       return NO_MEMORY;
     }
     updated_item_address->_type = parsed_item_address->_type;
-    updated_item_address->s7_var_request_parameter_item_address_address = 
+    updated_item_address->s7_var_request_parameter_item_address_address =
         malloc(sizeof(plc4c_s7_read_write_s7_address));
     if (updated_item_address->s7_var_request_parameter_item_address_address == NULL) {
       return NO_MEMORY;
     }
     // Memcpy inplace of fields assignment, as all fields where assigned
     memcpy(updated_item_address->s7_var_request_parameter_item_address_address,
-      parsed_item_address->s7_var_request_parameter_item_address_address, 
+      parsed_item_address->s7_var_request_parameter_item_address_address,
       sizeof(plc4c_s7_read_write_s7_address));
 
     // In case of TIME values, we read 4 bytes for each value instead.
@@ -855,7 +855,10 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     // Get the item address from the API request.
     item = list_item->value; 
     parsed_item = item->item;
-    parsed_param = parsed_item->address;
+
+    plc4c_s7_read_write_s7_var_request_parameter_item_field* field = parsed_item->address;
+
+    parsed_param = field->parameter_item;
     parsed_value = item->value;
 
     // Make a copy of the param

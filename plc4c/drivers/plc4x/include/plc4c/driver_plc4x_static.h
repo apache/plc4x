@@ -36,6 +36,8 @@ extern "C" {
 
 uint8_t plc4c_spi_evaluation_helper_str_len(char* str);
 
+char* plc4c_plc4x_read_write_parse_string(plc4c_spi_read_buffer* io, char* encoding);
+
 #ifdef __cplusplus
 }
 #endif

@@ -85,7 +85,7 @@ public class SecureChannel {
         "(?<transportHost>[\\w.-]+)(:" +
         "(?<transportPort>\\d*))?");
 
-    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc)" +
+    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc|https)" +
         INET_ADDRESS_PATTERN +
         "(?<transportEndpoint>[\\w/=]*)[\\?]?"
     );
@@ -580,7 +580,7 @@ public class SecureChannel {
     }
 
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
-        LOGGER.info("Disconnecting");
+        LOGGER.debug("Disconnecting");
         int requestHandle = getRequestHandle();
 
         if (keepAlive != null) {
@@ -879,7 +879,7 @@ public class SecureChannel {
                             for (ExtensionObjectDefinition endpoint : endpoints) {
                                 EndpointDescription endpointDescription = (EndpointDescription) endpoint;
                                 if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue()) && endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
-                                    LOGGER.info("Found OPC UA endpoint {}", this.endpoint.getStringValue());
+                                    LOGGER.debug("Found OPC UA endpoint {}", this.endpoint.getStringValue());
                                     this.configuration.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
                                 }
                             }

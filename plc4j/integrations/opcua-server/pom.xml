@@ -168,18 +168,18 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->
+    <!-- Logging dependencies -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcmail-jdk15on</artifactId>
+      <artifactId>bcmail-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
 
     <dependency>
@@ -253,7 +253,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.slf4j:slf4j-simple</usedDependency>
-            <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
+            <usedDependency>org.bouncycastle:bcmail-jdk18on</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>

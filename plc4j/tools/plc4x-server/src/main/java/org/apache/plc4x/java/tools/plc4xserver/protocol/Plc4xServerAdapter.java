@@ -57,7 +57,8 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof Plc4xMessage) {
             final Plc4xMessage plc4xMessage = (Plc4xMessage) msg;
-            switch (plc4xMessage.getRequestType()) {
+            Plc4xRequestType plc4xRequestType = plc4xMessage.getRequestType();
+            switch (plc4xRequestType) {
                 case CONNECT_REQUEST: {
                     Plc4xConnectRequest request = (Plc4xConnectRequest) plc4xMessage;
                     try (final PlcConnection ignored = connectionManager.getConnection(request.getConnectionString())) {
@@ -169,6 +170,8 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         ctx.writeAndFlush(response);
                     }
                     break;
+                default:
+                    logger.error("Error executing plc4xRequestType: {}", plc4xRequestType);
             }
         }
     }

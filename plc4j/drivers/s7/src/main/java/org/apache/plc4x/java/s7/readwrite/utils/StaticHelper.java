@@ -36,14 +36,22 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcWCHAR;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -127,6 +135,87 @@ import java.util.regex.Pattern;
  */
 
 public class StaticHelper {
+    private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
+
+    public static Charset detectCharset(String firstMaTch, byte[] bytes) {
+
+        Charset charset = null;
+        if (firstMaTch!=null && !"".equals(firstMaTch))
+        {
+            try {
+                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
+            }catch (Exception ignored) {
+            }
+            return charset;
+        }
+        for (String charsetName : DEFAULTCHARSETS) {
+            charset = detectCharset(bytes, Charset.forName(charsetName), bytes.length);
+            if (charset != null) {
+                break;
+            }
+        }
+
+        return charset;
+    }
+
+    private static Charset detectCharset(byte[] bytes, Charset charset, int length) {
+        try {
+            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, 0, length));
+
+            CharsetDecoder decoder = charset.newDecoder();
+            decoder.reset();
+
+            byte[] buffer = new byte[512];
+            boolean identified = false;
+            while (input.read(buffer) != -1 && !identified) {
+                identified = identify(buffer, decoder);
+            }
+
+            input.close();
+
+            if (identified) {
+                return charset;
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static boolean identify(byte[] bytes, CharsetDecoder decoder) {
+        try {
+            decoder.decode(ByteBuffer.wrap(bytes));
+        } catch (CharacterCodingException e) {
+            return false;
+        }
+        return true;
+    }
+    public static Charset getEncoding(String firstMaTch, String str) {
+        if (str == null || str.trim().length() < 1) {
+            return null;
+        }
+        Charset charset = null;
+        if (firstMaTch!=null && !"".equals(firstMaTch))
+        {
+            try {
+                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
+            }catch (Exception ignored) {
+            }
+            return charset;
+        }
+        for (String encode : DEFAULTCHARSETS) {
+            try {
+                Charset charset1 = Charset.forName(encode);
+                if (str.equals(new String(str.getBytes(charset1), charset1))) {
+                    return charset1;
+                }
+            } catch (Exception er) {
+            }
+        }
+        return null;
+    }
 
     public enum OB {
         FREE_CYC(0X0000, "OB1 Free cycle"),
@@ -1931,7 +2020,7 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
-    public static String parseS7Char(ReadBuffer io, String encoding) throws ParseException {
+    public static String parseS7Char(ReadBuffer io, String encoding, String stringEncoding) throws ParseException{
         if ("UTF-8".equalsIgnoreCase(encoding)) {
             return io.readString(8, WithOption.WithEncoding(encoding));
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
@@ -1941,14 +2030,14 @@ public class StaticHelper {
         }
     }
 
-    public static String parseS7String(ReadBuffer io, int stringLength, String encoding) {
+    public static String parseS7String(ReadBuffer io, int stringLength, String encoding, String stringEncoding) {
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 // This is the maximum number of bytes a string can be long.
                 short maxLength = io.readUnsignedShort(8);
                 // This is the total length of the string on the PLC (Not necessarily the number of characters read)
                 short totalStringLength = io.readUnsignedShort(8);
-
+                totalStringLength = (short) Math.min(maxLength, totalStringLength);
                 final byte[] byteArray = new byte[totalStringLength];
                 for (int i = 0; (i < stringLength) && io.hasMore(8); i++) {
                     final byte curByte = io.readByte();
@@ -1963,13 +2052,25 @@ public class StaticHelper {
                         break;
                     }
                 }
-                return new String(byteArray, StandardCharsets.UTF_8);
+                Charset charset = detectCharset(null,byteArray);
+                if (charset == null) {
+                    try {
+                        charset = Charset.forName(stringEncoding.replaceAll("[^a-zA-Z0-9]", ""));
+                    }catch (Exception ignored) {
+                    }
+                    if (charset == null) {
+                        charset = StandardCharsets.UTF_8;
+                    }
+                }
+                String substr = new String(byteArray, charset);
+                substr = substr.replaceAll("[^\u0020-\u9FA5]", "");
+                return substr;
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
                 // This is the maximum number of bytes a string can be long.
                 int maxLength = io.readUnsignedInt(16);
                 // This is the total length of the string on the PLC (Not necessarily the number of characters read)
                 int totalStringLength = io.readUnsignedInt(16);
-
+                totalStringLength = Math.min(maxLength, totalStringLength);
                 final byte[] byteArray = new byte[totalStringLength * 2];
                 for (int i = 0; (i < stringLength) && io.hasMore(16); i++) {
                     final short curShort = io.readShort(16);
@@ -1985,7 +2086,17 @@ public class StaticHelper {
                         break;
                     }
                 }
-                return new String(byteArray, StandardCharsets.UTF_16);
+                Charset charset = detectCharset(stringEncoding,byteArray);
+                if (charset == null) {
+                    try {
+                        charset = Charset.forName(stringEncoding.replaceAll("[^a-zA-Z0-9]", ""));
+                    }catch (Exception ignored) {
+                    }
+                    if (charset == null) {
+                        charset = StandardCharsets.UTF_16;
+                    }
+                }
+                return new String(byteArray, charset);
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
@@ -1997,12 +2108,29 @@ public class StaticHelper {
     /*
      * A variable of data type CHAR (character) occupies one byte.
      */
-    public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding) {
-        // TODO: Need to implement the serialization or we can't write strings
+    public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding, String stringEncoding) {
+        if (value instanceof PlcList) {
+            PlcList list = (PlcList) value;
+            list.getList().forEach(v -> writeChar(io, v, encoding,stringEncoding));
+        } else {
+            writeChar(io, value, encoding,stringEncoding);
+        }
+    }
+    private static void writeChar(WriteBuffer io, PlcValue value, String encoding, String stringEncoding) {
         if ("UTF-8".equalsIgnoreCase(encoding)) {
-            //return io.readString(8, encoding);
+            try {
+                byte valueByte = value.getByte();
+                io.writeByte(valueByte);
+            } catch (SerializationException e) {
+                throw new PlcRuntimeException("writeChar error");
+            }
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            //return io.readString(16, encoding);
+            try {
+                byte[] bytes = ((PlcWCHAR) value).getBytes();
+                io.writeByteArray(bytes);
+            } catch (SerializationException e) {
+                throw new PlcRuntimeException("writeWChar error");
+            }
         } else {
             throw new PlcRuntimeException("Unsupported encoding");
         }
@@ -2032,23 +2160,57 @@ public class StaticHelper {
      * If your application does not handle S7string, you can handle
      * the String as char arrays from your application.
      */
-    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
-        int m = 0xFF & value.getString().length();
-        m = (m > k) ? k : m;
-        byte[] chars = new byte[m];
-        for (int i = 0; i < m; ++i) {
-            char c = value.getString().charAt(i);
-            chars[i] = (byte) c;
+    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding, String stringEncoding) {
+        stringLength = Math.min(stringLength, 254);
+        String valueString = (String) value.getObject();
+        valueString = valueString == null ? "" : valueString;
+        if ("AUTO".equalsIgnoreCase(stringEncoding))
+        {
+            stringEncoding = null;
+        }
+        Charset charsetTemp = getEncoding(stringEncoding,valueString);
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            if (charsetTemp == null) {
+                charsetTemp = StandardCharsets.UTF_8;
+            }
+            final byte[] raw = valueString.getBytes(charsetTemp);
+            try {
+                io.writeByte((byte) stringLength);
+                io.writeByte((byte) raw.length);
+                for (int i = 0; i < stringLength; i++) {
+                    if (i >= raw.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( raw[i]);
+                    }
+                }
+            }
+            catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            if (charsetTemp == null) {
+                charsetTemp = StandardCharsets.UTF_16;
+            }
+            final byte[] raw = valueString.getBytes(charsetTemp);
+            try {
+                io.writeUnsignedInt(16, stringLength);
+                io.writeUnsignedInt(16, raw.length / 2);
+                for (int i = 0; i < stringLength * 2; i++) {
+                    if (i >= raw.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( raw[i]);
+                    }
+                }
+            }
+            catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new PlcRuntimeException("Unsupported string encoding " + encoding);
         }
 
-        try {
-            io.writeByte((byte)(k & 0xFF));
-            io.writeByte((byte)(m & 0xFF));
-            io.writeByteArray(chars);
-        } catch (SerializationException ex) {
-            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

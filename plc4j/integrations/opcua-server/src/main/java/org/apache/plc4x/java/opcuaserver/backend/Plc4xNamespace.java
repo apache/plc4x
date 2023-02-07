@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcuaserver.configuration.Configuration;
 import org.apache.plc4x.java.opcuaserver.configuration.DeviceConfiguration;
 import org.apache.plc4x.java.opcuaserver.configuration.Tag;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.core.ValueRank;
@@ -184,9 +185,9 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
         for (DataItem item : dataItems) {
             plc4xServer.addTag(item);
 
-            if (plc4xServer.getDriverManager() == null) {
+            if (plc4xServer.getConnectionManager() == null) {
                 plc4xServer.removeTag(item);
-                plc4xServer.setDriverManager(new DefaultPlcDriverManager());
+                plc4xServer.setConnectionManager(CachedPlcConnectionManager.getBuilder(new DefaultPlcDriverManager()).build());
             }
         }
 

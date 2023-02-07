@@ -43,7 +43,11 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, stringLength)
+		stringEncoding, err := utils.StrToString(arguments[2])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, stringLength, stringEncoding)
 	case "SzlId":
 		return model.SzlIdParseWithBuffer(context.Background(), io)
 	case "AlarmMessageObjectAckType":

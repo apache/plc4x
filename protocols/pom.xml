@@ -177,6 +177,9 @@
         <configuration>
           <instructions>
             <_removeheaders>Bnd-LastModified</_removeheaders>
+            <SPI-Provider>
+              *
+            </SPI-Provider>
           </instructions>
         </configuration>
       </plugin>
@@ -217,6 +220,12 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Needed by the *ProtocolTests in all modules, or it won't output any findings -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

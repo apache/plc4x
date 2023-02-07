@@ -39,27 +39,30 @@ type PlcTag interface {
 	GetMemoryArea() readWriteModel.MemoryArea
 	GetByteOffset() uint16
 	GetBitOffset() uint8
+	GetStringEncoding() string
 }
 
 type plcTag struct {
-	TagType     TagType
-	MemoryArea  readWriteModel.MemoryArea
-	BlockNumber uint16
-	ByteOffset  uint16
-	BitOffset   uint8
-	NumElements uint16
-	Datatype    readWriteModel.TransportSize
+	TagType        TagType
+	MemoryArea     readWriteModel.MemoryArea
+	BlockNumber    uint16
+	ByteOffset     uint16
+	BitOffset      uint8
+	NumElements    uint16
+	Datatype       readWriteModel.TransportSize
+	StringEncoding string
 }
 
-func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcTag {
+func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcTag {
 	return plcTag{
-		TagType:     S7Tag,
-		MemoryArea:  memoryArea,
-		BlockNumber: blockNumber,
-		ByteOffset:  byteOffset,
-		BitOffset:   bitOffset,
-		NumElements: numElements,
-		Datatype:    datatype,
+		TagType:        S7Tag,
+		MemoryArea:     memoryArea,
+		BlockNumber:    blockNumber,
+		ByteOffset:     byteOffset,
+		BitOffset:      bitOffset,
+		NumElements:    numElements,
+		Datatype:       datatype,
+		StringEncoding: stringEncoding,
 	}
 }
 
@@ -68,16 +71,17 @@ type PlcStringTag struct {
 	stringLength uint16
 }
 
-func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
+func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringTag {
 	return PlcStringTag{
 		plcTag: plcTag{
-			TagType:     S7StringTag,
-			MemoryArea:  memoryArea,
-			BlockNumber: blockNumber,
-			ByteOffset:  byteOffset,
-			BitOffset:   bitOffset,
-			NumElements: numElements,
-			Datatype:    datatype,
+			TagType:        S7StringTag,
+			MemoryArea:     memoryArea,
+			BlockNumber:    blockNumber,
+			ByteOffset:     byteOffset,
+			BitOffset:      bitOffset,
+			NumElements:    numElements,
+			Datatype:       datatype,
+			StringEncoding: stringEncoding,
 		},
 		stringLength: stringLength,
 	}
@@ -140,6 +144,10 @@ func (m plcTag) Serialize() ([]byte, error) {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
+}
+
+func (m plcTag) GetStringEncoding() string {
+	return m.StringEncoding
 }
 
 func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {

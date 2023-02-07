@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -30,6 +31,7 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcNull;
@@ -58,15 +60,11 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.tuple.MutablePair;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -83,22 +81,12 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
-
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
-    private final AtomicInteger tpduGenerator = new AtomicInteger(10);
-    
-    /*
-     * Task group for managing connection redundancy.
-     */
-    private ExecutorService clientExecutorService = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
-                                                    .namingPattern("plc4x-app-thread-%d")
-                                                    .daemon(true)
-                                                    .priority(Thread.MAX_PRIORITY)
-                                                    .build());    
-    
+    private final AtomicInteger tpduGenerator = new AtomicInteger(0);
+
+    private S7Configuration configuration;
     /*
      * Take into account that the size of this buffer depends on the final device.
      * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000.
@@ -114,17 +102,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, EventLogic);
     private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, EventLogic);
 
-    /*
-    * For the reconnection functionality by a "TimeOut" of the connection,
-    * you must keep track of open transactions. In general, an S7 device 
-    * supports a couple of simultaneous requests.
-    * The rhythm of execution must be determined by the TransactionManager.
-    * So far it is the way to indicate to the user that he must redo 
-    * his request.
-    */
-    private HashMap<Object,MutablePair<RequestTransactionManager.RequestTransaction, Object>> active_requests = new HashMap<>();
-
-    
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
@@ -141,7 +118,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         this.tm = new RequestTransactionManager(1);
         EventLogic.start();
     }
-
+    @Override
+    public void setConfiguration(S7Configuration configuration) {
+        this.configuration = configuration;
+    }
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         if (context.isPassive()) {
@@ -164,7 +144,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 context.getChannel().close();
             })
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
@@ -175,7 +155,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         logger.warn("Timeout during Connection establishing, closing channel...");
                         context.getChannel().close();
                     })
-                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -212,7 +192,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 logger.warn("Timeout during Connection establishing, closing channel...");
                                 context.getChannel().close();
                             })
-                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -227,27 +207,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             });
     }
 
-    
+
   /*
-    * It performs the sequential and safe shutdown of the driver. 
+    * It performs the sequential and safe shutdown of the driver.
     * Completion of pending requests, executors and associated tasks.
-    */    
+    */
     @Override
     public void onDisconnect(ConversationContext<TPKTPacket> context) {
-        //1. Clear all pending requests and their associated transaction          
-        cleanFutures(); 
-        //2. Here we shutdown the local task executor.
-        clientExecutorService.shutdown();
-        //3. Performs the shutdown of the transaction executor.
         tm.shutdown();
-        //4. Finish the execution of the tasks for the handling of Events. 
+        //4. Finish the execution of the tasks for the handling of Events.
         EventLogic.stop();
-        //5. Executes the closing of the main channel.
-        context.getChannel().close();
-        //6. Here is the stop of any task or state machine that is added.        
+        context.fireDisconnected();
+        //6. Here is the stop of any task or state machine that is added.
     }
 
-   
+
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
@@ -289,11 +263,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     private CompletableFuture<S7Message> readInternal(S7MessageRequest request) {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
-        int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        int tpduId = getTpduId();
 
         // Create a new Request with correct tpuId (is not known before)
         S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
@@ -304,7 +274,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload() != null)
@@ -326,17 +296,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
         Iterator<String> iter = request.getTagNames().iterator();
-        
+
         String tagName = null;
         while(iter.hasNext()) {
             tagName = iter.next();
             final S7Tag tag = (S7Tag) request.getTag(tagName);
             final PlcValue plcValue = request.getPlcValue(tagName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
-            payloadItems.add(serializePlcValue(tag, plcValue, iter.hasNext()));            
+            payloadItems.add(serializePlcValue(tag, plcValue, iter.hasNext()));
         }
-        
-        
+
+
 //        for (String tagName : request.getTagNames()) {
 //            final S7Tag tag = (S7Tag) request.getTag(tagName);
 //            final PlcValue plcValue = request.getPlcValue(tagName);
@@ -344,14 +314,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 //            payloadItems.add(serializePlcValue(tag, plcValue));
 //
 //        }
-        
-        
-        
-        final int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+
+        int tpduId = getTpduId();
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
@@ -364,13 +328,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 (short) tpduId
             )
         );
-        
+
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)
@@ -425,11 +389,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
             //payloadItems.add(serializePlcValue(tag, plcValue));
         }
-        final int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+
+        int tpduId = getTpduId();
 
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageUserData(tpduId,
@@ -442,7 +403,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)
@@ -730,7 +691,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private TPKTPacket createIdentifyRemoteMessage() {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(Collections.singletonList(
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(getTpduId(), new S7ParameterUserData(Collections.singletonList(
             new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
         )), new S7PayloadUserData(Collections.singletonList(
             new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
@@ -762,7 +723,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         S7ParameterSetupCommunication s7ParameterSetupCommunication =
             new S7ParameterSetupCommunication(
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
-        S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
+        S7Message s7Message = new S7MessageRequest(getTpduId(), s7ParameterSetupCommunication,
             null);
         COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
         return new TPKTPacket(cotpPacketData);
@@ -920,12 +881,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                final int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
-                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
+                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
-                    byteBuffer = ByteBuffer.allocate(writeBuffer.getBytes().length * tag.getNumberOfElements());
+                    byteBuffer = ByteBuffer.allocate(lengthInBytes * tag.getNumberOfElements());
                 }
                 byteBuffer.put(writeBuffer.getBytes());
             }
@@ -945,13 +906,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    stringLength);
+                    stringLength, tag.getStringEncoding());
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            stringLength);
+                            stringLength, tag.getStringEncoding());
                     } catch (ParseException e) {
                         logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                     }
@@ -1035,17 +996,34 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
         if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
+            (transportSize == TransportSize.LINT) ||
+            (transportSize == TransportSize.ULINT) ||
+            (transportSize == TransportSize.LWORD) ||
+            (transportSize == TransportSize.LREAL) ||
+            (transportSize == TransportSize.REAL) ||
+            (transportSize == TransportSize.LTIME) ||
+            (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) ||
+            (transportSize == TransportSize.DATE_AND_TIME)
+        ) {
             numElements = numElements * transportSize.getSizeInBytes();
+            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
         }
+        if (transportSize == TransportSize.CHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes();
+        }
+        if (transportSize == TransportSize.WCHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes() * 2;
+        }
         if (transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }
@@ -1078,27 +1056,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             future.completeExceptionally(e);
         }
     }
-    
-    private void cleanFutures(){
-        //TODO: Debe ser ejecutado si la conexion esta levanta.
-        active_requests.forEach((f,p)->{
-            CompletableFuture<Object> cf = (CompletableFuture<Object>) f;
-            try {
-                if (!cf.isDone()) {
-                    logger.info("CF");
-                    cf.cancel(true);
-                    logger.info("ClientCF");
-                    ((CompletableFuture<Object>) p.getRight()).completeExceptionally(new PlcRuntimeException("Disconnected"));                     
-                    logger.info("TM");
-                    p.getLeft().endRequest();
-                };
-            } catch (Exception ex){
-                logger.info(ex.toString());
-            }
-        });
-        active_requests.clear();   
 
-    }    
-    
+    protected int getTpduId() {
+        int tpduId = 0;
+        // It seems an S7 200 doesn't like any TPDU-Id that's not 0
+        if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200) {
+            tpduId = tpduGenerator.getAndIncrement();
+        }
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if(tpduGenerator.get() == 0xFFFF) {
+            tpduGenerator.set(0);
+        }
+        return tpduId;
+    }
 
 }

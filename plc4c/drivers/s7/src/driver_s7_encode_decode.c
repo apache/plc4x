@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tpkt_packet.h>
+#include "plc4c/driver_s7_encode_decode.h"
 
 uint16_t plc4c_driver_s7_encode_tsap_id(
     plc4c_driver_s7_device_group device_group, uint8_t rack, uint8_t slot) {
@@ -114,6 +115,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
   // Parser logic
   char* cur_pos = address;
   char* last_pos = address;
+  char* string_encoding = NULL;
   // - Does it start with "%"?
   if (*cur_pos == '%') {
     cur_pos++;
@@ -247,6 +249,19 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
       *(num_elements + len) = '\0';
     }
 
+    if (*cur_pos == '|') {
+      // Next comes the num_elements
+      cur_pos++;
+      last_pos = cur_pos;
+      while (*cur_pos != '\0') {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      string_encoding = malloc(sizeof(char) * (len + 1));
+      strncpy(string_encoding, last_pos, len);
+      *(string_encoding + len) = '\0';
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Now parse the contents.
     ////////////////////////////////////////////////////////////////////////////
@@ -261,6 +276,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
       free(data_type);
       free(string_length);
       free(num_elements);
+      free(string_encoding);
       free(s7_item);
       return NO_MEMORY;
     }
@@ -283,6 +299,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
       free(data_type);
       free(string_length);
       free(num_elements);
+      free(string_encoding);
       free(any_address);
       free(s7_item);
       return INVALID_ADDRESS;
@@ -320,15 +337,50 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
 
     // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
+        plc4c_s7_read_write_transport_size_TIME ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_LINT ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_ULINT ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_LWORD ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_LREAL ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_REAL ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_LTIME ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_DATE ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_TIME_OF_DAY ||
+        any_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_DATE_AND_TIME) {
+      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
+        any_address->s7_address_any_number_of_elements =
+          plc4c_s7_read_write_transport_size_length_in_bytes(plc4x_spi_context_background(), &(any_address->s7_address_any_transport_size)) *
+            any_address->s7_address_any_number_of_elements;
+    } else if (any_address->s7_address_any_transport_size ==
          plc4c_s7_read_write_transport_size_STRING) {
+      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
       if (string_length != NULL) {
         any_address->s7_address_any_number_of_elements =
-            strtol(string_length, 0, 10) *
+            (strtol(string_length, 0, 10) +2) *
                 any_address->s7_address_any_number_of_elements;
-      } else if (any_address->s7_address_any_transport_size ==
-                 plc4c_s7_read_write_transport_size_STRING) {
+      } else {
         any_address->s7_address_any_number_of_elements =
-            254 * any_address->s7_address_any_number_of_elements;
+            256 * any_address->s7_address_any_number_of_elements;
+      }
+    } else if (any_address->s7_address_any_transport_size ==
+        plc4c_s7_read_write_transport_size_WSTRING) {
+      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
+      if (string_length != NULL) {
+        any_address->s7_address_any_number_of_elements =
+            (strtol(string_length, 0, 10) +2) * 2 *
+            any_address->s7_address_any_number_of_elements;
+      } else {
+        any_address->s7_address_any_number_of_elements =
+            512 * any_address->s7_address_any_number_of_elements;
       }
     } else if (any_address->s7_address_any_transport_size ==
                plc4c_s7_read_write_transport_size_TOD) {
@@ -396,8 +448,12 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     free(read_buffer);
     free(raw_data);
   }
+  plc4c_s7_read_write_s7_var_request_parameter_item_field* s7_item_field;
 
-  *item = s7_item;
+  s7_item_field = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item_field));
+  s7_item_field->parameter_item = s7_item;
+  s7_item_field->s7_address_any_encoding_of_string = string_encoding;
+  *item = s7_item_field;
 
   return OK;
 }

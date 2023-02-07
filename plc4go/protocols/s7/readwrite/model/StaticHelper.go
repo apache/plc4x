@@ -20,9 +20,10 @@
 package model
 
 import (
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
 func ParseTiaTime(io utils.ReadBuffer) (uint32, error) {
@@ -122,33 +123,46 @@ func SerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
 	return nil
 }
 
-func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseS7String(io utils.ReadBuffer, stringLength int32, defaultEncoding string, encoding string) (string, error) {
+	usedEncoding := defaultEncoding
+	if len(encoding) > 0 {
+		usedEncoding = encoding
+	}
 	var multiplier int32
-	switch encoding {
+	switch usedEncoding {
 	case "UTF-8":
 		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier), encoding)
+	return io.ReadString("", uint32(stringLength*multiplier), usedEncoding)
 }
 
-func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, defaultEncoding string, encoding string) error {
+	usedEncoding := defaultEncoding
+	if len(encoding) > 0 {
+		usedEncoding = encoding
+	}
 	var multiplier int32
-	switch encoding {
+	switch usedEncoding {
 	case "UTF-8":
 		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
+	return io.WriteString("", uint32(stringLength*multiplier), usedEncoding, value.GetString())
 }
 
-func ParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
-	return io.ReadUint8("", 8)
+func ParseS7Char(io utils.ReadBuffer, defaultEncoding string, encoding string) (string, error) {
+	usedEncoding := defaultEncoding
+	if len(encoding) > 0 {
+		usedEncoding = encoding
+	}
+	return io.ReadString("value", uint32(8), usedEncoding)
 }
 
-func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, defaultEncoding string, encoding string) error {
+	// TODO: This sort of looks wrong.
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 

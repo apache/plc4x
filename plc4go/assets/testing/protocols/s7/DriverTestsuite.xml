@@ -441,7 +441,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">10</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">2</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -450,7 +450,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">1</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">2</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">14</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageRequest>
@@ -508,7 +508,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">0</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">2</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -517,7 +517,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">3</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">2</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">2</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">6</payloadLength>
                   <S7MessageResponseData>
@@ -613,7 +613,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">10</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">2</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -622,7 +622,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">1</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">2</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">14</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageRequest>
@@ -680,7 +680,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">0</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">2</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -689,7 +689,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">2</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">2</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">0</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageResponse>

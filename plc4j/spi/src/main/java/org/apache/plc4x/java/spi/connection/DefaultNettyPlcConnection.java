@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
@@ -123,6 +124,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
+                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
@@ -152,6 +154,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
+        if(channel == null)
+        {
+            connected = false;
+            return;
+        }
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
@@ -212,22 +219,45 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
+                            super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
+                        } else if (evt instanceof ConnectEvent) {
+                            if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
+                                if (awaitSessionSetupComplete) {
+                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline,  getAuthentication(),
+                                        channelFactory.isPassive()));
+                                }
+                                super.userEventTriggered(ctx, evt);
+                            }
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
                     }
                 });
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                                     @Override
+                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                                         logger.error("unknown error, close the connection", cause);
+                                         close();
+                                     }
+                                 }
+                );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                    channelFactory.isPassive()));
+                if (!awaitSessionSetupComplete) {
+                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+                        channelFactory.isPassive()));
+                }
             }
         };
     }
-
+    @Override
+    public void setProtocol(Plc4xProtocolBase<?> protocol) {
+        super.setProtocol(protocol);
+        protocol.setTimer(channelFactory.getTimer());
+    }
     protected void sendChannelCreatedEvent() {
         logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.

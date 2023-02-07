@@ -18,17 +18,23 @@
  */
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
 
@@ -58,6 +64,15 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
 
     public static PlcValue of(Object[] values) {
         if (values.length != 1) {
+            Object vo = ((Object[]) values)[0];
+            if (vo instanceof PlcCHAR) {
+                String v = Arrays.stream(values).map(Objects::toString).collect(Collectors.joining());
+                return PlcSTRING.of(v);
+            }
+            if (vo instanceof PlcWCHAR) {
+                String v = Arrays.stream(values).map(Objects::toString).collect(Collectors.joining());
+                return PlcSTRING.of(v);
+            }
             PlcList list = new PlcList();
             for (Object value : values) {
                 list.add(of(new Object[]{value}));
@@ -82,6 +97,16 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         }
         if (value instanceof Long) {
             return PlcLINT.of(value);
+        }
+        if (value instanceof BigInteger) {
+            try {
+                return new PlcLINT((BigInteger) value);
+            }catch (PlcInvalidTagException e) {
+                return new PlcULINT((BigInteger) value);
+            }
+        }
+        if (value instanceof BigDecimal) {
+            return new PlcLINT((BigDecimal) value);
         }
         if (value instanceof Float) {
             return PlcREAL.of(value);
@@ -116,13 +141,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         return of(tag, new Object[]{value});
     }
 
-
     public static PlcValue of(PlcTag tag, Object[] values) {
         if (values.length == 1) {
             Object value = values[0];
-            if(tag.getPlcValueType() == null) {
+            if (tag.getPlcValueType() == null) {
                 // TODO: This is a hacky shortcut ..
-                if(value instanceof PlcValue) {
+                if (value instanceof PlcValue) {
                     return (PlcValue) value;
                 }
                 return new PlcNull();
@@ -131,16 +155,14 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 case BOOL:
                     return PlcBOOL.of(value);
                 case BYTE:
-                    if(value instanceof Short) {
-                        return new PlcBYTE((short) value);
-                    } else if(value instanceof Integer) {
-                        return new PlcBYTE(((Integer) value).shortValue());
-                    } else if(value instanceof Long) {
-                        return new PlcBYTE(((Long) value).shortValue());
-                    } else if(value instanceof BigInteger) {
-                        return new PlcBYTE(((BigInteger) value).shortValue());
+                    if (tag.getNumberOfElements() > 1) {
+                        if (value instanceof byte[]) {
+                            return of(tag, ArrayUtils.toObject((byte[]) value));
+                        } else if (value instanceof String && ((String) value).contains(",")) {
+                            return of(tag, stringToByteArray((String) value));
+                        }
                     }
-                    throw new PlcRuntimeException("BYTE requires short");
+                    return PlcBYTE.of(value);
                 case SINT:
                     return PlcSINT.of(value);
                 case USINT:
@@ -150,13 +172,13 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 case UINT:
                     return PlcUINT.of(value);
                 case WORD:
-                    if(value instanceof Short) {
+                    if (value instanceof Short) {
                         return new PlcWORD((int) value);
-                    } else if(value instanceof Integer) {
+                    } else if (value instanceof Integer) {
                         return new PlcWORD((int) value);
-                    } else if(value instanceof Long) {
+                    } else if (value instanceof Long) {
                         return new PlcWORD(((Long) value).intValue());
-                    } else if(value instanceof BigInteger) {
+                    } else if (value instanceof BigInteger) {
                         return new PlcWORD(((BigInteger) value).intValue());
                     }
                     throw new PlcRuntimeException("WORD requires int");
@@ -165,13 +187,13 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 case UDINT:
                     return PlcUDINT.of(value);
                 case DWORD:
-                    if(value instanceof Short) {
+                    if (value instanceof Short) {
                         return new PlcDWORD((long) value);
-                    } else if(value instanceof Integer) {
+                    } else if (value instanceof Integer) {
                         return new PlcDWORD((long) value);
-                    } else if(value instanceof Long) {
+                    } else if (value instanceof Long) {
                         return new PlcDWORD((long) value);
-                    } else if(value instanceof BigInteger) {
+                    } else if (value instanceof BigInteger) {
                         return new PlcDWORD(((BigInteger) value).longValue());
                     }
                     throw new PlcRuntimeException("DWORD requires long");
@@ -180,13 +202,13 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 case ULINT:
                     return PlcULINT.of(value);
                 case LWORD:
-                    if(value instanceof Short) {
+                    if (value instanceof Short) {
                         return new PlcLWORD(BigInteger.valueOf((long) value));
-                    } else if(value instanceof Integer) {
+                    } else if (value instanceof Integer) {
                         return new PlcLWORD(BigInteger.valueOf((long) value));
-                    } else if(value instanceof Long) {
+                    } else if (value instanceof Long) {
                         return new PlcLWORD(BigInteger.valueOf((long) value));
-                    } else if(value instanceof BigInteger) {
+                    } else if (value instanceof BigInteger) {
                         return new PlcLWORD((BigInteger) value);
                     }
                     throw new PlcRuntimeException("LWORD requires BigInteger");
@@ -224,5 +246,16 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
 
     public static PlcValue customDataType(Object[] values) {
         return of(values);
+    }
+
+    private static byte[] stringToByteArray(String stringBytes) {
+        String[] byteValues = stringBytes.substring(1, stringBytes.length() - 1).split(",");
+        byte[] bytes = new byte[byteValues.length];
+
+        for (int i = 0, len = bytes.length; i < len; i++) {
+            int intvalue = Integer.parseInt(byteValues[i].trim());
+            bytes[i] = (byte) (intvalue & 0xff);
+        }
+        return bytes;
     }
 }
