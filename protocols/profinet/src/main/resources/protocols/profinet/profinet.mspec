@@ -1122,13 +1122,13 @@
     [array    PnIoCm_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi
+[type PnIoCm_ModuleDiffBlockApi byteOrder='BIG_ENDIAN'
     [const    uint 32                          api        0x00000000                    ]
     [implicit uint 16                          numModules 'COUNT(modules)'                ]
     [array    PnIoCm_ModuleDiffBlockApi_Module modules    count               'numModules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Module
+[type PnIoCm_ModuleDiffBlockApi_Module byteOrder='BIG_ENDIAN'
     [simple   uint 16                             slotNumber                                           ]
     [simple   uint 32                             moduleIdentNumber                                    ]
     [simple   PnIoCm_ModuleState                  moduleState                                          ]
@@ -1136,7 +1136,7 @@
     [array    PnIoCm_ModuleDiffBlockApi_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Submodule
+[type PnIoCm_ModuleDiffBlockApi_Submodule byteOrder='BIG_ENDIAN'
     [simple uint 16          subslotNumber       ]
     [simple uint 32          submoduleIdentNumber]
     [simple bit              codingUsesIdentInfo ]

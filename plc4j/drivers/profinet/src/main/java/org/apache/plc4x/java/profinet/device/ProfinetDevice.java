@@ -349,6 +349,9 @@ public class ProfinetDevice implements PlcSubscriber{
         ReadBuffer buffer = new ReadBufferByteBased(cyclicPdu.getDataUnit().getData());
 
         try {
+            if (deviceContext.getModules() == null) {
+                logger.error("HH");
+            }
             for (ProfinetModule module : deviceContext.getModules()) {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
