@@ -111,6 +111,11 @@
         <artifactId>nifi-avro-record-utils</artifactId>
         <version>${nifi.version}</version>
       </dependency>
+	  <dependency>
+		<groupId>org.apache.nifi</groupId>
+		<artifactId>nifi-json-utils</artifactId>
+		<version>${nifi.version}</version>
+		</dependency>
       <dependency>
         <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-record-serialization-services</artifactId>

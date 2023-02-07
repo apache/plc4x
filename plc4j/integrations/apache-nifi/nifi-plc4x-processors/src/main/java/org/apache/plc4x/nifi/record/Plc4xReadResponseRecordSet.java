@@ -45,11 +45,9 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private final Set<String> rsColumnNames;
     private boolean moreRows;
 
-    // TODO: review this AtomicReference?
-	// TODO: this could be enhanced checking if record schema should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
-  	private AtomicReference<RecordSchema> recordSchema;
+   	private AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
 
-    public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse) throws IOException {
+    public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse, RecordSchema recordSchema) throws IOException {
         this.readResponse = readResponse;
         moreRows = true;
         
@@ -58,9 +56,10 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         rsColumnNames = responseDataStructure.keySet();
                
         if (recordSchema == null) {
-        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure); //TODO: review this method as it is the 'mapping' from PlcValues to avro datatypes        	
-        	recordSchema = new AtomicReference<RecordSchema>();
-        	recordSchema.set(AvroTypeUtil.createSchema(avroSchema));
+        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure);     	
+        	this.recordSchema.set(AvroTypeUtil.createSchema(avroSchema));
+        } else {
+            this.recordSchema.set(recordSchema);
         }
         logger.debug("Record schema from PlcReadResponse successfuly created.");
 

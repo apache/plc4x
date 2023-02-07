@@ -97,6 +97,20 @@ public class Plc4xCommonTest {
         typeMap.put("STRING", Utf8.class);
     }
 
+    public static Map<String, String> getAddressMap(){
+        Map<String, String> result = new HashMap<>();
+
+        addressMap.forEach((k,v) -> {
+			if (!v.startsWith("RANDOM/")) {
+				if (!v.endsWith("BYTE") &&
+					!v.endsWith("CHAR") &&
+					!v.endsWith("STRING"))
+					result.put(k, v);
+			}
+		});
+        return result;
+    }
+
     public static void assertAvroContent(List<MockFlowFile> flowfiles, boolean checkValue, boolean checkType) {
         flowfiles.forEach(new Consumer<MockFlowFile>() {
             @Override

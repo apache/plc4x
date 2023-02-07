@@ -18,6 +18,36 @@ under the License.
 -->
 # PLC4X Apache NiFi Integration
 
+# Common properties
+This applies to all Plc4x processors:
+
+* Address Access Strategy: defines how the processor obtains the PLC addresses. It can take 2 values:
+  * **Properties as Addreses:** 
+      For each variable, add a new property to the processor where the property name matches the variable name, and the variable value corresponds to the address tag. 
+
+    An *example* of these properties for reading values from a S7-1200:
+    - *var1:* *%DB1:DBX0.0:BOOL*
+    - *var2:* *%DB1:DBX0.1:BOOL*
+    - *var3:* *%DB1:DBB01:BYTE*
+    - *var4:* *%DB1:DBW02:WORD*
+    - *var5:* *%DB1:DBW04:INT*
+
+  * **Address Text:**
+    Property *Address Text* must be supplied in JSON format that contains variable name and address tag. Expression Language is supported.
+
+    Using the same example as before:
+    - *Address Text*:  
+    ```json
+    {
+      "var1" : "%DB1:DBX0.0:BOOL",
+      "var2" : "%DB1:DBX0.1:BOOL",
+      "var3" : "%DB1:DBB01:BYTE",
+      "var4" : "%DB1:DBW02:WORD",
+      "var5" : "%DB1:DBW04:INT" 
+    }
+    ```
+    If this JSON is in an attribute `plc4x.addresses` it can be accessed with *Address Text*=`${plc4x.addresses}`. 
+
 ## Plc4xSinkProcessor
 
 ## Plc4xSourceProcessor
