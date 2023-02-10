@@ -94,6 +94,7 @@ public class ArrayTypeTest implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ArrayTypeTest");
 
@@ -130,6 +131,7 @@ public class ArrayTypeTest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ArrayTypeTest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bitField != null) {
@@ -180,6 +182,7 @@ public class ArrayTypeTest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Boolean> bitField = readCountArrayField("bitField", readBoolean(readBuffer), 5);
 

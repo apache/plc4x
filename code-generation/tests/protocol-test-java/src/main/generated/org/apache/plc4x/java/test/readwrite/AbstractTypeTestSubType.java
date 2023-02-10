@@ -92,6 +92,7 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
   protected void serializeAbstractTypeTestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AbstractTypeTestSubType");
 
@@ -125,6 +126,7 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AbstractTypeTestSubType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (abstractBitField)
     lengthInBits += 1;
@@ -153,6 +155,7 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean abstractBitField = readSimpleField("abstractBitField", readBoolean(readBuffer));
 
@@ -194,7 +197,6 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
         float abstractFloatField,
         double abstractDoubleField,
         String abstractStringField) {
-
       this.abstractBitField = abstractBitField;
       this.abstractIntField = abstractIntField;
       this.abstractUintField = abstractUintField;

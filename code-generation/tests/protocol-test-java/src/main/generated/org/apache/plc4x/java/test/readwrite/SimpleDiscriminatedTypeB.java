@@ -58,6 +58,7 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
   protected void serializeSimpleDiscriminatedTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SimpleDiscriminatedTypeB");
 
@@ -76,6 +77,7 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SimpleDiscriminatedTypeB _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpB)
     lengthInBits += 8;
@@ -89,6 +91,7 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpB = readSimpleField("simpB", readUnsignedShort(readBuffer, 8));
 
@@ -102,7 +105,6 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
     private final short simpB;
 
     public SimpleDiscriminatedTypeBBuilderImpl(short simpB) {
-
       this.simpB = simpB;
     }
 

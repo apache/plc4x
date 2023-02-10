@@ -58,6 +58,7 @@ public class EnumDiscriminatedTypeC extends EnumDiscriminatedType implements Mes
   protected void serializeEnumDiscriminatedTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeC");
 
@@ -76,6 +77,7 @@ public class EnumDiscriminatedTypeC extends EnumDiscriminatedType implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EnumDiscriminatedTypeC _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpC)
     lengthInBits += 8;
@@ -89,6 +91,7 @@ public class EnumDiscriminatedTypeC extends EnumDiscriminatedType implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpC = readSimpleField("simpC", readUnsignedShort(readBuffer, 8));
 
@@ -102,7 +105,6 @@ public class EnumDiscriminatedTypeC extends EnumDiscriminatedType implements Mes
     private final short simpC;
 
     public EnumDiscriminatedTypeCBuilderImpl(short simpC) {
-
       this.simpC = simpC;
     }
 

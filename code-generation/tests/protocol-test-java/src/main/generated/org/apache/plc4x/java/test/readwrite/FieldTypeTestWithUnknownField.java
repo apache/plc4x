@@ -45,8 +45,6 @@ public class FieldTypeTestWithUnknownField implements Message {
   protected final List<Short> arrayField;
   protected final EnumTypeParameters enumField;
   protected final Short optionalField;
-  // Reserved Fields
-  private Short reservedField0;
 
   public FieldTypeTestWithUnknownField(
       short simpleField,
@@ -94,6 +92,7 @@ public class FieldTypeTestWithUnknownField implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     FieldTypeTestWithUnknownField _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpleField)
     lengthInBits += 8;
@@ -147,6 +146,7 @@ public class FieldTypeTestWithUnknownField implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));
 
@@ -187,7 +187,6 @@ public class FieldTypeTestWithUnknownField implements Message {
     FieldTypeTestWithUnknownField _fieldTypeTestWithUnknownField;
     _fieldTypeTestWithUnknownField =
         new FieldTypeTestWithUnknownField(simpleField, arrayField, enumField, optionalField);
-    _fieldTypeTestWithUnknownField.reservedField0 = reservedField0;
     return _fieldTypeTestWithUnknownField;
   }
 
