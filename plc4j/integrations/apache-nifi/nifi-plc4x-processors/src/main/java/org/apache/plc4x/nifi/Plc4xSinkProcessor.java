@@ -92,6 +92,16 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);
             }
+
+            if (tags == null){
+                getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                getSchemaCache().addSchema(
+                    addressMap, 
+                    writeRequest.getTagNames(),
+                    writeRequest.getTags(),
+                    null
+                );
+            }
         } catch (ProcessException e) {
             throw e;
         } catch (Exception e) {

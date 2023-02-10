@@ -50,9 +50,9 @@ import org.apache.nifi.serialization.RecordReaderFactory;
 import org.apache.nifi.serialization.record.Record;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 @TriggerSerially
@@ -117,43 +117,49 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 
+		final FlowFile originalFlowFile = fileToProcess;
+
+		InputStream in = session.read(originalFlowFile);
+
+		RecordReader recordReader;
 		try {
-
-			String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
-			Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
-			FlowFile resultSetFF;
-			
-			resultSetFF = session.create(fileToProcess);
-			
-			if (inputFileAttrMap != null) {
-				resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
-			}
-
-			final FlowFile originalFlowFile = fileToProcess;
-
-			InputStream in = session.read(originalFlowFile);
-
-			RecordReader recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
+			recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
 					.asControllerService(RecordReaderFactory.class)
 					.createRecordReader(originalFlowFile, in, logger);
-
-			Record record = null;
-			
-			
+		} catch (Exception e) {
+			throw new ProcessException(e);
+		} 
+		Record record = null;
+		
+		
+		try {
 			while ((record = recordReader.nextRecord()) != null) {
 				long nrOfRowsHere = 0L;
 				PlcWriteResponse plcWriteResponse = null;
+			
 
 				try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 					PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-					
-					
-					for (String tagName: getTags()){
-						String address = getAddress(tagName);
-						if (record.toMap().containsKey(tagName)) {
-							if (address != null) {
-								builder.addTagAddress(tagName, address,record.getValue(tagName));
+					Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
+					final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+			
+					if (tags != null){
+						for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+							if (record.toMap().containsKey(tag.getKey())) {
+								builder.addTag(tag.getKey(), tag.getValue(), record.getValue(tag.getKey()));
 								nrOfRowsHere++;
+							} else {
+								logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
+							}
+						}
+					} else {
+						logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+						for (Map.Entry<String,String> entry: addressMap.entrySet()){
+							if (record.toMap().containsKey(entry.getKey())) {
+								builder.addTagAddress(entry.getKey(), entry.getValue(), record.getValue(entry.getKey()));
+								nrOfRowsHere++;
+							} else {
+								logger.debug("PlcTag " + entry.getKey() + " with address " + entry.getValue() + " was not found on input record.");
 							}
 						}
 					}
@@ -163,16 +169,27 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
 						);
 
+					if (tags == null){
+						getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+						getSchemaCache().addSchema(
+							addressMap, 
+							writeRequest.getTagNames(),
+							writeRequest.getTags(),
+							null
+						);
+					}
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					in.close();
 					logger.error("Exception writing the data to PLC", e);
 					session.transfer(originalFlowFile, REL_FAILURE);
-					session.remove(resultSetFF);
 					session.commitAsync();
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
-	
+
+
+				// Response check if values were written
 				PlcResponseCode code = null;
 
 				for (String tag : plcWriteResponse.getTagNames()) {
@@ -180,47 +197,36 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					if (!code.equals(PlcResponseCode.OK)) {
 						logger.error("Not OK code when writing the data to PLC for tag " + tag 
 							+ " with value  " + record.getValue(tag).toString() 
-							+ " in addresss " + getAddress(tag));
-						throw new PlcException("Writing response code was " + code.name() + ", expected OK");
+							+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
+						throw new ProcessException("Writing response code for " + plcWriteResponse.getTag(tag).getAddressString() + "was " + code.name() + ", expected OK");
 					}
 				}
+				
 				nrOfRows.getAndAdd(nrOfRowsHere);
 			}
 			in.close();
-			
-		
-			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
-			final Map<String, String> attributesToAdd = new HashMap<>();
-			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-			attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-			if (inputFileUUID != null) {
-				attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
-			}
-
-			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
-
-
-			logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get()});
-			// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
-			// otherwise
-			if (context.hasIncomingConnection()) {
-				session.getProvenanceReporter().fetch(resultSetFF, "Writted " + nrOfRows.get() + " rows", executionTimeElapsed);
-			} else {
-				session.getProvenanceReporter().receive(resultSetFF, "Writted " + nrOfRows.get() + " rows", executionTimeElapsed);
-			}
-
-			session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
-
-			// Need to remove the original input file if it exists
-			if (fileToProcess != null) {
-				session.remove(fileToProcess);
-				fileToProcess = null;
-			}
-			session.commitAsync();
-
 		} catch (Exception e) {
-			logger.error("Got an error while trying to get a connection", e);
-			throw new ProcessException("Got an error while trying to get a connection", e);
+			throw new ProcessException(e);
+		} 
+		
+		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+		final Map<String, String> attributesToAdd = new HashMap<>();
+		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
+		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
+
+		FlowFile resultSetFF = session.putAllAttributes(originalFlowFile, attributesToAdd);
+
+		logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get()});
+		// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
+		// otherwise
+		if (context.hasIncomingConnection()) {
+			session.getProvenanceReporter().fetch(resultSetFF, "Writted " + nrOfRows.get() + " rows", executionTimeElapsed);
+		} else {
+			session.getProvenanceReporter().receive(resultSetFF, "Writted " + nrOfRows.get() + " rows", executionTimeElapsed);
 		}
+
+		session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
+		// fileToProcess = null;
+		session.commitAsync();
 	}
 }
