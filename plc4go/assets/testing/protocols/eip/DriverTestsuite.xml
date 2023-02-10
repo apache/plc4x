@@ -32,7 +32,7 @@
     <outgoing-plc-message name="Send connection request">
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -56,7 +56,7 @@
     <incoming-plc-message name="Receive connection response">
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
         <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -75,9 +75,9 @@
           <flags dataType="uint" bitLength="16">0</flags>
         </EipConnectionRequest>
       </EipPacket>
-
     </incoming-plc-message>
   </setup>
+
   <testcase>
     <name>Single element read request</name>
     <steps>
@@ -94,7 +94,7 @@
       <outgoing-plc-message name="Send CipReadRequest to PLC">
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <len dataType="uint" bitLength="16">40</len>
+          <packetLength dataType="uint" bitLength="16">40</packetLength>
           <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
           <senderContext isList="true">
@@ -152,7 +152,7 @@
       <incoming-plc-message name="Get CipReadResponse from PLC">
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <len dataType="uint" bitLength="16">26</len>
+          <packetLength dataType="uint" bitLength="16">26</packetLength>
           <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
           <senderContext isList="true">

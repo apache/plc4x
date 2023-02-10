@@ -21,16 +21,18 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	"fmt"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter
 	tagHandler              spi.PlcTagHandler
@@ -115,7 +117,6 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 	return NewDefaultPlcWriteRequest(m.tags, m.tagNames, plcValues, m.writer, m.writeRequestInterceptor), nil
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
 	DefaultPlcTagRequest
 	values                  map[string]values.PlcValue
@@ -186,4 +187,97 @@ func (d *DefaultPlcWriteRequest) GetWriteRequestInterceptor() interceptors.Write
 
 func (d *DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
 	return d.values[name]
+}
+
+func (d *DefaultPlcWriteRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcWriteRequest"); err != nil {
+		return err
+	}
+	if err := d.DefaultPlcTagRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for name, elem := range d.values {
+
+		var elem interface{} = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+
+	if d.writer != nil {
+		if serializableField, ok := d.writer.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("writer"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("writer"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.writer)
+			if err := writeBuffer.WriteString("writer", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.writeRequestInterceptor != nil {
+		if serializableField, ok := d.writeRequestInterceptor.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("writeRequestInterceptor"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("writeRequestInterceptor"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.writeRequestInterceptor)
+			if err := writeBuffer.WriteString("writeRequestInterceptor", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("PlcWriteRequest"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DefaultPlcWriteRequest) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

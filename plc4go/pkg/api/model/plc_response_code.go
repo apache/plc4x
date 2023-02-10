@@ -19,6 +19,12 @@
 
 package model
 
+import (
+	"context"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
+
 type PlcResponseCode uint8
 
 const (
@@ -69,4 +75,16 @@ func (m PlcResponseCode) GetName() string {
 
 func (m PlcResponseCode) String() string {
 	return m.GetName()
+}
+
+func (m PlcResponseCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcResponseCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("AlarmType", 8, uint8(m), utils.WithAdditionalStringRepresentation(m.GetName()))
 }

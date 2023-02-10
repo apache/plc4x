@@ -20,9 +20,12 @@
 package values
 
 import (
+	"context"
+	"encoding/binary"
 	"fmt"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcNull struct {
@@ -39,6 +42,21 @@ func (m PlcNull) GetRaw() []byte {
 
 func (m PlcNull) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.NULL
+}
+
+func (m PlcNull) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcNULL"); err != nil {
+		return err
+	}
+	return writeBuffer.PopContext("PlcNULL")
 }
 
 func (m PlcNull) String() string {

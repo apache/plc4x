@@ -20,10 +20,14 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
+	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcTagRequest
 type DefaultPlcTagRequest struct {
 	tags     map[string]model.PlcTag
 	tagNames []string
@@ -46,4 +50,49 @@ func (d *DefaultPlcTagRequest) GetTag(name string) model.PlcTag {
 		return tag
 	}
 	return nil
+}
+
+func (d *DefaultPlcTagRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcTagRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("tags"); err != nil {
+		return err
+	}
+	for name, elem := range d.tags {
+		var elem interface{} = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("tags"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DefaultPlcTagRequest) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

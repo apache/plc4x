@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"strconv"
@@ -105,13 +106,13 @@ func CastToModbusTagFromPlcTag(plcTag model.PlcTag) (modbusTag, error) {
 
 func (m modbusTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m modbusTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m modbusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}

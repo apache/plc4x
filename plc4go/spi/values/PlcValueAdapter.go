@@ -21,11 +21,14 @@ package values
 
 import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"time"
 )
 
 // PlcValueAdapter Dummy structure
 type PlcValueAdapter struct {
+	utils.Serializable
 }
 
 ////////

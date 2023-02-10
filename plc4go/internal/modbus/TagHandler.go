@@ -41,7 +41,7 @@ const (
 )
 
 func (i TagType) GetName() string {
-	return fmt.Sprintf("ModbusTags%s", i.String())
+	return fmt.Sprintf("ModbusTag%s", i.String())
 }
 
 type TagHandler struct {

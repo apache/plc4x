@@ -20,22 +20,39 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"context"
+	"encoding/binary"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultResponse
 type DefaultResponse struct {
-	responseCodes map[string]model.PlcResponseCode
 }
 
 func (d *DefaultResponse) IsAPlcMessage() bool {
 	return true
 }
 
-func (d *DefaultResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return d.responseCodes[name]
+func NewDefaultResponse() DefaultResponse {
+	return DefaultResponse{}
 }
 
-func NewDefaultResponse(responseCodes map[string]model.PlcResponseCode) DefaultResponse {
-	return DefaultResponse{responseCodes}
+func (d *DefaultResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	return nil
+}
+
+func (d *DefaultResponse) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

@@ -19,9 +19,15 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"context"
+	"encoding/binary"
+	"fmt"
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestResult
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
+
 type DefaultPlcUnsubscriptionRequestResult struct {
 	Request  model.PlcUnsubscriptionRequest
 	Response model.PlcUnsubscriptionResponse
@@ -38,4 +44,74 @@ func (d *DefaultPlcUnsubscriptionRequestResult) GetResponse() model.PlcUnsubscri
 
 func (d *DefaultPlcUnsubscriptionRequestResult) GetErr() error {
 	return d.Err
+}
+
+func (d *DefaultPlcUnsubscriptionRequestResult) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcUnsubscriptionRequestResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcUnsubscriptionRequestResult"); err != nil {
+		return err
+	}
+
+	if d.Request != nil {
+		if serializableField, ok := d.Request.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("request"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("request"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.Request)
+			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.Response != nil {
+		if serializableField, ok := d.Response.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("response"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("response"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.Response)
+			if err := writeBuffer.WriteString("response", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.Err != nil {
+		if err := writeBuffer.WriteString("err", uint32(len(d.Err.Error())*8), "UTF-8", d.Err.Error()); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("PlcUnsubscriptionRequestResult"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DefaultPlcUnsubscriptionRequestResult) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

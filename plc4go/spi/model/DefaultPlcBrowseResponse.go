@@ -33,14 +33,18 @@ type DefaultPlcBrowseResponse struct {
 	DefaultResponse
 	request      model.PlcBrowseRequest
 	responseCode model.PlcResponseCode
-	results      map[string][]model.PlcBrowseItem
+	results      map[string]*DefaultPlcBrowseResponseItem
 }
 
 func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
+	res := map[string]*DefaultPlcBrowseResponseItem{}
+	for name, code := range responseCodes {
+		value := results[name]
+		res[name] = NewBrowseResponseItem(code, value)
+	}
 	return DefaultPlcBrowseResponse{
-		DefaultResponse: DefaultResponse{responseCodes: responseCodes},
-		request:         request,
-		results:         results,
+		request: request,
+		results: res,
 	}
 }
 
@@ -56,8 +60,12 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
+func (d DefaultPlcBrowseResponse) GetResponseCode(name string) model.PlcResponseCode {
+	return d.results[name].GetCode()
+}
+
 func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
-	return d.results[queryName]
+	return d.results[queryName].GetResults()
 }
 
 func (d DefaultPlcBrowseResponse) Serialize() ([]byte, error) {
@@ -84,11 +92,11 @@ func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := writeBuffer.PushContext("results"); err != nil {
 		return err
 	}
-	for tagName, foundTags := range d.results {
+	for tagName, browseResponseItem := range d.results {
 		if err := writeBuffer.PushContext(tagName); err != nil {
 			return err
 		}
-		for _, tag := range foundTags {
+		for _, tag := range browseResponseItem.GetResults() {
 			if serializableTag, ok := tag.(utils.Serializable); ok {
 				if err := serializableTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 					return err

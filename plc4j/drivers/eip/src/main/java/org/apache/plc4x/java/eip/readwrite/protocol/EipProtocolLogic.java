@@ -76,8 +76,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         EipConnectionRequest connectionRequest =
             new EipConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
-            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
-            .check(p -> p instanceof EipConnectionRequest)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+//            .check(p -> p instanceof EipConnectionRequest)
+//            .unwrap(p -> (EipConnectionRequest) p)
             .handle(p -> {
                 if (p.getStatus() == 0L) {
                     sessionHandle = p.getSessionHandle();
@@ -248,14 +249,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CipRRData)
-                .check(p -> p.getSessionHandle() == sessionHandle)
+                //.check(p -> p instanceof CipRRData)
+                //.check(p -> p.getSessionHandle() == sessionHandle)
                 //.check(p -> p.getSenderContext() == senderContext)
-                .unwrap(p -> (CipRRData) p)
-                .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof CipReadResponse)
-                .unwrap(p -> (CipReadResponse) p)
+                //.unwrap(p -> (CipRRData) p)
+                //.unwrap(p -> p.getExchange().getService())
+                //.check(p -> p instanceof CipReadResponse)
+                //.unwrap(p -> (CipReadResponse) p)
                 .handle(p -> {
-                    future.complete(p);
+                    System.out.println(p);
+//                    future.complete(p);
                     // Finish the request-transaction.
                     transaction.endRequest();
                 }));
@@ -630,8 +633,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     @Override
     public void close(ConversationContext<EipPacket> context) {
-        logger.debug("Sending UnregisterSession EIP Pakcet");
+        logger.debug("Sending UnregisterSession EIP Packet");
         context.sendRequest(new EipDisconnectRequest(sessionHandle, 0L, emptySenderContext, 0L)); //Unregister gets no response
-        logger.debug("Unregistred Session {}", sessionHandle);
+        logger.debug("Unregistered Session {}", sessionHandle);
     }
+
+    @Override
+    protected void decode(ConversationContext<EipPacket> context, EipPacket msg) throws Exception {
+        super.decode(context, msg);
+    }
+
 }
