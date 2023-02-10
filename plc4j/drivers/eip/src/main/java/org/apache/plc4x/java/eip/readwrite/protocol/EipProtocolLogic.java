@@ -77,8 +77,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             new EipConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-//            .check(p -> p instanceof EipConnectionRequest)
-//            .unwrap(p -> (EipConnectionRequest) p)
+            .check(p -> p instanceof EipConnectionRequest)
+            .unwrap(p -> (EipConnectionRequest) p)
             .handle(p -> {
                 if (p.getStatus() == 0L) {
                     sessionHandle = p.getSessionHandle();
@@ -249,16 +249,15 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                //.check(p -> p instanceof CipRRData)
-                //.check(p -> p.getSessionHandle() == sessionHandle)
+                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getSessionHandle() == sessionHandle)
                 //.check(p -> p.getSenderContext() == senderContext)
-                //.unwrap(p -> (CipRRData) p)
-                //.unwrap(p -> p.getExchange().getService())
-                //.check(p -> p instanceof CipReadResponse)
-                //.unwrap(p -> (CipReadResponse) p)
+                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> p.getExchange().getService())
+                .check(p -> p instanceof CipReadResponse)
+                .unwrap(p -> (CipReadResponse) p)
                 .handle(p -> {
-                    System.out.println(p);
-//                    future.complete(p);
+                    future.complete(p);
                     // Finish the request-transaction.
                     transaction.endRequest();
                 }));
