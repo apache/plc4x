@@ -129,6 +129,14 @@ public abstract class LldpUnit implements Message {
       builder = TlvPortId.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
     } else if (EvaluationHelper.equals(tlvId, TlvType.TIME_TO_LIVE)) {
       builder = TlvTimeToLive.staticParseLldpUnitBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(tlvId, TlvType.PORT_DESCRIPTION)) {
+      builder = TlvPortDescription.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
+    } else if (EvaluationHelper.equals(tlvId, TlvType.SYSTEM_NAME)) {
+      builder = TlvSystemName.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
+    } else if (EvaluationHelper.equals(tlvId, TlvType.SYSTEM_DESCRIPTION)) {
+      builder = TlvSystemDescription.staticParseLldpUnitBuilder(readBuffer, tlvIdLength);
+    } else if (EvaluationHelper.equals(tlvId, TlvType.SYSTEM_CAPABILITIES)) {
+      builder = TlvSystemCapabilities.staticParseLldpUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(tlvId, TlvType.MANAGEMENT_ADDRESS)) {
       builder = TlvManagementAddress.staticParseLldpUnitBuilder(readBuffer);
     } else if (EvaluationHelper.equals(tlvId, TlvType.ORGANIZATION_SPECIFIC)) {

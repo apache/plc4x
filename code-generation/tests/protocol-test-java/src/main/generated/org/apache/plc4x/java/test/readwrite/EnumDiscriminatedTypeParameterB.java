@@ -59,6 +59,7 @@ public class EnumDiscriminatedTypeParameterB extends EnumDiscriminatedTypeParame
   protected void serializeEnumDiscriminatedTypeParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameterB");
 
@@ -77,6 +78,7 @@ public class EnumDiscriminatedTypeParameterB extends EnumDiscriminatedTypeParame
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EnumDiscriminatedTypeParameterB _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpB)
     lengthInBits += 8;
@@ -91,6 +93,7 @@ public class EnumDiscriminatedTypeParameterB extends EnumDiscriminatedTypeParame
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpB = readSimpleField("simpB", readUnsignedShort(readBuffer, 8));
 
@@ -104,7 +107,6 @@ public class EnumDiscriminatedTypeParameterB extends EnumDiscriminatedTypeParame
     private final short simpB;
 
     public EnumDiscriminatedTypeParameterBBuilderImpl(short simpB) {
-
       this.simpB = simpB;
     }
 

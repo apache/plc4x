@@ -50,8 +50,6 @@ public class FieldTypeTest implements Message {
   protected final short manualField;
   protected final Short optionalField;
   protected final short peekField;
-  // Reserved Fields
-  private Short reservedField0;
 
   public FieldTypeTest(
       short simpleField,
@@ -133,6 +131,7 @@ public class FieldTypeTest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     FieldTypeTest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpleField)
     lengthInBits += 8;
@@ -200,6 +199,7 @@ public class FieldTypeTest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));
 
@@ -273,7 +273,6 @@ public class FieldTypeTest implements Message {
             manualField,
             optionalField,
             peekField);
-    _fieldTypeTest.reservedField0 = reservedField0;
     return _fieldTypeTest;
   }
 

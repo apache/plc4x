@@ -57,6 +57,7 @@ public class ComplexOfComplexUsageB implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComplexOfComplexUsageB");
 
@@ -78,6 +79,7 @@ public class ComplexOfComplexUsageB implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ComplexOfComplexUsageB _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (c)
     if (c != null) {
@@ -88,7 +90,7 @@ public class ComplexOfComplexUsageB implements Message {
     if (ds != null) {
       int i = 0;
       for (ComplexOfComplexUsageD element : ds) {
-        boolean last = ++i >= ds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= ds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,6 +109,7 @@ public class ComplexOfComplexUsageB implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ComplexOfComplexUsageC c =
         readOptionalField(

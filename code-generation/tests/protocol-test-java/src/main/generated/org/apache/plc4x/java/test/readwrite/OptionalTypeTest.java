@@ -57,6 +57,7 @@ public class OptionalTypeTest implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OptionalTypeTest");
 
@@ -64,11 +65,7 @@ public class OptionalTypeTest implements Message {
     writeSimpleField("simpleField", simpleField, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (optionalField) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "optionalField",
-        optionalField,
-        writeUnsignedShort(writeBuffer, 8),
-        (getSimpleField()) == (5));
+    writeOptionalField("optionalField", optionalField, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("OptionalTypeTest");
   }
@@ -82,6 +79,7 @@ public class OptionalTypeTest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     OptionalTypeTest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpleField)
     lengthInBits += 8;
@@ -105,6 +103,7 @@ public class OptionalTypeTest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));
 

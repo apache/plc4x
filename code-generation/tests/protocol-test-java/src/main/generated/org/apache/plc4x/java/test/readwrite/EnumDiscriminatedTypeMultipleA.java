@@ -63,6 +63,7 @@ public class EnumDiscriminatedTypeMultipleA extends EnumDiscriminatedTypeMultipl
   protected void serializeEnumDiscriminatedTypeMultipleChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeMultipleA");
 
@@ -81,6 +82,7 @@ public class EnumDiscriminatedTypeMultipleA extends EnumDiscriminatedTypeMultipl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EnumDiscriminatedTypeMultipleA _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpA)
     lengthInBits += 8;
@@ -94,6 +96,7 @@ public class EnumDiscriminatedTypeMultipleA extends EnumDiscriminatedTypeMultipl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpA = readSimpleField("simpA", readUnsignedShort(readBuffer, 8));
 
@@ -107,7 +110,6 @@ public class EnumDiscriminatedTypeMultipleA extends EnumDiscriminatedTypeMultipl
     private final short simpA;
 
     public EnumDiscriminatedTypeMultipleABuilderImpl(short simpA) {
-
       this.simpA = simpA;
     }
 

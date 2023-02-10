@@ -38,8 +38,6 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReservedTypeTestChild extends ReservedTypeTestParent implements Message {
 
   // Accessors for discriminator values.
-  // Reserved Fields
-  private Short reservedField0;
 
   public ReservedTypeTestChild(short simpleField) {
     super(simpleField);
@@ -49,14 +47,12 @@ public class ReservedTypeTestChild extends ReservedTypeTestParent implements Mes
   protected void serializeReservedTypeTestParentChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReservedTypeTestChild");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("ReservedTypeTestChild");
   }
@@ -70,6 +66,7 @@ public class ReservedTypeTestChild extends ReservedTypeTestParent implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReservedTypeTestChild _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -83,26 +80,23 @@ public class ReservedTypeTestChild extends ReservedTypeTestParent implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
     readBuffer.closeContext("ReservedTypeTestChild");
     // Create the instance
-    return new ReservedTypeTestChildBuilderImpl(reservedField0);
+    return new ReservedTypeTestChildBuilderImpl();
   }
 
   public static class ReservedTypeTestChildBuilderImpl
       implements ReservedTypeTestParent.ReservedTypeTestParentBuilder {
-    private final Short reservedField0;
 
-    public ReservedTypeTestChildBuilderImpl(Short reservedField0) {
-      this.reservedField0 = reservedField0;
-    }
+    public ReservedTypeTestChildBuilderImpl() {}
 
     public ReservedTypeTestChild build(short simpleField) {
       ReservedTypeTestChild reservedTypeTestChild = new ReservedTypeTestChild(simpleField);
-      reservedTypeTestChild.reservedField0 = reservedField0;
       return reservedTypeTestChild;
     }
   }

@@ -19,9 +19,8 @@
 package org.apache.plc4x.nifi;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,21 +28,43 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
+import org.apache.nifi.components.AllowableValue;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
 import org.apache.nifi.components.Validator;
 import org.apache.nifi.expression.ExpressionLanguageScope;
+import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.plc4x.java.api.PlcConnectionManager;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
+import org.apache.plc4x.nifi.address.AddressesAccessUtils;
+import org.apache.plc4x.nifi.record.SchemaCache;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
+
+    protected List<PropertyDescriptor> properties;
+    protected Set<Relationship> relationships;
+  
+    protected String connectionString;
+    protected Map<String, String> addressMap;
+
+    protected final SchemaCache schemaCache = new SchemaCache(0);
+
+    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+
+    protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
+        AddressesAccessUtils.ADDRESS_PROPERTY,
+        AddressesAccessUtils.ADDRESS_TEXT));
+
 
 	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
@@ -53,6 +74,14 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
 	
+    public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size")
+        .displayName("Schema Cache Size")
+		.description("Maximum number of entries in the cache. Can improve performance when addresses change dynamically.")
+		.defaultValue("1")
+		.required(true)
+		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
+		.build();
+
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
 	    .name("success")
 	    .description("Successfully processed")
@@ -64,19 +93,14 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .build();
 
 
-    protected List<PropertyDescriptor> properties;
-    protected Set<Relationship> relationships;
-  
-    protected String connectionString;
-    protected Map<String, String> addressMap;
-
-
-    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
-
     @Override
     protected void init(final ProcessorInitializationContext context) {
     	final List<PropertyDescriptor> properties = new ArrayList<>();
+
     	properties.add(PLC_CONNECTION_STRING);
+        properties.add(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY);
+        properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
+        properties.add(PLC_SCHEMA_CACHE_SIZE);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -86,19 +110,17 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         this.relationships = Collections.unmodifiableSet(relationships);
     }
 
-    public Map<String, String> getPlcAddress() {
-        return addressMap;
+    public Map<String, String> getPlcAddressMap(ProcessContext context, FlowFile flowFile) {
+        AddressesAccessStrategy strategy = AddressesAccessUtils.getAccessStrategy(context);
+        return strategy.extractAddresses(context, flowFile);
     }
     
     public String getConnectionString() {
         return connectionString;
     }
 
-    Collection<String> getTags() {
-        return addressMap.keySet();
-    }
-    String getAddress(String tagName) {
-        return addressMap.get(tagName);
+    public SchemaCache getSchemaCache() {
+        return schemaCache;
     }
     
 	@Override
@@ -118,6 +140,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
                 .name(propertyDescriptorName)
                 .expressionLanguageSupported(ExpressionLanguageScope.NONE)
                 .addValidator(StandardValidators.ATTRIBUTE_KEY_PROPERTY_NAME_VALIDATOR)
+                .dependsOn(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY)
                 .required(false)
                 .dynamic(true)
                 .build();
@@ -127,13 +150,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-		addressMap = new HashMap<>();
-		//variables are passed as dynamic properties
-		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-		if (addressMap.isEmpty()) {
-			throw new PlcRuntimeException("No address specified");
-		}	
+        schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
     }
 
     @Override
@@ -150,13 +167,12 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
         return Objects.equals(properties, that.properties) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
-            Objects.equals(getConnectionString(), that.getConnectionString()) &&
-            Objects.equals(addressMap, that.addressMap);
+            Objects.equals(getConnectionString(), that.getConnectionString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString(), addressMap);
+        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString());
     }
 
     public static class Plc4xConnectionStringValidator implements Validator {
@@ -177,6 +193,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     protected PlcConnectionManager getConnectionManager() {
         return connectionManager;
+    }
+
+    protected PlcDriver getDriver() throws PlcConnectionException {
+        return PlcDriverManager.getDefault().getDriverForUrl(connectionString);
     }
 
 }

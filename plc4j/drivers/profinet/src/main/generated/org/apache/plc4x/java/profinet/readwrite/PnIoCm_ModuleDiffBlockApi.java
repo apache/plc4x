@@ -63,15 +63,24 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi");
 
     // Const Field (api)
-    writeConstField("api", API, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "api",
+        API,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numModules) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int numModules = (int) (COUNT(getModules()));
-    writeImplicitField("numModules", numModules, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numModules",
+        numModules,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (modules)
-    writeComplexTypeArrayField("modules", modules, writeBuffer);
+    writeComplexTypeArrayField(
+        "modules", modules, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_ModuleDiffBlockApi");
   }
@@ -119,16 +128,25 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long api =
-        readConstField("api", readUnsignedLong(readBuffer, 32), PnIoCm_ModuleDiffBlockApi.API);
+        readConstField(
+            "api",
+            readUnsignedLong(readBuffer, 32),
+            PnIoCm_ModuleDiffBlockApi.API,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numModules = readImplicitField("numModules", readUnsignedInt(readBuffer, 16));
+    int numModules =
+        readImplicitField(
+            "numModules",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_ModuleDiffBlockApi_Module> modules =
         readCountArrayField(
             "modules",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer), readBuffer),
-            numModules);
+            numModules,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ModuleDiffBlockApi");
     // Create the instance

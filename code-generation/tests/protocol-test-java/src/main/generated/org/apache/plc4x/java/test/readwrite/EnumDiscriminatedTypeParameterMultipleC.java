@@ -63,6 +63,7 @@ public class EnumDiscriminatedTypeParameterMultipleC extends EnumDiscriminatedTy
   protected void serializeEnumDiscriminatedTypeParameterMultipleChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameterMultipleC");
 
@@ -81,6 +82,7 @@ public class EnumDiscriminatedTypeParameterMultipleC extends EnumDiscriminatedTy
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EnumDiscriminatedTypeParameterMultipleC _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (simpC)
     lengthInBits += 8;
@@ -95,6 +97,7 @@ public class EnumDiscriminatedTypeParameterMultipleC extends EnumDiscriminatedTy
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpC = readSimpleField("simpC", readUnsignedShort(readBuffer, 8));
 
@@ -109,7 +112,6 @@ public class EnumDiscriminatedTypeParameterMultipleC extends EnumDiscriminatedTy
     private final short simpC;
 
     public EnumDiscriminatedTypeParameterMultipleCBuilderImpl(short simpC) {
-
       this.simpC = simpC;
     }
 

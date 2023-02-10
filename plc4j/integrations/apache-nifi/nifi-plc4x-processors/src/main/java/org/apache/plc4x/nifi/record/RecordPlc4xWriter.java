@@ -54,9 +54,9 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	}
 
 	@Override
-	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
+	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws Exception {
 		if (fullRecordSet == null) {
-            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
+            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback, recordSchema);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
 		Map<String, String> empty = new HashMap<>();
@@ -72,9 +72,9 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	}
 	
 	@Override
-	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, FlowFile originalFlowFile) throws Exception {
-		if (fullRecordSet == null) {	
-            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
+	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, FlowFile originalFlowFile) throws Exception {
+        if (fullRecordSet == null) {	
+            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback, recordSchema);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
          }
         try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
@@ -142,8 +142,8 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	
 	private static class Plc4xReadResponseRecordSetWithCallback extends Plc4xReadResponseRecordSet {
         private final Plc4xReadResponseRowCallback callback;
-        public Plc4xReadResponseRecordSetWithCallback(final PlcReadResponse readResponse, Plc4xReadResponseRowCallback callback) throws IOException {
-            super(readResponse);
+        public Plc4xReadResponseRecordSetWithCallback(final PlcReadResponse readResponse, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws IOException {
+            super(readResponse, recordSchema);
             this.callback = callback;
         }
         @Override
@@ -161,5 +161,13 @@ public class RecordPlc4xWriter implements Plc4xWriter {
                 }
         }
 	}
+
+    public RecordSchema getRecordSchema(){
+        try {
+            return this.fullRecordSet.getSchema();
+        } catch (IOException e){
+            return null;
+        }
+    }
 
 }

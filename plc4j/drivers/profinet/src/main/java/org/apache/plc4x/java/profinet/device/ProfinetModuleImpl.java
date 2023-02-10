@@ -84,6 +84,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
         if (module.getSystemDefinedSubmoduleList() != null) {
             for (ProfinetInterfaceSubmoduleItem interfaceItem : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
                 Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
+                Integer subSlotNumber = interfaceItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     slot,
                     interfaceItem.getSubslotNumber(),
@@ -93,7 +94,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     interfaceItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                    identNumber,
+                    subSlotNumber,
                     identNumber,
                     false,
                     false,
@@ -105,6 +106,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
             for (
                 ProfinetPortSubmoduleItem portItem : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
                 Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
+                Integer subSlotNumber = portItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     0,
                     portItem.getSubslotNumber(),
@@ -114,7 +116,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     portItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                    identNumber,
+                    subSlotNumber,
                     identNumber,
                     false,
                     false,
@@ -273,8 +275,8 @@ public class ProfinetModuleImpl implements ProfinetModule {
                         for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
                             for (ProfinetDataItem item : input.getDataItemList()) {
                                 if (item.isUseAsBits()) {
-                                    for (ProfinetBitDataItem bitItem : item.getBitDataItem()) {
-                                        String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + bitItem.getBitOffset();
+                                    for (int i = 0; i < ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).getDataTypeSize() * 8; i++) {
+                                        String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + i;
                                         browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":BOOL"), tagName, false, false, true, new HashMap<>(), options));
                                     }
                                 } else {
@@ -316,8 +318,8 @@ public class ProfinetModuleImpl implements ProfinetModule {
                         for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
                             for (ProfinetDataItem item : input.getDataItemList()) {
                                 if (item.isUseAsBits()) {
-                                    for (ProfinetBitDataItem bitItem : item.getBitDataItem()) {
-                                        String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + bitItem.getBitOffset();
+                                    for (int i = 0; i < ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).getDataTypeSize() * 8; i++) {
+                                        String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + i;
                                         tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.BOOL, 1)));
                                     }
                                 } else {
