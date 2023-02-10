@@ -16,24 +16,57 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.apache.plc4x.nifi.Plc4xSinkProcessor;
+import org.apache.plc4x.nifi.address.AddressesAccessUtils;
+import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class Plc4xSinkProcessorTest {
 
     private TestRunner testRunner;
+    private static int NUMBER_OF_CALLS = 5;
 
     @BeforeEach
     public void init() {
         testRunner = TestRunners.newTestRunner(Plc4xSinkProcessor.class);
+        testRunner.setIncomingConnection(false);
+        testRunner.setValidateExpressionUsage(false);
+
+        testRunner.setProperty(Plc4xSinkProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
+
+        testRunner.addConnection(Plc4xSinkProcessor.REL_SUCCESS);
+        testRunner.addConnection(Plc4xSinkProcessor.REL_FAILURE);
+
+		for (int i = 0; i<NUMBER_OF_CALLS; i++)
+			testRunner.enqueue("", Plc4xCommonTest.originalMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> String.valueOf(e))));
+    }
+
+    public void testProcessor() {
+
+        testRunner.run(NUMBER_OF_CALLS);
+        testRunner.assertTransferCount(Plc4xSinkProcessor.REL_FAILURE, 0);
+        testRunner.assertTransferCount(Plc4xSinkProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
     }
 
     @Test
-    public void testProcessor() {
+    public void testWithAddressProperties() {
+        testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY);
+        Plc4xCommonTest.getAddressMap().forEach((k,v) -> testRunner.setProperty(k, v));
+        testProcessor();
+    }
 
+    // Test addressess text property access strategy
+    @Test
+    public void testWithAddressText() { 
+        testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);
+        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, Plc4xCommonTest.getAddressMap().toString());
+        testProcessor();
     }
 
 }
