@@ -99,7 +99,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second byte for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
+                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+2)+24;
                 return size;
             }
             return -1;
