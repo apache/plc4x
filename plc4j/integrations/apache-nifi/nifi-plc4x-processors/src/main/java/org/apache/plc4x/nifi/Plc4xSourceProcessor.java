@@ -32,8 +32,10 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 @Tags({"plc4x-source"})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
@@ -54,12 +56,20 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             FlowFile flowFile = session.create();
             try {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                getTags().forEach(tag -> {
-                    String address = getAddress(tag);
-                    if (address != null) {
-                        builder.addTagAddress(tag, address);
+                Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
+                final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+                if (tags != null){
+                    for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                        builder.addTag(tag.getKey(), tag.getValue());
                     }
-                });
+                } else {
+                    getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                    for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                        builder.addTagAddress(entry.getKey(), entry.getValue());
+                    }
+                }
+
                 PlcReadRequest readRequest = builder.build();
                 PlcReadResponse response = readRequest.execute().get();
                 Map<String, String> attributes = new HashMap<>();
@@ -69,7 +79,18 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                         attributes.put(tagName, String.valueOf(value));
                     }
                 }
-                flowFile = session.putAllAttributes(flowFile, attributes);   
+                flowFile = session.putAllAttributes(flowFile, attributes); 
+                
+                if (tags == null){
+                    getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                    getSchemaCache().addSchema(
+                        addressMap, 
+                        readRequest.getTagNames(),
+                        readRequest.getTags(),
+                        null
+                    );
+                }
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new ProcessException(e);

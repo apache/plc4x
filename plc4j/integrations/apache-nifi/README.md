@@ -22,6 +22,33 @@ under the License.
 The following properties applies to all Plc4x Processors:
 * Connection String: A constant connection string such as `s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200`.
 * Read/Write timeout (miliseconds): Specifies the time in milliseconds for the connection to return a timeout.
+* Address Access Strategy: defines how the processor obtains the PLC addresses. It can take 2 values:
+  * **Properties as Addreses:** 
+      For each variable, add a new property to the processor where the property name matches the variable name, and the variable value corresponds to the address tag. 
+
+    An *example* of these properties for reading values from a S7-1200:
+    - *var1:* *%DB1:DBX0.0:BOOL*
+    - *var2:* *%DB1:DBX0.1:BOOL*
+    - *var3:* *%DB1:DBB01:BYTE*
+    - *var4:* *%DB1:DBW02:WORD*
+    - *var5:* *%DB1:DBW04:INT*
+
+  * **Address Text:**
+    Property *Address Text* must be supplied in JSON format that contains variable name and address tag. Expression Language is supported.
+
+    Using the same example as before:
+    - *Address Text*:  
+    ```json
+    {
+      "var1" : "%DB1:DBX0.0:BOOL",
+      "var2" : "%DB1:DBX0.1:BOOL",
+      "var3" : "%DB1:DBB01:BYTE",
+      "var4" : "%DB1:DBW02:WORD",
+      "var5" : "%DB1:DBW04:INT" 
+    }
+    ```
+    If this JSON is in an attribute `plc4x.addresses` it can be accessed with *Address Text*=`${plc4x.addresses}`. 
+
 
 When reading from a PLC the response is converted into Avro. The mapping between PLC data types and Avro types is done as follows:
 
@@ -58,6 +85,7 @@ Table of data mapping between plc data and Avro types (as specified in [Avro spe
 
 
 Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as possible).
+
 
 ## Plc4xSinkProcessor
 

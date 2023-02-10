@@ -18,12 +18,11 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.util.Map;
-
 import org.apache.nifi.avro.AvroRecordSetWriter;
 import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
+import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +42,7 @@ public class Plc4xSourceRecordProcessorTest {
 
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_READ_FUTURE_TIMEOUT_MILISECONDS, "100");
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
+		testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_SCHEMA_CACHE_SIZE, "1");
 
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_SUCCESS);
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_FAILURE);
@@ -50,27 +50,30 @@ public class Plc4xSourceRecordProcessorTest {
 		testRunner.addControllerService("writer", writerService);
     	testRunner.enableControllerService(writerService);
 		testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_RECORD_WRITER_FACTORY.getName(), "writer");
-
-		for (Map.Entry<String,String> address :Plc4xCommonTest.addressMap.entrySet()) {
-			// TODO: Random generation not working with this types
-			if (address.getValue().startsWith("RANDOM/")) {
-				if (address.getValue().endsWith("BYTE") ||
-					address.getValue().endsWith("CHAR") ||
-					address.getValue().endsWith("STRING"))
-					continue;
-			}
-			testRunner.setProperty(address.getKey(), address.getValue());
-		}
     }
 
-    @Test
     public void testAvroRecordWriterProcessor() throws InitializationException {  	
-    	
     	testRunner.run(NUMBER_OF_CALLS,true, true);
     	//validations
     	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_FAILURE, 0);
     	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
 
 		Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceProcessor.REL_SUCCESS), false, true);
+    }
+
+	// Test dynamic properties addressess access strategy
+	@Test
+    public void testWithAddressProperties() throws InitializationException {
+        testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY);
+        Plc4xCommonTest.getAddressMap().forEach((k,v) -> testRunner.setProperty(k, v));
+        testAvroRecordWriterProcessor();
+    }
+
+	// Test addressess text property access strategy
+    @Test
+    public void testWithAddressText() throws InitializationException { 
+        testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);
+        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, Plc4xCommonTest.getAddressMap().toString());
+        testAvroRecordWriterProcessor();
     }
 }

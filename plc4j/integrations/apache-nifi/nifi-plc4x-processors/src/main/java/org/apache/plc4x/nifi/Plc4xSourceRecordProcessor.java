@@ -46,12 +46,13 @@ import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
+import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
@@ -103,21 +104,15 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@OnScheduled
 	@Override
 	public void onScheduled(final ProcessContext context) {
+		super.onScheduled(context);
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
-		addressMap = new HashMap<>();
-		//variables are passed as dynamic properties
-		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-		if (addressMap.isEmpty()) {
-			throw new PlcRuntimeException("No address specified");
-		}	
 	}
 	
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 		FlowFile fileToProcess = null;
-		// TODO: In the future the processor will be configurable to get the address and the connection from incoming flowfile
+		// TODO: In the future the processor will be configurable to get the connection from incoming flowfile
 		if (context.hasIncomingConnection()) {
 			fileToProcess = session.get();
 			// If we have no FlowFile, and all incoming connections are self-loops then we
@@ -150,12 +145,21 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 		try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
-			getTags().forEach(tagName -> {
-				String address = getAddress(tagName);
-				if (address != null) {
-					builder.addTagAddress(tagName, address);
+			Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
+			final RecordSchema recordSchema = getSchemaCache().retrieveSchema(addressMap);
+			final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+			if (tags != null){
+				for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+					builder.addTag(tag.getKey(), tag.getValue());
 				}
-			});
+			} else {
+				logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+				for (Map.Entry<String,String> entry: addressMap.entrySet()){
+					builder.addTagAddress(entry.getKey(), entry.getValue());
+				}
+			}
+            
 			PlcReadRequest readRequest = builder.build();
 			final FlowFile originalFlowFile = fileToProcess;
 			resultSetFF = session.write(resultSetFF, out -> {
@@ -163,9 +167,9 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					PlcReadResponse readResponse = readRequest.execute().get(this.readTimeout, TimeUnit.MILLISECONDS);
 					
 					if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
-						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null));
+						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema));
 					else 
-						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, originalFlowFile));
+						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, originalFlowFile));
 				} catch (InterruptedException e) {
 					logger.error("InterruptedException reading the data from PLC", e);
 		            Thread.currentThread().interrupt();
@@ -178,6 +182,43 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 			});
+
+			if (recordSchema == null){
+				logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
+				getSchemaCache().addSchema(
+					addressMap, 
+					readRequest.getTagNames(),
+					readRequest.getTags(),
+					plc4xWriter.getRecordSchema()
+				);
+			}
+			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+			final Map<String, String> attributesToAdd = new HashMap<>();
+			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
+			attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
+			if (inputFileUUID != null) {
+				attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
+			}
+			attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
+			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
+			plc4xWriter.updateCounters(session);
+			logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
+			// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
+			// otherwise
+			if (context.hasIncomingConnection()) {
+				session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+			} else {
+				session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+			}
+			
+			session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
+			// Need to remove the original input file if it exists
+			if (fileToProcess != null) {
+				session.remove(fileToProcess);
+				fileToProcess = null;
+			}
+			session.commitAsync();
+			
 		} catch (PlcConnectionException e) {
 			logger.error("Error getting the PLC connection", e);
 			throw new ProcessException("Got an a PlcConnectionException while trying to get a connection", e);
@@ -185,32 +226,5 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			logger.error("Got an error while trying to get a connection", e);
 			throw new ProcessException("Got an error while trying to get a connection", e);
 		}
-		
-		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
-		final Map<String, String> attributesToAdd = new HashMap<>();
-		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-		if (inputFileUUID != null) {
-			attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
-		}
-		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
-		resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
-		plc4xWriter.updateCounters(session);
-		logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
-		// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
-		// otherwise
-		if (context.hasIncomingConnection()) {
-			session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-		} else {
-			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-		}
-		
-		session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
-		// Need to remove the original input file if it exists
-		if (fileToProcess != null) {
-			session.remove(fileToProcess);
-			fileToProcess = null;
-		}
-		session.commitAsync();
 	}
 }

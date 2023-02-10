@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.util.Map;
+
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
@@ -32,6 +34,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -57,12 +60,20 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             // Prepare the request.
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            flowFile.getAttributes().forEach((tag, value) -> {
-                String address = getAddress(tag);
-                if (address != null) {
-                    builder.addTagAddress(tag, address, value);
+            Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
+            final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+            if (tags != null){
+                for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                    builder.addTag(tag.getKey(), tag.getValue());
                 }
-            });
+            } else {
+                getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                    builder.addTagAddress(entry.getKey(), entry.getValue());
+                }
+            }
+           
             PlcWriteRequest writeRequest = builder.build();
 
             // Send the request to the PLC.

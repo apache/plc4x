@@ -68,6 +68,11 @@
 
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
+			<artifactId>nifi-json-utils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-avro-record-utils</artifactId>
       <!--exclusions>
 				<exclusion>
@@ -96,6 +101,14 @@
 					<artifactId>validation-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>

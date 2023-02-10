@@ -78,10 +78,18 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi_Module");
 
     // Simple Field (slotNumber)
-    writeSimpleField("slotNumber", slotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "slotNumber",
+        slotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (moduleIdentNumber)
-    writeSimpleField("moduleIdentNumber", moduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "moduleIdentNumber",
+        moduleIdentNumber,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (moduleState)
     writeSimpleEnumField(
@@ -91,15 +99,21 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_ModuleState::getValue,
             PnIoCm_ModuleState::name,
-            writeUnsignedInt(writeBuffer, 16)));
+            writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numSubmodules) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numSubmodules = (int) (COUNT(getSubmodules()));
-    writeImplicitField("numSubmodules", numSubmodules, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numSubmodules",
+        numSubmodules,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (submodules)
-    writeComplexTypeArrayField("submodules", submodules, writeBuffer);
+    writeComplexTypeArrayField(
+        "submodules", submodules, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_ModuleDiffBlockApi_Module");
   }
@@ -153,25 +167,39 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
+    int slotNumber =
+        readSimpleField(
+            "slotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    long moduleIdentNumber = readSimpleField("moduleIdentNumber", readUnsignedLong(readBuffer, 32));
+    long moduleIdentNumber =
+        readSimpleField(
+            "moduleIdentNumber",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_ModuleState moduleState =
         readEnumField(
             "moduleState",
             "PnIoCm_ModuleState",
             new DataReaderEnumDefault<>(
-                PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)));
+                PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numSubmodules = readImplicitField("numSubmodules", readUnsignedInt(readBuffer, 16));
+    int numSubmodules =
+        readImplicitField(
+            "numSubmodules",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_ModuleDiffBlockApi_Submodule> submodules =
         readCountArrayField(
             "submodules",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_ModuleDiffBlockApi_Submodule.staticParse(readBuffer), readBuffer),
-            numSubmodules);
+            numSubmodules,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ModuleDiffBlockApi_Module");
     // Create the instance

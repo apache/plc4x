@@ -103,7 +103,7 @@ public class ProfinetChannel {
                     } else if (ethernetPacket.getHeader().getType() == EtherType.IPV4 && ethernetPacket.getPayload().getPayload() instanceof UdpPacket) {
                         UdpPacket payload = (UdpPacket) ethernetPacket.getPayload().getPayload();
                         // Check if it's a PROFINET packet
-                        if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getSrcPort().value() == -30572) {
+                        if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getDstPort().value() == -15536) {
                             isPnPacket = true;
                         }
                     }

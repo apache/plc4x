@@ -120,14 +120,25 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi_Submodule");
 
     // Simple Field (subslotNumber)
-    writeSimpleField("subslotNumber", subslotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "subslotNumber",
+        subslotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (submoduleIdentNumber)
     writeSimpleField(
-        "submoduleIdentNumber", submoduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
+        "submoduleIdentNumber",
+        submoduleIdentNumber,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (codingUsesIdentInfo)
-    writeSimpleField("codingUsesIdentInfo", codingUsesIdentInfo, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "codingUsesIdentInfo",
+        codingUsesIdentInfo,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (identInfo)
     writeSimpleEnumField(
@@ -135,7 +146,8 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "PnIoCm_IdentInfo",
         identInfo,
         new DataWriterEnumDefault<>(
-            PnIoCm_IdentInfo::getValue, PnIoCm_IdentInfo::name, writeUnsignedByte(writeBuffer, 4)));
+            PnIoCm_IdentInfo::getValue, PnIoCm_IdentInfo::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arInfo)
     writeSimpleEnumField(
@@ -143,19 +155,36 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "PnIoCm_ArInfo",
         arInfo,
         new DataWriterEnumDefault<>(
-            PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)));
+            PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (diagInfoAvailable)
-    writeSimpleField("diagInfoAvailable", diagInfoAvailable, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "diagInfoAvailable",
+        diagInfoAvailable,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (maintenanceDemanded)
-    writeSimpleField("maintenanceDemanded", maintenanceDemanded, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "maintenanceDemanded",
+        maintenanceDemanded,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (maintenanceRequired)
-    writeSimpleField("maintenanceRequired", maintenanceRequired, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "maintenanceRequired",
+        maintenanceRequired,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (qualifiedInfo)
-    writeSimpleField("qualifiedInfo", qualifiedInfo, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "qualifiedInfo",
+        qualifiedInfo,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (addInfo)
     writeSimpleEnumField(
@@ -163,7 +192,8 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "PnIoCm_AddInfo",
         addInfo,
         new DataWriterEnumDefault<>(
-            PnIoCm_AddInfo::getValue, PnIoCm_AddInfo::name, writeUnsignedByte(writeBuffer, 3)));
+            PnIoCm_AddInfo::getValue, PnIoCm_AddInfo::name, writeUnsignedByte(writeBuffer, 3)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_ModuleDiffBlockApi_Submodule");
   }
@@ -226,41 +256,71 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int subslotNumber = readSimpleField("subslotNumber", readUnsignedInt(readBuffer, 16));
+    int subslotNumber =
+        readSimpleField(
+            "subslotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long submoduleIdentNumber =
-        readSimpleField("submoduleIdentNumber", readUnsignedLong(readBuffer, 32));
+        readSimpleField(
+            "submoduleIdentNumber",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean codingUsesIdentInfo = readSimpleField("codingUsesIdentInfo", readBoolean(readBuffer));
+    boolean codingUsesIdentInfo =
+        readSimpleField(
+            "codingUsesIdentInfo",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_IdentInfo identInfo =
         readEnumField(
             "identInfo",
             "PnIoCm_IdentInfo",
             new DataReaderEnumDefault<>(
-                PnIoCm_IdentInfo::enumForValue, readUnsignedByte(readBuffer, 4)));
+                PnIoCm_IdentInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_ArInfo arInfo =
         readEnumField(
             "arInfo",
             "PnIoCm_ArInfo",
             new DataReaderEnumDefault<>(
-                PnIoCm_ArInfo::enumForValue, readUnsignedByte(readBuffer, 4)));
+                PnIoCm_ArInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean diagInfoAvailable = readSimpleField("diagInfoAvailable", readBoolean(readBuffer));
+    boolean diagInfoAvailable =
+        readSimpleField(
+            "diagInfoAvailable",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean maintenanceDemanded = readSimpleField("maintenanceDemanded", readBoolean(readBuffer));
+    boolean maintenanceDemanded =
+        readSimpleField(
+            "maintenanceDemanded",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean maintenanceRequired = readSimpleField("maintenanceRequired", readBoolean(readBuffer));
+    boolean maintenanceRequired =
+        readSimpleField(
+            "maintenanceRequired",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean qualifiedInfo = readSimpleField("qualifiedInfo", readBoolean(readBuffer));
+    boolean qualifiedInfo =
+        readSimpleField(
+            "qualifiedInfo",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_AddInfo addInfo =
         readEnumField(
             "addInfo",
             "PnIoCm_AddInfo",
             new DataReaderEnumDefault<>(
-                PnIoCm_AddInfo::enumForValue, readUnsignedByte(readBuffer, 3)));
+                PnIoCm_AddInfo::enumForValue, readUnsignedByte(readBuffer, 3)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ModuleDiffBlockApi_Submodule");
     // Create the instance

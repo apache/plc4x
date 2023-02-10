@@ -101,24 +101,24 @@
         ['END_OF_LLDP'  EndOfLldp
         ]
         ['CHASSIS_ID'   TlvChassisId(uint 9 tlvIdLength)
-            [simple     uint 8                        chassisIdSubType               ]
-            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId                      ]
+            [simple     uint 8                        chassisIdSubType              ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId               ]
         ]
         ['PORT_ID'   TlvPortId(uint 9 tlvIdLength)
-            [simple     uint 8          portIdSubType                              ]
-            [simple     vstring     '(tlvIdLength - 1) * 8' portId                           ]
+            [simple     uint 8          portIdSubType                               ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' portId                  ]
         ]
         ['TIME_TO_LIVE'   TlvTimeToLive
-            [simple     uint 16         tlvTimeToLiveUnit                          ]
+            [simple     uint 16         tlvTimeToLiveUnit                           ]
         ]
         ['PORT_DESCRIPTION'   TlvPortDescription(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_NAME'   TlvSystemName(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_DESCRIPTION'   TlvSystemDescription(uint 9 tlvIdLength)
-            [simple     vstring     '(tlvIdLength) * 8' chassisId                      ]
+            [simple     vstring     '(tlvIdLength) * 8' chassisId                   ]
         ]
         ['SYSTEM_CAPABILITIES'   TlvSystemCapabilities
             [reserved   uint 8                          '0x00'                      ]
@@ -1122,13 +1122,13 @@
     [array    PnIoCm_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi
+[type PnIoCm_ModuleDiffBlockApi byteOrder='BIG_ENDIAN'
     [const    uint 32                          api        0x00000000                    ]
     [implicit uint 16                          numModules 'COUNT(modules)'                ]
     [array    PnIoCm_ModuleDiffBlockApi_Module modules    count               'numModules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Module
+[type PnIoCm_ModuleDiffBlockApi_Module byteOrder='BIG_ENDIAN'
     [simple   uint 16                             slotNumber                                           ]
     [simple   uint 32                             moduleIdentNumber                                    ]
     [simple   PnIoCm_ModuleState                  moduleState                                          ]
@@ -1136,7 +1136,7 @@
     [array    PnIoCm_ModuleDiffBlockApi_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Submodule
+[type PnIoCm_ModuleDiffBlockApi_Submodule byteOrder='BIG_ENDIAN'
     [simple uint 16          subslotNumber       ]
     [simple uint 32          submoduleIdentNumber]
     [simple bit              codingUsesIdentInfo ]
