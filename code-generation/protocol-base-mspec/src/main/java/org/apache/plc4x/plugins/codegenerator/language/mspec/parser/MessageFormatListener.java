@@ -884,12 +884,19 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
 
         Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
-        while (consumerIterator.hasNext()) {
-            Consumer<TypeDefinition> setter = consumerIterator.next();
-            LOGGER.debug("setting {} for {}", typeName, setter);
-            setter.accept(type);
-            consumerIterator.remove();
+        List<Consumer<TypeDefinition>> removedConsumers = new ArrayList<>();
+        try {
+            while (consumerIterator.hasNext()) {
+                Consumer<TypeDefinition> setter = consumerIterator.next();
+                LOGGER.debug("setting {} for {}", typeName, setter);
+                setter.accept(type);
+                removedConsumers.add(setter);
+            }
+        } catch (ConcurrentModificationException e) {
+            LOGGER.debug("");
         }
+
+        waitingConsumers.removeAll(removedConsumers);
         typeDefinitionConsumers.remove(typeName);
     }
 
