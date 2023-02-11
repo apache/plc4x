@@ -25,15 +25,11 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.Validatabl
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ADSProtocol implements Protocol, ProtocolHelpers {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocol.class);
 
     @Override
     public String getName() {
@@ -42,15 +38,7 @@ public class ADSProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-
-        ValidatableTypeContext typeContext;
-
-        LOGGER.info("Parsing: ads.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("ads"));
-
-        LOGGER.info("Parsing: ads-discovery.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("ads-discovery"), typeContext);
-
+        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream());
         typeContext.validate();
         return typeContext;
     }
