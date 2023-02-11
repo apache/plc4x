@@ -72,10 +72,15 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField(
+        "macAddress",
+        macAddress,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_IpMacAddress");
   }
@@ -109,12 +114,17 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     MacAddress macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer));
+            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_IpMacAddress");
     // Create the instance

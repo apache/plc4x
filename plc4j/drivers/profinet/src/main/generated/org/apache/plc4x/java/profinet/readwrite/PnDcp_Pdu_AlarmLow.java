@@ -117,36 +117,76 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
     writeBuffer.pushContext("PnDcp_Pdu_AlarmLow");
 
     // Simple Field (alarmDstEndpoint)
-    writeSimpleField("alarmDstEndpoint", alarmDstEndpoint, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "alarmDstEndpoint",
+        alarmDstEndpoint,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (alarmSrcEndpoint)
-    writeSimpleField("alarmSrcEndpoint", alarmSrcEndpoint, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "alarmSrcEndpoint",
+        alarmSrcEndpoint,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (version)
-    writeSimpleField("version", version, writeUnsignedByte(writeBuffer, 4));
+    writeSimpleField(
+        "version",
+        version,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, writeUnsignedByte(writeBuffer, 4));
+    writeSimpleField(
+        "errorType",
+        errorType,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (tAck)
-    writeSimpleField("tAck", tAck, writeUnsignedByte(writeBuffer, 4));
+    writeSimpleField(
+        "tAck",
+        tAck,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (windowSize)
-    writeSimpleField("windowSize", windowSize, writeUnsignedByte(writeBuffer, 4));
+    writeSimpleField(
+        "windowSize",
+        windowSize,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (senSeqNum)
-    writeSimpleField("senSeqNum", senSeqNum, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "senSeqNum",
+        senSeqNum,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ackSeqNum)
-    writeSimpleField("ackSeqNum", ackSeqNum, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "ackSeqNum",
+        ackSeqNum,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (varPartLen) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int varPartLen = (int) (COUNT(getVarPart()));
-    writeImplicitField("varPartLen", varPartLen, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "varPartLen",
+        varPartLen,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (varPart)
-    writeByteArrayField("varPart", varPart, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "varPart",
+        varPart,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Pdu_AlarmLow");
   }
@@ -205,25 +245,63 @@ public class PnDcp_Pdu_AlarmLow extends PnDcp_Pdu implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int alarmDstEndpoint = readSimpleField("alarmDstEndpoint", readUnsignedInt(readBuffer, 16));
+    int alarmDstEndpoint =
+        readSimpleField(
+            "alarmDstEndpoint",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int alarmSrcEndpoint = readSimpleField("alarmSrcEndpoint", readUnsignedInt(readBuffer, 16));
+    int alarmSrcEndpoint =
+        readSimpleField(
+            "alarmSrcEndpoint",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte version = readSimpleField("version", readUnsignedByte(readBuffer, 4));
+    byte version =
+        readSimpleField(
+            "version",
+            readUnsignedByte(readBuffer, 4),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte errorType = readSimpleField("errorType", readUnsignedByte(readBuffer, 4));
+    byte errorType =
+        readSimpleField(
+            "errorType",
+            readUnsignedByte(readBuffer, 4),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte tAck = readSimpleField("tAck", readUnsignedByte(readBuffer, 4));
+    byte tAck =
+        readSimpleField(
+            "tAck",
+            readUnsignedByte(readBuffer, 4),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte windowSize = readSimpleField("windowSize", readUnsignedByte(readBuffer, 4));
+    byte windowSize =
+        readSimpleField(
+            "windowSize",
+            readUnsignedByte(readBuffer, 4),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int senSeqNum = readSimpleField("senSeqNum", readUnsignedInt(readBuffer, 16));
+    int senSeqNum =
+        readSimpleField(
+            "senSeqNum",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int ackSeqNum = readSimpleField("ackSeqNum", readUnsignedInt(readBuffer, 16));
+    int ackSeqNum =
+        readSimpleField(
+            "ackSeqNum",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int varPartLen = readImplicitField("varPartLen", readUnsignedInt(readBuffer, 16));
+    int varPartLen =
+        readImplicitField(
+            "varPartLen",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte[] varPart = readBuffer.readByteArray("varPart", Math.toIntExact(varPartLen));
+    byte[] varPart =
+        readBuffer.readByteArray(
+            "varPart", Math.toIntExact(varPartLen), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Pdu_AlarmLow");
     // Create the instance
