@@ -459,12 +459,18 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.frameId = frameId;
     }
 
-    public Map<Long, ProfinetCallable<DceRpc_Packet>> getQueue() {
-        return queue;
+    public ProfinetCallable<DceRpc_Packet> popFromQueue(long sequenceNumber) {
+        ProfinetCallable<DceRpc_Packet> r = queue.get(sequenceNumber);
+        queue.remove(sequenceNumber);
+        return r;
     }
 
-    public void setQueue(Map<Long, ProfinetCallable<DceRpc_Packet>> queue) {
-        this.queue = queue;
+    public boolean hasSequenecNumberInQueue(long sequenceNumber) {
+        return queue.containsKey(sequenceNumber);
+    }
+
+    public void addToQueue(long sequenceNumber, ProfinetCallable<DceRpc_Packet> obj) {
+        queue.put(sequenceNumber, obj);
     }
 
     public int getSessionKey() {

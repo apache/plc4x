@@ -70,6 +70,8 @@ public class ProfinetDevice implements PlcSubscriber{
     private String deviceId;
     private Thread eventLoop = null;
     Map<String, List<Consumer<PlcSubscriptionEvent>>> registrations = new HashMap<>();
+    private int offset = 0;
+    private boolean firstMessage = true;
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -123,7 +125,7 @@ public class ProfinetDevice implements PlcSubscriber{
     }
 
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
-        deviceContext.getQueue().put(callable.getId(), callable);
+        deviceContext.addToQueue(callable.getId(), callable);
         ProfinetMessageWrapper.sendUdpMessage(
             callable,
             deviceContext
@@ -270,8 +272,8 @@ public class ProfinetDevice implements PlcSubscriber{
     public void handleResponse(Ethernet_FramePayload_IPv4 packet) {
         logger.debug("Received packet for {}", packet.getPayload().getObjectUuid());
         long objectId = packet.getPayload().getSequenceNumber();
-        if (deviceContext.getQueue().containsKey(objectId)) {
-            deviceContext.getQueue().get(objectId).handle(packet.getPayload());
+        if (deviceContext.hasSequenecNumberInQueue(objectId)) {
+            deviceContext.popFromQueue(objectId).handle(packet.getPayload());
         } else {
             PnIoCm_Packet payloadPacket = packet.getPayload().getPayload();
             deviceContext.setActivityUuid(packet.getPayload().getActivityUuid());
@@ -283,6 +285,12 @@ public class ProfinetDevice implements PlcSubscriber{
                         deviceContext.setState(ProfinetDeviceState.APPLRDY);
                     }
                 }
+            } else if (payloadPacket instanceof PnIoCm_Packet_Fault) {
+                DceRpcAck ack = new DceRpcAck(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
+                recordIdAndSend(ack);
+            } else if (payloadPacket instanceof PnIoCm_Packet_Ping) {
+                DceRpcAck ack = new DceRpcAck(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
+                recordIdAndSend(ack);
             } else {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Unable to match Response with Requested Profinet packet");
@@ -348,10 +356,12 @@ public class ProfinetDevice implements PlcSubscriber{
         Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
         ReadBuffer buffer = new ReadBufferByteBased(cyclicPdu.getDataUnit().getData());
 
+        if (firstMessage) {
+            offset = cyclicPdu.getCycleCounter();
+            firstMessage = false;
+        }
+
         try {
-            if (deviceContext.getModules() == null) {
-                logger.error("HH");
-            }
             for (ProfinetModule module : deviceContext.getModules()) {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
@@ -865,6 +875,53 @@ public class ProfinetDevice implements PlcSubscriber{
         }
     }
 
+    public class DceRpcAck implements ProfinetCallable<DceRpc_Packet> {
+
+        private final DceRpc_ActivityUuid activityUuid;
+        private long id;
+
+        public DceRpcAck(DceRpc_ActivityUuid activityUuid, long seqNumber) {
+            this.activityUuid = activityUuid;
+            this.id = seqNumber;
+        }
+
+        public CompletableFuture<Boolean> getResponseHandled() {
+            return null;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public DceRpc_Packet create() {
+            return new DceRpc_Packet(
+                DceRpc_PacketType.NO_CALL,
+                false,
+                true,
+                true,
+                IntegerEncoding.BIG_ENDIAN,
+                CharacterEncoding.ASCII,
+                FloatingPointEncoding.IEEE,
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_InterfaceUuid_ControllerInterface(),
+                activityUuid,
+                0,
+                id,
+                DceRpc_Operation.CONTROL,
+                new PnIoCm_Packet_NoCall()
+            );
+        }
+
+        @Override
+        public void handle(DceRpc_Packet packet) {
+            logger.debug("Received an unintented packet");
+        }
+    }
+
     public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
 
         private final long startTime;
@@ -906,7 +963,7 @@ public class ProfinetDevice implements PlcSubscriber{
                     buffer.writeByte((byte) 0x00);
                 }
 
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
+                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
 
                 Ethernet_Frame frame = new Ethernet_Frame(
                     deviceContext.getMacAddress(),
@@ -932,7 +989,7 @@ public class ProfinetDevice implements PlcSubscriber{
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Error serializing cyclic data for device {}", deviceContext.getDeviceName());
 
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
+                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
 
                 Ethernet_Frame frame = new Ethernet_Frame(
                     deviceContext.getMacAddress(),

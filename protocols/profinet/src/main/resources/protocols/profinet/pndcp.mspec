@@ -70,17 +70,17 @@
             // Delay Parameter End
         ]
         ['Alarm_Low' PnDcp_Pdu_AlarmLow
-                    [simple uint 16 alarmDstEndpoint]
-                    [simple uint 16 alarmSrcEndpoint]
-                    [simple uint 4  version]
-                    [simple uint 4  errorType]
-                    [simple uint 4  tAck]
-                    [simple uint 4  windowSize]
-                    [simple uint 16 senSeqNum]
-                    [simple uint 16 ackSeqNum]
-                    [implicit uint 16 varPartLen 'COUNT(varPart)']
-                    [array    byte varPart                        length              'varPartLen']
-                ]
+            [simple uint 16 alarmDstEndpoint]
+            [simple uint 16 alarmSrcEndpoint]
+            [simple uint 4  version]
+            [simple uint 4  errorType]
+            [simple uint 4  tAck]
+            [simple uint 4  windowSize]
+            [simple uint 16 senSeqNum]
+            [simple uint 16 ackSeqNum]
+            [implicit uint 16 varPartLen 'COUNT(varPart)']
+            [array    byte varPart                        length              'varPartLen']
+        ]
         ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq
             [const    uint 8      serviceId                    0x05                                ]
             // ServiceType Start
