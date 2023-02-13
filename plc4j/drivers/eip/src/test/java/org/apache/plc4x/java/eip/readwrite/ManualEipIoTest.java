@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.eip.readwrite;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ManualEipIoTest {
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("logix://localhost");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://localhost");
         final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("MyTag", "MyTag").build();
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         connection.close();

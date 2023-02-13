@@ -74,14 +74,29 @@ public class EipConnectionRequest extends EipPacket implements Message {
   @Override
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EipConnectionRequest");
 
     // Const Field (protocolVersion)
-    writeConstField("protocolVersion", PROTOCOLVERSION, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "protocolVersion",
+        PROTOCOLVERSION,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (flags)
-    writeConstField("flags", FLAGS, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "flags",
+        FLAGS,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("EipConnectionRequest");
   }
@@ -95,6 +110,7 @@ public class EipConnectionRequest extends EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EipConnectionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (protocolVersion)
     lengthInBits += 16;
@@ -105,12 +121,13 @@ public class EipConnectionRequest extends EipPacket implements Message {
     return lengthInBits;
   }
 
-  public static EipConnectionRequestBuilder staticParseBuilder(
+  public static EipPacketBuilder staticParseEipPacketBuilder(
       ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("EipConnectionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int protocolVersion =
         readConstField(
@@ -134,14 +151,13 @@ public class EipConnectionRequest extends EipPacket implements Message {
 
     readBuffer.closeContext("EipConnectionRequest");
     // Create the instance
-    return new EipConnectionRequestBuilder(order);
+    return new EipConnectionRequestBuilderImpl(order);
   }
 
-  public static class EipConnectionRequestBuilder implements EipPacket.EipPacketBuilder {
+  public static class EipConnectionRequestBuilderImpl implements EipPacket.EipPacketBuilder {
     private final IntegerEncoding order;
 
-    public EipConnectionRequestBuilder(IntegerEncoding order) {
-
+    public EipConnectionRequestBuilderImpl(IntegerEncoding order) {
       this.order = order;
     }
 

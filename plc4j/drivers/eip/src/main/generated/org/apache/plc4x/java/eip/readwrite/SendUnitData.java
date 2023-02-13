@@ -96,11 +96,19 @@ public class SendUnitData extends EipPacket implements Message {
   @Override
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SendUnitData");
 
     // Const Field (interfaceHandle)
-    writeConstField("interfaceHandle", INTERFACEHANDLE, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "interfaceHandle",
+        INTERFACEHANDLE,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (timeout)
     writeSimpleField(
@@ -123,7 +131,14 @@ public class SendUnitData extends EipPacket implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (typeId)
-    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
+    writeComplexTypeArrayField(
+        "typeId",
+        typeId,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("SendUnitData");
   }
@@ -137,6 +152,7 @@ public class SendUnitData extends EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SendUnitData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (interfaceHandle)
     lengthInBits += 32;
@@ -151,7 +167,7 @@ public class SendUnitData extends EipPacket implements Message {
     if (typeId != null) {
       int i = 0;
       for (TypeId element : typeId) {
-        boolean last = ++i >= typeId.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeId.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -159,12 +175,13 @@ public class SendUnitData extends EipPacket implements Message {
     return lengthInBits;
   }
 
-  public static SendUnitDataBuilder staticParseBuilder(
+  public static EipPacketBuilder staticParseEipPacketBuilder(
       ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("SendUnitData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long interfaceHandle =
         readConstField(
@@ -207,18 +224,17 @@ public class SendUnitData extends EipPacket implements Message {
 
     readBuffer.closeContext("SendUnitData");
     // Create the instance
-    return new SendUnitDataBuilder(timeout, itemCount, typeId, order);
+    return new SendUnitDataBuilderImpl(timeout, itemCount, typeId, order);
   }
 
-  public static class SendUnitDataBuilder implements EipPacket.EipPacketBuilder {
+  public static class SendUnitDataBuilderImpl implements EipPacket.EipPacketBuilder {
     private final int timeout;
     private final int itemCount;
     private final List<TypeId> typeId;
     private final IntegerEncoding order;
 
-    public SendUnitDataBuilder(
+    public SendUnitDataBuilderImpl(
         int timeout, int itemCount, List<TypeId> typeId, IntegerEncoding order) {
-
       this.timeout = timeout;
       this.itemCount = itemCount;
       this.typeId = typeId;

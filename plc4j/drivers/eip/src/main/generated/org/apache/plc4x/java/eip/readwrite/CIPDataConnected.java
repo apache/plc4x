@@ -61,6 +61,7 @@ public class CIPDataConnected implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPDataConnected");
 
@@ -82,6 +83,7 @@ public class CIPDataConnected implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CIPDataConnected _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 32;
@@ -118,6 +120,7 @@ public class CIPDataConnected implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
 

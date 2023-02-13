@@ -74,28 +74,51 @@ public class CipConnectedRequest extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectedRequest");
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     short requestPathSize = (short) ((COUNT(getPathSegments())) / (2));
-    writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "requestPathSize",
+        requestPathSize,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (pathSegments)
-    writeByteArrayField("pathSegments", pathSegments, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "pathSegments",
+        pathSegments,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0001,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipConnectedRequest");
   }
@@ -109,6 +132,7 @@ public class CipConnectedRequest extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipConnectedRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (requestPathSize)
     lengthInBits += 8;
@@ -127,13 +151,14 @@ public class CipConnectedRequest extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static CipConnectedRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipConnectedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short requestPathSize =
         readImplicitField(
@@ -175,18 +200,18 @@ public class CipConnectedRequest extends CipService implements Message {
 
     readBuffer.closeContext("CipConnectedRequest");
     // Create the instance
-    return new CipConnectedRequestBuilder(
+    return new CipConnectedRequestBuilderImpl(
         pathSegments, serviceLen, order, reservedField0, reservedField1);
   }
 
-  public static class CipConnectedRequestBuilder implements CipService.CipServiceBuilder {
+  public static class CipConnectedRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final byte[] pathSegments;
     private final Integer serviceLen;
     private final IntegerEncoding order;
     private final Integer reservedField0;
     private final Long reservedField1;
 
-    public CipConnectedRequestBuilder(
+    public CipConnectedRequestBuilderImpl(
         byte[] pathSegments,
         Integer serviceLen,
         IntegerEncoding order,

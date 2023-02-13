@@ -67,13 +67,21 @@ public class ConnectedDataItem extends TypeId implements Message {
   @Override
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectedDataItem");
 
     // Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int packetSize = (int) ((getService().getLengthInBytes()) + (2));
-    writeImplicitField("packetSize", packetSize, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetSize",
+        packetSize,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (sequenceCount)
     writeSimpleField(
@@ -107,6 +115,7 @@ public class ConnectedDataItem extends TypeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectedDataItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (packetSize)
     lengthInBits += 16;
@@ -120,12 +129,13 @@ public class ConnectedDataItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static ConnectedDataItemBuilder staticParseBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("ConnectedDataItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int packetSize =
         readImplicitField(
@@ -163,16 +173,16 @@ public class ConnectedDataItem extends TypeId implements Message {
 
     readBuffer.closeContext("ConnectedDataItem");
     // Create the instance
-    return new ConnectedDataItemBuilder(sequenceCount, service, order);
+    return new ConnectedDataItemBuilderImpl(sequenceCount, service, order);
   }
 
-  public static class ConnectedDataItemBuilder implements TypeId.TypeIdBuilder {
+  public static class ConnectedDataItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final int sequenceCount;
     private final CipService service;
     private final IntegerEncoding order;
 
-    public ConnectedDataItemBuilder(int sequenceCount, CipService service, IntegerEncoding order) {
-
+    public ConnectedDataItemBuilderImpl(
+        int sequenceCount, CipService service, IntegerEncoding order) {
       this.sequenceCount = sequenceCount;
       this.service = service;
       this.order = order;

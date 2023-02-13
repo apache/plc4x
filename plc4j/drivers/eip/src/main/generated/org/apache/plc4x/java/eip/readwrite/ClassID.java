@@ -68,6 +68,7 @@ public class ClassID extends LogicalSegmentType implements Message {
   protected void serializeLogicalSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClassID");
 
@@ -103,6 +104,7 @@ public class ClassID extends LogicalSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ClassID _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (format)
     lengthInBits += 2;
@@ -113,12 +115,13 @@ public class ClassID extends LogicalSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static ClassIDBuilder staticParseBuilder(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static LogicalSegmentTypeBuilder staticParseLogicalSegmentTypeBuilder(
+      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("ClassID");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte format =
         readSimpleField(
@@ -140,16 +143,15 @@ public class ClassID extends LogicalSegmentType implements Message {
 
     readBuffer.closeContext("ClassID");
     // Create the instance
-    return new ClassIDBuilder(format, segmentClass, order);
+    return new ClassIDBuilderImpl(format, segmentClass, order);
   }
 
-  public static class ClassIDBuilder implements LogicalSegmentType.LogicalSegmentTypeBuilder {
+  public static class ClassIDBuilderImpl implements LogicalSegmentType.LogicalSegmentTypeBuilder {
     private final byte format;
     private final short segmentClass;
     private final IntegerEncoding order;
 
-    public ClassIDBuilder(byte format, short segmentClass, IntegerEncoding order) {
-
+    public ClassIDBuilderImpl(byte format, short segmentClass, IntegerEncoding order) {
       this.format = format;
       this.segmentClass = segmentClass;
       this.order = order;

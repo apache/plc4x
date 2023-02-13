@@ -59,14 +59,29 @@ public abstract class CipService implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipService");
 
     // Discriminator Field (response) (Used as input to a switch field)
-    writeDiscriminatorField("response", getResponse(), writeBoolean(writeBuffer));
+    writeDiscriminatorField(
+        "response",
+        getResponse(),
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Discriminator Field (service) (Used as input to a switch field)
-    writeDiscriminatorField("service", getService(), writeUnsignedShort(writeBuffer, 7));
+    writeDiscriminatorField(
+        "service",
+        getService(),
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Switch field (Serialize the sub-type)
     serializeCipServiceChild(writeBuffer);
@@ -83,6 +98,7 @@ public abstract class CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CipService _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (response)
     lengthInBits += 1;
@@ -143,6 +159,7 @@ public abstract class CipService implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean response =
         readDiscriminatorField(
@@ -166,59 +183,77 @@ public abstract class CipService implements Message {
     CipServiceBuilder builder = null;
     if (EvaluationHelper.equals(service, (short) 0x01)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = GetAttributeAllRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          GetAttributeAllRequest.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x01)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          GetAttributeAllResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+          GetAttributeAllResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4C)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = CipReadRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipReadRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4C)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = CipReadResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipReadResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4D)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = CipWriteRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipWriteRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4D)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = CipWriteResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipWriteResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4E)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder =
-          CipConnectionManagerCloseRequest.staticParseBuilder(
+          CipConnectionManagerCloseRequest.staticParseCipServiceBuilder(
               readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x4E)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          CipConnectionManagerCloseResponse.staticParseBuilder(
+          CipConnectionManagerCloseResponse.staticParseCipServiceBuilder(
               readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x0A)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = MultipleServiceRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          MultipleServiceRequest.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x0A)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          MultipleServiceResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+          MultipleServiceResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x52)
         && EvaluationHelper.equals(response, (boolean) false)
         && EvaluationHelper.equals(connected, (boolean) false)) {
-      builder = CipUnconnectedRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipUnconnectedRequest.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x52)
         && EvaluationHelper.equals(response, (boolean) false)
         && EvaluationHelper.equals(connected, (boolean) true)) {
-      builder = CipConnectedRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipConnectedRequest.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x52)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = CipConnectedResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+      builder =
+          CipConnectedResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x5B)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder =
-          CipConnectionManagerRequest.staticParseBuilder(readBuffer, connected, serviceLen, order);
+          CipConnectionManagerRequest.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     } else if (EvaluationHelper.equals(service, (short) 0x5B)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          CipConnectionManagerResponse.staticParseBuilder(readBuffer, connected, serviceLen, order);
+          CipConnectionManagerResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen, order);
     }
     if (builder == null) {
       throw new ParseException(
@@ -242,7 +277,7 @@ public abstract class CipService implements Message {
     return _cipService;
   }
 
-  public static interface CipServiceBuilder {
+  public interface CipServiceBuilder {
     CipService build(Integer serviceLen, IntegerEncoding order);
   }
 

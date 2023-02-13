@@ -61,6 +61,7 @@ public class LogicalSegment extends PathSegment implements Message {
   @Override
   protected void serializePathSegmentChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LogicalSegment");
 
@@ -86,6 +87,7 @@ public class LogicalSegment extends PathSegment implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LogicalSegment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentType)
     lengthInBits += segmentType.getLengthInBits();
@@ -93,12 +95,13 @@ public class LogicalSegment extends PathSegment implements Message {
     return lengthInBits;
   }
 
-  public static LogicalSegmentBuilder staticParseBuilder(
+  public static PathSegmentBuilder staticParsePathSegmentBuilder(
       ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("LogicalSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LogicalSegmentType segmentType =
         readSimpleField(
@@ -113,15 +116,14 @@ public class LogicalSegment extends PathSegment implements Message {
 
     readBuffer.closeContext("LogicalSegment");
     // Create the instance
-    return new LogicalSegmentBuilder(segmentType, order);
+    return new LogicalSegmentBuilderImpl(segmentType, order);
   }
 
-  public static class LogicalSegmentBuilder implements PathSegment.PathSegmentBuilder {
+  public static class LogicalSegmentBuilderImpl implements PathSegment.PathSegmentBuilder {
     private final LogicalSegmentType segmentType;
     private final IntegerEncoding order;
 
-    public LogicalSegmentBuilder(LogicalSegmentType segmentType, IntegerEncoding order) {
-
+    public LogicalSegmentBuilderImpl(LogicalSegmentType segmentType, IntegerEncoding order) {
       this.segmentType = segmentType;
       this.order = order;
     }

@@ -68,13 +68,21 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
   protected void serializeDataSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AnsiExtendedSymbolSegment");
 
     // Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short dataSize = (short) (getSymbol().length());
-    writeImplicitField("dataSize", dataSize, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "dataSize",
+        dataSize,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (symbol)
     writeSimpleField(
@@ -88,7 +96,14 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
 
     // Optional Field (pad) (Can be skipped, if the value is null)
     writeOptionalField(
-        "pad", pad, writeUnsignedShort(writeBuffer, 8), ((getSymbol().length()) % (2)) != (0));
+        "pad",
+        pad,
+        writeUnsignedShort(writeBuffer, 8),
+        ((getSymbol().length()) % (2)) != (0),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("AnsiExtendedSymbolSegment");
   }
@@ -102,6 +117,7 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AnsiExtendedSymbolSegment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (dataSize)
     lengthInBits += 8;
@@ -117,12 +133,13 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
     return lengthInBits;
   }
 
-  public static AnsiExtendedSymbolSegmentBuilder staticParseBuilder(
+  public static DataSegmentTypeBuilder staticParseDataSegmentTypeBuilder(
       ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("AnsiExtendedSymbolSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataSize =
         readImplicitField(
@@ -154,17 +171,16 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
 
     readBuffer.closeContext("AnsiExtendedSymbolSegment");
     // Create the instance
-    return new AnsiExtendedSymbolSegmentBuilder(symbol, pad, order);
+    return new AnsiExtendedSymbolSegmentBuilderImpl(symbol, pad, order);
   }
 
-  public static class AnsiExtendedSymbolSegmentBuilder
+  public static class AnsiExtendedSymbolSegmentBuilderImpl
       implements DataSegmentType.DataSegmentTypeBuilder {
     private final String symbol;
     private final Short pad;
     private final IntegerEncoding order;
 
-    public AnsiExtendedSymbolSegmentBuilder(String symbol, Short pad, IntegerEncoding order) {
-
+    public AnsiExtendedSymbolSegmentBuilderImpl(String symbol, Short pad, IntegerEncoding order) {
       this.symbol = symbol;
       this.pad = pad;
       this.order = order;

@@ -68,6 +68,7 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
   protected void serializePortSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PortSegmentNormal");
 
@@ -89,6 +90,7 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PortSegmentNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (port)
     lengthInBits += 4;
@@ -99,12 +101,13 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static PortSegmentNormalBuilder staticParseBuilder(
+  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(
       ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("PortSegmentNormal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte port = readSimpleField("port", readUnsignedByte(readBuffer, 4));
 
@@ -112,16 +115,16 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
 
     readBuffer.closeContext("PortSegmentNormal");
     // Create the instance
-    return new PortSegmentNormalBuilder(port, linkAddress, order);
+    return new PortSegmentNormalBuilderImpl(port, linkAddress, order);
   }
 
-  public static class PortSegmentNormalBuilder implements PortSegmentType.PortSegmentTypeBuilder {
+  public static class PortSegmentNormalBuilderImpl
+      implements PortSegmentType.PortSegmentTypeBuilder {
     private final byte port;
     private final short linkAddress;
     private final IntegerEncoding order;
 
-    public PortSegmentNormalBuilder(byte port, short linkAddress, IntegerEncoding order) {
-
+    public PortSegmentNormalBuilderImpl(byte port, short linkAddress, IntegerEncoding order) {
       this.port = port;
       this.linkAddress = linkAddress;
       this.order = order;

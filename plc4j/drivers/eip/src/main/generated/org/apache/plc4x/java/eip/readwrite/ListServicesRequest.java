@@ -62,6 +62,7 @@ public class ListServicesRequest extends EipPacket implements Message {
   @Override
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ListServicesRequest");
 
@@ -77,27 +78,28 @@ public class ListServicesRequest extends EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ListServicesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ListServicesRequestBuilder staticParseBuilder(
+  public static EipPacketBuilder staticParseEipPacketBuilder(
       ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("ListServicesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ListServicesRequest");
     // Create the instance
-    return new ListServicesRequestBuilder(order);
+    return new ListServicesRequestBuilderImpl(order);
   }
 
-  public static class ListServicesRequestBuilder implements EipPacket.EipPacketBuilder {
+  public static class ListServicesRequestBuilderImpl implements EipPacket.EipPacketBuilder {
     private final IntegerEncoding order;
 
-    public ListServicesRequestBuilder(IntegerEncoding order) {
-
+    public ListServicesRequestBuilderImpl(IntegerEncoding order) {
       this.order = order;
     }
 

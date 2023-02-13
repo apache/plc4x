@@ -53,12 +53,19 @@ public abstract class DataSegmentType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSegmentType");
 
     // Discriminator Field (dataSegmentType) (Used as input to a switch field)
     writeDiscriminatorField(
-        "dataSegmentType", getDataSegmentType(), writeUnsignedShort(writeBuffer, 5));
+        "dataSegmentType",
+        getDataSegmentType(),
+        writeUnsignedShort(writeBuffer, 5),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Switch field (Serialize the sub-type)
     serializeDataSegmentTypeChild(writeBuffer);
@@ -75,6 +82,7 @@ public abstract class DataSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DataSegmentType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (dataSegmentType)
     lengthInBits += 5;
@@ -111,6 +119,7 @@ public abstract class DataSegmentType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataSegmentType =
         readDiscriminatorField(
@@ -124,7 +133,7 @@ public abstract class DataSegmentType implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DataSegmentTypeBuilder builder = null;
     if (EvaluationHelper.equals(dataSegmentType, (short) 0x11)) {
-      builder = AnsiExtendedSymbolSegment.staticParseBuilder(readBuffer, order);
+      builder = AnsiExtendedSymbolSegment.staticParseDataSegmentTypeBuilder(readBuffer, order);
     }
     if (builder == null) {
       throw new ParseException(
@@ -142,7 +151,7 @@ public abstract class DataSegmentType implements Message {
     return _dataSegmentType;
   }
 
-  public static interface DataSegmentTypeBuilder {
+  public interface DataSegmentTypeBuilder {
     DataSegmentType build(IntegerEncoding order);
   }
 

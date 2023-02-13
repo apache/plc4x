@@ -90,6 +90,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetAttributeAllResponse");
 
@@ -97,7 +98,11 @@ public class GetAttributeAllResponse extends CipService implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (status)
     writeSimpleField(
@@ -124,7 +129,11 @@ public class GetAttributeAllResponse extends CipService implements Message {
         "attributes",
         attributes,
         new DataWriterComplexDefault<>(writeBuffer),
-        (((serviceLen) - (4))) > (0));
+        (((serviceLen) - (4))) > (0),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("GetAttributeAllResponse");
   }
@@ -138,6 +147,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GetAttributeAllResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -156,13 +166,14 @@ public class GetAttributeAllResponse extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static GetAttributeAllResponseBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("GetAttributeAllResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField(
@@ -206,11 +217,11 @@ public class GetAttributeAllResponse extends CipService implements Message {
 
     readBuffer.closeContext("GetAttributeAllResponse");
     // Create the instance
-    return new GetAttributeAllResponseBuilder(
+    return new GetAttributeAllResponseBuilderImpl(
         status, extStatus, attributes, serviceLen, order, reservedField0);
   }
 
-  public static class GetAttributeAllResponseBuilder implements CipService.CipServiceBuilder {
+  public static class GetAttributeAllResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short extStatus;
     private final CIPAttributes attributes;
@@ -218,7 +229,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
     private final IntegerEncoding order;
     private final Short reservedField0;
 
-    public GetAttributeAllResponseBuilder(
+    public GetAttributeAllResponseBuilderImpl(
         short status,
         short extStatus,
         CIPAttributes attributes,

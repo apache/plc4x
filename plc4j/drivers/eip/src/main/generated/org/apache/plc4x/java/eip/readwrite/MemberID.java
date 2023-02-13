@@ -68,6 +68,7 @@ public class MemberID extends LogicalSegmentType implements Message {
   protected void serializeLogicalSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MemberID");
 
@@ -103,6 +104,7 @@ public class MemberID extends LogicalSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MemberID _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (format)
     lengthInBits += 2;
@@ -113,12 +115,13 @@ public class MemberID extends LogicalSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static MemberIDBuilder staticParseBuilder(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static LogicalSegmentTypeBuilder staticParseLogicalSegmentTypeBuilder(
+      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("MemberID");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte format =
         readSimpleField(
@@ -140,16 +143,15 @@ public class MemberID extends LogicalSegmentType implements Message {
 
     readBuffer.closeContext("MemberID");
     // Create the instance
-    return new MemberIDBuilder(format, instance, order);
+    return new MemberIDBuilderImpl(format, instance, order);
   }
 
-  public static class MemberIDBuilder implements LogicalSegmentType.LogicalSegmentTypeBuilder {
+  public static class MemberIDBuilderImpl implements LogicalSegmentType.LogicalSegmentTypeBuilder {
     private final byte format;
     private final short instance;
     private final IntegerEncoding order;
 
-    public MemberIDBuilder(byte format, short instance, IntegerEncoding order) {
-
+    public MemberIDBuilderImpl(byte format, short instance, IntegerEncoding order) {
       this.format = format;
       this.instance = instance;
       this.order = order;

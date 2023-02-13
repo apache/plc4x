@@ -61,13 +61,21 @@ public class UnConnectedDataItem extends TypeId implements Message {
   @Override
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnConnectedDataItem");
 
     // Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int packetSize = (int) (getService().getLengthInBytes());
-    writeImplicitField("packetSize", packetSize, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetSize",
+        packetSize,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (service)
     writeSimpleField(
@@ -91,6 +99,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UnConnectedDataItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (packetSize)
     lengthInBits += 16;
@@ -101,12 +110,13 @@ public class UnConnectedDataItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static UnConnectedDataItemBuilder staticParseBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("UnConnectedDataItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int packetSize =
         readImplicitField(
@@ -135,15 +145,14 @@ public class UnConnectedDataItem extends TypeId implements Message {
 
     readBuffer.closeContext("UnConnectedDataItem");
     // Create the instance
-    return new UnConnectedDataItemBuilder(service, order);
+    return new UnConnectedDataItemBuilderImpl(service, order);
   }
 
-  public static class UnConnectedDataItemBuilder implements TypeId.TypeIdBuilder {
+  public static class UnConnectedDataItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final CipService service;
     private final IntegerEncoding order;
 
-    public UnConnectedDataItemBuilder(CipService service, IntegerEncoding order) {
-
+    public UnConnectedDataItemBuilderImpl(CipService service, IntegerEncoding order) {
       this.service = service;
       this.order = order;
     }

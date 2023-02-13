@@ -111,6 +111,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipUnconnectedRequest");
 
@@ -120,7 +121,14 @@ public class CipUnconnectedRequest extends CipService implements Message {
         (byte)
             ((((getClassSegment().getLengthInBytes()) + (getInstanceSegment().getLengthInBytes())))
                 / (2));
-    writeImplicitField("requestPathSize", requestPathSize, writeSignedByte(writeBuffer, 8));
+    writeImplicitField(
+        "requestPathSize",
+        requestPathSize,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (classSegment)
     writeSimpleField(
@@ -146,12 +154,23 @@ public class CipUnconnectedRequest extends CipService implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x9D05,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int messageSize = (int) (((getLengthInBytes()) - (10)) - (4));
-    writeImplicitField("messageSize", messageSize, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "messageSize",
+        messageSize,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (unconnectedService)
     writeSimpleField(
@@ -164,7 +183,14 @@ public class CipUnconnectedRequest extends CipService implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (route)
-    writeConstField("route", ROUTE, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "route",
+        ROUTE,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (backPlane)
     writeSimpleField(
@@ -198,6 +224,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipUnconnectedRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (requestPathSize)
     lengthInBits += 8;
@@ -229,13 +256,14 @@ public class CipUnconnectedRequest extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static CipUnconnectedRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipUnconnectedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte requestPathSize =
         readImplicitField(
@@ -331,7 +359,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
 
     readBuffer.closeContext("CipUnconnectedRequest");
     // Create the instance
-    return new CipUnconnectedRequestBuilder(
+    return new CipUnconnectedRequestBuilderImpl(
         classSegment,
         instanceSegment,
         unconnectedService,
@@ -342,7 +370,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
         reservedField0);
   }
 
-  public static class CipUnconnectedRequestBuilder implements CipService.CipServiceBuilder {
+  public static class CipUnconnectedRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final PathSegment classSegment;
     private final PathSegment instanceSegment;
     private final CipService unconnectedService;
@@ -352,7 +380,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
     private final IntegerEncoding order;
     private final Integer reservedField0;
 
-    public CipUnconnectedRequestBuilder(
+    public CipUnconnectedRequestBuilderImpl(
         PathSegment classSegment,
         PathSegment instanceSegment,
         CipService unconnectedService,

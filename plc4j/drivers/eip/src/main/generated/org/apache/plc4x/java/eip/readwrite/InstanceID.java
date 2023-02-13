@@ -68,6 +68,7 @@ public class InstanceID extends LogicalSegmentType implements Message {
   protected void serializeLogicalSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("InstanceID");
 
@@ -103,6 +104,7 @@ public class InstanceID extends LogicalSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     InstanceID _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (format)
     lengthInBits += 2;
@@ -113,12 +115,13 @@ public class InstanceID extends LogicalSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static InstanceIDBuilder staticParseBuilder(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static LogicalSegmentTypeBuilder staticParseLogicalSegmentTypeBuilder(
+      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("InstanceID");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte format =
         readSimpleField(
@@ -140,16 +143,16 @@ public class InstanceID extends LogicalSegmentType implements Message {
 
     readBuffer.closeContext("InstanceID");
     // Create the instance
-    return new InstanceIDBuilder(format, instance, order);
+    return new InstanceIDBuilderImpl(format, instance, order);
   }
 
-  public static class InstanceIDBuilder implements LogicalSegmentType.LogicalSegmentTypeBuilder {
+  public static class InstanceIDBuilderImpl
+      implements LogicalSegmentType.LogicalSegmentTypeBuilder {
     private final byte format;
     private final short instance;
     private final IntegerEncoding order;
 
-    public InstanceIDBuilder(byte format, short instance, IntegerEncoding order) {
-
+    public InstanceIDBuilderImpl(byte format, short instance, IntegerEncoding order) {
       this.format = format;
       this.instance = instance;
       this.order = order;

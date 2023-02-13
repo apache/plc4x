@@ -119,6 +119,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectionManagerResponse");
 
@@ -126,7 +127,11 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x000000,
-        writeUnsignedLong(writeBuffer, 24));
+        writeUnsignedLong(writeBuffer, 24),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (otConnectionId)
     writeSimpleField(
@@ -201,13 +206,24 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     // Implicit Field (replySize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short replySize = (short) ((serviceLen) - (30));
-    writeImplicitField("replySize", replySize, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "replySize",
+        replySize,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipConnectionManagerResponse");
   }
@@ -221,6 +237,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipConnectionManagerResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 24;
@@ -255,13 +272,14 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     return lengthInBits;
   }
 
-  public static CipConnectionManagerResponseBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipConnectionManagerResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
         readReservedField(
@@ -357,7 +375,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
 
     readBuffer.closeContext("CipConnectionManagerResponse");
     // Create the instance
-    return new CipConnectionManagerResponseBuilder(
+    return new CipConnectionManagerResponseBuilderImpl(
         otConnectionId,
         toConnectionId,
         connectionSerialNumber,
@@ -371,7 +389,8 @@ public class CipConnectionManagerResponse extends CipService implements Message 
         reservedField1);
   }
 
-  public static class CipConnectionManagerResponseBuilder implements CipService.CipServiceBuilder {
+  public static class CipConnectionManagerResponseBuilderImpl
+      implements CipService.CipServiceBuilder {
     private final long otConnectionId;
     private final long toConnectionId;
     private final int connectionSerialNumber;
@@ -384,7 +403,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     private final Long reservedField0;
     private final Short reservedField1;
 
-    public CipConnectionManagerResponseBuilder(
+    public CipConnectionManagerResponseBuilderImpl(
         long otConnectionId,
         long toConnectionId,
         int connectionSerialNumber,

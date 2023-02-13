@@ -53,6 +53,7 @@ public abstract class PortSegmentType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PortSegmentType");
 
@@ -75,6 +76,7 @@ public abstract class PortSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PortSegmentType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (extendedLinkAddress)
     lengthInBits += 1;
@@ -111,6 +113,7 @@ public abstract class PortSegmentType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean extendedLinkAddress =
         readDiscriminatorField("extendedLinkAddress", readBoolean(readBuffer));
@@ -118,9 +121,9 @@ public abstract class PortSegmentType implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PortSegmentTypeBuilder builder = null;
     if (EvaluationHelper.equals(extendedLinkAddress, (boolean) false)) {
-      builder = PortSegmentNormal.staticParseBuilder(readBuffer, order);
+      builder = PortSegmentNormal.staticParsePortSegmentTypeBuilder(readBuffer, order);
     } else if (EvaluationHelper.equals(extendedLinkAddress, (boolean) true)) {
-      builder = PortSegmentExtended.staticParseBuilder(readBuffer, order);
+      builder = PortSegmentExtended.staticParsePortSegmentTypeBuilder(readBuffer, order);
     }
     if (builder == null) {
       throw new ParseException(
@@ -138,7 +141,7 @@ public abstract class PortSegmentType implements Message {
     return _portSegmentType;
   }
 
-  public static interface PortSegmentTypeBuilder {
+  public interface PortSegmentTypeBuilder {
     PortSegmentType build(IntegerEncoding order);
   }
 

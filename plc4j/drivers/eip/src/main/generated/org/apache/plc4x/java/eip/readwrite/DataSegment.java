@@ -61,6 +61,7 @@ public class DataSegment extends PathSegment implements Message {
   @Override
   protected void serializePathSegmentChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSegment");
 
@@ -86,6 +87,7 @@ public class DataSegment extends PathSegment implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSegment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentType)
     lengthInBits += segmentType.getLengthInBits();
@@ -93,12 +95,13 @@ public class DataSegment extends PathSegment implements Message {
     return lengthInBits;
   }
 
-  public static DataSegmentBuilder staticParseBuilder(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static PathSegmentBuilder staticParsePathSegmentBuilder(
+      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("DataSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataSegmentType segmentType =
         readSimpleField(
@@ -113,15 +116,14 @@ public class DataSegment extends PathSegment implements Message {
 
     readBuffer.closeContext("DataSegment");
     // Create the instance
-    return new DataSegmentBuilder(segmentType, order);
+    return new DataSegmentBuilderImpl(segmentType, order);
   }
 
-  public static class DataSegmentBuilder implements PathSegment.PathSegmentBuilder {
+  public static class DataSegmentBuilderImpl implements PathSegment.PathSegmentBuilder {
     private final DataSegmentType segmentType;
     private final IntegerEncoding order;
 
-    public DataSegmentBuilder(DataSegmentType segmentType, IntegerEncoding order) {
-
+    public DataSegmentBuilderImpl(DataSegmentType segmentType, IntegerEncoding order) {
       this.segmentType = segmentType;
       this.order = order;
     }

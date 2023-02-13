@@ -112,6 +112,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectionManagerCloseResponse");
 
@@ -119,7 +120,11 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (status)
     writeSimpleField(
@@ -185,7 +190,11 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipConnectionManagerCloseResponse");
   }
@@ -199,6 +208,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipConnectionManagerCloseResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -227,13 +237,14 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     return lengthInBits;
   }
 
-  public static CipConnectionManagerCloseResponseBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipConnectionManagerCloseResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField(
@@ -311,7 +322,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
 
     readBuffer.closeContext("CipConnectionManagerCloseResponse");
     // Create the instance
-    return new CipConnectionManagerCloseResponseBuilder(
+    return new CipConnectionManagerCloseResponseBuilderImpl(
         status,
         additionalStatusWords,
         connectionSerialNumber,
@@ -324,7 +335,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
         reservedField1);
   }
 
-  public static class CipConnectionManagerCloseResponseBuilder
+  public static class CipConnectionManagerCloseResponseBuilderImpl
       implements CipService.CipServiceBuilder {
     private final short status;
     private final short additionalStatusWords;
@@ -337,7 +348,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public CipConnectionManagerCloseResponseBuilder(
+    public CipConnectionManagerCloseResponseBuilderImpl(
         short status,
         short additionalStatusWords,
         int connectionSerialNumber,

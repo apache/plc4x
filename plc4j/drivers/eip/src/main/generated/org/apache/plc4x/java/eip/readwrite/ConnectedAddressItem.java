@@ -63,6 +63,7 @@ public class ConnectedAddressItem extends TypeId implements Message {
   @Override
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectedAddressItem");
 
@@ -70,7 +71,11 @@ public class ConnectedAddressItem extends TypeId implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0004,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (connectionId)
     writeSimpleField(
@@ -94,6 +99,7 @@ public class ConnectedAddressItem extends TypeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectedAddressItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -104,12 +110,13 @@ public class ConnectedAddressItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static ConnectedAddressItemBuilder staticParseBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("ConnectedAddressItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField(
@@ -132,15 +139,15 @@ public class ConnectedAddressItem extends TypeId implements Message {
 
     readBuffer.closeContext("ConnectedAddressItem");
     // Create the instance
-    return new ConnectedAddressItemBuilder(connectionId, order, reservedField0);
+    return new ConnectedAddressItemBuilderImpl(connectionId, order, reservedField0);
   }
 
-  public static class ConnectedAddressItemBuilder implements TypeId.TypeIdBuilder {
+  public static class ConnectedAddressItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final long connectionId;
     private final IntegerEncoding order;
     private final Integer reservedField0;
 
-    public ConnectedAddressItemBuilder(
+    public ConnectedAddressItemBuilderImpl(
         long connectionId, IntegerEncoding order, Integer reservedField0) {
       this.connectionId = connectionId;
       this.order = order;

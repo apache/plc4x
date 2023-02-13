@@ -96,6 +96,7 @@ public class CipRRData extends EipPacket implements Message {
   @Override
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipRRData");
 
@@ -130,7 +131,14 @@ public class CipRRData extends EipPacket implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (typeId)
-    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
+    writeComplexTypeArrayField(
+        "typeId",
+        typeId,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipRRData");
   }
@@ -144,6 +152,7 @@ public class CipRRData extends EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipRRData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (interfaceHandle)
     lengthInBits += 32;
@@ -158,7 +167,7 @@ public class CipRRData extends EipPacket implements Message {
     if (typeId != null) {
       int i = 0;
       for (TypeId element : typeId) {
-        boolean last = ++i >= typeId.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeId.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -166,12 +175,13 @@ public class CipRRData extends EipPacket implements Message {
     return lengthInBits;
   }
 
-  public static CipRRDataBuilder staticParseBuilder(
+  public static EipPacketBuilder staticParseEipPacketBuilder(
       ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("CipRRData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long interfaceHandle =
         readSimpleField(
@@ -213,23 +223,22 @@ public class CipRRData extends EipPacket implements Message {
 
     readBuffer.closeContext("CipRRData");
     // Create the instance
-    return new CipRRDataBuilder(interfaceHandle, timeout, itemCount, typeId, order);
+    return new CipRRDataBuilderImpl(interfaceHandle, timeout, itemCount, typeId, order);
   }
 
-  public static class CipRRDataBuilder implements EipPacket.EipPacketBuilder {
+  public static class CipRRDataBuilderImpl implements EipPacket.EipPacketBuilder {
     private final long interfaceHandle;
     private final int timeout;
     private final int itemCount;
     private final List<TypeId> typeId;
     private final IntegerEncoding order;
 
-    public CipRRDataBuilder(
+    public CipRRDataBuilderImpl(
         long interfaceHandle,
         int timeout,
         int itemCount,
         List<TypeId> typeId,
         IntegerEncoding order) {
-
       this.interfaceHandle = interfaceHandle;
       this.timeout = timeout;
       this.itemCount = itemCount;

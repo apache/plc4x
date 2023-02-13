@@ -62,6 +62,7 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
   @Override
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NullEipConnectionResponse");
 
@@ -77,27 +78,28 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NullEipConnectionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static NullEipConnectionResponseBuilder staticParseBuilder(
+  public static EipPacketBuilder staticParseEipPacketBuilder(
       ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("NullEipConnectionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("NullEipConnectionResponse");
     // Create the instance
-    return new NullEipConnectionResponseBuilder(order);
+    return new NullEipConnectionResponseBuilderImpl(order);
   }
 
-  public static class NullEipConnectionResponseBuilder implements EipPacket.EipPacketBuilder {
+  public static class NullEipConnectionResponseBuilderImpl implements EipPacket.EipPacketBuilder {
     private final IntegerEncoding order;
 
-    public NullEipConnectionResponseBuilder(IntegerEncoding order) {
-
+    public NullEipConnectionResponseBuilderImpl(IntegerEncoding order) {
       this.order = order;
     }
 

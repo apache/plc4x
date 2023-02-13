@@ -55,6 +55,7 @@ public class NullAddressItem extends TypeId implements Message {
   @Override
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NullAddressItem");
 
@@ -62,7 +63,11 @@ public class NullAddressItem extends TypeId implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("NullAddressItem");
   }
@@ -76,6 +81,7 @@ public class NullAddressItem extends TypeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NullAddressItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -83,12 +89,13 @@ public class NullAddressItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static NullAddressItemBuilder staticParseBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("NullAddressItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField(
@@ -102,14 +109,14 @@ public class NullAddressItem extends TypeId implements Message {
 
     readBuffer.closeContext("NullAddressItem");
     // Create the instance
-    return new NullAddressItemBuilder(order, reservedField0);
+    return new NullAddressItemBuilderImpl(order, reservedField0);
   }
 
-  public static class NullAddressItemBuilder implements TypeId.TypeIdBuilder {
+  public static class NullAddressItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final IntegerEncoding order;
     private final Integer reservedField0;
 
-    public NullAddressItemBuilder(IntegerEncoding order, Integer reservedField0) {
+    public NullAddressItemBuilderImpl(IntegerEncoding order, Integer reservedField0) {
       this.order = order;
       this.reservedField0 = reservedField0;
     }

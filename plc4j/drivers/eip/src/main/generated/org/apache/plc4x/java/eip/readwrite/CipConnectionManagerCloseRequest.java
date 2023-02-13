@@ -146,6 +146,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectionManagerCloseRequest");
 
@@ -253,10 +254,21 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeByte(writeBuffer, 8));
+        writeByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (connectionPaths)
-    writeComplexTypeArrayField("connectionPaths", connectionPaths, writeBuffer);
+    writeComplexTypeArrayField(
+        "connectionPaths",
+        connectionPaths,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipConnectionManagerCloseRequest");
   }
@@ -270,6 +282,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipConnectionManagerCloseRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestPathSize)
     lengthInBits += 8;
@@ -314,13 +327,14 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     return lengthInBits;
   }
 
-  public static CipConnectionManagerCloseRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipConnectionManagerCloseRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte requestPathSize =
         readSimpleField(
@@ -440,7 +454,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
 
     readBuffer.closeContext("CipConnectionManagerCloseRequest");
     // Create the instance
-    return new CipConnectionManagerCloseRequestBuilder(
+    return new CipConnectionManagerCloseRequestBuilderImpl(
         requestPathSize,
         classSegment,
         instanceSegment,
@@ -457,7 +471,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
         reservedField0);
   }
 
-  public static class CipConnectionManagerCloseRequestBuilder
+  public static class CipConnectionManagerCloseRequestBuilderImpl
       implements CipService.CipServiceBuilder {
     private final byte requestPathSize;
     private final PathSegment classSegment;
@@ -474,7 +488,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     private final IntegerEncoding order;
     private final Byte reservedField0;
 
-    public CipConnectionManagerCloseRequestBuilder(
+    public CipConnectionManagerCloseRequestBuilderImpl(
         byte requestPathSize,
         PathSegment classSegment,
         PathSegment instanceSegment,

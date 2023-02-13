@@ -87,13 +87,21 @@ public class ServicesResponse extends TypeId implements Message {
   @Override
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServicesResponse");
 
     // Implicit Field (serviceLen) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int serviceLen = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("serviceLen", serviceLen, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "serviceLen",
+        serviceLen,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (encapsulationProtocol)
     writeSimpleField(
@@ -109,7 +117,11 @@ public class ServicesResponse extends TypeId implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 2));
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (supportsCIPEncapsulation)
     writeSimpleField(
@@ -125,7 +137,11 @@ public class ServicesResponse extends TypeId implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (int) 0x00,
-        writeUnsignedInt(writeBuffer, 12));
+        writeUnsignedInt(writeBuffer, 12),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (supportsUDP)
     writeSimpleField(
@@ -138,7 +154,14 @@ public class ServicesResponse extends TypeId implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (data)
-    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "data",
+        data,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("ServicesResponse");
   }
@@ -152,6 +175,7 @@ public class ServicesResponse extends TypeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServicesResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (serviceLen)
     lengthInBits += 16;
@@ -179,12 +203,13 @@ public class ServicesResponse extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static ServicesResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("ServicesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int serviceLen =
         readImplicitField(
@@ -253,7 +278,7 @@ public class ServicesResponse extends TypeId implements Message {
 
     readBuffer.closeContext("ServicesResponse");
     // Create the instance
-    return new ServicesResponseBuilder(
+    return new ServicesResponseBuilderImpl(
         encapsulationProtocol,
         supportsCIPEncapsulation,
         supportsUDP,
@@ -263,7 +288,7 @@ public class ServicesResponse extends TypeId implements Message {
         reservedField1);
   }
 
-  public static class ServicesResponseBuilder implements TypeId.TypeIdBuilder {
+  public static class ServicesResponseBuilderImpl implements TypeId.TypeIdBuilder {
     private final int encapsulationProtocol;
     private final boolean supportsCIPEncapsulation;
     private final boolean supportsUDP;
@@ -272,7 +297,7 @@ public class ServicesResponse extends TypeId implements Message {
     private final Byte reservedField0;
     private final Integer reservedField1;
 
-    public ServicesResponseBuilder(
+    public ServicesResponseBuilderImpl(
         int encapsulationProtocol,
         boolean supportsCIPEncapsulation,
         boolean supportsUDP,

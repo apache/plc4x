@@ -53,11 +53,19 @@ public abstract class PathSegment implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PathSegment");
 
     // Discriminator Field (pathSegment) (Used as input to a switch field)
-    writeDiscriminatorField("pathSegment", getPathSegment(), writeUnsignedByte(writeBuffer, 3));
+    writeDiscriminatorField(
+        "pathSegment",
+        getPathSegment(),
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Switch field (Serialize the sub-type)
     serializePathSegmentChild(writeBuffer);
@@ -74,6 +82,7 @@ public abstract class PathSegment implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PathSegment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (pathSegment)
     lengthInBits += 3;
@@ -110,6 +119,7 @@ public abstract class PathSegment implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pathSegment =
         readDiscriminatorField(
@@ -123,11 +133,11 @@ public abstract class PathSegment implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PathSegmentBuilder builder = null;
     if (EvaluationHelper.equals(pathSegment, (byte) 0x00)) {
-      builder = PortSegment.staticParseBuilder(readBuffer, order);
+      builder = PortSegment.staticParsePathSegmentBuilder(readBuffer, order);
     } else if (EvaluationHelper.equals(pathSegment, (byte) 0x01)) {
-      builder = LogicalSegment.staticParseBuilder(readBuffer, order);
+      builder = LogicalSegment.staticParsePathSegmentBuilder(readBuffer, order);
     } else if (EvaluationHelper.equals(pathSegment, (byte) 0x04)) {
-      builder = DataSegment.staticParseBuilder(readBuffer, order);
+      builder = DataSegment.staticParsePathSegmentBuilder(readBuffer, order);
     }
     if (builder == null) {
       throw new ParseException(
@@ -145,7 +155,7 @@ public abstract class PathSegment implements Message {
     return _pathSegment;
   }
 
-  public static interface PathSegmentBuilder {
+  public interface PathSegmentBuilder {
     PathSegment build(IntegerEncoding order);
   }
 

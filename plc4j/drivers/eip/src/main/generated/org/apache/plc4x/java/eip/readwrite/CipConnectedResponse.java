@@ -90,6 +90,7 @@ public class CipConnectedResponse extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectedResponse");
 
@@ -97,7 +98,11 @@ public class CipConnectedResponse extends CipService implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (status)
     writeSimpleField(
@@ -121,7 +126,14 @@ public class CipConnectedResponse extends CipService implements Message {
 
     // Optional Field (data) (Can be skipped, if the value is null)
     writeOptionalField(
-        "data", data, new DataWriterComplexDefault<>(writeBuffer), (((serviceLen) - (4))) > (0));
+        "data",
+        data,
+        new DataWriterComplexDefault<>(writeBuffer),
+        (((serviceLen) - (4))) > (0),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipConnectedResponse");
   }
@@ -135,6 +147,7 @@ public class CipConnectedResponse extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipConnectedResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -153,13 +166,14 @@ public class CipConnectedResponse extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static CipConnectedResponseBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipConnectedResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField(
@@ -202,11 +216,11 @@ public class CipConnectedResponse extends CipService implements Message {
 
     readBuffer.closeContext("CipConnectedResponse");
     // Create the instance
-    return new CipConnectedResponseBuilder(
+    return new CipConnectedResponseBuilderImpl(
         status, additionalStatusWords, data, serviceLen, order, reservedField0);
   }
 
-  public static class CipConnectedResponseBuilder implements CipService.CipServiceBuilder {
+  public static class CipConnectedResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short additionalStatusWords;
     private final CIPDataConnected data;
@@ -214,7 +228,7 @@ public class CipConnectedResponse extends CipService implements Message {
     private final IntegerEncoding order;
     private final Short reservedField0;
 
-    public CipConnectedResponseBuilder(
+    public CipConnectedResponseBuilderImpl(
         short status,
         short additionalStatusWords,
         CIPDataConnected data,

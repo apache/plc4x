@@ -89,6 +89,7 @@ public class NetworkConnectionParameters implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NetworkConnectionParameters");
 
@@ -106,7 +107,11 @@ public class NetworkConnectionParameters implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (owner)
     writeSimpleField(
@@ -132,7 +137,11 @@ public class NetworkConnectionParameters implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (priority)
     writeSimpleField(
@@ -158,7 +167,11 @@ public class NetworkConnectionParameters implements Message {
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("NetworkConnectionParameters");
   }
@@ -172,6 +185,7 @@ public class NetworkConnectionParameters implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     NetworkConnectionParameters _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (connectionSize)
     lengthInBits += 16;
@@ -227,6 +241,7 @@ public class NetworkConnectionParameters implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int connectionSize =
         readSimpleField(

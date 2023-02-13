@@ -77,16 +77,31 @@ public class CipReadRequest extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipReadRequest");
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     byte requestPathSize = (byte) ((COUNT(getTag())) / (2));
-    writeImplicitField("requestPathSize", requestPathSize, writeSignedByte(writeBuffer, 8));
+    writeImplicitField(
+        "requestPathSize",
+        requestPathSize,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (tag)
-    writeByteArrayField("tag", tag, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "tag",
+        tag,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (elementNb)
     writeSimpleField(
@@ -110,6 +125,7 @@ public class CipReadRequest extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CipReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (requestPathSize)
     lengthInBits += 8;
@@ -125,13 +141,14 @@ public class CipReadRequest extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static CipReadRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("CipReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte requestPathSize =
         readImplicitField(
@@ -162,18 +179,17 @@ public class CipReadRequest extends CipService implements Message {
 
     readBuffer.closeContext("CipReadRequest");
     // Create the instance
-    return new CipReadRequestBuilder(tag, elementNb, serviceLen, order);
+    return new CipReadRequestBuilderImpl(tag, elementNb, serviceLen, order);
   }
 
-  public static class CipReadRequestBuilder implements CipService.CipServiceBuilder {
+  public static class CipReadRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final byte[] tag;
     private final int elementNb;
     private final Integer serviceLen;
     private final IntegerEncoding order;
 
-    public CipReadRequestBuilder(
+    public CipReadRequestBuilderImpl(
         byte[] tag, int elementNb, Integer serviceLen, IntegerEncoding order) {
-
       this.tag = tag;
       this.elementNb = elementNb;
       this.serviceLen = serviceLen;

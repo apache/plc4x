@@ -81,6 +81,7 @@ public class GetAttributeAllRequest extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetAttributeAllRequest");
 
@@ -90,7 +91,14 @@ public class GetAttributeAllRequest extends CipService implements Message {
         (byte)
             ((((getClassSegment().getLengthInBytes()) + (getInstanceSegment().getLengthInBytes())))
                 / (2));
-    writeImplicitField("requestPathSize", requestPathSize, writeSignedByte(writeBuffer, 8));
+    writeImplicitField(
+        "requestPathSize",
+        requestPathSize,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (classSegment)
     writeSimpleField(
@@ -124,6 +132,7 @@ public class GetAttributeAllRequest extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GetAttributeAllRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (requestPathSize)
     lengthInBits += 8;
@@ -137,13 +146,14 @@ public class GetAttributeAllRequest extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static GetAttributeAllRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("GetAttributeAllRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte requestPathSize =
         readImplicitField(
@@ -176,21 +186,20 @@ public class GetAttributeAllRequest extends CipService implements Message {
 
     readBuffer.closeContext("GetAttributeAllRequest");
     // Create the instance
-    return new GetAttributeAllRequestBuilder(classSegment, instanceSegment, serviceLen, order);
+    return new GetAttributeAllRequestBuilderImpl(classSegment, instanceSegment, serviceLen, order);
   }
 
-  public static class GetAttributeAllRequestBuilder implements CipService.CipServiceBuilder {
+  public static class GetAttributeAllRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final PathSegment classSegment;
     private final PathSegment instanceSegment;
     private final Integer serviceLen;
     private final IntegerEncoding order;
 
-    public GetAttributeAllRequestBuilder(
+    public GetAttributeAllRequestBuilderImpl(
         PathSegment classSegment,
         PathSegment instanceSegment,
         Integer serviceLen,
         IntegerEncoding order) {
-
       this.classSegment = classSegment;
       this.instanceSegment = instanceSegment;
       this.serviceLen = serviceLen;

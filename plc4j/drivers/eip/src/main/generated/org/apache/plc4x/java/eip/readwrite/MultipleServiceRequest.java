@@ -83,14 +83,29 @@ public class MultipleServiceRequest extends CipService implements Message {
   @Override
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MultipleServiceRequest");
 
     // Const Field (requestPathSize)
-    writeConstField("requestPathSize", REQUESTPATHSIZE, writeSignedByte(writeBuffer, 8));
+    writeConstField(
+        "requestPathSize",
+        REQUESTPATHSIZE,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (requestPath)
-    writeConstField("requestPath", REQUESTPATH, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "requestPath",
+        REQUESTPATH,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (data)
     writeSimpleField(
@@ -114,6 +129,7 @@ public class MultipleServiceRequest extends CipService implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MultipleServiceRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (requestPathSize)
     lengthInBits += 8;
@@ -127,13 +143,14 @@ public class MultipleServiceRequest extends CipService implements Message {
     return lengthInBits;
   }
 
-  public static MultipleServiceRequestBuilder staticParseBuilder(
+  public static CipServiceBuilder staticParseCipServiceBuilder(
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
       throws ParseException {
     readBuffer.pullContext("MultipleServiceRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte requestPathSize =
         readConstField(
@@ -170,16 +187,16 @@ public class MultipleServiceRequest extends CipService implements Message {
 
     readBuffer.closeContext("MultipleServiceRequest");
     // Create the instance
-    return new MultipleServiceRequestBuilder(data, serviceLen, order);
+    return new MultipleServiceRequestBuilderImpl(data, serviceLen, order);
   }
 
-  public static class MultipleServiceRequestBuilder implements CipService.CipServiceBuilder {
+  public static class MultipleServiceRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final Services data;
     private final Integer serviceLen;
     private final IntegerEncoding order;
 
-    public MultipleServiceRequestBuilder(Services data, Integer serviceLen, IntegerEncoding order) {
-
+    public MultipleServiceRequestBuilderImpl(
+        Services data, Integer serviceLen, IntegerEncoding order) {
       this.data = data;
       this.serviceLen = serviceLen;
       this.order = order;

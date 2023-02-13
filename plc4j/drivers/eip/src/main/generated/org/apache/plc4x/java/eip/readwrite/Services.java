@@ -67,19 +67,41 @@ public class Services implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Services");
 
     // Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int serviceNb = (int) (COUNT(getOffsets()));
-    writeImplicitField("serviceNb", serviceNb, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "serviceNb",
+        serviceNb,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (offsets)
-    writeSimpleTypeArrayField("offsets", offsets, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleTypeArrayField(
+        "offsets",
+        offsets,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (services)
-    writeComplexTypeArrayField("services", services, writeBuffer);
+    writeComplexTypeArrayField(
+        "services",
+        services,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("Services");
   }
@@ -93,6 +115,7 @@ public class Services implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Services _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (serviceNb)
     lengthInBits += 16;
@@ -106,7 +129,7 @@ public class Services implements Message {
     if (services != null) {
       int i = 0;
       for (CipService element : services) {
-        boolean last = ++i >= services.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= services.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -150,6 +173,7 @@ public class Services implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int serviceNb =
         readImplicitField(

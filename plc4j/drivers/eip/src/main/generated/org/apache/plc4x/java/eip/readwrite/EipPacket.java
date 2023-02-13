@@ -84,16 +84,31 @@ public abstract class EipPacket implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EipPacket");
 
     // Discriminator Field (command) (Used as input to a switch field)
-    writeDiscriminatorField("command", getCommand(), writeUnsignedInt(writeBuffer, 16));
+    writeDiscriminatorField(
+        "command",
+        getCommand(),
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int packetLength = (int) ((getLengthInBytes()) - (24));
-    writeImplicitField("packetLength", packetLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetLength",
+        packetLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (sessionHandle)
     writeSimpleField(
@@ -116,7 +131,14 @@ public abstract class EipPacket implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (senderContext)
-    writeByteArrayField("senderContext", senderContext, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "senderContext",
+        senderContext,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (options)
     writeSimpleField(
@@ -143,6 +165,7 @@ public abstract class EipPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     EipPacket _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (command)
     lengthInBits += 16;
@@ -205,6 +228,7 @@ public abstract class EipPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int command =
         readDiscriminatorField(
@@ -264,36 +288,36 @@ public abstract class EipPacket implements Message {
     EipPacketBuilder builder = null;
     if (EvaluationHelper.equals(command, (int) 0x0001)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = NullCommandRequest.staticParseBuilder(readBuffer, order, response);
+      builder = NullCommandRequest.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0001)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = NullCommandResponse.staticParseBuilder(readBuffer, order, response);
+      builder = NullCommandResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0004)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ListServicesRequest.staticParseBuilder(readBuffer, order, response);
+      builder = ListServicesRequest.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0004)
         && EvaluationHelper.equals(response, (boolean) true)
         && EvaluationHelper.equals(packetLength, (int) 0)) {
-      builder = NullListServicesResponse.staticParseBuilder(readBuffer, order, response);
+      builder = NullListServicesResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0004)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ListServicesResponse.staticParseBuilder(readBuffer, order, response);
+      builder = ListServicesResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0065)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = EipConnectionRequest.staticParseBuilder(readBuffer, order, response);
+      builder = EipConnectionRequest.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0065)
         && EvaluationHelper.equals(response, (boolean) true)
         && EvaluationHelper.equals(packetLength, (int) 0)) {
-      builder = NullEipConnectionResponse.staticParseBuilder(readBuffer, order, response);
+      builder = NullEipConnectionResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0065)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = EipConnectionResponse.staticParseBuilder(readBuffer, order, response);
+      builder = EipConnectionResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0066)) {
-      builder = EipDisconnectRequest.staticParseBuilder(readBuffer, order, response);
+      builder = EipDisconnectRequest.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x006F)) {
-      builder = CipRRData.staticParseBuilder(readBuffer, order, response);
+      builder = CipRRData.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0070)) {
-      builder = SendUnitData.staticParseBuilder(readBuffer, order, response);
+      builder = SendUnitData.staticParseEipPacketBuilder(readBuffer, order, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -316,7 +340,7 @@ public abstract class EipPacket implements Message {
     return _eipPacket;
   }
 
-  public static interface EipPacketBuilder {
+  public interface EipPacketBuilder {
     EipPacket build(
         long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order);
   }

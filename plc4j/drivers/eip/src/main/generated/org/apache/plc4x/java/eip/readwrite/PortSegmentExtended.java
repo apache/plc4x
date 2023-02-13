@@ -79,6 +79,7 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
   protected void serializePortSegmentTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PortSegmentExtended");
 
@@ -110,6 +111,7 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PortSegmentExtended _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (port)
     lengthInBits += 4;
@@ -125,12 +127,13 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static PortSegmentExtendedBuilder staticParseBuilder(
+  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(
       ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("PortSegmentExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte port = readSimpleField("port", readUnsignedByte(readBuffer, 4));
 
@@ -144,18 +147,18 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
 
     readBuffer.closeContext("PortSegmentExtended");
     // Create the instance
-    return new PortSegmentExtendedBuilder(port, linkAddressSize, address, order);
+    return new PortSegmentExtendedBuilderImpl(port, linkAddressSize, address, order);
   }
 
-  public static class PortSegmentExtendedBuilder implements PortSegmentType.PortSegmentTypeBuilder {
+  public static class PortSegmentExtendedBuilderImpl
+      implements PortSegmentType.PortSegmentTypeBuilder {
     private final byte port;
     private final short linkAddressSize;
     private final String address;
     private final IntegerEncoding order;
 
-    public PortSegmentExtendedBuilder(
+    public PortSegmentExtendedBuilderImpl(
         byte port, short linkAddressSize, String address, IntegerEncoding order) {
-
       this.port = port;
       this.linkAddressSize = linkAddressSize;
       this.address = address;
