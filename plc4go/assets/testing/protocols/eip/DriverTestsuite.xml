@@ -52,7 +52,7 @@
         </EipConnectionRequest>
       </EipPacket>
     </outgoing-plc-message>
-    <!-- The PLC will send the connection response with a sender context and session handle-->
+    <!-- The PLC will send the connection response with a sender context and session handle -->
     <incoming-plc-message name="Receive connection response">
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>

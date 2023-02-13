@@ -86,5 +86,5 @@ func (m PlcResponseCode) Serialize() ([]byte, error) {
 }
 
 func (m PlcResponseCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AlarmType", 8, uint8(m), utils.WithAdditionalStringRepresentation(m.GetName()))
+	return writeBuffer.WriteUint8("ResponseCode", 8, uint8(m), utils.WithAdditionalStringRepresentation(m.GetName()))
 }

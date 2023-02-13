@@ -30,18 +30,18 @@
     [array         uint 8  senderContext count '8']
     [simple        uint 32 options]
     [typeSwitch command
-            ['0x0065' EipConnectionRequest
-                [const  uint    16   protocolVersion   0x01]
-                [const  uint    16   flags             0x00]
-            ]
-            ['0x0066' EipDisconnectRequest
-            ]
-            ['0x006F' CipRRData(uint 16 packetLength)
-                [reserved  uint    32    '0x00000000']
-                [reserved  uint    16    '0x0000']
-                [simple    CipExchange('packetLength - 6')   exchange]
-            ]
+        ['0x0065' EipConnectionRequest
+            [const  uint    16   protocolVersion   0x01]
+            [const  uint    16   flags             0x00]
         ]
+        ['0x0066' EipDisconnectRequest
+        ]
+        ['0x006F' CipRRData(uint 16 packetLength)
+            [reserved  uint    32    '0x00000000']
+            [reserved  uint    16    '0x0000']
+            [simple    CipExchange('packetLength - 6')   exchange]
+        ]
+    ]
 ]
 
 [type  CipExchange (uint 16 exchangeLen)  //We pass then length down to evey sub-type to be able to provide the remaining data size

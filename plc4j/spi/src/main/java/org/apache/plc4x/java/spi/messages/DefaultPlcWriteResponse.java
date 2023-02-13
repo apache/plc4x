@@ -69,7 +69,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
         if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
-        writeBuffer.pushContext("tags");
+        writeBuffer.pushContext("responseCodes");
         for (Map.Entry<String, PlcResponseCode> tagEntry : responseCodes.entrySet()) {
             String tagName = tagEntry.getKey();
             final PlcResponseCode tagResponseCode = tagEntry.getValue();
@@ -78,7 +78,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
                 result.getBytes(StandardCharsets.UTF_8).length * 8,
                 result, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
-        writeBuffer.popContext("tags");
+        writeBuffer.popContext("responseCodes");
 
         writeBuffer.popContext("PlcWriteResponse");
     }

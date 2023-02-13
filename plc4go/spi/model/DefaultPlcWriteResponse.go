@@ -41,23 +41,23 @@ func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map
 	}
 }
 
-func (m *DefaultPlcWriteResponse) GetTagNames() []string {
+func (d *DefaultPlcWriteResponse) GetTagNames() []string {
 	var tagNames []string
 	// We take the tag names from the request to keep order as map is not ordered
-	for _, name := range m.request.GetTagNames() {
-		if _, ok := m.responseCodes[name]; ok {
+	for _, name := range d.request.GetTagNames() {
+		if _, ok := d.responseCodes[name]; ok {
 			tagNames = append(tagNames, name)
 		}
 	}
 	return tagNames
 }
 
-func (m *DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
-	return m.request
+func (d *DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
+	return d.request
 }
 
-func (m *DefaultPlcWriteResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
+func (d *DefaultPlcWriteResponse) GetResponseCode(name string) model.PlcResponseCode {
+	return d.responseCodes[name]
 }
 
 func (d *DefaultPlcWriteResponse) Serialize() ([]byte, error) {
@@ -88,30 +88,17 @@ func (d *DefaultPlcWriteResponse) SerializeWithWriteBuffer(ctx context.Context, 
 			}
 		}
 	}
-	if err := writeBuffer.PushContext("responseCodes", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PushContext("responseCodes"); err != nil {
 		return err
 	}
 	for name, elem := range d.responseCodes {
-
 		var elem interface{} = elem
-		if serializable, ok := elem.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(name); err != nil {
-				return err
-			}
-			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(name); err != nil {
-				return err
-			}
-		} else {
-			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
-				return err
-			}
+		elemAsString := fmt.Sprintf("%v", elem)
+		if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			return err
 		}
 	}
-	if err := writeBuffer.PopContext("responseCodes", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PopContext("responseCodes"); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcWriteResponse"); err != nil {

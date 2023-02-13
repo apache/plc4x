@@ -115,29 +115,28 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             writeBuffer.pushContext(tagName);
             PlcTag tag = tagValueItem.getTag();
             if (!(tag instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
+                throw new RuntimeException("Error serializing. Tag doesn't implement Serializable");
             }
             ((Serializable) tag).serialize(writeBuffer);
             final PlcValue value = tagValueItem.getValue();
-            if (value instanceof PlcList) {
-                PlcList list = (PlcList) value;
-                for (PlcValue plcValue : list.getList()) {
-                    String plcValueString = plcValue.getString();
-                    writeBuffer.writeString("value",
-                        plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
-                        plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-                }
-            } else {
-                String plcValueString = value.getString();
-                writeBuffer.writeString("value",
-                    plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
-                    plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-            }
+            serializePlcValue(value, writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
 
         writeBuffer.popContext("PlcWriteRequest");
+    }
+
+    protected void serializePlcValue(PlcValue plcValue, WriteBuffer writeBuffer) throws SerializationException {
+        if(plcValue instanceof Serializable) {
+            Serializable serializable = (Serializable) plcValue;
+            serializable.serialize(writeBuffer);
+        } else {
+            String plcValueString = plcValue.getString();
+            writeBuffer.writeString("value",
+                plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
+                plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        }
     }
 
     public static class Builder implements PlcWriteRequest.Builder {
