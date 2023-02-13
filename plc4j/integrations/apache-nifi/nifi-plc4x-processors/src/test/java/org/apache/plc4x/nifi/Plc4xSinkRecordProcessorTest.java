@@ -24,6 +24,7 @@ import org.apache.nifi.avro.AvroReader;
 import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
+import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,6 @@ public class Plc4xSinkRecordProcessorTest {
 			testRunner.enqueue(Plc4xCommonTest.encodeRecord(Plc4xCommonTest.getTestRecord()));
     }
     
-    
-    @Test
     public void testAvroRecordReaderProcessor() throws InitializationException {
     	
     	testRunner.run(NUMBER_OF_CALLS,true, true);
@@ -73,4 +72,20 @@ public class Plc4xSinkRecordProcessorTest {
     	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_FAILURE, 0);
     	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
     }
+
+	// Test dynamic properties addressess access strategy
+	@Test
+	public void testWithAddressProperties() throws InitializationException {
+		testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY);
+		Plc4xCommonTest.getAddressMap().forEach((k,v) -> testRunner.setProperty(k, v));
+		testAvroRecordReaderProcessor();
+	}
+
+	// Test addressess text property access strategy
+	@Test
+	public void testWithAddressText() throws InitializationException { 
+		testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);
+		testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, Plc4xCommonTest.getAddressMap().toString());
+		testAvroRecordReaderProcessor();
+	}
 }

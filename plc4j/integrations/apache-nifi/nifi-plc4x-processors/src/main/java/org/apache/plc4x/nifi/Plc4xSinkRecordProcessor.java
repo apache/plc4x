@@ -135,13 +135,15 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			while ((record = recordReader.nextRecord()) != null) {
 				long nrOfRowsHere = 0L;
 				PlcWriteResponse plcWriteResponse = null;
-			
+				PlcWriteRequest writeRequest = null;
+
+				Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
+				final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
 
 				try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 					PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-					Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
-					final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
-			
+					
+					
 					if (tags != null){
 						for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
 							if (record.toMap().containsKey(tag.getKey())) {
@@ -162,22 +164,11 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 							}
 						}
 					}
-					PlcWriteRequest writeRequest = builder.build();
+					writeRequest = builder.build();
 
 					plcWriteResponse = writeRequest.execute().get(
 						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
 						);
-
-					if (tags == null){
-						getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
-						getSchemaCache().addSchema(
-							addressMap, 
-							writeRequest.getTagNames(),
-							writeRequest.getTags(),
-							null
-						);
-					}
-
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					in.close();
@@ -187,6 +178,15 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 
+				if (tags == null){
+					getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+					getSchemaCache().addSchema(
+						addressMap, 
+						writeRequest.getTagNames(),
+						writeRequest.getTags(),
+						null
+					);
+				}
 
 				// Response check if values were written
 				PlcResponseCode code = null;
@@ -215,7 +215,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 		FlowFile resultSetFF = session.putAllAttributes(originalFlowFile, attributesToAdd);
 
-		logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get()});
+		logger.info("Writing {} fields from {} records; transferring to 'success'", new Object[] { nrOfRows.get(), resultSetFF });
 		// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
 		// otherwise
 		if (context.hasIncomingConnection()) {
@@ -225,7 +225,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 		}
 
 		session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
-		// fileToProcess = null;
 		session.commitAsync();
 	}
 }

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,7 +60,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
 
-    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder()
+        .withMaxLeaseTime(Duration.ofSeconds(1L))
+        .withMaxWaitTime(Duration.ofSeconds(1L))
+        .build();
 
     protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
         AddressesAccessUtils.ADDRESS_PROPERTY,
