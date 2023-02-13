@@ -1432,6 +1432,8 @@ const (
 	BACnetVendorId_BITPOOL                                                                      BACnetVendorId = 1401
 	BACnetVendorId_SONICULLC                                                                    BACnetVendorId = 1402
 	BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED                                                  BACnetVendorId = 1403
+	BACnetVendorId_THING_WAREHOUSELLC                                                           BACnetVendorId = 1404
+	BACnetVendorId_INNOFRIENDS_GMBH                                                             BACnetVendorId = 1405
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2835,6 +2837,8 @@ func init() {
 		BACnetVendorId_BITPOOL,
 		BACnetVendorId_SONICULLC,
 		BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED,
+		BACnetVendorId_THING_WAREHOUSELLC,
+		BACnetVendorId_INNOFRIENDS_GMBH,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4640,6 +4644,14 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1403:
 		{ /* '1403' */
 			return 1403
+		}
+	case 1404:
+		{ /* '1404' */
+			return 1404
+		}
+	case 1405:
+		{ /* '1405' */
+			return 1405
 		}
 	case 141:
 		{ /* '141' */
@@ -10243,6 +10255,14 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1403' */
 			return "Rishabh Instruments Limited"
 		}
+	case 1404:
+		{ /* '1404' */
+			return "Thing Warehouse LLC"
+		}
+	case 1405:
+		{ /* '1405' */
+			return "Innofriends GmbH"
+		}
 	case 141:
 		{ /* '141' */
 			return "Yaskawa America, Inc."
@@ -14944,6 +14964,10 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SONICULLC, true
 	case 1403:
 		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
+	case 1404:
+		return BACnetVendorId_THING_WAREHOUSELLC, true
+	case 1405:
+		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case 141:
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case 142:
@@ -17742,6 +17766,10 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SONICULLC, true
 	case "RISHABH_INSTRUMENTS_LIMITED":
 		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
+	case "THING_WAREHOUSELLC":
+		return BACnetVendorId_THING_WAREHOUSELLC, true
+	case "INNOFRIENDS_GMBH":
+		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case "YASKAWA_AMERICA_INC":
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
@@ -20597,6 +20625,10 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "SONICULLC"
 	case BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED:
 		return "RISHABH_INSTRUMENTS_LIMITED"
+	case BACnetVendorId_THING_WAREHOUSELLC:
+		return "THING_WAREHOUSELLC"
+	case BACnetVendorId_INNOFRIENDS_GMBH:
+		return "INNOFRIENDS_GMBH"
 	case BACnetVendorId_YASKAWA_AMERICA_INC:
 		return "YASKAWA_AMERICA_INC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:

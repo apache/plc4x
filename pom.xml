@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.12.23</byte-buddy.version>
+    <byte-buddy.version>1.13.0</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -126,7 +126,7 @@
     <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.13</equalsverifier.version>
+    <equalsverifier.version>3.13.1</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.9</groovy.version>
     <gson.version>2.10.1</gson.version>
@@ -151,7 +151,7 @@
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
     <mockito.version>5.1.1</mockito.version>
-    <netty.version>4.1.87.Final</netty.version>
+    <netty.version>4.1.88.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.6</slf4j.version>
     <vavr.version>0.10.4</vavr.version>

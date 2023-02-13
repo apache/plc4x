@@ -41,8 +41,6 @@ public abstract class ReservedTypeTestParent implements Message {
 
   // Properties.
   protected final short simpleField;
-  // Reserved Fields
-  private Short reservedField0;
 
   public ReservedTypeTestParent(short simpleField) {
     super();
@@ -58,14 +56,12 @@ public abstract class ReservedTypeTestParent implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReservedTypeTestParent");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (simpleField)
     writeSimpleField("simpleField", simpleField, writeUnsignedShort(writeBuffer, 8));
@@ -85,6 +81,7 @@ public abstract class ReservedTypeTestParent implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ReservedTypeTestParent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -108,6 +105,7 @@ public abstract class ReservedTypeTestParent implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -131,7 +129,6 @@ public abstract class ReservedTypeTestParent implements Message {
     readBuffer.closeContext("ReservedTypeTestParent");
     // Create the instance
     ReservedTypeTestParent _reservedTypeTestParent = builder.build(simpleField);
-    _reservedTypeTestParent.reservedField0 = reservedField0;
     return _reservedTypeTestParent;
   }
 

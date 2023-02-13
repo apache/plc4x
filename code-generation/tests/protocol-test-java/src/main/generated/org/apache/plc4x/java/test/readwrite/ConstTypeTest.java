@@ -75,6 +75,7 @@ public class ConstTypeTest implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConstTypeTest");
 
@@ -108,6 +109,7 @@ public class ConstTypeTest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ConstTypeTest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (bitField)
     lengthInBits += 1;
@@ -141,6 +143,7 @@ public class ConstTypeTest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean bitField = readConstField("bitField", readBoolean(readBuffer), ConstTypeTest.BITFIELD);
 

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 
 public class CachedPlcConnectionManagerTest {
 
@@ -121,20 +122,21 @@ public class CachedPlcConnectionManagerTest {
         // Create a connectionManager with a maximum wait time of 50ms
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).build();
+        CountDownLatch startSignal = new CountDownLatch(1);
 
         // Get the connection for the first time.
         (new Thread(() -> {
-            try (PlcConnection connection = connectionManager.getConnection("test")) {
+            try {
+                PlcConnection connection = connectionManager.getConnection("test");
+                startSignal.countDown();
                 Assertions.assertInstanceOf(LeasedPlcConnection.class, connection);
-                // Sleep for a second.
-                Thread.sleep(100L);
             } catch (Exception e) {
                 Assertions.fail("Not expecting an exception here", e);
             }
         })).start();
 
         // This is needed as starting the previous thread seems to take a little-bit of time.
-        Thread.sleep(10L);
+        startSignal.await();
 
         // Get the same connection a second time.
         try (PlcConnection ignored = connectionManager.getConnection("test")) {

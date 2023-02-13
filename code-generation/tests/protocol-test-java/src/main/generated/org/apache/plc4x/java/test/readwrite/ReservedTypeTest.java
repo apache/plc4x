@@ -37,23 +37,18 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class ReservedTypeTest implements Message {
 
-  // Reserved Fields
-  private Short reservedField0;
-
   public ReservedTypeTest() {
     super();
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReservedTypeTest");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("ReservedTypeTest");
   }
@@ -67,6 +62,7 @@ public class ReservedTypeTest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ReservedTypeTest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -85,6 +81,7 @@ public class ReservedTypeTest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -93,7 +90,6 @@ public class ReservedTypeTest implements Message {
     // Create the instance
     ReservedTypeTest _reservedTypeTest;
     _reservedTypeTest = new ReservedTypeTest();
-    _reservedTypeTest.reservedField0 = reservedField0;
     return _reservedTypeTest;
   }
 
