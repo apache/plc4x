@@ -49,7 +49,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -881,19 +880,32 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         types.put(typeName, type);
 
-        // TODO:- Figure out why we need a write on copy array to get around a Concurrent Modification Exception being raised.
-        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new CopyOnWriteArrayList<>());
-        LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
+        while (typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>()).size() != 0) {
 
-        LinkedList<Consumer<TypeDefinition>> removeList = new LinkedList<>();
-        for (Consumer<TypeDefinition> setter : waitingConsumers) {
-            LOGGER.debug("setting {} for {}", typeName, setter);
-            setter.accept(type);
-            removeList.add(setter);
+            consumerDispatchType(typeName, type);
         }
 
-        waitingConsumers.removeAll(removeList);
         typeDefinitionConsumers.remove(typeName);
+    }
+
+    private void consumerDispatchType(String typeName, TypeDefinition type) {
+        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
+        LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
+
+        Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
+        List<Consumer<TypeDefinition>> removedItems = new ArrayList<>();
+
+        while (consumerIterator.hasNext()) {
+            Consumer<TypeDefinition> setter = consumerIterator.next();
+            LOGGER.debug("setting {} for {}", typeName, setter);
+            removedItems.add(setter);
+        }
+
+        waitingConsumers.removeAll(removedItems);
+
+        for (Consumer<TypeDefinition> setter : removedItems) {
+            setter.accept(type);
+        }
     }
 
     @Override
@@ -907,9 +919,9 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         } else {
             // put up order
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new CopyOnWriteArrayList<>()).size(), typeRefName);
+                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new LinkedList<>()).size(), typeRefName);
             }
-            typeDefinitionConsumers.putIfAbsent(typeRefName, new CopyOnWriteArrayList<>());
+            typeDefinitionConsumers.putIfAbsent(typeRefName, new LinkedList<>());
             typeDefinitionConsumers.get(typeRefName).add(setTypeDefinition);
         }
     }
