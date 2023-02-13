@@ -26,6 +26,9 @@ import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Plc4xSinkProcessorTest {
 
     private TestRunner testRunner;
@@ -44,7 +47,7 @@ public class Plc4xSinkProcessorTest {
 
 		for (int i = 0; i<NUMBER_OF_CALLS; i++)
 			testRunner.enqueue("", Plc4xCommonTest.originalMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> String.valueOf(e))));
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> String.valueOf(e.getValue()))));
     }
 
     public void testProcessor() {
@@ -63,9 +66,9 @@ public class Plc4xSinkProcessorTest {
 
     // Test addressess text property access strategy
     @Test
-    public void testWithAddressText() { 
+    public void testWithAddressText() throws JsonProcessingException { 
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);
-        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, Plc4xCommonTest.getAddressMap().toString());
+        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, new ObjectMapper().writeValueAsString(Plc4xCommonTest.getAddressMap()));
         testProcessor();
     }
 

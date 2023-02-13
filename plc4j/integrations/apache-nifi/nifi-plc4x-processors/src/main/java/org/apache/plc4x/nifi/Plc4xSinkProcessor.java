@@ -65,12 +65,12 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             if (tags != null){
                 for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                    builder.addTag(tag.getKey(), tag.getValue());
+                    builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
                 }
             } else {
                 getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
                 for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                    builder.addTagAddress(entry.getKey(), entry.getValue());
+                    builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
                 }
             }
            

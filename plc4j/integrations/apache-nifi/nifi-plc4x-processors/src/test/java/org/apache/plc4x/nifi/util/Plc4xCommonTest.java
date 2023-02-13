@@ -133,12 +133,16 @@ public class Plc4xCommonTest {
         Map<String, String> result = new HashMap<>();
 
         addressMap.forEach((k,v) -> {
-			if (!v.startsWith("RANDOM/")) {
+			if (v.startsWith("RANDOM/")) {
 				if (!v.endsWith("BYTE") &&
 					!v.endsWith("CHAR") &&
+                    !v.endsWith("WORD") &&
 					!v.endsWith("STRING"))
 					result.put(k, v);
-			}
+			} else {
+                result.put(k, v);
+            }
+
 		});
         return result;
     }
